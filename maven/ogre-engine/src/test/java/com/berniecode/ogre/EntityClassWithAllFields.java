@@ -1,8 +1,6 @@
 package com.berniecode.ogre;
 
-import com.berniecode.ogre.engine.platformhooks.NativeOrderedCollection;
 import com.berniecode.ogre.engine.shared.EntityType;
-import com.berniecode.ogre.engine.shared.Property;
 import com.berniecode.ogre.engine.shared.impl.ImmutableEntityType;
 
 public class EntityClassWithAllFields {
@@ -31,7 +29,7 @@ public class EntityClassWithAllFields {
 	static {
 		EXPECTED_ENTITY_TYPE = new ImmutableEntityType(
 				EntityClassWithAllFields.class.getName(),
-				new NativeOrderedCollection<Property>());
+				null); //TODO make this work
 	}
 
 }
