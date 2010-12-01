@@ -1,0 +1,39 @@
+<language-mapping xmlns="http://berniecode.com/schemata/jtox/1.0">
+	
+	<validate>
+		<script for="method-definition" error="abstract methods are not permitted">
+			return !t.isAbstract()
+		</script>
+	</validate>
+	
+	<transform defaults="java">
+	
+		<template for="method-definition">
+			"def" name(argumentList):
+				methodBody
+		</template>
+		
+		<template for="conditional" if="t.elseBody != null">
+			"if" condition:
+				ifBody
+			"else":
+				elseBody
+		</template>
+		
+		<template for="conditional">
+			\if condition:
+				ifBody
+		</template>
+		
+		<regex-replace for="line-comment" pattern="//" replacement="#" />
+		
+		<script for="line-comment">
+			emit(token.text.replace("//", "#"));
+		</script>
+		
+		<script for="line-comment">
+			emit(token.text.replace("//", "#"));
+		</script>
+	</transform>
+
+</language-mapping>

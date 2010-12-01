@@ -1,0 +1,273 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww18140\viewh18060\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+
+\f0\fs30 \cf0 TODO replace propertyCode with propertyIndex, implicit in ordering.\
+TODO Class > EntityType, EntityValue > Entity\
+TODO int > integer\
+TODO add objectGraphId to object graphs\
+TODO add removal to update message\
+TODO in formal spec, make sure that when an entity is deleted, it is not necessary to manually remove it from every collection\
+\
+\
+Roadmap to v0.1:\
+\
+[step 1: integers only]\
+End-to-end type domain download for integers only:\
+  - PojoDataSource produces type domain from class\
+  - Client engine receives and validates type domain (no encoding)\
+  - Correct metadata generated based on Java integer type\
+End-to-end entity snapshot for integers only:\
+  - PojoDataSource produces entities\
+  - Client engine downloads and validates entity data\
+End-to-end update detection:\
+  - PojoDataSource detects updates to objects\
+  - Server engine transmits updates over message bridge\
+  - client engine receives and applies update messages\
+  - tests validate integrity of new client data\
+Strongly typed facade:\
+  - JDK proxy backed view onto client engine\
+  - update tests to use view instead of interrogating client engine directly\
+\
+[step 2: more types]\
+\
+Building on the integer-only system, add more types one by one across the whole slice:\
+  - strings\
+  - floats\
+  - bytes\
+  - entity references\
+  - collections\
+\
+[step 3: data negotiation]\
+\
+Implement reliability measures:\
+  - re-downloading snapshot in event of update that is out of dataVersion order or has a new dataVersionScheme\
+  - test that snapshot is not re-downloaded too often\
+  - consider what happens in the event of the TypeDomain changing. It should be possible to add new fields to a type domain without breaking existing clients.\
+\
+[step 4: OGRE wire format]\
+\
+After implementing the whole shebang using in-memory transfer of objects, create the wire format as a simple mapping of the entities onto a binary format. Hopefully by now I've resolved the whole protobuf v.s. home-grown format thing. Look into other binary formats - is there an agreed system for storing hierarchical data in binary blobs?\
+\
+[step 5: network transport]\
+\
+Plug this system into a real environment with an HTTP download bridge and JMS messaging channel.\
+\
+\
+===== A protocol for realtime object graph replication =====\
+\
+In this white paper I describe OGRE, the Object Graph Replication Engine. OGRE is a system for transferring complex structured data over a network and then transmitting any changes to the data structure as a stream of deltas to the original structure.\
+\
+  * Introduction: about the problem that OGRE solves\
+  * Informal specification: an overview of what OGRE does, with pretty pictures and examples\
+  * Formal specification: a more precise definition of the OGRE protocol that can be used when implementing a client or server\
+\
+==== Introduction ====\
+\
+Many client-server applications have the requirement that the client must respond rapidly to changes in server-side state. Examples include chat, stock ticker, systems monitoring and football score applications.\
+\
+Imagine a stock trading application that displays the values of thousands of stocks, updating the price displayed when the stock price changes. A file containing the names and prices of thousands of stocks could easily be tens or hundreds of kilobytes compressed.\
+\
+If stocks change price about once every two minutes on average, then every second approximately 1% of the stocks being monitored by the client will change price. If this application has the requirement that the client be no more than a second behind the server, it is simply not an option to download, decompress and parse the complete price data set every second. Instead, the client will only download the complete data set once at startup, and will then receive a stream of price changes as they occur and use these changes to update its local data set. In database terminology, this process is called 
+\i replication
+\i0 , and the local copy is called a 
+\i replicated slave
+\i0 .\
+\
+In order to do this, the application must settle three technical issues:\
+\
+  - How is the data encoded to be transferred over the network?\
+  - How is the stream of changes transmitted to the client?\
+  - How is each change applied to the client's data set?\
+\
+There are a number of technologies that help application with items 1 and 2. Data can be encoded as XML, which is human readable, self-documenting and universally supported by programming languages, or in a binary format such as Thrift, AMF or Protocol Buffers which are more efficient and faster to parse compared to XML. Technologies like Comet combined with message queuing systems like ZeroMQ and RabbitMQ make it easy to publish a stream of changes to multiple clients. Issues 1 and 2 are solved problems.\
+\
+Issue 3 on the other hand, has not been solved in a general-purpose way, so application developers have to create their own ad-hoc solutions. OGRE aims to change this.\
+\
+==== Informal specification ====\
+\
+OGRE defines a platform-neutral way of representing complete object graphs, and updates to an object graph.\
+\
+=== Representing graph data ===\
+\
+At the heart of OGRE is the Entity Data Representation: a standard representation of structured data that is flexible enough to store most data structures. In EDR, data is stored as **entities**. An entity is a unit of data, similar to an //object// in OO languages or a struct or map in procedural languages. Entities have **properties**, which are strongly typed members that can contain single values like numbers, strings and references to entities or collections of values. Each entity has an associated **entity type**, which is the equivalent of a //class// in OO languages. The set of all available entity types is called a **type domain**, and a set of entities is called a **object graph**.\
+\
+Enough theory, time for an example. To keep it simple, we'll use a graph with only one entity type: a basic social network:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs24 \cf0 {{\NeXTGraphic toy-story-typedomain.png \width5940 \height3220
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs30 \cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 \
+Here's an object graph based on this type domain:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs24 \cf0 {{\NeXTGraphic toy-story-objectgraph.png \width13420 \height8220
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs30 \cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 \
+The first thing to notice is that each entity has been given a unique ID. Every OGRE entity has an ID, and this is how references are represented.\
+\
+In the diagrammatic representation of the object graph above, friendships are indicated with arrows. Programming environments have different ways of expressing relationships. Object-oriented languages use pointers or references. SQL databases use linking tables. OGRE uses integer IDs.\
+\
+In order to send a graph over the network, the OGRE server analyses the graph and transforms each Person's list of friends into an array of integers. Encoded like this, each object is a self-contained collection of values that can be sent over the network. OGRE clients receive these encoded objects and expand them back into a graph structure. Because each Person entity is associated with the Person entity type the OGRE client knows that the "friends" property should contains references to other Person entities, so it converts the array of integers back into a list of Person references.\
+\
+=== Encoding a complete graph ===\
+\
+When an OGRE client first connects to an OGRE server, it downloads a complete representation of the object graph called the **snapshot**. This is encoded using the compact binary [[OGRE wire format]], but in the following examples I'll use a more readable JSON notation. The initial download might look like this:\
+\
+  snapshot: \{\
+    typeDomainId: "Social Network",\
+    objectGraphId: "Toy Story characters",\
+    dataVersionScheme: "214A9A29-5887-4DE7-B55C-41400E1E0790",\
+    dataVersion: 1857,\
+    entities: [\
+      \{type: "Person", id: 1, name: "Buzz Lightyear", dob: "2250-03-16", friends: [2, 3, 4], photo: "..."\},\
+      \{type: "Person", id: 2, name: "Woody", dob: "1785-08-22", friends: [3, 4], photo: "..."\},\
+      \{type: "Person", id: 3, name: "Bullseye", dob: "1814-12-25", friends: [1, 2, 4, 5], photo: "..."\},\
+      \{type: "Person", id: 4, name: "Jessie", dob: "1772-01-05", friends: [1, 3], photo: "..."\},\
+      \{type: "Person", id: 5, name: "Stinky Pete", dob: "1761-11-08", friends: [], photo: "..."\}\
+    ]\
+  \}\
+\
+The interpretation of the "entities" array should be clear now. The other fields need some explanation:\
+\
+  * **domainId:** an ID used to locate the type domain for this object graph. This is chosen by the programmer, and should be something globally unique to prevent clashes with other applications running on the same OGRE server. Something like a fully qualified package name that includes a domain name that you own is appropriate, e.g. "com.berniecode.ogre.demos.socialnetwork".\
+  * ** objectGraphId:** uniquely identifies the object graph. This is used to distinguish between object graphs when there are several of them using the same type domain. This only needs to be unique within the scope of the type domain on a single OGRE server. Again, the programmer or administrator should choose a human readable value. \
+  * **dataVersion:** this number increments each time the object graph changes. If a client has a graph with dataVersion 7, and the dataVersion on the server is 10, then the client must apply updates 8, 9 and 10 to bring itself in sync with the server.\
+  * **dataVersionScheme:** a unique string that changes every time the dataVersion resets. If the server restarts and loses it's internal state, it may have to start the dataVersion counting from 1 again. By changing the dataVersionScheme, all clients will be forced to download the new graph and start again. This is typically a UUID, and is generated by the server.\
+\
+=== Encoding updates to a graph ====\
+\
+After the client receives the whole graph structure, exactly three things can happen to the server-side state that makes the client out of date:\
+\
+  - a new entity can be added to the graph\
+  - an entity can be removed from the graph\
+  - a property of an existing entity can be changed\
+\
+If any of the above happen, the dataVersion property of the server-side graph will be incremented, and a new **update message** will be created. After downloading the complete initial graph structure, clients receive a stream of update messages, each one of which can contain multiple changes to the object graph.\
+\
+Let's introduce "Al" of Al's Toy Barn to the graph. He likes all the toys, but none of the toys like him except for Stinky Pete. The update message representing this change looks something like this:\
+\
+  updateMessage: \{\
+    domainId: "Social Network",\
+    objectGraphId: "Toy Story characters",\
+    dataVersionScheme: "214A9A29-5887-4DE7-B55C-41400E1E0790",\
+    dataVersion: 1858,\
+    entities: [\
+      \{type: "Person", id: 6, name: "Al", dob: "1964-05-29", friends: [1, 2, 3, 4, 5], photo: "..."\}\
+    ],\
+    updates: [\
+      \{type: "Person", id: 5, friends: [6]\}\
+    ],\
+    removals: []\
+  \}\
+\
+The first two fields are used to uniquely identify the object graph that the update should be applied to. The second two fields allow the client to decide whether this message is a valid update to apply to its local object graph. If not, then it must download another snapshot of the whole graph.\
+\
+Once the client has established that the update message is valid, it applies it to the local object graph. Any new entities are added to the graph, any property updates are applied, and any old entities are removed. While this process is happening, the graph is allowed to be in an inconsistent state. For example, if two new Person entities are added and each of them is friends with the other, then when the first Person has been added to the graph it has a reference to a Person that is not yet part of the graph. Each update message must contain a set of changes that leaves the graph in a consistent state after the message has finished being processed.\
+\
+[geeky aside: this graph is not very efficient to update if people have large friend lists. The smallest unit that OGRE can update is the property value. When Woody realises that he likes Buzz after all, it is necessary to re-transmit his entire friend list in order to add Buzz to it. Since Woody is also friends with a great many other toys, including all 100 little green toy soldiers, this would be very inefficient. This can be solved by adding a new entity to the system, "Friendship". This entity represents a friendship between two Person entities. Individual friendships can be made and broken efficiently by adding and deleting Friendship entities.]\
+\
+So anyway, Stinky Pete leaves the scene in a toddler's backpack, in Pixar's typical "happy happy days, the bad guy is sentenced to an eternity of suffering" ending. The removal of an entity looks like this:\
+\
+  updateMessage: \{\
+    domainId: "Social Network",\
+    objectGraphId: "Toy Story characters",\
+    dataVersionScheme: "214A9A29-5887-4DE7-B55C-41400E1E0790",\
+    dataVersion: 1859,\
+    entities: [],\
+    updates: [],\
+    removals: [\
+      \{type: "Person", id: 5\}\
+    ]\
+  \}\
+\
+Note that the update message doesn't have to explicitly remove Pete from any friends lists - the OGRE client will do that automatically.\
+\
+That's more or less how OGRE works, and is probably more information than you need to use OGRE in a project.\
+\
+==== Formal specification ====\
+\
+The following section defines exactly how OGRE works, for people implementing clients and servers, and for people who aren't happy just knowing //more or less// what's happening under the hood.\
+\
+=== Architectural overview ===\
+\
+The OGRE protocol defines a core set of behaviours in a platform-neutral way. In order to actually //use// OGRE, you must choose a platform-specific **bridge**. In fact you must choose two: a **download bridge** and a **message bridge**. The download bridge is a request/response mechanism used by clients to receive a complete representation of the graph. The message bridge is a one-way messaging channel over which the client receives update messages.\
+\
+It is quite easy to write new bridges. If your project already has a messaging system capable of relaying arbitrary messages to clients, OGRE can plug into your existing architecture.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs24 \cf0 {{\NeXTGraphic ogre-architecture.png \width13080 \height3580
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs30 \cf0 \
+\
+Running right to left, the key components of the OGRE system are:\
+\
+  * **master object graph:** a source of structured data. This can be virtually any typed data source, such as a an in-memory object graph or a SQL database.\
+  * **server data adapter:** converts the master object graph into OGRE's Entity Data Representation.\
+  * **server engine:** encodes the Entity Data provided by the server data adapter into packages in the OGRE wire format for transfer over the two bridges.\
+  * **download bridge:** a request/response mechanism used by the client to fetch data from the server on demand. The download transport is typically provided by the application environment. For example, if the server is a Java web application running on Tomcat and the client is ActionScript, then the transport will be HTTP, the server adapter will be a Servlet mapped to a URL and the client adapter will be a flex HTTPService that makes requests to the Servlet's URL.\
+  * **message bridge:** a messaging channel used by the server to push update data to clients when the master object graph changes. Again, for a Java web application the transport may be a BlazeDS publish-subscribe messaging channel, the server adapter would use JMS to publish messages to the channel, and the client adapter would use the BlazeDS client to receive messages [CHECK NAMES OF BLAZEDS SERVER AND CLIENT COMPONENTS]\
+  * **client engine:** requests a copy of the master object graph in the OGRE Entity Data Representation over the download bridge, then receives a stream of updates over the message bridge and applies them to its local representation to keep it in sync.\
+  * **client data adapter:** converts the Entity Data Representation of the slave object graph into a more friendly representation for use by the client. Since the client engine is written in Java and automatically translated into the client language, one purpose of the client data adapter is to act as a facade for the client engine, converting it to use the client language's coding style conventions.\
+\
+[LINK WORDS TO PRETTY JAVADOC WITH SOURCE CODE HIGHLIGHTING?]\
+\
+== Sorry, the client engine is *what?* ==\
+\
+Ah yes, the automatic language conversion. Since OGRE is designed to be a cross-language solution, OGRE clients and servers need to be written for every supported language. For my own requirements, I'd like to see servers in Java and C#, and clients in JavaScript, ActionScript, C# and Java. That's six software libraries just for me. One of the goals of OGRE is to "solve the problem of client/server data replication once and for all". Not "six times and for all". If I have to implement the same code twice on the server and four times on the client, then every feature request has to be implemented six times, every unit test written six times, every bug fixed six times. The more languages OGRE supports, the harder it is to develop.\
+\
+Therefore the core client and server engines are written in Java and automatically translated into other languages. This is actually a lot easier than it sounds - we don't need a general purpose converter, just a converter that works for OGRE. Pretty much all modern imperative languages have a core set of features like classes, objects, methods, variables, operators, conditionals and for/while loops that are semantically identical, but with a few minor syntactical differences. For example, Java methods are expressed "ReturnType methodName()" and ActionScript methods use "methodName():ReturnType". Converting from Java to ActionScript is therefore a simple matter of rewriting the source code to use the new syntax - it's not much harder to make than an automatic source code formatter.\
+\
+In order to permit this translation, the client and server engines are written in a simple subset of Java that avoids features that don't map well onto other languages, such as concrete inheritance, inner classes and reflection. This makes it ugly. The client data adapter and server data adapter take this ugly cross-language library and wrap it in a beautiful facade that uses all the recommended coding guidelines of the host language.\
+\
+=== Client engine behaviour ===\
+\
+[todo]\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 The client then checks that the dataVersionScheme of the update message matches the dataVersionScheme of its local object graph - if not then it must reload the graph. The client then checks that the dataVersion property of the update message is one higher than the dataVersion of its local object graph - if not then it has missed a message, perhaps due to a network failure, and it must reload the graph.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 \
+=== Server engine behaviour ===\
+\
+[todo]\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 \
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 \
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+}

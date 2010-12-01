@@ -1,0 +1,96 @@
+
+
+message TypeDomain {
+  // A unique ID that should change if and only if the structure of the
+  // TypeDomain changes.
+  required string typeDomainId = 1;
+  
+  // the entity types in this domain. The ordering is important - entity types are later
+  // referred to by their index in this list
+  repeated EntityType entityTypes = 2;
+}
+
+message EntityType {
+  // typically a fully qualified class name
+  required string name = 1;
+  
+  // the type's properties. The ordering is important - properties are later
+  // referred to by their index in this list
+  repeated Property properties = 2;
+}
+
+message Property {
+  // e.g. "mothersMaidenName" or "testicleCount".
+  required string name = 1;
+  
+  // e.g. "int" or "string".
+  required string typeCode = 2;
+  
+  // a map of key value pairs holding type metadata. Available values depend on
+  // the property type
+  repeated TypeMetadatum typeMetadata = 3;
+}
+
+message TypeMetadatum {
+  // the metadata key, e.g. "bitlength"
+  required string key = 1;
+  
+  // the metadata value, e.g. "32"
+  required string value = 2;
+}
+
+
+
+message Snapshot {
+  // the domain to which this data should be applied.
+  required string typeDomainId = 1;
+  
+  // A unique ID that should change if and only if the dataVersion numbering
+  // is reset, e.g. if the system restarts and loses its data.
+  required string dataVersionScheme = 2;
+  
+  // the version of the data that this response updates to.
+  required int32 dataVersion = 3;
+  
+  // a number of complete entities to create or update
+  repeated EntityValue entityValues = 4;
+  
+  // a number of entities partial entity updates
+  repeated EntityUpdate entityUpdates = 5;
+}
+
+message EntityValue {
+  // the class of the entity being created or updated
+  required int32 classId = 1;
+  
+  // the ID of the entity being created or updated
+  required int64 entityId = 2;
+  
+  // A value for each property in the associated class,
+  // presented in the same order as defined in the class.
+  repeated PropertyValue propertyValues = 3;
+}
+
+message EntityUpdate {
+  // the class of the entity being created or updated
+  required int32 classId = 1;
+  
+  // the ID of the entity being created or updated
+  required int64 entityId = 2;
+  
+  // one or more property updates to apply to the entity
+  repeated PropertyUpdate propertyUpdates = 3;
+}
+
+message PropertyUpdate {
+  // the property to apply the update to
+  required int32 propertyCode = 1;
+  
+  required PropertyValue newValue = 2;
+}
+
+message PropertyValue {
+  // a byte array with the property value. If the byte array is not
+  // present, the value is considered to be null.
+  optional bytes data = 1;
+}

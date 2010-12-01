@@ -1,0 +1,399 @@
+
+
+- [NOW!] bitbucket project home, accessed through ogre.beriecode.com
+- [NOW!] maven project layout
+- [NOW!] bug tracker
+- [NOW!] public HG repository
++ documentation wiki, including:
+	- [done] Introduction to OGRE
+	- [done] Design principles
+	- [v0.1] Quick start guide
+	- [NOW!] Use Cases (1. read-only display app / 2. two-way app)
+	- [v0.2] Guide to user-defined types
+	+ [NOW!] Product roadmap
+		- v0.1: project structure, Java server & client, GuiGraph demo
+		- v0.2: User-defined types
+		- v0.3: ActionScript client
+		- v0.4: Hibernate adaptor, PetClinic demo with both clients
+		- v0.5: Code generation for strongly-typed graph access on the ActionScript client
+		- v0.6: JavaScript client with both demos
+	+ Demo applications
+		+ GuiGraph
+			- [v0.1] Java application with visual graph structure drawn in 2D, modifiable with mouse in real time
+			- [v0.1] Java client showing same graphic syncing in real time
+			- [v0.3] ActionScript client showing same graphic syncing in real time
+		+ PetClinic
+			- [v0.4] Hibernate adapter plugged into existing Spring demo
+			- [v0.4] Java GUI syncing in real time
+			- [v0.4] Flex GUI syncing in real time
+	+ System documentation
+		- [NOW!] Archrtectural overview diagram / slide show
+		- [NOW!] OGRE protocol definition and functional specification including OGRE data model Types/Properties/Entities/Values/Updates, request/response model and required behaviour of servers and clients
+		- [done] OGRE binary wire protocol
+		- [done] built-in types and their encoding
+		- [NOW!] Java server component overview
+		- [v0.1] API documentation (JavaDoc/AsDoc)
+		- [NOW!] Java client component overview
+		- [v0.3] ActionScript client component overview
+
+
+
+OGRE design principles
+
+I want to do OGRE right. I want the technology to be useful and the project itself to be friendly.
+
+The technology:
+
+* Platform neutral: OGRE is a protocol and a set of specified behaviours that is not to be tied to any language or networking technology.
+
+* Fast: the OGRE protocol is built on Protocol Buffers. It is efficient and quick to parse.
+
+* Extensible: OGRE's design consists of loosely coupled components that can be replaced or extended to modify the system's behaviour.
+
+* Reliable: comprehensive unit tests
+
+* Minimal dependencies: OGRE doesn't depend on anything else unless it *really* needs it. For example, we depend on 
+
+The project:
+
+* Easy to get started as a user: good user-level documentation, demo applications and quick-start guides
+
+* Easy to contribute: bug tracking database, public code repository and system-level documentaiton for extension writers
+
+
+/***
+Java server
+PojoGraphAdaptor
+PropertyChangeEventChangeDetector
+HTTPCommunicator - Supports holding a connection until data is available, and either dropping the connection after transmitting an update packet, or dropping the connection after n milliseconds of silence. It optionally uses Jetty continuations.
+EmbeddedJettyHttpProvider - provides a servlet engine 
+ServletHttpProvider - wraps HTTPCommunicator in a servlet
+***/
+
+
+
+
+
+// OGRE wire protocol version 1
+
+//// ENVELOPE FORMAT
+// 
+// Since protocol buffers messages are not self-delimiting, and we want to
+// be able to put multiple messages in the same network stream, all messages
+// are enclosed in the following envolope:
+// 
+// response ::= 0x4F4752457631    - 6 byte header ("OGREv1" in ASCII)
+//             byte               - payload type
+//             int32              - payload length as 32-bit big-endian integer
+//             payload            - response data, length defined by previous
+//
+// payload types:
+// 0x01 = Error
+// 0x02 = TypeDomain
+// 0x03 = GraphData
+
+
+
+//
+// ERROR RESPONSE
+//
+
+message Error {
+  // error code e.g. "PERMISSION_DENIED"
+  required string errorCode = 1;
+  
+  // human-readable error message
+  required string message = 2;
+}
+
+
+//
+// TYPE DOMAIN RESPONSE
+//
+// Each type domain is uniquely identified by a string domainID. 
+
+message TypeDomain {
+  // A unique ID that should change if and only if the structure of the
+  // TypeDomain changes.
+  required string domainId = 1;
+  
+  repeated Type types = 2;
+}
+
+message Type {
+  // a number that uniquely identifies this type within the type domain
+  required int32 typeId = 1;
+  
+  // typically a fully qualified class name
+  required string typeName = 2;
+  
+  // the type's properties. The ordering is important - properties are later
+  / referred to by their index in this list
+  repeated Property properties = 3;
+}
+
+message Property {
+  // e.g. "mothersMaidenName" or "testicleCount".
+  required string propertyName = 1;
+  
+  // e.g. "int" or "myUserDefinedType". See the property types documentation
+  required string propertyType = 2;
+  
+  // a map of key value pairs holding type metadata. Available values depend on
+  // the property type
+  repeated TypeMetadatum typeMetadata = 3;
+}
+
+message TypeMetadatum {
+  // the metadata key, e.g. "bitLength"
+  required string key = 1;
+  
+  // the metadata value, e.g. "32"
+  required string value = 2;
+}
+
+
+//
+// GRAPH DATA RESPONSE
+//
+
+message GraphData {
+  // the domain to which this data should be applied.
+  required string domainId = 1;
+  
+  // A unique ID that should change if and only if the dataVersion numbering
+  // is reset, e.g. if the system restarts and loses its data.
+  required string dataVersionScheme = 2;
+  
+  // the version of the data that this response updates to.
+  required int dataVersion = 2;
+  
+  // a number of complete entities to create or update
+  repeated EntityValue = 3;
+  
+  // a number of entities partial entity updates
+  repeated EntityUpdate = 4;
+}
+
+
+message EntityValue {
+  // the type of the entity being created or updated
+  required int32 typeCode = 1;
+  
+  // the ID of the entity being created or updated
+  required int64 entityId = 2;
+  
+  // the tuple (typeCode, entityId) is used to uniquely identify entities so
+  // that individual properties can be updated later without re-transmitting
+  // the whole entity
+  
+  // a number of propertyValues, one for each property in the associated type
+  // and presented in the same order as defined in the type.
+  repeated PropertyValue propertyValues = 3;
+}
+
+
+message EntityUpdate {
+  // the type of the entity being created or updated
+  required int32 typeCode = 1;
+  
+  // the ID of the entity being created or updated
+  required int64 entityId = 2;
+  
+  // one or more property updates to apply to the entity (typeCode, entityId)
+  repeated PropertyUpdate propertyUpdates = 3;
+}
+
+
+message PropertyUpdate {
+  // the property to apply the update to
+  required int32 propertyCode = 1;
+  
+  required PropertyValue newValue = 2;
+}
+
+
+message PropertyValue {
+  // a byte array with the property value. If the byte array is not present, the
+  // value is considered to be null.
+  optional bytes data = 1;
+}
+
+
+// Property types documentation
+
+
+= What is OGRE
+
+== The short version
+
+OGRE is a tool that makes it easier to develop client-server applications that display real-time data. OGRE takes structured data on the server and creates a read-only replicated slave on the client. The initial transfer of data to the client is fast, and any subsequent updates on the server-side are streamed in real-time to the client.
+
+OGRE does one thing and does it well. It provides no mechanism for modifying data or sending instructions back to the server. See the [Use Cases] page for details on how build applications that require two-way communication.
+
+== The long version
+
+Consider a simple system with three types describing living arrangements:
+
+interface House {
+	Location getLocation();
+	Set<Person> getOccupants();
+}
+interface Location {
+	String getDescription();
+	double getLatitude();
+	double getLongitude();
+}
+interface Person {
+	String getName();
+	Integer getAge();
+}
+
+If you wanted to send some data matching the above format to a web client, you might use the following chunk of XML:
+
+<houses>
+	<house>
+		<address>
+			<description>101 Mulholland Drive</description>
+			<latitude>34.131256</latitude>
+			<longitude>-118.490337</longitude>
+		</address>
+		<occupants>
+			<person>
+				<name>Betty Elms</name>
+				<age>23</age>
+				<twitterFollowCount>1</twitterFollowCount>
+			</person>
+		</occupants>
+	</house>
+	<house>
+		<address>
+			<description>1600 Pennsylvania Avenue</description>
+			<latitude>38.898648</latitude>
+			<longitude>-102.962308</longitude>
+		</address>
+		<occupants>
+			<person>
+				<name>Barack Obama</name>
+				<age>49</age>
+				<twitterFollowCount>5733854</twitterFollowCount>
+			</person>
+			<person>
+				<name>Michelle Obama</name>
+				<age>46</age>
+				<twitterFollowCount>50805</twitterFollowCount>
+			</person>
+		</occupants>
+	</house>
+</houses>
+
+Now, there are two problems with this representation.
+
+1. The Speed Problem: most of the text is taken up with tag names and angle brackets. The real data is around 20% of the whole message size. Also, XML is (relatively) slow to parse.
+
+2. The Update Problem: if the web page needs to update when Barack Obama gets another twitter follower then the whole XML file must be downloaded again. XML has no built-in method for saying "use the data you have already downloaded, but change Barack's twitterFollowCount to 5733878"
+
+The Speed Problem has been solved over and over again by developers inventing custom binary data formats to efficiently store their application's structured data. These solutions only worked for the application that they were designed for. Recently it has also been solved in a general way by products like Thrift, Avro and Protocol Buffers that provide very efficient binary storage for any application's structured data. By using these products, any developer can have efficient binary data storage with very little development effort.
+
+The Update Problem has also been solved over and over again by developers inventing custom protocols for streaming changes to their application's data. For example, a developer might use a publish-subscribe messaging channel to broadcast a real-time stream of updates to people's twitterFollowCounts. Again, these protocols work only for the application they were designed for.
+
+OGRE is my attempt to solve The Update Problem in a general way. It uses Protocol Buffers to solve The Speed Problem - there's no need to re-invent that wheel. On top of Protocol Buffers it adds a method of streaming any changes to the server-side data set so that the client-side data is always in sync.
+
+In my past projects I have had to solve The Update Problem many, many times. If OGRE is sucessful, it will be the last time that I, and perhaps you, ever have to solve it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BUILT-IN TYPES AND THEIR ENCODING
+
+The OGRE wire protocol describes a graph structure in terms of types that have properties. It transmits data in terms of entities that have values. A property type is defined as a string, e.g. "int", but the protocol does not define a list of available types. A proeprty value as an array of bytes, but the protocol does not specify any particular interpretation of the bytes.
+
+In other words, the type encoding system is orthogonal to the wire protocol. New types can be added without modifying the protocol.
+
+OGRE has a minimal set of built-in types, and the ability to add user-defined types.
+
+
+
+int
+
+encoding:
+	the integer is encoded as a big-endian 2-s compliment signed integer. The minimum number of bytes required to hold the integer's value is used with no extra padding. For example:
+	- the 32-bit integer 325128 would be represented in memory 0x0004F608. Since computers don't have a 24-bit integer type, the integer is padded to 32 bits by adding a 0x00 byte on the left. This padding byte is not required when serialising the integer, so the wire encoding is an array of 3 bytes: [04,F6,08]
+	- the 32-bit integer 16053768 would be represented in memory as 0x00F4F608. In this case, the 0x00 byte to the left is not merely a padding byte, and the integer needs to be encoded as an array of 4 bytes: [00,F4,F6,08]. The leftmost byte can not be ommitted as this will set the sign bit of the two's compliment integer and cause the number to be interpreted as -723448
+metadata map:
+	"bitLength" (8, 16, 32 or 64, default 32) indicates that the number will not contain values larger than this length. This does not affect the encoding of the integer, but can be used by code generating clients to choose the most appropriate type for the property, e.g. "int" vs "long" in Java
+	"nullable" (true or false, default false) indicates whether this integer can accept null values. Again, the encoding is not changed, but clients can choose the correct type based on this hint, e.g. "Integer" vs "int" for Java.
+
+
+
+
+float - a floating point number
+
+encoding:
+	values are serialised as an IEEE-754 floating point number. 32-bit floating point numbers are encoded in 4 bytes, 64-bit floating point numbers are encoded in 8 bytes.
+metadata map:
+	"bitLength" (32 or 64, default 64) the length of values that will be sent. This can be used by code generating clients to choose the most appropriate type for the property, e.g. "int" vs "long" in Java.
+	"nullable" (true or false, default false) indicates whether this number can accept null values. This does not affect the number's encoding, but clients can choose the correct type based on this hint, e.g. "Double" vs "double" for Java.
+
+
+
+bytes - array of bytes
+
+serialisation / deserialisation: direct copying
+metadata map: none
+
+
+
+entity - reference to an entity
+
+encoding:
+	the entity's entityId is encoded as per the "int" type. During deserialisation, the "entityType" metadata value is inspected to get the type of the entity being referenced. This (entityType, entityId) tuple is used to look up an entity reference.
+metadata map:
+	"entityType" - Required. the typeName of the referenced entity, e.g. com.example.Person
+
+
+
+user-defined types
+
+When the above types are insufficient for your data, you have two options.
+
+1. Use a built-in type interpreted in an application-specific way. For example, OGRE has no built-in "date" type, but applications could use a UNIX time stamp represented as "int", or ISO 8601 date represented as "string". This approach is quick and simple, and recommended if you only use the type rarely
+
+2. Create a new user-defined type. A user defined type knows how to convert from an in-memory object to a byte array. The initial extra effort in creating and testing the user-defined type is compensated for if the type is used frequently in your system, since deserialisation code does not need to be duplicated around your codebase whenever the property is used.
+
+
+
+collection-of:X meta type - e.g. collection-of:int
+
+X can be any type in the system, including user-defined types. Nested collection types are not permitted, so no "collection-of:collection-of:X". Collections can themselves be null, but can not contain null items.
+
+serialisation / deserialisation:
+	each element in the collection is encoded as an array of bytes according to the encoding of the subtype. To output elements whose encoded length is 254 bytes or less, first the length of the encoded element is written as an 8 bit unsigned integer followed by the encoded element. To output elements whose encoded length is 255 bytes or more, first the byte 0xFF is written, then the length of the encoded element is written as a 32 bit signed integer followed by the encoded element. 
+	For example, the integers 42, -22889 and 20086 would be represented in "int" encoding as 0x2A, 0xFFA697 and 0x4E76. These values array would be written to the output as the following array of bytes: [01, 2A, 03, FF, A6, 97, 02, 4E, 76]. Each integer in the stream is preceeded by a single byte indicating the length of the following value.
+	To represent the above collection of integers using the version of the encoding required for values over 254 bytes long, the following format could be used: [FF, 00, 00, 00, 01, 2A, FF, 00, 00, 00, 03, FF, A6, 97, FF, 00, 00, 00, 02, 4E, 76]. Of course, this is not required for the above values as they are all 1 to 3 bytes long, but frankly I can't be botherd to write out an example using long unicode strings. You get the idea right?
+
+metadata map:
+	The collection-of:X meta-type inherits all metadata keys from its sub-type, and those keys apply to the sub-type. For example, collection-of:int has "bitLength" and "nullable" keys.
+	In addition, it defines two keys that apply to the collection itself:
+	"ordered" (true or false, default true) - whether the ordering in the collection is arbitrary or deliberate. Clients can use this to choose an appropriate collection type for the data, e.g. OrderedSet vs Set in Java.
+	"unique" (true or false, default false) - whether the same value can appear more than once in the collection. Clients can use this to choose an appropriate collection type for the data, e.g. OrderedSet vs List in Java.
+
+
