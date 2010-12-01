@@ -5,22 +5,28 @@
   <groupId>com.berniecode.ogre</groupId>
   <artifactId>ogre</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
-  <name>OGRE Java Engine</name>
+  <name>Object Graph Replication Engine master project</name>
+  
+  <modules>
+    <module>ogre-xlanguage</module>
+    <module>ogre-engine</module>
+  </modules>
+  
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.berniecode.ogre</groupId>
-      <artifactId>engine-xlanguage</artifactId>
-      <version>0.1-SNAPSHOT</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

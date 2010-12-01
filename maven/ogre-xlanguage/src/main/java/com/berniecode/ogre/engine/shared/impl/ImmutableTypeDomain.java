@@ -1,24 +1,24 @@
 package com.berniecode.ogre.engine.shared.impl;
 
 import com.berniecode.ogre.engine.shared.EntityType;
+import com.berniecode.ogre.engine.shared.ImmutableOrderedCollection;
 import com.berniecode.ogre.engine.shared.OrderedCollection;
 import com.berniecode.ogre.engine.shared.TypeDomain;
 
 /**
- * A TypeDomain that is fixed after construction (for sufficiently small values of "fixed")
+ * A simple implementation of the {@link TypeDomain} interface for which all values must be provided
+ * in the constructor
  * 
  * @author Bernie Sumption
- * 
- * @jtoxNative - not translated into other languages
  */
 public class ImmutableTypeDomain implements TypeDomain {
 
 	private final OrderedCollection<EntityType> entityTypes;
 	private final String typeDomainId;
 
-	public ImmutableTypeDomain(OrderedCollection<EntityType> entityTypes, String typeDomainId) {
-		this.entityTypes = entityTypes;
+	public ImmutableTypeDomain(String typeDomainId, OrderedCollection<EntityType> entityTypes) {
 		this.typeDomainId = typeDomainId;
+		this.entityTypes = new ImmutableOrderedCollection<EntityType>(entityTypes);
 	}
 
 	@Override

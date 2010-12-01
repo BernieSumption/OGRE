@@ -1,6 +1,7 @@
 package com.berniecode.ogre.engine.server;
 
 import com.berniecode.ogre.engine.NoSuchThingException;
+import com.berniecode.ogre.engine.platformhooks.NativeStringMap;
 import com.berniecode.ogre.engine.shared.StringMap;
 import com.berniecode.ogre.engine.shared.TypeDomain;
 
@@ -13,7 +14,7 @@ import com.berniecode.ogre.engine.shared.TypeDomain;
 public class ServerEngine {
 
 	// A map of type domain id to type domain
-	private StringMap<TypeDomain> typeDomains;
+	private StringMap<TypeDomain> typeDomains = new NativeStringMap<TypeDomain>();
 
 	/**
 	 * @return A type domain managed by this server engine

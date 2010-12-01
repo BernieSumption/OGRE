@@ -21,23 +21,18 @@ public interface Property {
 	 */
 	PropertyType getPropertyType();
 
-	/**
-	 * @return a value from this property's metadata map as a String
-	 */
-	String getStringMetadataValue(String key);
-
-	/**
-	 * @return a value from this property's metadata map as an integer
-	 */
-	int getIntegerMetadataValue(String key);
-
-	/**
-	 * @return a value from this property's metadata map as a boolean
-	 */
-	boolean getBooleanMetadataValue(String key);
-
-	/**
-	 * @return the EntityType that this property belongs to
-	 */
-	EntityType getEntityType();
+	// /**
+	// * @return a value from this property's metadata map as a String
+	// */
+	// String getStringMetadataValue(String key);
+	//	
+	// /**
+	// * @return a value from this property's metadata map as an integer
+	// */
+	// int getIntegerMetadataValue(String key);
+	//	
+	// /**
+	// * @return a value from this property's metadata map as a boolean
+	// */
+	// boolean getBooleanMetadataValue(String key);
 }

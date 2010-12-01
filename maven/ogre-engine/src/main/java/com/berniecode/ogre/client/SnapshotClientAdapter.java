@@ -1,4 +1,4 @@
-package com.berniecode.ogre.engine.client;
+package com.berniecode.ogre.client;
 
 import java.io.IOException;
 

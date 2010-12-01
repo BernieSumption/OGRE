@@ -20,7 +20,7 @@ public class MockDownloadBridge implements DownloadClientAdapter {
 	}
 
 	@Override
-	public TypeDomain loadTypeDomain(String typeDomainId) {
+	public TypeDomain loadTypeDomain(String typeDomainId) throws IOFailureException, NoSuchThingException {
 		return server.getTypeDomainById(typeDomainId);
 	}
 

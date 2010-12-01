@@ -22,6 +22,6 @@ public interface StringMap<T> {
 	/**
 	 * Check whether this map contains a certain key
 	 */
-	boolean contains(String typeDomainId);
+	boolean contains(String key);
 
 }

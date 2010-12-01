@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# run tests then if there were any test failures, print the text reports
+mvn test || cat `grep --files-with-matches FAILURE */target/surefire-reports/*.txt`
