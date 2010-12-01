@@ -5,30 +5,26 @@ package com.berniecode.ogre.engine.shared;
  * 
  * @author Bernie Sumption
  */
-public class ImmutableOrderedCollection<T> implements OrderedCollection<T> {
+public class ImmutableOrderedCollection implements OrderedCollection {
 
-	private final OrderedCollection<T> child;
+	private final OrderedCollection child;
 
-	public ImmutableOrderedCollection(OrderedCollection<T> child) {
+	public ImmutableOrderedCollection(OrderedCollection child) {
 		this.child = child;
 	}
 
-	@Override
-	public T get(int index) {
+	public Object get(int index) {
 		return child.get(index);
 	}
 
-	@Override
-	public int indexOf(T item) {
+	public int indexOf(Object item) {
 		return child.indexOf(item);
 	}
 
-	@Override
-	public void push(T item) {
+	public void push(Object item) {
 		child.push(item);
 	}
 
-	@Override
 	public int size() {
 		return child.size();
 	}

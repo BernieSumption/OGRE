@@ -41,7 +41,7 @@ public interface ObjectGraph {
 	String getDataVersionScheme();
 
 	/**
-	 * @return The entities in this graph.
+	 * @return The {@link Entity}s in this graph.
 	 */
-	Collection<Entity> getEntities();
+	Collection getEntities();
 }

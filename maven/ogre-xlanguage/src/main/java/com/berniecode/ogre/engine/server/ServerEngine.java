@@ -13,8 +13,8 @@ import com.berniecode.ogre.engine.shared.TypeDomain;
  */
 public class ServerEngine {
 
-	// A map of type domain id to type domain
-	private StringMap<TypeDomain> typeDomains = new NativeStringMap<TypeDomain>();
+	// A map of type domain id to TypeDomain object
+	private StringMap typeDomains = new NativeStringMap();
 
 	/**
 	 * @return A type domain managed by this server engine
@@ -23,7 +23,7 @@ public class ServerEngine {
 	 */
 	public TypeDomain getTypeDomainById(String typeDomainId) throws NoSuchThingException {
 		if (typeDomains.contains(typeDomainId)) {
-			return typeDomains.get(typeDomainId);
+			return (TypeDomain) typeDomains.get(typeDomainId);
 		}
 		throw new NoSuchThingException("This ServerEngine has no type domain with ID '" + typeDomainId + "'");
 	}

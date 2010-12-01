@@ -12,7 +12,7 @@ import com.berniecode.ogre.engine.shared.OrderedCollection;
 public class NativeOrderedCollectionTest extends TestCase {
 
 	public void testBasicOperations() {
-		NativeOrderedCollection<String> noc = new NativeOrderedCollection<String>();
+		NativeOrderedCollection noc = new NativeOrderedCollection();
 
 		assertEquals(noc.size(), 0);
 

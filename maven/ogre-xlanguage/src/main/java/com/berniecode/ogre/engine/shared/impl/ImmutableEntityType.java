@@ -3,7 +3,6 @@ package com.berniecode.ogre.engine.shared.impl;
 import com.berniecode.ogre.engine.shared.EntityType;
 import com.berniecode.ogre.engine.shared.ImmutableOrderedCollection;
 import com.berniecode.ogre.engine.shared.OrderedCollection;
-import com.berniecode.ogre.engine.shared.Property;
 
 /**
  * A simple implementation of the {@link EntityType} interface for which all values must be provided
@@ -14,20 +13,18 @@ import com.berniecode.ogre.engine.shared.Property;
 public class ImmutableEntityType implements EntityType {
 
 	private final String name;
-	private final OrderedCollection<Property> properties;
+	private final OrderedCollection properties;
 
-	public ImmutableEntityType(String name, OrderedCollection<Property> properties) {
+	public ImmutableEntityType(String name, OrderedCollection properties) {
 		this.name = name;
-		this.properties = new ImmutableOrderedCollection<Property>(properties);
+		this.properties = new ImmutableOrderedCollection(properties);
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
-	public OrderedCollection<Property> getProperties() {
+	public OrderedCollection getProperties() {
 		return properties;
 	}
 

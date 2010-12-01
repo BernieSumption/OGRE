@@ -19,8 +19,8 @@ public interface TypeDomain {
 	String getTypeDomainId();
 
 	/**
-	 * @return The types in this domain
+	 * @return The {@link EntityType}s in this TypeDomain
 	 */
-	OrderedCollection<EntityType> getEntityTypes();
+	OrderedCollection getEntityTypes();
 
 }

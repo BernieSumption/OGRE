@@ -12,26 +12,22 @@ import com.berniecode.ogre.engine.shared.OrderedCollection;
  * 
  * @jtoxNative
  */
-public class NativeOrderedCollection<T> implements OrderedCollection<T> {
+public class NativeOrderedCollection implements OrderedCollection {
 
-	private List<T> list = new ArrayList<T>();
+	private List list = new ArrayList();
 
-	@Override
-	public T get(int index) {
+	public Object get(int index) {
 		return list.get(index);
 	}
 
-	@Override
-	public int indexOf(T item) {
+	public int indexOf(Object item) {
 		return list.indexOf(item);
 	}
 
-	@Override
-	public void push(T item) {
+	public void push(Object item) {
 		list.add(item);
 	}
 
-	@Override
 	public int size() {
 		return list.size();
 	}

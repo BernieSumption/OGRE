@@ -7,17 +7,17 @@ package com.berniecode.ogre.engine.shared;
  * 
  * @author Bernie Sumption
  */
-public interface StringMap<T> {
+public interface StringMap {
 
 	/**
 	 * Add a key/value pair to the map
 	 */
-	void put(String key, T value);
+	void put(String key, Object value);
 
 	/**
 	 * Get a value from the map, or null if the key does not exist
 	 */
-	T get(String key);
+	Object get(String key);
 
 	/**
 	 * Check whether this map contains a certain key

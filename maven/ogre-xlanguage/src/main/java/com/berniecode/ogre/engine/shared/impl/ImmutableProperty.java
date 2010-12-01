@@ -19,12 +19,10 @@ public class ImmutableProperty implements Property {
 		this.propertyType = propertyType;
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public PropertyType getPropertyType() {
 		return propertyType;
 	}

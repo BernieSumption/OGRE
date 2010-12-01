@@ -1,6 +1,5 @@
 package com.berniecode.ogre.engine.shared.impl;
 
-import com.berniecode.ogre.engine.shared.EntityType;
 import com.berniecode.ogre.engine.shared.ImmutableOrderedCollection;
 import com.berniecode.ogre.engine.shared.OrderedCollection;
 import com.berniecode.ogre.engine.shared.TypeDomain;
@@ -13,20 +12,18 @@ import com.berniecode.ogre.engine.shared.TypeDomain;
  */
 public class ImmutableTypeDomain implements TypeDomain {
 
-	private final OrderedCollection<EntityType> entityTypes;
+	private final OrderedCollection entityTypes;
 	private final String typeDomainId;
 
-	public ImmutableTypeDomain(String typeDomainId, OrderedCollection<EntityType> entityTypes) {
+	public ImmutableTypeDomain(String typeDomainId, OrderedCollection entityTypes) {
 		this.typeDomainId = typeDomainId;
-		this.entityTypes = new ImmutableOrderedCollection<EntityType>(entityTypes);
+		this.entityTypes = new ImmutableOrderedCollection(entityTypes);
 	}
 
-	@Override
-	public OrderedCollection<EntityType> getEntityTypes() {
+	public OrderedCollection getEntityTypes() {
 		return entityTypes;
 	}
 
-	@Override
 	public String getTypeDomainId() {
 		return typeDomainId;
 	}

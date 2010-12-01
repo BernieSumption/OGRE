@@ -11,22 +11,19 @@ import com.berniecode.ogre.engine.shared.StringMap;
  * 
  * @author Bernie Sumption
  */
-public class NativeStringMap<T> implements StringMap<T> {
+public class NativeStringMap implements StringMap {
 
-	Map<String, T> map = new HashMap<String, T>();
+	Map map = new HashMap();
 
-	@Override
 	public boolean contains(String key) {
 		return map.containsKey(key);
 	}
 
-	@Override
-	public T get(String key) {
+	public Object get(String key) {
 		return map.get(key);
 	}
 
-	@Override
-	public void put(String key, T value) {
+	public void put(String key, Object value) {
 		map.put(key, value);
 	}
 

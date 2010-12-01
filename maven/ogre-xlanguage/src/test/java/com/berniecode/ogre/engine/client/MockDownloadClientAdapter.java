@@ -10,7 +10,6 @@ public class MockDownloadClientAdapter implements DownloadClientAdapter {
 		this.typeDomain = typeDomain;
 	}
 
-	@Override
 	public TypeDomain loadTypeDomain(String typeDomainId) {
 		return typeDomain;
 	}

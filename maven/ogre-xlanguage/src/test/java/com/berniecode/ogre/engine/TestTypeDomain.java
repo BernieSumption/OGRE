@@ -6,7 +6,7 @@ public abstract class TestTypeDomain {
 
 	public static final String TYPE_DOMAIN_ID = "com.berniecode.ogre.tests.aBitOfEverything";
 
-	public static List<Class<?>> getSourceClasses() {
+	public static List getSourceClasses() {
 		return null;
 	}
 

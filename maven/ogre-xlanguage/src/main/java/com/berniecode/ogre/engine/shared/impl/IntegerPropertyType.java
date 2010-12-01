@@ -7,7 +7,6 @@ public class IntegerPropertyType implements PropertyType {
 	public static final String BITLENGTH = "bitlength";
 	public static final String NULLABLE = "nullable";
 
-	@Override
 	public String getName() {
 		return "integer";
 	}

@@ -6,7 +6,7 @@ package com.berniecode.ogre.engine.shared;
  * 
  * @author Bernie Sumption
  */
-public interface OrderedCollection<T> {
+public interface OrderedCollection {
 
 	/**
 	 * @return the number of elements in this collection.
@@ -16,16 +16,16 @@ public interface OrderedCollection<T> {
 	/**
 	 * @return a specific item from the list
 	 */
-	T get(int index);
+	Object get(int index);
 
 	/**
 	 * @return the position of an item in this collection, or -1 if the item is not in the
 	 *         collection
 	 */
-	int indexOf(T item);
+	int indexOf(Object item);
 
 	/**
 	 * Add an item to the collection. After it is added, the new item be at position `size - 1`
 	 */
-	void push(T item);
+	void push(Object item);
 }

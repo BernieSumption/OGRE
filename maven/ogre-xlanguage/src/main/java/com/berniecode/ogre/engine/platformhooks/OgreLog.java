@@ -67,7 +67,6 @@ public class OgreLog {
 	}
 
 	private static class StdErrLogWriter implements LogWriter {
-		@Override
 		public void acceptMessage(int level, String levelDescription, String message) {
 			System.err.println("[OGRE] " + levelDescription + " - " + message);
 		}

@@ -14,7 +14,7 @@ public interface EntityType {
 	String getName();
 
 	/**
-	 * @return The properties of this entity type.
+	 * @return The {@link Property}s of this entity type.
 	 */
-	OrderedCollection<Property> getProperties();
+	OrderedCollection getProperties();
 }

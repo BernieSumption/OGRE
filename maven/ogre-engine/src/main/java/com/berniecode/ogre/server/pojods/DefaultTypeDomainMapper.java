@@ -19,7 +19,7 @@ public class DefaultTypeDomainMapper implements TypeDomainMapper {
 
 	@Override
 	public TypeDomain mapTypeDomain(String typeDomainId, Set<Class<?>> classes) {
-		OrderedCollection<EntityType> entityTypes = new NativeOrderedCollection<EntityType>();
+		OrderedCollection entityTypes = new NativeOrderedCollection();
 
 		for (Class<?> klass : classes) {
 			entityTypes.push(mapEntityType(klass));
@@ -36,7 +36,7 @@ public class DefaultTypeDomainMapper implements TypeDomainMapper {
 					+ "' can't be mapped because it is not a regular concrete class");
 		}
 		String name = klass.getName();
-		OrderedCollection<Property> properties = new NativeOrderedCollection<Property>();
+		OrderedCollection properties = new NativeOrderedCollection();
 		for (Method method : klass.getMethods()) {
 			if (Utils.isGetterMethod(method)) {
 				properties.push(mapProperty(method));

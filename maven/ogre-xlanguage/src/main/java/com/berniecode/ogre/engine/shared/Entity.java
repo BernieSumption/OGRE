@@ -19,7 +19,8 @@ public interface Entity {
 	long getId();
 
 	/**
-	 * @return The values of this Entity
+	 * @return A collection of {@link PropertyValue} objects for this Entity, one for each
+	 *         {@link Property} in the associated {@link EntityType}, and in the same order
 	 */
-	OrderedCollection<PropertyValue> getValues();
+	OrderedCollection getValues();
 }
