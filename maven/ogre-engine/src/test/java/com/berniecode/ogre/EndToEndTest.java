@@ -1,8 +1,7 @@
-package com.berniecode.ogre.engine;
+package com.berniecode.ogre;
 
 import junit.framework.TestCase;
 
-import com.berniecode.ogre.EntityClassWithAllFields;
 import com.berniecode.ogre.enginelib.IOFailureException;
 import com.berniecode.ogre.enginelib.NoSuchThingException;
 import com.berniecode.ogre.enginelib.client.ClientEngine;
@@ -18,7 +17,7 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
 // TODO start using Spring to configure the tests.
 public class EndToEndTest extends TestCase {
 
-	private static final String TYPE_DOMAIN_ID = "com.berniecode.ogre.engine.EndToEndTests";
+	private static final String TYPE_DOMAIN_ID = "com.berniecode.ogre.enginelib.EndToEndTests";
 
 	private MockDownloadBridge dlBridge;
 

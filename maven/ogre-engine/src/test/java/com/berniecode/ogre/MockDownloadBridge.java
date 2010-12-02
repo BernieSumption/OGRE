@@ -1,4 +1,4 @@
-package com.berniecode.ogre.engine;
+package com.berniecode.ogre;
 
 import com.berniecode.ogre.enginelib.IOFailureException;
 import com.berniecode.ogre.enginelib.NoSuchThingException;
