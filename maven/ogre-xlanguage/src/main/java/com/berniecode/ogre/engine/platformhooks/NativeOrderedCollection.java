@@ -10,7 +10,7 @@ import com.berniecode.ogre.engine.shared.OrderedCollection;
  * 
  * @author Bernie Sumption
  * 
- * @jtoxNative
+ * @jtoxNative - not translated into other languages
  */
 public class NativeOrderedCollection implements OrderedCollection {
 

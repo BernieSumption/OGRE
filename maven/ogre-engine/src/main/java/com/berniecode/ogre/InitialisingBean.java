@@ -1,5 +1,7 @@
 package com.berniecode.ogre;
 
+import com.berniecode.ogre.engine.platformhooks.OgreException;
+
 /**
  * Support class for creating beans that have dependencies that must be set before the class is
  * initialised, and cn't be set again after initialisation.

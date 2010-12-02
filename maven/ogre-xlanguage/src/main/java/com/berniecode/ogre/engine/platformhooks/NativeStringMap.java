@@ -10,6 +10,8 @@ import com.berniecode.ogre.engine.shared.StringMap;
  * {@link Map}
  * 
  * @author Bernie Sumption
+ * 
+ * @jtoxNative - not translated into other languages
  */
 public class NativeStringMap implements StringMap {
 

@@ -3,9 +3,9 @@ package com.berniecode.ogre.server.pojods;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import com.berniecode.ogre.OgreException;
 import com.berniecode.ogre.Utils;
 import com.berniecode.ogre.engine.platformhooks.NativeOrderedCollection;
+import com.berniecode.ogre.engine.platformhooks.OgreException;
 import com.berniecode.ogre.engine.shared.EntityType;
 import com.berniecode.ogre.engine.shared.OrderedCollection;
 import com.berniecode.ogre.engine.shared.Property;

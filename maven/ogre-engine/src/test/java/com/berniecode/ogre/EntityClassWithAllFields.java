@@ -1,7 +1,5 @@
 package com.berniecode.ogre;
 
-import com.berniecode.ogre.engine.shared.EntityType;
-import com.berniecode.ogre.engine.shared.impl.ImmutableEntityType;
 
 public class EntityClassWithAllFields {
 
@@ -24,12 +22,6 @@ public class EntityClassWithAllFields {
 		this.nullableInt = nullableInt;
 	}
 	
-	public static final EntityType EXPECTED_ENTITY_TYPE;
-	
-	static {
-		EXPECTED_ENTITY_TYPE = new ImmutableEntityType(
-				EntityClassWithAllFields.class.getName(),
-				null); //TODO make this work
-	}
+	public static final String EXPECTED_ENTITY_TYPE = "";
 
 }
