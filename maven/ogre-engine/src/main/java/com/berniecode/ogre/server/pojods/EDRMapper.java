@@ -9,10 +9,10 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * 
  * @author Bernie Sumption
  */
-public interface TypeDomainMapper {
+public interface EDRMapper {
 	
 	/**
-	 * @return The TypeDOmain mapped by this {@link TypeDomainMapper}
+	 * @return The TypeDOmain mapped by this {@link EDRMapper}
 	 */
 	TypeDomain getTypeDomain();
 	

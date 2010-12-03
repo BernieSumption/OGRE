@@ -22,7 +22,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	private Set<Class<?>> classes;
 
-	TypeDomainMapper typeDomainMapper;
+	EDRMapper edrMapper;
 	private String typeDomainId;
 	TypeDomain typeDomain;
 
@@ -40,17 +40,18 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	@Override
 	protected void doInitialise() {
 		requireNotNull(classes, "classes");
-		requireNotNull(typeDomainMapper, "typeDomainMapper");
 		requireNotNull(typeDomainId, "typeDomainId");
-		requireNotNull(entityMapper, "entityMapper");
 		requireNotNull(objectGraphId, "objectGraphId");
 		
-		if (typeDomainMapper == null) {
+		if (edrMapper == null) {
 			DefaultMapper defaultMapper = new DefaultMapper();
-			defaultMapper.initialise(typeDomainId, classes);
+			defaultMapper.setTypeDomainId(typeDomainId);
+			defaultMapper.setClasses(classes);
+			defaultMapper.initialise();
+			edrMapper = defaultMapper;
 		}
 		
-		typeDomain = typeDomainMapper.initialise(typeDomainId, classes);
+		typeDomain = edrMapper.getTypeDomain();
 		entities = new HashMap<EntityType, Map<Integer, Entity>>();
 		for (EntityType entityType: typeDomain.getEntityTypes()) {
 			entities.put(entityType, new HashMap<Integer, Entity>());
@@ -66,14 +67,14 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	/**
-	 * Provide an alternative {@link TypeDomainMapper}.
+	 * Provide an alternative {@link EDRMapper}.
 	 * 
 	 * If used at all, this method must be called before initialise(). If no alternative
-	 * {@link TypeDomainMapper} is provided, {@link DefaultMapper} will be used
+	 * {@link EDRMapper} is provided, {@link DefaultMapper} will be used
 	 */
-	public void setTypeDomainMapper(TypeDomainMapper typeDomainMapper) {
+	public void setTypeDomainMapper(EDRMapper typeDomainMapper) {
 		requireInitialised(false, "setTypeDomainMapper()");
-		this.typeDomainMapper = typeDomainMapper;
+		this.edrMapper = typeDomainMapper;
 	}
 
 	/**
@@ -128,7 +129,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		requireInitialised(true, "setEntityObjects()");
 		for (Object entityObject: entityObjects) {
 			//FIXME create and use IdMapper here
-			Entity entity = entityMapper.createEntity(entityObject, 0, typeDomain);
+			Entity entity = edrMapper.createEntity(entityObject, 0, typeDomain);
 		}
 	}
 

@@ -3,9 +3,12 @@ package com.berniecode.ogre.server.pojods;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
@@ -20,11 +23,11 @@ import com.berniecode.ogre.enginelib.shared.PropertyType;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
- * A {@link TypeDomainMapper} that automatically converts from classes and objects to OGRE's Entity
+ * A {@link EDRMapper} that automatically converts from classes and objects to OGRE's Entity
  * Data Representation.
  * 
  * <p>
- * Extending this class is a good starting point for making new {@link TypeDomainMapper}s
+ * Extending this class is a good starting point for making new {@link EDRMapper}s
  * 
  * <ul>
  * <li>entity names are fully qualified class names
@@ -39,11 +42,13 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * 
  * @author Bernie Sumption
  */
-public class DefaultMapper implements TypeDomainMapper {
+public class DefaultMapper extends InitialisingBean implements EDRMapper {
 	
-	//
-	// TypeDomainMapper IMPLEMENTATION
-	//
+	private Set<Class<?>> classes;
+	private Map<Class<?>, EntityType> classToEntityType = new HashMap<Class<?>, EntityType>();
+
+	private String typeDomainId;
+	private TypeDomain typeDomain;
 
 	/**
 	 * Create a {@link TypeDomain} from a set of {@link Class}es.
@@ -55,20 +60,48 @@ public class DefaultMapper implements TypeDomainMapper {
 	 * 
 	 * TODO add this comment to lower methods once mapEntity is completed
 	 */
-	@Override
-	public TypeDomain initialise(String typeDomainId, Set<Class<?>> classes) {
-		
-		List<EntityType> entityTypes = new ArrayList<EntityType>();
+	protected final void doInitialise() {
+		requireNotNull(typeDomainId, "typeDomainId");
+		requireNotNull(classes, "classes");
 
 		for (Class<?> klass : classes) {
-			entityTypes.add(createEntityType(klass));
+			classToEntityType.put(klass, createEntityType(klass));
 		}
+		
+		List<EntityType> entityTypes = new ArrayList<EntityType>(classToEntityType.values());
 		
 		Collections.sort(entityTypes, NamedComparator.INSTANCE);
 
-		TypeDomain td = new ImmutableTypeDomain(typeDomainId, entityTypes.toArray(new EntityType[0]));
-		return td;
+		typeDomain = new ImmutableTypeDomain(typeDomainId, entityTypes.toArray(new EntityType[0]));
 	}
+	
+	/**
+	 * Provide an ID for the mapped {@link TypeDomain}. Must be called before {@link #initialise()}
+	 */
+	public void setTypeDomainId(String typeDomainId) {
+		requireInitialised(false, "setTypeDomainId()");
+		this.typeDomainId = typeDomainId;
+	}
+
+	/**
+	 * Provide a set of classes to map as a {@link TypeDomain}. Must be called before {@link #initialise()}
+	 */
+	public void setClasses(Set<Class<?>> classes) {
+		requireInitialised(false, "setTypeDomain()");
+		this.classes = classes;
+	}
+
+	//
+	// EDRMapper IMPLEMENTATION
+	//
+
+	/**
+	 * Get the {@link TypeDomain} associated mapped by this {@link DefaultMapper}
+	 */
+	public TypeDomain getTypeDomain() {
+		return typeDomain;
+	}
+
 
 	/**
 	 * Convert a {@link Class} to an {@link EntityType}.
@@ -166,5 +199,4 @@ public class DefaultMapper implements TypeDomainMapper {
 	protected String getEntityTypeNameForClass(Class<?> klass) {
 		return klass.getName();
 	}
-
 }
