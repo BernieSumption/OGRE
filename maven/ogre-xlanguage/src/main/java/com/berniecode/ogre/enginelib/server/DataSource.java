@@ -11,9 +11,13 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  */
 public interface DataSource {
 
-	public TypeDomain getTypeDomain();
+	TypeDomain getTypeDomain();
 
-	// TODO String getObjectGraphId()
+	/**
+	 * @return the ID of the object graph produced by this data source
+	 */
+	String getObjectGraphId();
+	
 	// TODO long[] getEntityIdsOfType(EntityType type)
 	// TODO Entity getEntity(EntityType type, long id)
 	// TODO addChangeEventListener(ChangeEventListener listener) reports changes to the object graph

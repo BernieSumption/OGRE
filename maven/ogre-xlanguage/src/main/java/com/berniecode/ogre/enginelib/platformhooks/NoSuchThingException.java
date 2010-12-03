@@ -8,7 +8,7 @@ package com.berniecode.ogre.enginelib.platformhooks;
  * 
  * @jtoxNative - not translated into other languages
  */
-public class NoSuchThingException extends RuntimeException {
+public class NoSuchThingException extends Exception {
 
 	public NoSuchThingException(String message) {
 		super(message);

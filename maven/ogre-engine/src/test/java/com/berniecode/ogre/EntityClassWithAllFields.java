@@ -14,6 +14,25 @@ public class EntityClassWithAllFields {
 	
 	private byte nonNullableByte;
 	private Byte nullableByte;
+	
+	/**
+	 * Construct with default values for all fields
+	 */
+	public EntityClassWithAllFields() {}
+	
+	/**
+	 * Construct with specific values for all fields
+	 */
+	public EntityClassWithAllFields(byte b1, Byte b2, short s1, Short s2, int i1, Integer i2, long l1, Long l2) {
+		nonNullableByte = b1;
+		nullableByte = b2;
+		nonNullableShort = s1;
+		nullableShort = s2;
+		nonNullableInt = i1;
+		nullableInt = i2;
+		nonNullableLong = l1;
+		nullableLong = l2;
+	}
 
 	public Integer getNullableInt() {
 		return nullableInt;

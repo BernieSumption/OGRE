@@ -16,10 +16,10 @@ public class EDRDescriber {
 		doIndent(sc, indent);
 		sc.add("TypeDomain ");
 		sc.add(typeDomain.getTypeDomainId());
-		OrderedCollection entityTypes = typeDomain.getEntityTypes();
-		for (int i=0; i<entityTypes.size(); i++) {
+		EntityType[] entityTypes = typeDomain.getEntityTypes();
+		for (int i=0; i<entityTypes.length; i++) {
 			sc.add("\n");
-			doDescribeEntityType((EntityType) entityTypes.get(i), sc, indent+1);
+			doDescribeEntityType((EntityType) entityTypes[i], sc, indent+1);
 		}
 	}
 	

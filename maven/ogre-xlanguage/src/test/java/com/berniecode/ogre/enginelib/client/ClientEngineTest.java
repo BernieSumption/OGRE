@@ -3,8 +3,6 @@ package com.berniecode.ogre.enginelib.client;
 import junit.framework.TestCase;
 
 import com.berniecode.ogre.enginelib.TestTypeDomain;
-import com.berniecode.ogre.enginelib.client.ClientEngine;
-import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
@@ -16,7 +14,7 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  */
 public class ClientEngineTest extends TestCase {
 
-	public void testInitialiseRequiresDependencies() throws IOFailureException {
+	public void testInitialiseRequiresDependencies() throws Exception {
 		ClientEngine ce = new ClientEngine();
 		boolean exceptionThrown = false;
 		try {
@@ -27,7 +25,7 @@ public class ClientEngineTest extends TestCase {
 		assertTrue(exceptionThrown);
 	}
 
-	public void testDependenciesLockedAfterInitialise() throws IOFailureException {
+	public void testDependenciesLockedAfterInitialise() throws Exception {
 		ClientEngine ce = configureClientEngine(new ClientEngine());
 		ce.initialise();
 
@@ -40,8 +38,8 @@ public class ClientEngineTest extends TestCase {
 		assertTrue(exceptionThrown);
 	}
 
-	public void testFetchTypeDomainOverDownloadBridge() throws IOFailureException {
-		TypeDomain td = new MockTypeDomain();
+	public void testFetchTypeDomainOverDownloadBridge() throws Exception {
+		TypeDomain td = new EmptyTypeDomain();
 		ClientEngine ce = configureClientEngine(new ClientEngine());
 		ce.setDownloadAdapter(new MockDownloadClientAdapter(td));
 		ce.initialise();

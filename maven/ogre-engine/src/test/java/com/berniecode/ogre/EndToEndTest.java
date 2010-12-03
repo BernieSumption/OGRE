@@ -3,7 +3,6 @@ package com.berniecode.ogre;
 import junit.framework.TestCase;
 
 import com.berniecode.ogre.enginelib.client.ClientEngine;
-import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.server.ServerEngine;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
@@ -17,17 +16,22 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
  */
 public class EndToEndTest extends TestCase {
 
-	private static final String TYPE_DOMAIN_ID = "com.berniecode.ogre.enginelib.EndToEndTests";
+	private static final String TYPE_DOMAIN_ID = "com.berniecode.ogre.EndToEndTests";
+
+	private static final String OBJECT_GRAPH_ID = "TestObjectGraph";
 
 	private MockDownloadBridge dlBridge;
 
 	@Override
 	protected void setUp() throws Exception {
-		// set up the server
+		// set up the server before each test
 		PojoDataSource ds = new PojoDataSource();
 		ds.setClasses(EntityClassWithAllFields.class);
 		ds.setTypeDomainId(TYPE_DOMAIN_ID);
+		ds.setObjectGraphId(OBJECT_GRAPH_ID);
 		ds.initialise();
+		
+		ds.addEntityObjects(new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L));
 
 		ServerEngine se = new ServerEngine();
 		se.setDataAdapter(ds);
@@ -36,7 +40,7 @@ public class EndToEndTest extends TestCase {
 		dlBridge = new MockDownloadBridge(se);
 	};
 
-	public void testInitialiseFailsWithBadTypeDomain() throws IOFailureException {
+	public void testFetchTypeDomain() throws Exception {
 
 		boolean exceptionThrown = false;
 		try {
@@ -46,9 +50,14 @@ public class EndToEndTest extends TestCase {
 		}
 		assertTrue("The client engine should throw a NoSuchThingException if asked to initialise a non-existant type domain",
 				exceptionThrown);
+
+		
+		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
+		assertTrue("Subsequent calls to ClientEngine.getTypedomain() should return the same object, not a new TypeDomain fetched over the bridge",
+				clientEngine.getTypeDomain() == clientEngine.getTypeDomain());
 	}
 
-	public void testCorrectTypeDomainProduced() throws IOFailureException {
+	public void testCorrectTypeDomainTransferred() throws Exception {
 
 		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
 		
@@ -57,7 +66,7 @@ public class EndToEndTest extends TestCase {
 		
 		String actual = EDRDescriber.describeTypeDomain(clientEngine.getTypeDomain());
 		String expected = 
-				"TypeDomain com.berniecode.ogre.enginelib.EndToEndTests" +
+				"TypeDomain com.berniecode.ogre.EndToEndTests" +
 				"  EntityType com.berniecode.ogre.EntityClassWithAllFields" +
 				"    8 bit integer property non_nullable_byte" +
 				"    32 bit integer property non_nullable_int" +
@@ -71,12 +80,19 @@ public class EndToEndTest extends TestCase {
 		assertEqualsIgnoreWhitespace(expected, actual);
 
 	}
+	
+	public void testCorrectObjectsTransferred() throws Exception {
+		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
+		
+		assertNotNull(clientEngine.getEntitiesByType(EntityClassWithAllFields.class.getName()));
+		
+	}
 
 	private void assertEqualsIgnoreWhitespace(String expected, String actual) {
 		assertEquals(expected.replaceAll("\\s+", "\n"), actual.replaceAll("\\s+", "\n"));
 	}
 
-	private ClientEngine createClientEngine(MockDownloadBridge dlBridge, String typeDomain) throws IOFailureException {
+	private ClientEngine createClientEngine(MockDownloadBridge dlBridge, String typeDomain) throws Exception {
 		ClientEngine ce = new ClientEngine();
 		ce.setTypeDomainId(typeDomain);
 		ce.setDownloadAdapter(dlBridge);

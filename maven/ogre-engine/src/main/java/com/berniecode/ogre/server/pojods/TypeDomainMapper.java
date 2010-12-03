@@ -1,10 +1,7 @@
-/**
- * 
- */
+
 package com.berniecode.ogre.server.pojods;
 
-import java.util.Set;
-
+import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -13,8 +10,15 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * @author Bernie Sumption
  */
 public interface TypeDomainMapper {
+	
 	/**
-	 * Create a type domain from a set of classes
+	 * @return The TypeDOmain mapped by this {@link TypeDomainMapper}
 	 */
-	TypeDomain mapTypeDomain(String typeDomainId, Set<Class<?>> classes);
+	TypeDomain getTypeDomain();
+	
+	/**
+	 * Convert an object into an {@link Entity} with the specified id.
+	 */
+	Entity createEntity(Object object, long id, TypeDomain typeDomain);
+
 }

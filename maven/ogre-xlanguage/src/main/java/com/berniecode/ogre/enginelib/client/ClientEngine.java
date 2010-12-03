@@ -3,6 +3,7 @@ package com.berniecode.ogre.enginelib.client;
 import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
+import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -63,6 +64,13 @@ public class ClientEngine {
 	public TypeDomain getTypeDomain() {
 		requireInitialised(true, "getTypeDomain()");
 		return typeDomain;
+	}
+
+	/**
+	 * @return an array of all Entities of a specified entity type
+	 */
+	public Entity[] getEntitiesByType(String typeName) {
+		return new Entity[0]; //FIXME this implementation is suboptimal ;o)
 	}
 
 	//

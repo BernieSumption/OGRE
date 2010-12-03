@@ -6,6 +6,7 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
+//TODO replace this with arrays throughout the API
 public interface OrderedCollection {
 
 	/**

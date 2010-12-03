@@ -1,5 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
+import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
+
 /**
  * A collection of {@link EntityType}s.
  * 
@@ -19,8 +21,14 @@ public interface TypeDomain {
 	String getTypeDomainId();
 
 	/**
-	 * @return The {@link EntityType}s in this {@link TypeDomain}
+	 * @return All {@link EntityType}s in this {@link TypeDomain}. The returned array is safe to
+	 *         modify without affecting the state of this {@link TypeDomain}
 	 */
-	OrderedCollection getEntityTypes();
+	EntityType[] getEntityTypes();
+
+	/**
+	 * @return A single {@link EntityType} from this {@link TypeDomain}
+	 */
+	EntityType getEntityTypeByName(String entityTypeName) throws NoSuchThingException;
 
 }
