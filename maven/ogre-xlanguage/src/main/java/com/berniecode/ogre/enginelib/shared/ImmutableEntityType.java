@@ -1,8 +1,5 @@
-package com.berniecode.ogre.enginelib.shared.impl;
+package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.shared.EntityType;
-import com.berniecode.ogre.enginelib.shared.ImmutableOrderedCollection;
-import com.berniecode.ogre.enginelib.shared.OrderedCollection;
 
 /**
  * A simple implementation of the {@link EntityType} interface for which all values must be provided

@@ -8,8 +8,13 @@ package com.berniecode.ogre.enginelib.shared;
 public interface PropertyType {
 
 	/**
-	 * @return The property type name, e.g. "integer"
+	 * @return The typeCode of this property type as per the OGRE wire format specification
 	 */
-	String getName();
+	int getTypecode();
+
+	/**
+	 * @return A text description of this property type, including metadata, e.g. "32 bit integer"
+	 */
+	String getDescription();
 
 }

@@ -8,7 +8,7 @@ package com.berniecode.ogre.enginelib.shared;
 public interface PropertyValue {
 
 	/**
-	 * @return The Property that this value is for
+	 * @return The {@link Property} that this value is for
 	 */
 	Property getProperty();
 

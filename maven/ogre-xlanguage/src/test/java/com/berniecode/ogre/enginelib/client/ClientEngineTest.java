@@ -2,9 +2,9 @@ package com.berniecode.ogre.enginelib.client;
 
 import junit.framework.TestCase;
 
-import com.berniecode.ogre.enginelib.IOFailureException;
 import com.berniecode.ogre.enginelib.TestTypeDomain;
 import com.berniecode.ogre.enginelib.client.ClientEngine;
+import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 

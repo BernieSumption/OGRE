@@ -1,8 +1,8 @@
 package com.berniecode.ogre.enginelib.shared;
 
 /**
- * A simple map interface, whose keys are always strings used in preference to
- * {@link java.util.List} because it is smaller, and therefore easier to re-implement in other
+ * A simple map interface, whose keys are always strings. This is used instead of Java's
+ * {@link java.util.Map} because it is smaller, and therefore easier to re-implement in other
  * languages (and because not all languages have support for non-string hashtable keys)
  * 
  * @author Bernie Sumption

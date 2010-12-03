@@ -6,7 +6,7 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-public interface EntityType {
+public interface EntityType extends Named {
 
 	/**
 	 * @return The name of this entity type, typically a fully qualified class name.

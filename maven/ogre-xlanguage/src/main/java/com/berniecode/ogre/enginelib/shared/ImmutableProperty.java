@@ -1,7 +1,5 @@
-package com.berniecode.ogre.enginelib.shared.impl;
+package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.shared.Property;
-import com.berniecode.ogre.enginelib.shared.PropertyType;
 
 /**
  * A simple implementation of the {@link Property} interface for which all values must be provided

@@ -1,7 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
 /**
- * A collection of EntityTypes.
+ * A collection of {@link EntityType}s.
  * 
  * @author Bernie Sumption
  */
@@ -19,7 +19,7 @@ public interface TypeDomain {
 	String getTypeDomainId();
 
 	/**
-	 * @return The {@link EntityType}s in this TypeDomain
+	 * @return The {@link EntityType}s in this {@link TypeDomain}
 	 */
 	OrderedCollection getEntityTypes();
 

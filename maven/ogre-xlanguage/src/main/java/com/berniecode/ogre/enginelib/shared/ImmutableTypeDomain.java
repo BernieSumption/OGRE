@@ -1,8 +1,5 @@
-package com.berniecode.ogre.enginelib.shared.impl;
+package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.shared.ImmutableOrderedCollection;
-import com.berniecode.ogre.enginelib.shared.OrderedCollection;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
  * A simple implementation of the {@link TypeDomain} interface for which all values must be provided

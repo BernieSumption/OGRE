@@ -3,7 +3,7 @@ package com.berniecode.ogre.enginelib.shared;
 import java.util.Collection;
 
 /**
- * A collection of {@link Entity}s belonging to a TypeDomain
+ * A collection of {@link Entity}s belonging to a {@link TypeDomain}
  * 
  * @author Bernie Sumption
  */

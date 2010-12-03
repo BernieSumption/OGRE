@@ -1,8 +1,8 @@
 package com.berniecode.ogre;
 
-import com.berniecode.ogre.enginelib.IOFailureException;
-import com.berniecode.ogre.enginelib.NoSuchThingException;
 import com.berniecode.ogre.enginelib.client.DownloadClientAdapter;
+import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
+import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.server.ServerEngine;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 

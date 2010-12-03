@@ -1,7 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
 /**
- * A wrapper aroud another OrderedCollection that prevents it from being modified
+ * A wrapper around another {@link OrderedCollection} that prevents it from being modified
  * 
  * @author Bernie Sumption
  */

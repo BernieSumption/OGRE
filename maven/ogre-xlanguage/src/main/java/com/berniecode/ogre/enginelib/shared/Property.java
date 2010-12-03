@@ -1,12 +1,12 @@
 package com.berniecode.ogre.enginelib.shared;
 
 /**
- * An individual property on an entity type. Property is to {@link EntityType} as
+ * An individual property on an entity type. {@link Property} is to {@link EntityType} as
  * java.lang.reflect.Method is to java.lang.Class.
  * 
  * @author Bernie Sumption
  */
-public interface Property {
+public interface Property extends Named {
 
 	/**
 	 * @return The name of this property. Property names should be lower case words separated by
@@ -20,19 +20,4 @@ public interface Property {
 	 * @return The type of this property.
 	 */
 	PropertyType getPropertyType();
-
-	// /**
-	// * @return a value from this property's metadata map as a String
-	// */
-	// String getStringMetadataValue(String key);
-	//	
-	// /**
-	// * @return a value from this property's metadata map as an integer
-	// */
-	// int getIntegerMetadataValue(String key);
-	//	
-	// /**
-	// * @return a value from this property's metadata map as a boolean
-	// */
-	// boolean getBooleanMetadataValue(String key);
 }

@@ -22,13 +22,13 @@ public class StringConcatenator {
 	 * new StringConcatenator().concat(&quot;a&quot;).concat(&quot;b&quot;).buildString()
 	 * </pre>
 	 */
-	public StringConcatenator concat(Object o) {
+	public StringConcatenator add(Object o) {
 		builder.append(o);
 		return this;
 	}
 
 	/**
-	 * @return the String produced by concatenating all calls to {@link #concat(Object)}
+	 * @return the String produced by concatenating all calls to {@link #add(Object)}
 	 */
 	public String buildString() {
 		return builder.toString();

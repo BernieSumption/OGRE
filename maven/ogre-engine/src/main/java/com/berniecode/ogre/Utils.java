@@ -2,7 +2,11 @@ package com.berniecode.ogre;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import com.berniecode.ogre.enginelib.platformhooks.NativeOrderedCollection;
+import com.berniecode.ogre.enginelib.shared.OrderedCollection;
 
 public class Utils {
 
@@ -18,9 +22,14 @@ public class Utils {
 	}
 
 	/**
-	 * Check whether a method is a javabean getter, e.g. getFoo()
+	 * Check whether a method is a javabean getter, e.g. getFoo().
+	 * 
+	 * <p>java.lang.Object#getClass() is not considered a valid getter
 	 */
 	public static boolean isGetterMethod(Method method) {
+		if (method.getDeclaringClass().equals(Object.class)) {
+			return false;
+		}
 		String name = method.getName();
 		return name.length() > 3 && name.startsWith("get") && method.getParameterTypes().length == 0;
 	}
@@ -52,6 +61,17 @@ public class Utils {
 			}
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Convert a Java list to an OGRE {@link OrderedCollection}
+	 */
+	public static OrderedCollection listToOrderedCollection(List<?> list) {
+		OrderedCollection oc = new NativeOrderedCollection();
+		for (Object item: list) {
+			oc.push(item);
+		}
+		return oc;
 	}
 
 }
