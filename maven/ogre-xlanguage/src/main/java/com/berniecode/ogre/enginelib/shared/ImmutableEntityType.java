@@ -10,18 +10,18 @@ package com.berniecode.ogre.enginelib.shared;
 public class ImmutableEntityType implements EntityType {
 
 	private final String name;
-	private final OrderedCollection properties;
+	private final Property[] properties;
 
-	public ImmutableEntityType(String name, OrderedCollection properties) {
+	public ImmutableEntityType(String name, Property[] properties) {
 		this.name = name;
-		this.properties = new ImmutableOrderedCollection(properties);
+		this.properties = properties;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public OrderedCollection getProperties() {
+	public Property[] getProperties() {
 		return properties;
 	}
 

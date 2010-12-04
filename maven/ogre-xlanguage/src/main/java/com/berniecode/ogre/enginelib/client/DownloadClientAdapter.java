@@ -2,6 +2,7 @@ package com.berniecode.ogre.enginelib.client;
 
 import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
+import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -15,4 +16,9 @@ public interface DownloadClientAdapter {
 	 * Load a representation of a type domain
 	 */
 	TypeDomain loadTypeDomain(String typeDomainId) throws IOFailureException, NoSuchThingException;
+
+	/**
+	 * Load a snapshot of the state of an object graph 
+	 */
+	ObjectGraph loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException;
 }

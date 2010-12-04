@@ -1,5 +1,6 @@
 package com.berniecode.ogre.enginelib.server;
 
+import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -17,6 +18,11 @@ public interface DataSource {
 	 * @return the ID of the object graph produced by this data source
 	 */
 	String getObjectGraphId();
+
+	/**
+	 * @return A snapshot of the state of the object graph
+	 */
+	ObjectGraph createSnapshot();
 	
 	// TODO long[] getEntityIdsOfType(EntityType type)
 	// TODO Entity getEntity(EntityType type, long id)

@@ -84,18 +84,38 @@ public class EndToEndTest extends TestCase {
 	public void testCorrectObjectsTransferred() throws Exception {
 		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
 		
-		assertNotNull(clientEngine.getEntitiesByType(EntityClassWithAllFields.class.getName()));
+		String actual = EDRDescriber.describeObjectGraph(clientEngine);
+		String expected = 
+			"ObjectGraph com.berniecode.ogre.EndToEndTests/TestObjectGraph" +
+			"  Entity com.berniecode.ogre.EntityClassWithAllFields" +
+			"    non_nullable_byte: 1" +
+			"    non_nullable_int: 5" +
+			"    non_nullable_long: 7" +
+			"    non_nullable_short: 3" +
+			"    nullable_byte: 2" +
+			"    nullable_int: 6" +
+			"    nullable_long: 8" +
+			"    nullable_short: 4";
+
+		assertEqualsIgnoreWhitespace(expected, actual);
 		
 	}
 
 	private void assertEqualsIgnoreWhitespace(String expected, String actual) {
-		assertEquals(expected.replaceAll("\\s+", "\n"), actual.replaceAll("\\s+", "\n"));
+		if (expected != null) {
+			expected = expected.replaceAll("\\s+", "\n");
+		}
+		if (actual != null) {
+			actual = actual.replaceAll("\\s+", "\n");
+		}
+		assertEquals(expected, actual);
 	}
 
 	private ClientEngine createClientEngine(MockDownloadBridge dlBridge, String typeDomain) throws Exception {
 		ClientEngine ce = new ClientEngine();
 		ce.setTypeDomainId(typeDomain);
 		ce.setDownloadAdapter(dlBridge);
+		ce.setObjectGraphId(OBJECT_GRAPH_ID);
 		ce.initialise();
 		return ce;
 	}

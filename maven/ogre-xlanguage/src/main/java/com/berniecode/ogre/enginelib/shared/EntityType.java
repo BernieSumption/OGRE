@@ -14,7 +14,8 @@ public interface EntityType extends Named {
 	String getName();
 
 	/**
-	 * @return The {@link Property}s of this entity type.
+	 * @return The {@link Property}s of this entity type. The returned array is not safe to modify.
+	 *         It must be copied before being passed outside of OGRE
 	 */
-	OrderedCollection getProperties();
+	Property[] getProperties();
 }

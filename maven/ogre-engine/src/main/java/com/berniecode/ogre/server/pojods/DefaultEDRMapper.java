@@ -10,10 +10,10 @@ import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
-import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityType;
+import com.berniecode.ogre.enginelib.shared.ImmutableEntity;
 import com.berniecode.ogre.enginelib.shared.ImmutableEntityType;
 import com.berniecode.ogre.enginelib.shared.ImmutableProperty;
 import com.berniecode.ogre.enginelib.shared.ImmutableTypeDomain;
@@ -42,38 +42,17 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * 
  * @author Bernie Sumption
  */
-public class DefaultMapper extends InitialisingBean implements EDRMapper {
+public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	
 	private Set<Class<?>> classes;
 	private Map<Class<?>, EntityType> classToEntityType = new HashMap<Class<?>, EntityType>();
 
 	private String typeDomainId;
 	private TypeDomain typeDomain;
-
-	/**
-	 * Create a {@link TypeDomain} from a set of {@link Class}es.
-	 * 
-	 * <p>
-	 * When overriding this method to alter the mapping behaviour, make sure you also override the
-	 * equivalent {@link EntityMapper} method {@link #createEntity(Object, long, TypeDomain)} which depends on the
-	 * behaviour of this method.
-	 * 
-	 * TODO add this comment to lower methods once mapEntity is completed
-	 */
-	protected final void doInitialise() {
-		requireNotNull(typeDomainId, "typeDomainId");
-		requireNotNull(classes, "classes");
-
-		for (Class<?> klass : classes) {
-			classToEntityType.put(klass, createEntityType(klass));
-		}
-		
-		List<EntityType> entityTypes = new ArrayList<EntityType>(classToEntityType.values());
-		
-		Collections.sort(entityTypes, NamedComparator.INSTANCE);
-
-		typeDomain = new ImmutableTypeDomain(typeDomainId, entityTypes.toArray(new EntityType[0]));
-	}
+	
+	//
+	// INITIALISATION
+	//
 	
 	/**
 	 * Provide an ID for the mapped {@link TypeDomain}. Must be called before {@link #initialise()}
@@ -91,12 +70,31 @@ public class DefaultMapper extends InitialisingBean implements EDRMapper {
 		this.classes = classes;
 	}
 
+	/**
+	 * Initialise this mapper. Before calling this method, a {@link #setTypeDomainId(String)} and
+	 * {@link #setClasses(Set)} must have been called.
+	 */
+	protected final void doInitialise() {
+		requireNotNull(typeDomainId, "typeDomainId");
+		requireNotNull(classes, "classes");
+
+		for (Class<?> klass : classes) {
+			classToEntityType.put(klass, createEntityType(klass));
+		}
+		
+		List<EntityType> entityTypes = new ArrayList<EntityType>(classToEntityType.values());
+		
+		Collections.sort(entityTypes, NamedComparator.INSTANCE);
+
+		typeDomain = new ImmutableTypeDomain(typeDomainId, entityTypes.toArray(new EntityType[0]));
+	}
+
 	//
-	// EDRMapper IMPLEMENTATION
+	// TYPE DOMAIN MAPPING
 	//
 
 	/**
-	 * Get the {@link TypeDomain} associated mapped by this {@link DefaultMapper}
+	 * Get the {@link TypeDomain} associated mapped by this {@link DefaultEDRMapper}
 	 */
 	public TypeDomain getTypeDomain() {
 		return typeDomain;
@@ -121,7 +119,7 @@ public class DefaultMapper extends InitialisingBean implements EDRMapper {
 		
 		Collections.sort(properties, NamedComparator.INSTANCE);
 		
-		return new ImmutableEntityType(name, Utils.listToOrderedCollection(properties));
+		return new ImmutableEntityType(name, properties.toArray(new Property[0]));
 	}
 
 	/**
@@ -167,25 +165,27 @@ public class DefaultMapper extends InitialisingBean implements EDRMapper {
 	}
 	
 	//
-	// TypeEntityMapper IMPLEMENTATION
+	// OBJECT GRAPH MAPPING
 	//
 
 	/**
 	 * Convert an {@link Object} into an {@link Entity} with the specified id.
 	 */
 	@Override
-	public Entity createEntity(Object object, long id, TypeDomain typeDomain) {
-		String entityTypeName = getEntityTypeNameForClass(object.getClass());
-		try {
-			EntityType entityType = typeDomain.getEntityTypeByName(entityTypeName);
-		} catch (NoSuchThingException e) {
+	public final Entity createEntity(Object object, long id) {
+		requireInitialised(true, "createEntity()");
+		EntityType entityType = classToEntityType.get(object.getClass());
+		if (entityType == null) {
 			throw new OgreException("Can't create an Entity for object of type " + object.getClass()
-					+ " because the TypeDomain '" + typeDomain.getTypeDomainId()
-					+ "' does not contain the entity type '" + entityTypeName + "'");
+					+ " because this PojoDataSource was not initialised with that class.'");
 		}
-		return null;
+		return doCreateEntity(object, id, entityType);
 	}
 	
+	private Entity doCreateEntity(Object object, long id, EntityType entityType) {
+		return new ImmutableEntity(entityType, id, new Object[0]); // FIXME do entity value mapping here
+	}
+
 	//
 	// SHARED METHODS
 	//

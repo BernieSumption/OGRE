@@ -19,6 +19,6 @@ public interface EDRMapper {
 	/**
 	 * Convert an object into an {@link Entity} with the specified id.
 	 */
-	Entity createEntity(Object object, long id, TypeDomain typeDomain);
+	Entity createEntity(Object object, long id);
 
 }

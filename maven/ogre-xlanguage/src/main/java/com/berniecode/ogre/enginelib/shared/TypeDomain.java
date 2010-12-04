@@ -21,8 +21,8 @@ public interface TypeDomain {
 	String getTypeDomainId();
 
 	/**
-	 * @return All {@link EntityType}s in this {@link TypeDomain}. The returned array is safe to
-	 *         modify without affecting the state of this {@link TypeDomain}
+	 * @return All {@link EntityType}s in this {@link TypeDomain}. The returned array is not safe to
+	 *         modify. It must be copied before being passed outside of OGRE
 	 */
 	EntityType[] getEntityTypes();
 

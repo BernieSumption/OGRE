@@ -41,14 +41,14 @@ public class ClientEngineTest extends TestCase {
 	public void testFetchTypeDomainOverDownloadBridge() throws Exception {
 		TypeDomain td = new EmptyTypeDomain();
 		ClientEngine ce = configureClientEngine(new ClientEngine());
-		ce.setDownloadAdapter(new MockDownloadClientAdapter(td));
+		ce.setDownloadAdapter(new MockDownloadClientAdapter(td, null));
 		ce.initialise();
 		assertEquals("ClientEngine.getTypeDomain() should return the type domain fetched over the client bridge.", td,
 				ce.getTypeDomain());
 	}
 
 	private ClientEngine configureClientEngine(ClientEngine ce) {
-		ce.setDownloadAdapter(new MockDownloadClientAdapter(null));
+		ce.setDownloadAdapter(new MockDownloadClientAdapter(null, null));
 		ce.setTypeDomainId(TestTypeDomain.TYPE_DOMAIN_ID);
 		return ce;
 	}

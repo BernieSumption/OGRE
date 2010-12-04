@@ -5,6 +5,10 @@ import com.berniecode.ogre.enginelib.platformhooks.StringConcatenator;
 public class EDRDescriber {
 	
 	private static String INDENT = "  ";
+	
+	//
+	// DESCRIBE TYPE DOMAIN
+	//
 
 	public static String describeTypeDomain(TypeDomain typeDomain) {
 		StringConcatenator sc = new StringConcatenator();
@@ -19,7 +23,7 @@ public class EDRDescriber {
 		EntityType[] entityTypes = typeDomain.getEntityTypes();
 		for (int i=0; i<entityTypes.length; i++) {
 			sc.add("\n");
-			doDescribeEntityType((EntityType) entityTypes[i], sc, indent+1);
+			doDescribeEntityType(entityTypes[i], sc, indent+1);
 		}
 	}
 	
@@ -27,10 +31,10 @@ public class EDRDescriber {
 		doIndent(sc, indent);
 		sc.add("EntityType ");
 		sc.add(entityType.getName());
-		OrderedCollection properties = entityType.getProperties();
-		for (int i=0; i<properties.size(); i++) {
+		Property[] properties = entityType.getProperties();
+		for (int i=0; i<properties.length; i++) {
 			sc.add("\n");
-			doDescribeProperty((Property) properties.get(i), sc, indent+1);
+			doDescribeProperty(properties[i], sc, indent+1);
 		}
 	}
 
@@ -46,5 +50,58 @@ public class EDRDescriber {
 			sc.add(INDENT);
 		}
 	}
+	
+	//
+	// DESCRIBE OBJECT GRAPH
+	//
+
+	public static String describeObjectGraph(ObjectGraph objectGraph) {
+		StringConcatenator sc = new StringConcatenator();
+		doDescribeObjectGraph(objectGraph, sc, 0);
+		return sc.buildString();
+	}
+
+	private static void doDescribeObjectGraph(ObjectGraph objectGraph, StringConcatenator sc, int indent) {
+		doIndent(sc, indent);
+		sc.add("ObjectGraph ")
+		  .add(objectGraph.getObjectGraphId())
+		  .add("/")
+		  .add(objectGraph.getTypeDomain().getTypeDomainId());
+		Entity[] entities = objectGraph.getEntities();
+		for (int i=0; i<entities.length; i++) {
+			sc.add("\n");
+			doDescribeEntity(entities[i], sc, indent+1);
+		}
+	}
+
+	private static void doDescribeEntity(Entity entity, StringConcatenator sc, int indent) {
+		doIndent(sc, indent);
+		sc.add("Entity ")
+		  .add(entity.getEntityType().getName());
+		Property[] properties = entity.getEntityType().getProperties();
+		Object[] values = entity.getValues();
+		for (int i=0; i<properties.length; i++) {
+			sc.add("\n");
+			doDescribeValue(values[i], properties[i], sc, indent+1);
+		}
+	}
+
+	private static void doDescribeValue(Object value, Property property, StringConcatenator sc, int indent) {
+		doIndent(sc, indent);
+		sc.add(property.getName())
+		  .add(": ")
+		  .add(value);
+	}
+
+//	"ObjectGraph com.berniecode.ogre.EndToEndTests/TestObjectGraph" +
+//	"  Entity com.berniecode.ogre.EntityClassWithAllFields" +
+//	"    non_nullable_byte: 1" +
+//	"    non_nullable_int: 5" +
+//	"    non_nullable_long: 7" +
+//	"    non_nullable_short: 3" +
+//	"    nullable_byte: 2" +
+//	"    nullable_int: 6" +
+//	"    nullable_long: 8" +
+//	"    nullable_short: 4";
 
 }

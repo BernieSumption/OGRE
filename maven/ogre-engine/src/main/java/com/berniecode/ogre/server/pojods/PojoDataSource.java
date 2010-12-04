@@ -1,6 +1,8 @@
 package com.berniecode.ogre.server.pojods;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,6 +11,7 @@ import com.berniecode.ogre.Utils;
 import com.berniecode.ogre.enginelib.server.DataSource;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityType;
+import com.berniecode.ogre.enginelib.shared.ImmutableObjectGraph;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
@@ -30,7 +33,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	// the entities in this object graph, stored as a map of entity name to map of entity id to
 	// Entity (Ah, maps of maps, you can tell that I learned PHP before Java ;o)
-	private Map<EntityType, Map<Integer, Entity>> entities;
+	private Map<EntityType, Map<Long, Entity>> entities;
 	
 	//
 	// INITIALISATION
@@ -44,7 +47,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		requireNotNull(objectGraphId, "objectGraphId");
 		
 		if (edrMapper == null) {
-			DefaultMapper defaultMapper = new DefaultMapper();
+			DefaultEDRMapper defaultMapper = new DefaultEDRMapper();
 			defaultMapper.setTypeDomainId(typeDomainId);
 			defaultMapper.setClasses(classes);
 			defaultMapper.initialise();
@@ -52,9 +55,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		}
 		
 		typeDomain = edrMapper.getTypeDomain();
-		entities = new HashMap<EntityType, Map<Integer, Entity>>();
+		entities = new HashMap<EntityType, Map<Long, Entity>>();
 		for (EntityType entityType: typeDomain.getEntityTypes()) {
-			entities.put(entityType, new HashMap<Integer, Entity>());
+			entities.put(entityType, new HashMap<Long, Entity>());
 		}
 	}
 
@@ -70,7 +73,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * Provide an alternative {@link EDRMapper}.
 	 * 
 	 * If used at all, this method must be called before initialise(). If no alternative
-	 * {@link EDRMapper} is provided, {@link DefaultMapper} will be used
+	 * {@link EDRMapper} is provided, {@link DefaultEDRMapper} will be used
 	 */
 	public void setTypeDomainMapper(EDRMapper typeDomainMapper) {
 		requireInitialised(false, "setTypeDomainMapper()");
@@ -107,6 +110,18 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	public String getObjectGraphId() {
 		return objectGraphId;
 	}
+
+	@Override
+	public ObjectGraph createSnapshot() {
+		//TODO design EntityStore for this and ClientEngine's purposes
+		List<Entity> entityList = new ArrayList<Entity>();
+		for (Map<Long, Entity> map: entities.values()) {
+			for (Entity e: map.values()) {
+				entityList.add(e);
+			}
+		}
+		return new ImmutableObjectGraph(typeDomain, objectGraphId, entityList.toArray(new Entity[0]));
+	}
 	
 	//
 	// PUBLIC API
@@ -128,8 +143,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	public void addEntityObjects(Object ... entityObjects) {
 		requireInitialised(true, "setEntityObjects()");
 		for (Object entityObject: entityObjects) {
-			//FIXME create and use IdMapper here
-			Entity entity = edrMapper.createEntity(entityObject, 0, typeDomain);
+			//TODO create and use IdMapper here
+			Entity entity = edrMapper.createEntity(entityObject, 0);
+			entities.get(entity.getEntityType()).put(entity.getId(), entity);
 		}
 	}
 

@@ -20,7 +20,6 @@ public class ImmutableTypeDomain implements TypeDomain {
 	}
 
 	public EntityType[] getEntityTypes() {
-		//TODO clone array
 		return entityTypes;
 	}
 

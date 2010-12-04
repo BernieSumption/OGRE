@@ -3,6 +3,7 @@ package com.berniecode.ogre.enginelib.server;
 import com.berniecode.ogre.enginelib.platformhooks.NativeStringMap;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
+import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.StringMap;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
@@ -20,19 +21,9 @@ public class ServerEngine {
 	// A map of type domain id to TypeDomain object
 	private StringMap typeDomains = new NativeStringMap();
 	
-
-	/**
-	 * @return A type domain managed by this server engine
-	 * 
-	 * @throws NoSuchThingException if this server engine does not manage the specified type domain
-	 */
-	public TypeDomain getTypeDomainById(String typeDomainId) throws NoSuchThingException {
-		requireInitialised(true, "getTypeDomainById()");
-		if (typeDomains.contains(typeDomainId)) {
-			return (TypeDomain) typeDomains.get(typeDomainId);
-		}
-		throw new NoSuchThingException("This ServerEngine has no type domain with ID '" + typeDomainId + "'");
-	}
+	//
+	// INITIALISATION
+	//
 
 	/**
 	 * Convenience method used to set a single object graph used by this engine.
@@ -70,6 +61,42 @@ public class ServerEngine {
 			TypeDomain typeDomain = dataAdapter.getTypeDomain();
 			typeDomains.put(typeDomain.getTypeDomainId(), typeDomain);
 		}
+	}
+	
+	//
+	// PUBLIC API
+	//
+	
+
+	/**
+	 * @return A type domain managed by this {@link ServerEngine}
+	 * 
+	 * @throws NoSuchThingException if this {@link ServerEngine} does not manage the specified type domain
+	 */
+	public TypeDomain getTypeDomain(String typeDomainId) throws NoSuchThingException {
+		requireInitialised(true, "getTypeDomainById()");
+		if (typeDomains.contains(typeDomainId)) {
+			return (TypeDomain) typeDomains.get(typeDomainId);
+		}
+		throw new NoSuchThingException("This ServerEngine has no type domain with ID '" + typeDomainId + "'");
+	}
+
+	/**
+	 * @return An object graph managed by this {@link ServerEngine}
+	 * 
+	 * @throws NoSuchThingException if this {@link ServerEngine} does not manage the specified type
+	 *             domain or object graph
+	 */
+	public ObjectGraph getObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException {
+		for (int i = 0; i < dataAdapters.length; i++) {
+			String tdId = dataAdapters[i].getTypeDomain().getTypeDomainId();
+			String ogId = dataAdapters[i].getObjectGraphId();
+			if (tdId.equals(typeDomainId) && ogId.equals(objectGraphId)) {
+				return dataAdapters[i].createSnapshot();
+			}
+		}
+		throw new NoSuchThingException("This ServerEngine does not manage the object graph '"
+				+ typeDomainId + "/" + objectGraphId + "'");
 	}
 
 	//

@@ -4,6 +4,7 @@ import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -13,13 +14,17 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * 
  * @author Bernie Sumption
  */
-public class ClientEngine {
+public class ClientEngine implements ObjectGraph {
 
 	private DownloadClientAdapter downloadAdapter;
 	private String typeDomainId;
+	private String objectGraphId;
 	private boolean initialised = false;
 
 	private TypeDomain typeDomain;
+
+	//TODO design EntityStore for this and PojoDataSource's purposes
+	private Entity[] entities;
 
 	/**
 	 * Set the type domain used by this engine. This must be called before the engine is
@@ -28,6 +33,19 @@ public class ClientEngine {
 	public void setTypeDomainId(String typeDomainId) {
 		requireInitialised(false, "setTypeDomainId()");
 		this.typeDomainId = typeDomainId;
+	}
+
+	/**
+	 * Set the type domain used by this engine. This must be called before the engine is
+	 * initialised, and can't be called again after initialisation
+	 */
+	public void setObjectGraphId(String objectGraphId) {
+		requireInitialised(false, "setObjectGraphId()");
+		this.objectGraphId = objectGraphId;
+	}
+
+	public String getObjectGraphId() {
+		return objectGraphId;
 	}
 
 	/**
@@ -52,7 +70,12 @@ public class ClientEngine {
 		}
 		requireNotNull(downloadAdapter, "downloadAdapter");
 		requireNotNull(typeDomainId, "typeDomainId");
+		requireNotNull(objectGraphId, "objectGraphId");
 		typeDomain = downloadAdapter.loadTypeDomain(typeDomainId);
+		
+		ObjectGraph objectGraph = downloadAdapter.loadObjectGraph(typeDomain, objectGraphId);
+		entities = objectGraph.getEntities();
+		
 		initialised = true;
 	}
 
@@ -69,8 +92,8 @@ public class ClientEngine {
 	/**
 	 * @return an array of all Entities of a specified entity type
 	 */
-	public Entity[] getEntitiesByType(String typeName) {
-		return new Entity[0]; //FIXME this implementation is suboptimal ;o)
+	public Entity[] getEntities() {
+		return entities;
 	}
 
 	//

@@ -19,8 +19,9 @@ public interface Entity {
 	long getId();
 
 	/**
-	 * @return A collection of {@link PropertyValue} objects for this Entity, one for each
-	 *         {@link Property} in the associated {@link EntityType}, and in the same order
+	 * @return An array of values for this Entity, one for each {@link Property} in the associated
+	 *         {@link EntityType}, and in the same order. The returned array is not safe to modify.
+	 *         It must be copied before being passed outside of OGRE.
 	 */
-	OrderedCollection getValues();
+	Object[] getValues();
 }
