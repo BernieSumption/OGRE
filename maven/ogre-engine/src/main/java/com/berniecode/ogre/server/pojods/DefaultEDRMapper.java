@@ -46,6 +46,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	
 	private Set<Class<?>> classes;
 	private Map<Class<?>, EntityType> classToEntityType = new HashMap<Class<?>, EntityType>();
+	private Map<Property, Method> propertyToMethod = new HashMap<Property, Method>();
 
 	private String typeDomainId;
 	private TypeDomain typeDomain;
@@ -128,7 +129,9 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 */
 	protected Property createProperty(Method method) {
 		PropertyType propertyType = createPropertyType(method.getReturnType());
-		return new ImmutableProperty(Utils.getPropertyNameForGetter(method), propertyType);
+		ImmutableProperty property = new ImmutableProperty(Utils.getPropertyNameForGetter(method), propertyType);
+		propertyToMethod.put(property, method);
+		return property;
 	}
 
 	/**
@@ -179,11 +182,23 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			throw new OgreException("Can't create an Entity for object of type " + object.getClass()
 					+ " because this PojoDataSource was not initialised with that class.'");
 		}
-		return doCreateEntity(object, id, entityType);
+		
+		List<Object> values = new ArrayList<Object>();
+		
+		for (Property property: entityType.getProperties()) {
+			values.add(getValueForProperty(object, property));
+		}
+		
+		return new ImmutableEntity(entityType, id, values.toArray());
 	}
-	
-	private Entity doCreateEntity(Object object, long id, EntityType entityType) {
-		return new ImmutableEntity(entityType, id, new Object[0]); // FIXME do entity value mapping here
+
+	protected Object getValueForProperty(Object object, Property property) {
+		Method getter = propertyToMethod.get(property);
+		try {
+			return getter.invoke(object);
+		} catch (Exception e) {
+			throw new OgreException("Exception thrown while invoking getter method " + getter, e);
+		}
 	}
 
 	//

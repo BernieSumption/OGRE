@@ -13,4 +13,8 @@ public class OgreException extends RuntimeException {
 		super(message);
 	}
 
+	public OgreException(String message, Exception cause) {
+		super(message, cause);
+	}
+
 }

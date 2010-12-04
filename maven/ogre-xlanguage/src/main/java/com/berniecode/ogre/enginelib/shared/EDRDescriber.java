@@ -64,9 +64,9 @@ public class EDRDescriber {
 	private static void doDescribeObjectGraph(ObjectGraph objectGraph, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("ObjectGraph ")
-		  .add(objectGraph.getObjectGraphId())
+		  .add(objectGraph.getTypeDomain().getTypeDomainId())
 		  .add("/")
-		  .add(objectGraph.getTypeDomain().getTypeDomainId());
+		  .add(objectGraph.getObjectGraphId());
 		Entity[] entities = objectGraph.getEntities();
 		for (int i=0; i<entities.length; i++) {
 			sc.add("\n");
