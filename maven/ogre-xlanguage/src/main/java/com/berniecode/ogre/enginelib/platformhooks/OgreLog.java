@@ -61,7 +61,7 @@ public class OgreLog {
 	private static LogWriter writer = new StdErrLogWriter();
 
 	private static void doLog(int level, String levelDescription, String message) {
-		if (OgreLog.level >= level) {
+		if (OgreLog.level <= level) {
 			writer.acceptMessage(level, levelDescription, message);
 		}
 	}

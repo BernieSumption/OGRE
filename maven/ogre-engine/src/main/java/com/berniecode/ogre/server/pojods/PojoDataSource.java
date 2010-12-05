@@ -34,6 +34,8 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	// the entities in this object graph, stored as a map of entity name to map of entity id to
 	// Entity (Ah, maps of maps, you can tell that I learned PHP before Java ;o)
 	private Map<EntityType, Map<Long, Entity>> entities;
+
+	private IdMapper idMapper = new DefaultIdMapper();
 	
 	//
 	// INITIALISATION
@@ -45,6 +47,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		requireNotNull(classes, "classes");
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(objectGraphId, "objectGraphId");
+		requireNotNull(idMapper, "idMapper");
 		
 		if (edrMapper == null) {
 			DefaultEDRMapper defaultMapper = new DefaultEDRMapper();
@@ -78,6 +81,17 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	public void setTypeDomainMapper(EDRMapper typeDomainMapper) {
 		requireInitialised(false, "setTypeDomainMapper()");
 		this.edrMapper = typeDomainMapper;
+	}
+
+	/**
+	 * Provide an alternative {@link IdMapper}.
+	 * 
+	 * If used at all, this method must be called before initialise(). If no alternative
+	 * {@link IdMapper} is provided, {@link DefaultIdMapper} will be used
+	 */
+	public void setIdMapper(IdMapper idMapper) {
+		requireInitialised(false, "setIdMapper()");
+		this.idMapper = idMapper;
 	}
 
 	/**
@@ -143,8 +157,8 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	public void addEntityObjects(Object ... entityObjects) {
 		requireInitialised(true, "setEntityObjects()");
 		for (Object entityObject: entityObjects) {
-			//TODO create and use IdMapper here
-			Entity entity = edrMapper.createEntity(entityObject, 0);
+			long id = idMapper.getId(entityObject);
+			Entity entity = edrMapper.createEntity(entityObject, id);
 			entities.get(entity.getEntityType()).put(entity.getId(), entity);
 		}
 	}

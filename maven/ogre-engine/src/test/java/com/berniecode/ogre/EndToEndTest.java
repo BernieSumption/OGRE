@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
+import com.berniecode.ogre.enginelib.platformhooks.OgreLog;
 import com.berniecode.ogre.enginelib.server.ServerEngine;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
@@ -24,6 +25,7 @@ public class EndToEndTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
+		OgreLog.info("EndToEndTest.setUp() Creating new OGRE server");
 		// set up the server before each test
 		PojoDataSource ds = new PojoDataSource();
 		ds.setClasses(EntityClassWithAllFields.class);
@@ -87,7 +89,7 @@ public class EndToEndTest extends TestCase {
 		String actual = EDRDescriber.describeObjectGraph(clientEngine);
 		String expected = 
 			"ObjectGraph com.berniecode.ogre.EndToEndTests/TestObjectGraph" +
-			"  Entity com.berniecode.ogre.EntityClassWithAllFields" +
+			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    non_nullable_byte: 1" +
 			"    non_nullable_int: 5" +
 			"    non_nullable_long: 7" +

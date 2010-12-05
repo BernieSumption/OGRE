@@ -23,8 +23,4 @@ public interface DataSource {
 	 * @return A snapshot of the state of the object graph
 	 */
 	ObjectGraph createSnapshot();
-	
-	// TODO long[] getEntityIdsOfType(EntityType type)
-	// TODO Entity getEntity(EntityType type, long id)
-	// TODO addChangeEventListener(ChangeEventListener listener) reports changes to the object graph
 }

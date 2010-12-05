@@ -77,7 +77,9 @@ public class EDRDescriber {
 	private static void doDescribeEntity(Entity entity, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("Entity ")
-		  .add(entity.getEntityType().getName());
+		  .add(entity.getEntityType().getName())
+		  .add("#")
+		  .addNumber(entity.getId());
 		Property[] properties = entity.getEntityType().getProperties();
 		Object[] values = entity.getValues();
 		for (int i=0; i<properties.length; i++) {
@@ -92,16 +94,5 @@ public class EDRDescriber {
 		  .add(": ")
 		  .add(value);
 	}
-
-//	"ObjectGraph com.berniecode.ogre.EndToEndTests/TestObjectGraph" +
-//	"  Entity com.berniecode.ogre.EntityClassWithAllFields" +
-//	"    non_nullable_byte: 1" +
-//	"    non_nullable_int: 5" +
-//	"    non_nullable_long: 7" +
-//	"    non_nullable_short: 3" +
-//	"    nullable_byte: 2" +
-//	"    nullable_int: 6" +
-//	"    nullable_long: 8" +
-//	"    nullable_short: 4";
 
 }

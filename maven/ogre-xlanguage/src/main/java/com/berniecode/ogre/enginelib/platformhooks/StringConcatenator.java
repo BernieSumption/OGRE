@@ -26,6 +26,13 @@ public class StringConcatenator {
 		builder.append(o);
 		return this;
 	}
+	
+	/**
+	 * Add a number to the string
+	 */
+	public StringConcatenator addNumber(long number) {
+		return add(Long.valueOf(number));
+	}
 
 	/**
 	 * @return the String produced by concatenating all calls to {@link #add(Object)}
