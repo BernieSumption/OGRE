@@ -47,13 +47,13 @@ public class PojoDataSourceTest extends OgreTestCase {
 		dataSource.addEntityObjects(e1, e1);
 
 		assertTrue(dataSource.containsEntityObject(e0));
-		
-		Entity[] entities = dataSource.createSnapshot().getEntities();
-		
-		assertEquals(3, entities.length);
-		assertEquals(1, entities[0].getId());
-		assertEquals(2, entities[1].getId());
-		assertEquals(3, entities[2].getId());
+
+		assertEquals(
+				"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
+				"  Entity com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields#1" +
+				"  Entity com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields#2" +
+				"  Entity com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields#3",
+				dataSource.createSnapshot());
 
 		assertEquals(1, dataSource.getIdForObject(e0));
 		assertEquals(3, dataSource.getIdForObject(e1));
@@ -63,31 +63,31 @@ public class PojoDataSourceTest extends OgreTestCase {
 	public void testMappingFailsForUnmappableType() {
 		try {
 			createInitialisedDataSource(EntityClassWithDateProperty.class);
-			fail("An TypeMappingException should have been thrown when trying to map the Date type");
+			fail("A TypeMappingException should have been thrown when trying to map the Date type");
 		} catch (TypeMappingException e) {
 		}
 
 		try {
 			createInitialisedDataSource(EnumType.class);
-			fail("An TypeMappingException should have been thrown when trying to map an enum type");
+			fail("A TypeMappingException should have been thrown when trying to map an enum type");
 		} catch (TypeMappingException e) {
 		}
 
 		try {
 			createInitialisedDataSource(int.class);
-			fail("An TypeMappingException should have been thrown when trying to map a primitive type");
+			fail("A TypeMappingException should have been thrown when trying to map a primitive type");
 		} catch (TypeMappingException e) {
 		}
 
 		try {
 			createInitialisedDataSource(new InterfaceWithNoMethods() {}.getClass());
-			fail("An TypeMappingException should have been thrown when trying to map an anonymous type");
+			fail("A TypeMappingException should have been thrown when trying to map an anonymous type");
 		} catch (TypeMappingException e) {
 		}
 
 		try {
 			createInitialisedDataSource(SimpleInterface[].class);
-			fail("An TypeMappingException should have been thrown when trying to map an array type");
+			fail("A TypeMappingException should have been thrown when trying to map an array type");
 		} catch (TypeMappingException e) {
 		}
 	}
@@ -96,7 +96,7 @@ public class PojoDataSourceTest extends OgreTestCase {
 		PojoDataSource dataSource = createInitialisedDataSource(EntityClassWithPropertyThatThrowsException.class);
 		try {
 			dataSource.addEntityObjects(new EntityClassWithPropertyThatThrowsException());
-			fail("An ValueMappingException should have been thrown when trying to access a property getter that throws an exception");
+			fail("A ValueMappingException should have been thrown when trying to access a property getter that throws an exception");
 		} catch (ValueMappingException e) {
 			assertNotNull(e.getCause());
 		}
@@ -119,7 +119,13 @@ public class PojoDataSourceTest extends OgreTestCase {
 	public void testTypesCantBeSupertypesOfEachOther() {
 		try {
 			createInitialisedDataSource(SimpleInterface.class, SimpleInterfaceChild.class);
-			fail("An TypeMappingException should have been thrown when trying to map a type and its supertype");
+			fail("A TypeMappingException should have been thrown when trying to map a type and its supertype");
+		} catch (TypeMappingException e) {
+		}
+
+		try {
+			createInitialisedDataSource(SimpleInterfaceChild.class, SimpleInterface.class);
+			fail("A TypeMappingException should have been thrown when trying to map a type and its supertype");
 		} catch (TypeMappingException e) {
 		}
 	}
@@ -128,7 +134,7 @@ public class PojoDataSourceTest extends OgreTestCase {
 		PojoDataSource dataSource = createInitialisedDataSource(InterfaceWithNoMethods.class, SimpleInterface.class);
 		try {
 			dataSource.addEntityObjects(new EntityClassMatchingTwoInterfaces());
-			fail("An ValueMappingException should have been thrown when trying to map a object that matches two entity classes");
+			fail("A ValueMappingException should have been thrown when trying to map a object that matches two entity classes");
 		} catch (ValueMappingException e) {
 		}
 	}
