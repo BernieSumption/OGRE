@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
-import com.berniecode.ogre.Utils;
 import com.berniecode.ogre.enginelib.server.DataSource;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityType;
@@ -23,10 +21,7 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  */
 public class PojoDataSource extends InitialisingBean implements DataSource {
 
-	private Set<Class<?>> classes;
-
 	EDRMapper edrMapper;
-	private String typeDomainId;
 	TypeDomain typeDomain;
 
 	private String objectGraphId;
@@ -44,20 +39,14 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	// Check that all required fields are present
 	@Override
 	protected void doInitialise() {
-		requireNotNull(classes, "classes");
-		requireNotNull(typeDomainId, "typeDomainId");
+		requireNotNull(edrMapper, "edrMapper");
 		requireNotNull(objectGraphId, "objectGraphId");
 		requireNotNull(idMapper, "idMapper");
 		
-		if (edrMapper == null) {
-			DefaultEDRMapper defaultMapper = new DefaultEDRMapper();
-			defaultMapper.setTypeDomainId(typeDomainId);
-			defaultMapper.setClasses(classes);
-			defaultMapper.initialise();
-			edrMapper = defaultMapper;
-		}
-		
 		typeDomain = edrMapper.getTypeDomain();
+		
+		// log type domain here, if level is correct
+		
 		entities = new HashMap<EntityType, Map<Long, Entity>>();
 		for (EntityType entityType: typeDomain.getEntityTypes()) {
 			entities.put(entityType, new HashMap<Long, Entity>());
@@ -65,22 +54,14 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	/**
-	 * Set the classes used to create the type domain. Must be called before initialise();
-	 */
-	public void setClasses(Class<?>... classes) {
-		requireInitialised(false, "setClasses()");
-		this.classes = Utils.arrayToSet(classes);
-	}
-
-	/**
 	 * Provide an alternative {@link EDRMapper}.
 	 * 
 	 * If used at all, this method must be called before initialise(). If no alternative
-	 * {@link EDRMapper} is provided, {@link DefaultEDRMapper} will be used
+	 * {@link EDRMapper} is provided, {@link DefaultEDRMapper} will be used,
 	 */
-	public void setTypeDomainMapper(EDRMapper typeDomainMapper) {
+	public void setEDRMapper(EDRMapper edrMapper) {
 		requireInitialised(false, "setTypeDomainMapper()");
-		this.edrMapper = typeDomainMapper;
+		this.edrMapper = edrMapper;
 	}
 
 	/**
@@ -92,14 +73,6 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	public void setIdMapper(IdMapper idMapper) {
 		requireInitialised(false, "setIdMapper()");
 		this.idMapper = idMapper;
-	}
-
-	/**
-	 * Must be called before initialise();
-	 */
-	public void setTypeDomainId(String typeDomainId) {
-		requireInitialised(false, "setTypeDomainId()");
-		this.typeDomainId = typeDomainId;
 	}
 
 	/**
@@ -147,20 +120,33 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * <p>
 	 * Each object must be an instance of one of the classes passed to {@link #setClasses(Class...)}
 	 * 
-	 * TODO test the above limitation
-	 * 
-	 * TODO when entity updating is implemented, test that only one update message is produced
-	 * 
 	 * <p>
 	 * {@link #initialise()} must be called before this method can be used()
+	 * 
+	 * @throws ValueMappingException if there is a problem mapping one of the entity objects to an {@link Entity}
 	 */
-	public void addEntityObjects(Object ... entityObjects) {
+	public void addEntityObjects(Object ... entityObjects) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
 		for (Object entityObject: entityObjects) {
 			long id = idMapper.getId(entityObject);
 			Entity entity = edrMapper.createEntity(entityObject, id);
 			entities.get(entity.getEntityType()).put(entity.getId(), entity);
 		}
+	}
+	
+	/**
+	 * Check whether an object is currently part of the object graph
+	 */
+	public boolean containsEntityObject(Object entityObject) {
+		return idMapper.hasId(entityObject);
+	}
+
+	/**
+	 * Return the ID for an object. Dependng on the {@link IdMapper} used, this may actually cause
+	 * a new ID to be assigned to the object.
+	 */
+	public long getIdForObject(Object entityObject) {
+		return idMapper.getId(entityObject);
 	}
 
 }

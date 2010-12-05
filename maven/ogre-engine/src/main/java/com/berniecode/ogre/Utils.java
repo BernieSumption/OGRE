@@ -1,21 +1,8 @@
 package com.berniecode.ogre;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Utils {
-
-	/**
-	 * @return A set containing the items in the provided array, with duplicate items removed
-	 */
-	public static <T> Set<T> arrayToSet(T[] array) {
-		Set<T> set = new HashSet<T>();
-		for (T item : array) {
-			set.add(item);
-		}
-		return set;
-	}
 
 	/**
 	 * Check whether a method is a javabean getter, e.g. getFoo().

@@ -1,12 +1,11 @@
 package com.berniecode.ogre;
 
-import junit.framework.TestCase;
 
 import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreLog;
 import com.berniecode.ogre.enginelib.server.ServerEngine;
-import com.berniecode.ogre.enginelib.shared.EDRDescriber;
+import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
 
 /**
@@ -15,11 +14,7 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
  * 
  * @author Bernie Sumption
  */
-public class EndToEndTest extends TestCase {
-
-	private static final String TYPE_DOMAIN_ID = "com.berniecode.ogre.EndToEndTests";
-
-	private static final String OBJECT_GRAPH_ID = "TestObjectGraph";
+public class EndToEndTest extends OgreTestCase {
 
 	private MockDownloadBridge dlBridge;
 
@@ -28,8 +23,7 @@ public class EndToEndTest extends TestCase {
 		OgreLog.info("EndToEndTest.setUp() Creating new OGRE server");
 		// set up the server before each test
 		PojoDataSource ds = new PojoDataSource();
-		ds.setClasses(EntityClassWithAllFields.class);
-		ds.setTypeDomainId(TYPE_DOMAIN_ID);
+		ds.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class));
 		ds.setObjectGraphId(OBJECT_GRAPH_ID);
 		ds.initialise();
 		
@@ -66,9 +60,8 @@ public class EndToEndTest extends TestCase {
 		assertTrue("Subsequent calls to ClientEngine.getTypedomain() should return the same object, not a new TypeDomain fetched over the bridge",
 				clientEngine.getTypeDomain() == clientEngine.getTypeDomain());
 		
-		String actual = EDRDescriber.describeTypeDomain(clientEngine.getTypeDomain());
-		String expected = 
-				"TypeDomain com.berniecode.ogre.EndToEndTests" +
+		assertEquals(
+				"TypeDomain com.berniecode.ogre.test.TypeDomain" +
 				"  EntityType com.berniecode.ogre.EntityClassWithAllFields" +
 				"    8 bit integer property non_nullable_byte" +
 				"    32 bit integer property non_nullable_int" +
@@ -77,18 +70,16 @@ public class EndToEndTest extends TestCase {
 				"    nullable 8 bit integer property nullable_byte" +
 				"    nullable 32 bit integer property nullable_int" +
 				"    nullable 64 bit integer property nullable_long" +
-				"    nullable 16 bit integer property nullable_short";
-		
-		assertEqualsIgnoreWhitespace(expected, actual);
+				"    nullable 16 bit integer property nullable_short",
+				clientEngine.getTypeDomain());
 
 	}
 	
 	public void testCorrectObjectsTransferred() throws Exception {
 		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
-		
-		String actual = EDRDescriber.describeObjectGraph(clientEngine);
-		String expected = 
-			"ObjectGraph com.berniecode.ogre.EndToEndTests/TestObjectGraph" +
+		 
+		assertEquals(
+			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    non_nullable_byte: 1" +
 			"    non_nullable_int: 5" +
@@ -97,20 +88,9 @@ public class EndToEndTest extends TestCase {
 			"    nullable_byte: 2" +
 			"    nullable_int: 6" +
 			"    nullable_long: 8" +
-			"    nullable_short: 4";
-
-		assertEqualsIgnoreWhitespace(expected, actual);
+			"    nullable_short: 4",
+			clientEngine);
 		
-	}
-
-	private void assertEqualsIgnoreWhitespace(String expected, String actual) {
-		if (expected != null) {
-			expected = expected.replaceAll("\\s+", "\n");
-		}
-		if (actual != null) {
-			actual = actual.replaceAll("\\s+", "\n");
-		}
-		assertEquals(expected, actual);
 	}
 
 	private ClientEngine createClientEngine(MockDownloadBridge dlBridge, String typeDomain) throws Exception {

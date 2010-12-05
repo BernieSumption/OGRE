@@ -10,7 +10,6 @@ import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
-import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityType;
 import com.berniecode.ogre.enginelib.shared.ImmutableEntity;
@@ -37,14 +36,11 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * Strings, java primitives and their boxed counterparts
  * </ul>
  * 
- * TODO test all above assertions
- * TODO test ALL primitives are supported
- * 
  * @author Bernie Sumption
  */
 public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	
-	private Set<Class<?>> classes;
+	private Class<?>[] classes;
 	private Map<Class<?>, EntityType> classToEntityType = new HashMap<Class<?>, EntityType>();
 	private Map<Property, Method> propertyToMethod = new HashMap<Property, Method>();
 
@@ -55,6 +51,18 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	// INITIALISATION
 	//
 	
+	public DefaultEDRMapper() {}
+	
+	/**
+	 * Construct and initialise a {@link DefaultEDRMapper} with the specified type domain id and set
+	 * of classes
+	 */
+	public DefaultEDRMapper(String typeDomainId, Class<?> ... classes) {
+		this.typeDomainId = typeDomainId;
+		this.classes = classes;
+		initialise();
+	}
+
 	/**
 	 * Provide an ID for the mapped {@link TypeDomain}. Must be called before {@link #initialise()}
 	 */
@@ -66,7 +74,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	/**
 	 * Provide a set of classes to map as a {@link TypeDomain}. Must be called before {@link #initialise()}
 	 */
-	public void setClasses(Set<Class<?>> classes) {
+	public void setClasses(Class<?>[] classes) {
 		requireInitialised(false, "setTypeDomain()");
 		this.classes = classes;
 	}
@@ -78,8 +86,13 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	protected final void doInitialise() {
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(classes, "classes");
-
+		
 		for (Class<?> klass : classes) {
+			for (Class<?> otherClass: classToEntityType.keySet()) {
+				if (otherClass.isAssignableFrom(klass) || klass.isAssignableFrom(otherClass)) {
+					throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is a supertype or subtype of '" + otherClass + "'");
+				}
+			}
 			classToEntityType.put(klass, createEntityType(klass));
 		}
 		
@@ -98,17 +111,25 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * Get the {@link TypeDomain} associated mapped by this {@link DefaultEDRMapper}
 	 */
 	public TypeDomain getTypeDomain() {
+		requireInitialised(true, "getTypeDomain()");
 		return typeDomain;
 	}
-
 
 	/**
 	 * Convert a {@link Class} to an {@link EntityType}.
 	 */
 	protected EntityType createEntityType(Class<?> klass) {
-		if (klass.isAnnotation() || klass.isInterface() || klass.isArray() || klass.isAnonymousClass()
-				|| klass.isEnum() || klass.isPrimitive()) {
-			throw new OgreException("The class '" + klass + "' can't be mapped because it is not a regular concrete class");
+		if (klass.isAnonymousClass()) {
+			throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is an anonymous type");
+		}
+		if (klass.isArray()) {
+			throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is an array type");
+		}
+		if (klass.isEnum()) {
+			throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is an enum type");
+		}
+		if (klass.isPrimitive()) {
+			throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is an primitive type");
 		}
 		String name = getEntityTypeNameForClass(klass);
 		List<Property> properties = new ArrayList<Property>();
@@ -139,7 +160,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * {@link Property}. This method can be overridden by subclasses that want to alter the default
 	 * mapping behaviour.
 	 */
-	protected PropertyType createPropertyType(Class<?> javaType) {
+	protected PropertyType createPropertyType(Class<?> javaType) throws TypeMappingException {
 		if (javaType == long.class) {
 			return new IntegerPropertyType(64, false);
 		}
@@ -164,7 +185,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		if (javaType == Byte.class) {
 			return new IntegerPropertyType(8, true);
 		}
-		throw new OgreException("No PropertyType mapping defined for class " + javaType);
+		throw new TypeMappingException("No PropertyType mapping defined for class " + javaType);
 	}
 	
 	//
@@ -175,18 +196,31 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * Convert an {@link Object} into an {@link Entity} with the specified id.
 	 */
 	@Override
-	public final Entity createEntity(Object object, long id) {
+	public final Entity createEntity(Object entityObject, long id) {
 		requireInitialised(true, "createEntity()");
-		EntityType entityType = classToEntityType.get(object.getClass());
+		
+		//
+		Class<? extends Object> entityClass = entityObject.getClass();
+		EntityType entityType = null;
+		for (Class<?> klass: classToEntityType.keySet()) {
+			if (klass.isAssignableFrom(entityClass)) {
+				if (entityType == null) {
+					entityType = classToEntityType.get(klass);
+				} else {
+					throw new ValueMappingException("Can't create an Entity for object of type " + entityObject.getClass()
+							+ " because it matches two EntityTypes: '" + entityType + "' and '" + classToEntityType.get(klass) + "'");
+				}
+			}
+		}
 		if (entityType == null) {
-			throw new OgreException("Can't create an Entity for object of type " + object.getClass()
-					+ " because this PojoDataSource was not initialised with that class.'");
+			throw new ValueMappingException("Can't create an Entity for object of type " + entityObject.getClass()
+					+ " because PojoDataSource was not initialised with that class or a supertype of that class.");
 		}
 		
 		List<Object> values = new ArrayList<Object>();
 		
 		for (Property property: entityType.getProperties()) {
-			values.add(getValueForProperty(object, property));
+			values.add(getValueForProperty(entityObject, property));
 		}
 		
 		return new ImmutableEntity(entityType, id, values.toArray());
@@ -196,8 +230,8 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		Method getter = propertyToMethod.get(property);
 		try {
 			return getter.invoke(object);
-		} catch (Exception e) {
-			throw new OgreException("Exception thrown while invoking getter method " + getter, e);
+		} catch (Throwable t) {
+			throw new ValueMappingException("Exception thrown while invoking getter method " + getter, t);
 		}
 	}
 

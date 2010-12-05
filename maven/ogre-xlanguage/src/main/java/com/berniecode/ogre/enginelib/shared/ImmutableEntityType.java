@@ -24,5 +24,9 @@ public class ImmutableEntityType implements EntityType {
 	public Property[] getProperties() {
 		return properties;
 	}
+	
+	public String toString() {
+		return name;
+	}
 
 }

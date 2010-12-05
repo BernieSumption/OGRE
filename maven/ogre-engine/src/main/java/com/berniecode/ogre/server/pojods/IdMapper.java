@@ -14,4 +14,9 @@ public interface IdMapper {
 	 */
 	long getId(Object entityObject);
 
+	/**
+	 * Check whether an object has an ID
+	 */
+	boolean hasId(Object entityObject);
+
 }

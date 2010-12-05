@@ -13,7 +13,7 @@ public class OgreException extends RuntimeException {
 		super(message);
 	}
 
-	public OgreException(String message, Exception cause) {
+	public OgreException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

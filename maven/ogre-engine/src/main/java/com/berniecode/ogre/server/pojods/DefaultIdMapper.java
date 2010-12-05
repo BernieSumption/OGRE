@@ -19,7 +19,6 @@ public class DefaultIdMapper implements IdMapper {
 	Map<Object, Long> idMap = new WeakHashMap<Object, Long>();
 	
 	long idCounter = 1;
-	
 
 	@Override
 	public synchronized long getId(Object object) {
@@ -31,6 +30,12 @@ public class DefaultIdMapper implements IdMapper {
 		OgreLog.debug("Assigned id " +  thisId + " to object '" + object + "'");
 		idMap.put(object, thisId);
 		return thisId;
+	}
+
+
+	@Override
+	public synchronized boolean hasId(Object entityObject) {
+		return idMap.containsKey(entityObject);
 	}
 
 }

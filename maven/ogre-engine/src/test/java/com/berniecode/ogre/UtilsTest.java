@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 public class UtilsTest extends TestCase {
 
-	public void test() {
+	public void testGetPropertyNameForGetter() {
 
 		assertEquals("x", Utils.getPropertyNameForGetter("getX"));
 		assertEquals("r_d_f", Utils.getPropertyNameForGetter("getRDF"));
