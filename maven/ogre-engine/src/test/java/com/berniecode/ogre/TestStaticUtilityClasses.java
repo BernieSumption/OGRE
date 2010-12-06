@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 
 import junit.framework.TestCase;
 
+import com.berniecode.ogre.enginelib.platformhooks.Convert;
 import com.berniecode.ogre.enginelib.platformhooks.OgreLog;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 
@@ -14,6 +15,7 @@ public class TestStaticUtilityClasses extends TestCase {
 		doTestNoArgPrivateConstructor(EDRDescriber.class);
 		doTestNoArgPrivateConstructor(Utils.class);
 		doTestNoArgPrivateConstructor(OgreLog.class);
+		doTestNoArgPrivateConstructor(Convert.class);
 	}
 	
 	
@@ -22,7 +24,7 @@ public class TestStaticUtilityClasses extends TestCase {
 		assertEquals(1, klass.getDeclaredConstructors().length);
 		
 		Constructor<?> c = klass.getDeclaredConstructor();
-		assertTrue(Modifier.isPrivate(c.getModifiers()));
+		assertTrue("Constructor must be private", Modifier.isPrivate(c.getModifiers()));
 		// call constructor for 100% test coverage. OCD I know.
 		c.setAccessible(true);
 		c.newInstance();

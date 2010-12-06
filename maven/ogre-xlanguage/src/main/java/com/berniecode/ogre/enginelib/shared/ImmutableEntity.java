@@ -29,5 +29,9 @@ public class ImmutableEntity implements Entity {
 	public Object[] getValues() {
 		return values;
 	}
+	
+	public String toString() {
+		return entityType.getName() + "#" + id;
+	}
 
 }

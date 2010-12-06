@@ -23,4 +23,9 @@ public interface DataSource {
 	 * @return A snapshot of the state of the object graph
 	 */
 	ObjectGraph createSnapshot();
+
+	/**
+	 * Set the listener that will be notified about updates to the object graph.
+	 */
+	void setUpdateMessageListener(UpdateMessageListener listener);
 }

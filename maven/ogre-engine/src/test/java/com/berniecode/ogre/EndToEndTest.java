@@ -17,20 +17,20 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
 public class EndToEndTest extends OgreTestCase {
 
 	private MockDownloadBridge dlBridge;
+	private PojoDataSource dataSource;
 
 	@Override
 	protected void setUp() throws Exception {
 		OgreLog.info("EndToEndTest.setUp() Creating new OGRE server");
-		// set up the server before each test
-		PojoDataSource ds = new PojoDataSource();
-		ds.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class));
-		ds.setObjectGraphId(OBJECT_GRAPH_ID);
-		ds.initialise();
+		dataSource = new PojoDataSource();
+		dataSource.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class));
+		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
+		dataSource.initialise();
 		
-		ds.addEntityObjects(new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L));
+		dataSource.addEntityObjects(new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L));
 
 		ServerEngine se = new ServerEngine();
-		se.setDataSource(ds);
+		se.setDataSource(dataSource);
 		se.initialise();
 
 		dlBridge = new MockDownloadBridge(se);
@@ -89,6 +89,35 @@ public class EndToEndTest extends OgreTestCase {
 			"    nullable_int: 6" +
 			"    nullable_long: 8" +
 			"    nullable_short: 4",
+			clientEngine);
+		
+	}
+	
+	public void testNewObjectsPropagated() throws Exception {
+		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
+
+		dataSource.addEntityObjects(new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L));
+		 
+		assertEquals(
+			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
+			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
+			"    non_nullable_byte: 1" +
+			"    non_nullable_int: 5" +
+			"    non_nullable_long: 7" +
+			"    non_nullable_short: 3" +
+			"    nullable_byte: 2" +
+			"    nullable_int: 6" +
+			"    nullable_long: 8" +
+			"    nullable_short: 4" +
+			"  Entity com.berniecode.ogre.EntityClassWithAllFields#2" +
+			"    non_nullable_byte: 11" +
+			"    non_nullable_int: 15" +
+			"    non_nullable_long: 17" +
+			"    non_nullable_short: 13" +
+			"    nullable_byte: 12" +
+			"    nullable_int: 16" +
+			"    nullable_long: 18" +
+			"    nullable_short: 14",
 			clientEngine);
 		
 	}

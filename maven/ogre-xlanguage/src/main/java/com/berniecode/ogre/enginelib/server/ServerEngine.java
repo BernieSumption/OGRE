@@ -1,11 +1,11 @@
 package com.berniecode.ogre.enginelib.server;
 
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
-import com.berniecode.ogre.enginelib.platformhooks.NativeStringMap;
+import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleMap;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
-import com.berniecode.ogre.enginelib.shared.StringMap;
+import com.berniecode.ogre.enginelib.shared.SimpleMap;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -20,7 +20,7 @@ public class ServerEngine {
 	private boolean initialised = false;
 	
 	// A map of type domain id to TypeDomain object
-	private StringMap typeDomains = new NativeStringMap();
+	private SimpleMap typeDomains = new NativeSimpleMap();
 	
 	//
 	// INITIALISATION

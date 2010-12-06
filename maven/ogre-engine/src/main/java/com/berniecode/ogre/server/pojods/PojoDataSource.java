@@ -1,13 +1,10 @@
 package com.berniecode.ogre.server.pojods;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.enginelib.server.DataSource;
+import com.berniecode.ogre.enginelib.server.UpdateMessageListener;
 import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.EntityType;
 import com.berniecode.ogre.enginelib.shared.ImmutableObjectGraph;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
@@ -26,11 +23,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	private String objectGraphId;
 
-	// the entities in this object graph, stored as a map of entity name to map of entity id to
-	// Entity (Ah, maps of maps, you can tell that I learned PHP before Java ;o)
-	private Map<EntityType, Map<Long, Entity>> entities;
+	private EntityStore entities = new EntityStore();
 
 	private IdMapper idMapper = new DefaultIdMapper();
+	private UpdateMessageListener updateMessageListener;
 	
 	//
 	// INITIALISATION
@@ -45,12 +41,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		
 		typeDomain = edrMapper.getTypeDomain();
 		
-		// log type domain here, if level is correct
-		
-		entities = new HashMap<EntityType, Map<Long, Entity>>();
-		for (EntityType entityType: typeDomain.getEntityTypes()) {
-			entities.put(entityType, new HashMap<Long, Entity>());
-		}
+		// TODO log type domain here, if level is correct
 	}
 
 	/**
@@ -100,14 +91,12 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	@Override
 	public ObjectGraph createSnapshot() {
-		//TODO design EntityStore for this and ClientEngineTest's purposes
-		List<Entity> entityList = new ArrayList<Entity>();
-		for (Map<Long, Entity> map: entities.values()) {
-			for (Entity e: map.values()) {
-				entityList.add(e);
-			}
-		}
-		return new ImmutableObjectGraph(typeDomain, objectGraphId, entityList.toArray(new Entity[0]));
+		return new ImmutableObjectGraph(typeDomain, objectGraphId, entities.getAllEntities());
+	}
+
+	@Override
+	public void setUpdateMessageListener(UpdateMessageListener listener) {
+		updateMessageListener = listener;
 	}
 	
 	//
@@ -121,16 +110,18 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * Each object must be an instance of one of the classes passed to {@link #setClasses(Class...)}
 	 * 
 	 * <p>
-	 * {@link #initialise()} must be called before this method can be used()
+	 * {@link #initialise()} must be called before this method can be used
 	 * 
 	 * @throws ValueMappingException if there is a problem mapping one of the entity objects to an {@link Entity}
 	 */
 	public void addEntityObjects(Object ... entityObjects) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
-		for (Object entityObject: entityObjects) {
-			long id = idMapper.getId(entityObject);
-			Entity entity = edrMapper.createEntity(entityObject, id);
-			entities.get(entity.getEntityType()).put(entity.getId(), entity);
+		for (int i=0; i<entityObjects.length; i++) {
+			EntityType entityType = edrMapper.getEntityTypeForObject(entityObjects[i]);
+			long id = idMapper.getId(entityObjects[i]);
+			if (!entities.contains(entityType, id)) {
+				entities.putNew(edrMapper.createEntity(entityObjects[i], id));
+			}
 		}
 	}
 	

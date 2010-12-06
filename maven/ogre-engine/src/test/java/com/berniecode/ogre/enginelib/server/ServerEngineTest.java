@@ -34,8 +34,6 @@ public class ServerEngineTest extends OgreTestCase {
 			se.getObjectGraph(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID);
 			fail("ServerEngine.getObjectGraph() with non-existant graph ids should throw a NoSuchThingException");
 		} catch (NoSuchThingException e) {}
-		
-		//TODO use JMock to provide dependencies and test (A) that double initialisation is OK and (B) that setTypeDoaminId() after initialise() is not
 	}
 
 }

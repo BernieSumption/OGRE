@@ -41,7 +41,7 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
 public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	
 	private Class<?>[] classes;
-	private Map<Class<?>, EntityType> classToEntityType = new HashMap<Class<?>, EntityType>();
+	Map<Class<?>, EntityType> classToEntityType = new HashMap<Class<?>, EntityType>();
 	private Map<Property, Method> propertyToMethod = new HashMap<Property, Method>();
 
 	private String typeDomainId;
@@ -199,23 +199,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	public final Entity createEntity(Object entityObject, long id) {
 		requireInitialised(true, "createEntity()");
 		
-		//
-		Class<? extends Object> entityClass = entityObject.getClass();
-		EntityType entityType = null;
-		for (Class<?> klass: classToEntityType.keySet()) {
-			if (klass.isAssignableFrom(entityClass)) {
-				if (entityType == null) {
-					entityType = classToEntityType.get(klass);
-				} else {
-					throw new ValueMappingException("Can't create an Entity for object of type " + entityObject.getClass()
-							+ " because it matches two EntityTypes: '" + entityType + "' and '" + classToEntityType.get(klass) + "'");
-				}
-			}
-		}
-		if (entityType == null) {
-			throw new ValueMappingException("Can't create an Entity for object of type " + entityObject.getClass()
-					+ " because PojoDataSource was not initialised with that class or a supertype of that class.");
-		}
+		EntityType entityType = getEntityTypeForObject(entityObject);
 		
 		List<Object> values = new ArrayList<Object>();
 		
@@ -224,6 +208,29 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		}
 		
 		return new ImmutableEntity(entityType, id, values.toArray());
+	}
+
+	/**
+	 * Get the {@link EntityType} for an object
+	 */
+	public EntityType getEntityTypeForObject(Object entityObject) {
+		Class<? extends Object> entityClass = entityObject.getClass();
+		EntityType entityType = null;
+		for (Class<?> klass: classToEntityType.keySet()) {
+			if (klass.isAssignableFrom(entityClass)) {
+				if (entityType == null) {
+					entityType = classToEntityType.get(klass);
+				} else {
+					throw new ValueMappingException("Can't choose an EntityType for object of type " + entityObject.getClass()
+							+ " because it matches two EntityTypes: '" + entityType + "' and '" + classToEntityType.get(klass) + "'");
+				}
+			}
+		}
+		if (entityType == null) {
+			throw new ValueMappingException("Can't choose EntityType for object of type " + entityObject.getClass()
+					+ " because PojoDataSource was not initialised with that class or a supertype of that class.");
+		}
+		return entityType;
 	}
 
 	protected Object getValueForProperty(Object object, Property property) {
