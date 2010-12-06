@@ -30,7 +30,7 @@ public class EndToEndTest extends OgreTestCase {
 		ds.addEntityObjects(new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L));
 
 		ServerEngine se = new ServerEngine();
-		se.setDataAdapter(ds);
+		se.setDataSource(ds);
 		se.initialise();
 
 		dlBridge = new MockDownloadBridge(se);
@@ -49,7 +49,7 @@ public class EndToEndTest extends OgreTestCase {
 
 		
 		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
-		assertTrue("Subsequent calls to ClientEngine.getTypedomain() should return the same object, not a new TypeDomain fetched over the bridge",
+		assertTrue("Subsequent calls to ClientEngineTest.getTypedomain() should return the same object, not a new TypeDomain fetched over the bridge",
 				clientEngine.getTypeDomain() == clientEngine.getTypeDomain());
 	}
 
@@ -57,7 +57,7 @@ public class EndToEndTest extends OgreTestCase {
 
 		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
 		
-		assertTrue("Subsequent calls to ClientEngine.getTypedomain() should return the same object, not a new TypeDomain fetched over the bridge",
+		assertTrue("Subsequent calls to ClientEngineTest.getTypedomain() should return the same object, not a new TypeDomain fetched over the bridge",
 				clientEngine.getTypeDomain() == clientEngine.getTypeDomain());
 		
 		assertEquals(

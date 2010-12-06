@@ -33,7 +33,7 @@ public class IntegerPropertyType implements PropertyType {
 	 * @see PropertyType#getDescription()
 	 */
 	public String getDescription() {
-		return (nullable ? "nullable " : "") + bitlength + " bit integer";
+		return (isNullable() ? "nullable " : "") + getBitLength() + " bit integer";
 	}
 
 }

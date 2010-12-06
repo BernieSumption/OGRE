@@ -1,6 +1,5 @@
 package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 
 /**
  * A collection of {@link EntityType}s.
@@ -25,10 +24,5 @@ public interface TypeDomain {
 	 *         modify. It must be copied before being passed outside of OGRE
 	 */
 	EntityType[] getEntityTypes();
-
-	/**
-	 * @return A single {@link EntityType} from this {@link TypeDomain}
-	 */
-	EntityType getEntityTypeByName(String entityTypeName) throws NoSuchThingException;
 
 }

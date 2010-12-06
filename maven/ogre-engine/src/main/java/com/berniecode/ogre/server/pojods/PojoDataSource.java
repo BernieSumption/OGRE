@@ -100,7 +100,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	@Override
 	public ObjectGraph createSnapshot() {
-		//TODO design EntityStore for this and ClientEngine's purposes
+		//TODO design EntityStore for this and ClientEngineTest's purposes
 		List<Entity> entityList = new ArrayList<Entity>();
 		for (Map<Long, Entity> map: entities.values()) {
 			for (Entity e: map.values()) {

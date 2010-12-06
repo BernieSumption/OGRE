@@ -1,6 +1,5 @@
 package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 
 
 /**
@@ -25,15 +24,6 @@ public class ImmutableTypeDomain implements TypeDomain {
 
 	public String getTypeDomainId() {
 		return typeDomainId;
-	}
-
-	public EntityType getEntityTypeByName(String entityTypeName) throws NoSuchThingException {
-		for (int i=0; i<entityTypes.length; i++) {
-			if (entityTypes[i].getName().equals(entityTypeName)) {
-				return entityTypes[i];
-			}
-		}
-		throw new NoSuchThingException("Type domain " + typeDomainId + " has no EntityType called '" + entityTypeName + "'");
 	}
 
 }

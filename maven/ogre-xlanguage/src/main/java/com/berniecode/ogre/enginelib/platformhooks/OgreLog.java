@@ -12,6 +12,7 @@ public class OgreLog {
 	// PUBLIC API - MUST BE RE-IMPLEMENTED IN EVERY HOST LANGUAGE
 	//
 
+	public static final int NONE = 10;
 	public static final int ERROR = 5;
 	public static final int WARN = 4;
 	public static final int INFO = 3;
@@ -40,6 +41,8 @@ public class OgreLog {
 	//
 	// PRIVATE API - JAVA ONLY
 	//
+	
+	private OgreLog() {}
 
 	public static interface LogWriter {
 		public void acceptMessage(int level, String levelDescription, String message);
@@ -51,7 +54,7 @@ public class OgreLog {
 	 */
 	public static void setLogWriter(LogWriter writer) {
 		if (writer == null) {
-			throw new NullPointerException("OgreLog.setLogWriter() called with null argument.");
+			throw new NullPointerException("OgreLogTest.setLogWriter() called with null argument.");
 		}
 		OgreLog.writer = writer;
 	}

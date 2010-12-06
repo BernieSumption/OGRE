@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 
 public class Utils {
 
+	private Utils() {}
+
 	/**
 	 * Check whether a method is a javabean getter, e.g. getFoo().
 	 * 

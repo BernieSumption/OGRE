@@ -8,7 +8,7 @@ import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
- * A {@link DownloadClientAdapter} that wraps a {@link ServerEngine}, directly transferring any
+ * A {@link DownloadClientAdapter} that wraps a {@link ServerEngineTest}, directly transferring any
  * requests to it (normally, a DownloadClientAdapter would send the request over some kind of
  * network transport, e.g. a HTTP request).
  * 

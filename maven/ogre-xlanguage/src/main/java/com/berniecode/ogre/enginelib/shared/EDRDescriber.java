@@ -3,6 +3,8 @@ package com.berniecode.ogre.enginelib.shared;
 import com.berniecode.ogre.enginelib.platformhooks.StringConcatenator;
 
 public class EDRDescriber {
+
+	private EDRDescriber() {}
 	
 	private static String INDENT = "  ";
 	

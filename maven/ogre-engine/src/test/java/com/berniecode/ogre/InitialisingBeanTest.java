@@ -1,5 +1,7 @@
 package com.berniecode.ogre;
 
+import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
+
 import junit.framework.TestCase;
 
 

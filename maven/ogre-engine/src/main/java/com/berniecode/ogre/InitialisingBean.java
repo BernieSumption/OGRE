@@ -1,5 +1,6 @@
 package com.berniecode.ogre;
 
+import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
 

@@ -5,8 +5,6 @@ import junit.framework.TestCase;
 public class UtilsTest extends TestCase {
 
 	public void testGetPropertyNameForGetter() {
-		
-		new Utils(); // pointless invocation of the constructor so that my test coverage report looks good ;o)
 
 		assertEquals("x", Utils.getPropertyNameForGetter("getX"));
 		assertEquals("r_d_f", Utils.getPropertyNameForGetter("getRDF"));

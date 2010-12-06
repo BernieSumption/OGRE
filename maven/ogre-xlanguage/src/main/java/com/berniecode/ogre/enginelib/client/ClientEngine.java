@@ -1,6 +1,7 @@
 package com.berniecode.ogre.enginelib.client;
 
 import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
+import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.Entity;
@@ -8,7 +9,7 @@ import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
- * A ClientEngine configures and executes the replication of a single object graph. It is the
+ * A ClientEngineTest configures and executes the replication of a single object graph. It is the
  * frontend of the cross-language OGRE client, and will typically not be used directly but should be
  * wrapped in a suitable language-specific facade.
  * 
@@ -102,13 +103,13 @@ public class ClientEngine implements ObjectGraph {
 
 	private void requireNotNull(Object required, String name) {
 		if (required == null) {
-			throw new OgreException("A value for " + name + " must be supplied before initialise() is called.");
+			throw new InitialisationException("A value for " + name + " must be supplied before initialise() is called.");
 		}
 	}
 
 	private void requireInitialised(boolean requiredStatus, String methodName) {
 		if (initialised != requiredStatus) {
-			throw new OgreException(methodName + " can't be called " + (requiredStatus ? "before" : "after")
+			throw new InitialisationException(methodName + " can't be called " + (requiredStatus ? "before" : "after")
 					+ " initialise()");
 		}
 	}
