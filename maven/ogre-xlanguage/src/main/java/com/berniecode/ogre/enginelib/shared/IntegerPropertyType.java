@@ -7,7 +7,6 @@ package com.berniecode.ogre.enginelib.shared;
  */
 public class IntegerPropertyType implements PropertyType {
 	
-	public static final int TYPECODE = 1;
 	private final boolean nullable;
 	private final int bitlength;
 
@@ -29,14 +28,6 @@ public class IntegerPropertyType implements PropertyType {
 	public boolean isNullable() {
 		return nullable;
 	}
-
-	/**
-	 * @see PropertyType#getTypecode()
-	 */
-	public int getTypecode() {
-		return TYPECODE;
-	}
-
 
 	/**
 	 * @see PropertyType#getDescription()
