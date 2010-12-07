@@ -93,7 +93,7 @@ public class EDRDescriber {
 	private static void doDescribeValue(Object value, Property property, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add(property.getName())
-		  .add(": ")
+		  .add("=")
 		  .add(value);
 	}
 

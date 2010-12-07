@@ -23,13 +23,22 @@ End-to-end entity snapshot for integers only:\
   - PojoDataSource produces entities\
   - Client engine downloads and validates entity data\
 End-to-end update detection:\
-  - PojoDataSource detects updates to objects\
-  - Server engine transmits updates over message bridge\
-  - client engine receives and applies update messages\
-  - tests validate integrity of new client data\
+  - Detection and transmission of new entities\
+  - Detection of updates and transmission as complete entities\
+  - Transmission of updates as partial entities\
+  - Detection and transmission of deleted entities\
+** check ** do I really need data versioning in first take? Can I put it in the issue tracker and skip it?\
+  - dataVersion of updates.\
+  - re-downloading of snapshots if dataVersion out of sequence (make an option?)\
+  - dataVersionScheme, re-downloading of snapshot if changes\
 Strongly typed facade:\
   - JDK proxy backed view onto client engine\
   - update tests to use view instead of interrogating client engine directly\
+\
+Get issue tracker working, put wishlist up there:\
+  - typeDomainScheme, similar to serialVersionUid, to handle changes to type domain\
+  \
+\
 \
 [step 2: more types]\
 \

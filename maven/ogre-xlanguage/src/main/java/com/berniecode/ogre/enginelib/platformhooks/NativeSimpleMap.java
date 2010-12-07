@@ -6,8 +6,7 @@ import java.util.Map;
 import com.berniecode.ogre.enginelib.shared.SimpleMap;
 
 /**
- * A Java platform implementation of the {@link SimpleMap} interface backed by a Java collections
- * {@link Map}
+ * A Java platform implementation of the {@link SimpleMap} interface backed by a {@link java.util.HashMap}
  * 
  * @author Bernie Sumption
  * 

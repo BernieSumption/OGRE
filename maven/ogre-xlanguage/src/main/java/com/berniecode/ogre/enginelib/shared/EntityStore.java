@@ -1,6 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
 import com.berniecode.ogre.enginelib.platformhooks.Convert;
+import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleList;
 import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleMap;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
@@ -13,8 +14,6 @@ public class EntityStore {
 
 	// a map of EntityType.name to (map of EntityType.id to Entity) 
 	private SimpleMap entities = new NativeSimpleMap();
-	
-	private int count;
 
 	public boolean contains(EntityType entityType, long id) {
 		return getEntityMap(entityType).contains(Convert.longToObject(id));
@@ -23,12 +22,11 @@ public class EntityStore {
 	/**
 	 * Add an {@link Entity} that does not already exist in the map
 	 */
-	public void putNew(Entity entity) throws OgreException {
+	public void addNew(Entity entity) throws OgreException {
 		if (contains(entity.getEntityType(), entity.getId())) {
 			throw new OgreException("The entity " + entity + " already exists in this store");
 		}
 		getEntityMap(entity.getEntityType()).put(Convert.longToObject(entity.getId()), entity);
-		count++;
 	}
 	
 	private SimpleMap getEntityMap(EntityType entityType) {
@@ -39,17 +37,14 @@ public class EntityStore {
 	}
 
 	public Entity[] getAllEntities() {
-		Entity[] result = new Entity[count];
+		SimpleList resultList = new NativeSimpleList();
 		Object[] collections = entities.getValues();
-		int index = 0;
 		for (int i=0; i<collections.length; i++) {
 			SimpleMap collection = (SimpleMap) collections[i];
-			Object[] entities = collection.getValues();
-			for (int j=0; j<entities.length; j++) {
-				result[index] = (Entity) entities[j];
-				index++;
-			}
+			resultList.addAll(collection.getValues());
 		}
+		Entity[] result = new Entity[resultList.size()];
+		resultList.copyToArray(result);
 		return result;
 	}
 

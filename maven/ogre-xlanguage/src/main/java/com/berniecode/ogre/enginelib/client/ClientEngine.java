@@ -5,6 +5,7 @@ import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
@@ -24,8 +25,7 @@ public class ClientEngine implements ObjectGraph {
 
 	private TypeDomain typeDomain;
 
-	//TODO design EntityStore for this and PojoDataSource's purposes
-	private Entity[] entities;
+	private EntityStore entities = new EntityStore();
 
 	/**
 	 * Set the type domain used by this engine. This must be called before the engine is
@@ -75,7 +75,10 @@ public class ClientEngine implements ObjectGraph {
 		typeDomain = downloadAdapter.loadTypeDomain(typeDomainId);
 		
 		ObjectGraph objectGraph = downloadAdapter.loadObjectGraph(typeDomain, objectGraphId);
-		entities = objectGraph.getEntities();
+		Entity[] initialEntities = objectGraph.getEntities();
+		for (int i=0; i<initialEntities.length; i++) {
+			entities.addNew(initialEntities[i]);
+		}
 		
 		initialised = true;
 	}
@@ -94,7 +97,7 @@ public class ClientEngine implements ObjectGraph {
 	 * @return an array of all Entities of a specified entity type
 	 */
 	public Entity[] getEntities() {
-		return entities;
+		return entities.getAllEntities();
 	}
 
 	//

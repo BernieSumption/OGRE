@@ -81,14 +81,14 @@ public class EndToEndTest extends OgreTestCase {
 		assertEquals(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
-			"    non_nullable_byte: 1" +
-			"    non_nullable_int: 5" +
-			"    non_nullable_long: 7" +
-			"    non_nullable_short: 3" +
-			"    nullable_byte: 2" +
-			"    nullable_int: 6" +
-			"    nullable_long: 8" +
-			"    nullable_short: 4",
+			"    non_nullable_byte=1" +
+			"    non_nullable_int=5" +
+			"    non_nullable_long=7" +
+			"    non_nullable_short=3" +
+			"    nullable_byte=2" +
+			"    nullable_int=6" +
+			"    nullable_long=8" +
+			"    nullable_short=4",
 			clientEngine);
 		
 	}
@@ -101,23 +101,23 @@ public class EndToEndTest extends OgreTestCase {
 		assertEquals(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
-			"    non_nullable_byte: 1" +
-			"    non_nullable_int: 5" +
-			"    non_nullable_long: 7" +
-			"    non_nullable_short: 3" +
-			"    nullable_byte: 2" +
-			"    nullable_int: 6" +
-			"    nullable_long: 8" +
-			"    nullable_short: 4" +
+			"    non_nullable_byte=1" +
+			"    non_nullable_int=5" +
+			"    non_nullable_long=7" +
+			"    non_nullable_short=3" +
+			"    nullable_byte=2" +
+			"    nullable_int=6" +
+			"    nullable_long=8" +
+			"    nullable_short=4" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#2" +
-			"    non_nullable_byte: 11" +
-			"    non_nullable_int: 15" +
-			"    non_nullable_long: 17" +
-			"    non_nullable_short: 13" +
-			"    nullable_byte: 12" +
-			"    nullable_int: 16" +
-			"    nullable_long: 18" +
-			"    nullable_short: 14",
+			"    non_nullable_byte=11" +
+			"    non_nullable_int=15" +
+			"    non_nullable_long=17" +
+			"    non_nullable_short=13" +
+			"    nullable_byte=12" +
+			"    nullable_int=16" +
+			"    nullable_long=18" +
+			"    nullable_short=14",
 			clientEngine);
 		
 	}

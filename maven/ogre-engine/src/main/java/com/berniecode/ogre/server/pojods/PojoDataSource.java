@@ -1,14 +1,17 @@
 package com.berniecode.ogre.server.pojods;
 
 import com.berniecode.ogre.InitialisingBean;
+import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleList;
 import com.berniecode.ogre.enginelib.server.DataSource;
-import com.berniecode.ogre.enginelib.server.UpdateMessageListener;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.EntityType;
 import com.berniecode.ogre.enginelib.shared.ImmutableObjectGraph;
+import com.berniecode.ogre.enginelib.shared.ImmutableUpdateMessage;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
+import com.berniecode.ogre.enginelib.shared.SimpleList;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
  * A {@link DataSource} that extracts a {@link TypeDomain} from a set of java classes and an
@@ -116,15 +119,22 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 */
 	public void addEntityObjects(Object ... entityObjects) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
+		SimpleList newEntities = new NativeSimpleList();
 		for (int i=0; i<entityObjects.length; i++) {
 			EntityType entityType = edrMapper.getEntityTypeForObject(entityObjects[i]);
 			long id = idMapper.getId(entityObjects[i]);
 			if (!entities.contains(entityType, id)) {
-				entities.putNew(edrMapper.createEntity(entityObjects[i], id));
+				Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
+				entities.addNew(newEntity);
+				newEntities.add(newEntity);
 			}
 		}
+		Entity[] newEntitiesArr = new Entity[newEntities.size()];
+		newEntities.copyToArray(newEntitiesArr);
+		updateMessageListener.acceptUpdateMessage(new ImmutableUpdateMessage(
+				typeDomain.getTypeDomainId(), objectGraphId, newEntitiesArr));
 	}
-	
+
 	/**
 	 * Check whether an object is currently part of the object graph
 	 */

@@ -1,6 +1,5 @@
-package com.berniecode.ogre.enginelib.server;
+package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 
 /**
  * An object that can accept update messages

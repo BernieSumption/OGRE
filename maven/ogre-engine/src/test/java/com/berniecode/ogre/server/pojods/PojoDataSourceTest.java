@@ -157,7 +157,7 @@ public class PojoDataSourceTest extends OgreTestCase {
 		assertEquals(
 				"ObjectGraph custom-typedomain-name/TestObjectGraph" +
 				"  Entity custom-entity-name#42" +
-				"    public_int_property: 10",
+				"    public_int_property=10",
 				dataSource.createSnapshot());
 	}
 

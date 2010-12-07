@@ -2,6 +2,7 @@ package com.berniecode.ogre.enginelib.server;
 
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
  * A ServerDataAdapter is a view onto a single object graph that converts the object graph into
