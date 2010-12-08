@@ -7,7 +7,6 @@ import com.berniecode.ogre.enginelib.server.DataSource;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.EntityType;
 import com.berniecode.ogre.enginelib.shared.ImmutableObjectGraph;
 import com.berniecode.ogre.enginelib.shared.ImmutableUpdateMessage;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
@@ -110,7 +109,15 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	//
 
 	/**
-	 * Add objects to the object graph.
+	 * Set the contents of the object graph.
+	 * 
+	 * <ul>
+	 * <li>Any objects that are not part of this graph will be added, and broadcast to clients
+	 * <li>Any objects that are already part of this graph will be checked for modifications, and
+	 *     any changed property values will be broadcast to clients
+	 * <li>Any objects in the graph that are not in the array passed to this method will be removed
+	 *     from the graph.
+	 * </ul>
 	 * 
 	 * <p>
 	 * Each object must be an instance of one of the classes passed to {@link #setClasses(Class...)}
@@ -118,22 +125,24 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * <p>
 	 * {@link #initialise()} must be called before this method can be used
 	 * 
-	 * @throws ValueMappingException if there is a problem mapping one of the entity objects to an {@link Entity}
+	 * @throws ValueMappingException if there is a problem mapping one of the entity objects to an
+	 *             {@link Entity}
 	 */
-	public void addEntityObjects(Object ... entityObjects) throws ValueMappingException {
+	public void setEntityObjects(Object ... entityObjects) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
-		SimpleList newEntities = new NativeSimpleList();
+		SimpleList completeEntities = new NativeSimpleList();
 		for (int i=0; i<entityObjects.length; i++) {
-			EntityType entityType = edrMapper.getEntityTypeForObject(entityObjects[i]);
 			long id = idMapper.getId(entityObjects[i]);
-			if (!entities.contains(entityType, id)) {
-				Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
-				entities.addNew(newEntity);
-				newEntities.add(newEntity);
-			}
+			Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
+			completeEntities.add(newEntity);
+			entities.merge(newEntity);
 		}
-		Entity[] newEntitiesArr = new Entity[newEntities.size()];
-		newEntities.copyToArray(newEntitiesArr);
+		sendUpdateMessage(completeEntities);
+	}
+
+	private void sendUpdateMessage(SimpleList completeEntities) {
+		Entity[] newEntitiesArr = new Entity[completeEntities.size()];
+		completeEntities.copyToArray(newEntitiesArr);
 		if (updateMessageListener != null) {
 			updateMessageListener.acceptUpdateMessage(new ImmutableUpdateMessage(
 					typeDomain.getTypeDomainId(), objectGraphId, newEntitiesArr));

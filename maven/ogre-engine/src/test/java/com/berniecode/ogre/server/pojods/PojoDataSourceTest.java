@@ -24,7 +24,7 @@ public class PojoDataSourceTest extends OgreTestCase {
 		PojoDataSource dataSource = createInitialisedDataSource(SimpleEntityClassNoFields.class);
 		
 		try {
-			dataSource.addEntityObjects("A string");
+			dataSource.setEntityObjects("A string");
 			fail("addEntityObjects() should fail with an unmapped class");
 		} catch (ValueMappingException e) {
 		}
@@ -41,10 +41,10 @@ public class PojoDataSourceTest extends OgreTestCase {
 		assertFalse(dataSource.containsEntityObject(e0));
 
 		// which we then add twice
-		dataSource.addEntityObjects(e0, e2, e2, e0 ,e0); // e0: #1, e2: #2
-		dataSource.addEntityObjects(e2, e0);
-		dataSource.addEntityObjects(e0, e2, e1); // e1: #3
-		dataSource.addEntityObjects(e1, e1);
+		dataSource.setEntityObjects(e0, e2, e2, e0 ,e0); // e0: #1, e2: #2
+		dataSource.setEntityObjects(e2, e0);
+		dataSource.setEntityObjects(e0, e2, e1); // e1: #3
+		dataSource.setEntityObjects(e1, e1);
 
 		assertTrue(dataSource.containsEntityObject(e0));
 
@@ -95,7 +95,7 @@ public class PojoDataSourceTest extends OgreTestCase {
 	public void testExceptionRethrownFromGetter() {
 		PojoDataSource dataSource = createInitialisedDataSource(EntityClassWithPropertyThatThrowsException.class);
 		try {
-			dataSource.addEntityObjects(new EntityClassWithPropertyThatThrowsException());
+			dataSource.setEntityObjects(new EntityClassWithPropertyThatThrowsException());
 			fail("A ValueMappingException should have been thrown when trying to access a property getter that throws an exception");
 		} catch (ValueMappingException e) {
 			assertNotNull(e.getCause());
@@ -111,7 +111,7 @@ public class PojoDataSourceTest extends OgreTestCase {
 			"    32 bit integer property public_int_property",
 			dataSource.getTypeDomain());
 		
-		dataSource.addEntityObjects(new SimpleEntityClassOne());
+		dataSource.setEntityObjects(new SimpleEntityClassOne());
 		Entity[] entities = dataSource.createSnapshot().getEntities();
 		assertEquals(10, entities[0].getValues()[0]);
 	}
@@ -133,7 +133,7 @@ public class PojoDataSourceTest extends OgreTestCase {
 	public void testEntityObjectsCanOnlyMatchOneType() {
 		PojoDataSource dataSource = createInitialisedDataSource(InterfaceWithNoMethods.class, SimpleInterface.class);
 		try {
-			dataSource.addEntityObjects(new EntityClassMatchingTwoInterfaces());
+			dataSource.setEntityObjects(new EntityClassMatchingTwoInterfaces());
 			fail("A ValueMappingException should have been thrown when trying to map a object that matches two entity classes");
 		} catch (ValueMappingException e) {
 		}
@@ -152,7 +152,7 @@ public class PojoDataSourceTest extends OgreTestCase {
 				"    32 bit integer property public_int_property",
 				dataSource.getTypeDomain());
 		
-		dataSource.addEntityObjects(new SimpleEntityClassOne());
+		dataSource.setEntityObjects(new SimpleEntityClassOne());
 
 		assertEquals(
 				"ObjectGraph custom-typedomain-name/TestObjectGraph" +

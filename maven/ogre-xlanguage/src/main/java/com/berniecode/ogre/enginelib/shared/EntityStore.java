@@ -30,7 +30,7 @@ public class EntityStore {
 	}
 
 	/**
-	 * Add an {@link Entity} that does not already exist in the map
+	 * Add an {@link Entity} that does not already exist in this store.
 	 * 
 	 * @throws OgreException if this store already contains an entity with the same name and ID
 	 */
@@ -40,7 +40,25 @@ public class EntityStore {
 		}
 		getEntityMap(entity.getEntityType()).put(Convert.longToObject(entity.getId()), entity);
 	}
+
+	/**
+	 * Add an {@link Entity} to this store. If an entity with the same type and id already exists in this store, it will be updated with 
+	 * 
+	 * @throws OgreException if this store does not contain an entity with the same name and ID and
+	 *             the similar entity
+	 */
+	public void merge(Entity sourceEntity) {
+		Entity targetEntity = (Entity) getEntityMap(sourceEntity.getEntityType()).get(Convert.longToObject(sourceEntity.getId()));
+		if (targetEntity == null) {
+			
+		}
+	}
 	
+	private Entity getEntity(EntityType entityType, long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private SimpleMap getEntityMap(EntityType entityType) {
 		if (!entities.contains(entityType.getName())) {
 			entities.put(entityType.getName(), new NativeSimpleMap());

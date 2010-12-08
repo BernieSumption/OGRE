@@ -14,12 +14,14 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
  * 
  * @author Bernie Sumption
  */
+//TODO get binary serialisation working with Java serialisation
 public class EndToEndTest extends OgreTestCase {
 
 	private MockDownloadBridge dlBridge;
 	private MockMessageBridge msgBridge;
 	private PojoDataSource dataSource;
 	private ServerEngine serverEngine;
+	private EntityClassWithAllFields initialEntityObject;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -29,7 +31,7 @@ public class EndToEndTest extends OgreTestCase {
 		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
 		dataSource.initialise();
 		
-		dataSource.addEntityObjects(new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L));
+		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L));
 
 		serverEngine = new ServerEngine();
 		serverEngine.setDataSource(dataSource);
@@ -98,8 +100,30 @@ public class EndToEndTest extends OgreTestCase {
 	
 	public void testNewObjectsPropagated() throws Exception {
 		ClientEngine clientEngine = createClientEngine();
+		
+		initialEntityObject.setNullableInt(null);
+		initialEntityObject.setNonNullableLong(42L);
 
-		dataSource.addEntityObjects(new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L));
+		dataSource.setEntityObjects(initialEntityObject);
+		 
+		assertEquals(
+			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
+			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
+			"    non_nullable_byte=1" +
+			"    non_nullable_int=5" +
+			"    non_nullable_long=42" +
+			"    non_nullable_short=3" +
+			"    nullable_byte=2" +
+			"    nullable_int=null" +
+			"    nullable_long=8" +
+			"    nullable_short=4",
+			clientEngine);
+	}
+	
+	public void testChangesPropagated() throws Exception {
+		ClientEngine clientEngine = createClientEngine();
+
+		dataSource.setEntityObjects(new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L));
 		 
 		assertEquals(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
@@ -122,7 +146,6 @@ public class EndToEndTest extends OgreTestCase {
 			"    nullable_long=18" +
 			"    nullable_short=14",
 			clientEngine);
-		
 	}
 
 	private ClientEngine createClientEngine() throws Exception {

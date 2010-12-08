@@ -150,7 +150,7 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 	void mergeCompleteEntities(Entity[] completeEntities) {
 		for (int i=0; i<completeEntities.length; i++) {
 			if (entities.containsSimilar(completeEntities[i])) {
-				throw new OgreException("Entity merging is not supported yet");
+				entities.merge(completeEntities[i]);
 			} else {
 				entities.addNew(completeEntities[i]);
 			}
