@@ -4,6 +4,8 @@ package com.berniecode.ogre.enginelib.platformhooks;
  * Convert between types
  *
  * @author Bernie Sumption
+ * 
+ * @jtoxNative - not translated into other languages
  */
 public class Convert {
 	

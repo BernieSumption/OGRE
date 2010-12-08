@@ -11,10 +11,6 @@ public interface MessageClientAdapter {
 	
 	/**
 	 * Subscribe to update messages relating to a specific object graph
-	 * 
-	 * @param typeDomainId
-	 * @param objectGraphId
-	 * @param listener
 	 */
 	void subscribeToUpdateMessages(String typeDomainId, String objectGraphId, UpdateMessageListener listener);
 

@@ -15,12 +15,24 @@ public class EntityStore {
 	// a map of EntityType.name to (map of EntityType.id to Entity) 
 	private SimpleMap entities = new NativeSimpleMap();
 
+	/**
+	 * Check whether this store contains an entity with a specified type and ID
+	 */
 	public boolean contains(EntityType entityType, long id) {
 		return getEntityMap(entityType).contains(Convert.longToObject(id));
 	}
 
 	/**
+	 * Check whether this store contains an entity with the same type and id as the specified entity
+	 */
+	public boolean containsSimilar(Entity entity) {
+		return contains(entity.getEntityType(), entity.getId());
+	}
+
+	/**
 	 * Add an {@link Entity} that does not already exist in the map
+	 * 
+	 * @throws OgreException if this store already contains an entity with the same name and ID
 	 */
 	public void addNew(Entity entity) throws OgreException {
 		if (contains(entity.getEntityType(), entity.getId())) {

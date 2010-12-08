@@ -1,9 +1,9 @@
 package com.berniecode.ogre;
 
 
+import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.platformhooks.OgreLog;
 import com.berniecode.ogre.enginelib.server.ServerEngine;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
@@ -17,7 +17,9 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
 public class EndToEndTest extends OgreTestCase {
 
 	private MockDownloadBridge dlBridge;
+	private MockMessageBridge msgBridge;
 	private PojoDataSource dataSource;
+	private ServerEngine serverEngine;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -29,18 +31,19 @@ public class EndToEndTest extends OgreTestCase {
 		
 		dataSource.addEntityObjects(new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L));
 
-		ServerEngine se = new ServerEngine();
-		se.setDataSource(dataSource);
-		se.initialise();
+		serverEngine = new ServerEngine();
+		serverEngine.setDataSource(dataSource);
+		serverEngine.setMessageAdapter(msgBridge = new MockMessageBridge());
+		serverEngine.initialise();
 
-		dlBridge = new MockDownloadBridge(se);
+		dlBridge = new MockDownloadBridge(serverEngine);
 	};
 
 	public void testFetchTypeDomain() throws Exception {
 
 		boolean exceptionThrown = false;
 		try {
-			createClientEngine(dlBridge, "does not exist");
+			createClientEngine("does not exist");
 		} catch (NoSuchThingException e) {
 			exceptionThrown = true;
 		}
@@ -48,14 +51,14 @@ public class EndToEndTest extends OgreTestCase {
 				exceptionThrown);
 
 		
-		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
+		ClientEngine clientEngine = createClientEngine();
 		assertTrue("Subsequent calls to ClientEngineTest.getTypedomain() should return the same object, not a new TypeDomain fetched over the bridge",
 				clientEngine.getTypeDomain() == clientEngine.getTypeDomain());
 	}
 
 	public void testCorrectTypeDomainTransferred() throws Exception {
 
-		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
+		ClientEngine clientEngine = createClientEngine();
 		
 		assertTrue("Subsequent calls to ClientEngineTest.getTypedomain() should return the same object, not a new TypeDomain fetched over the bridge",
 				clientEngine.getTypeDomain() == clientEngine.getTypeDomain());
@@ -76,7 +79,7 @@ public class EndToEndTest extends OgreTestCase {
 	}
 	
 	public void testCorrectObjectsTransferred() throws Exception {
-		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
+		ClientEngine clientEngine = createClientEngine();
 		 
 		assertEquals(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
@@ -94,7 +97,7 @@ public class EndToEndTest extends OgreTestCase {
 	}
 	
 	public void testNewObjectsPropagated() throws Exception {
-		ClientEngine clientEngine = createClientEngine(dlBridge, TYPE_DOMAIN_ID);
+		ClientEngine clientEngine = createClientEngine();
 
 		dataSource.addEntityObjects(new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L));
 		 
@@ -122,10 +125,15 @@ public class EndToEndTest extends OgreTestCase {
 		
 	}
 
-	private ClientEngine createClientEngine(MockDownloadBridge dlBridge, String typeDomain) throws Exception {
+	private ClientEngine createClientEngine() throws Exception {
+		return createClientEngine(TYPE_DOMAIN_ID);
+	}
+
+	private ClientEngine createClientEngine(String typeDomainId) throws Exception {
 		ClientEngine ce = new ClientEngine();
-		ce.setTypeDomainId(typeDomain);
+		ce.setTypeDomainId(typeDomainId);
 		ce.setDownloadAdapter(dlBridge);
+		ce.setMessageAdapter(msgBridge);
 		ce.setObjectGraphId(OBJECT_GRAPH_ID);
 		ce.initialise();
 		return ce;

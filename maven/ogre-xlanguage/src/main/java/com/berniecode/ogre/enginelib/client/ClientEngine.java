@@ -1,5 +1,6 @@
 package com.berniecode.ogre.enginelib.client;
 
+import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
@@ -8,6 +9,8 @@ import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.shared.UpdateMessage;
+import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
  * A ClientEngineTest configures and executes the replication of a single object graph. It is the
@@ -16,7 +19,7 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * 
  * @author Bernie Sumption
  */
-public class ClientEngine implements ObjectGraph {
+public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 
 	private DownloadClientAdapter downloadAdapter;
 	private String typeDomainId;
@@ -26,6 +29,7 @@ public class ClientEngine implements ObjectGraph {
 	private TypeDomain typeDomain;
 
 	private EntityStore entities = new EntityStore();
+	private MessageClientAdapter messageAdapter;
 
 	/**
 	 * Set the type domain used by this engine. This must be called before the engine is
@@ -50,11 +54,21 @@ public class ClientEngine implements ObjectGraph {
 	}
 
 	/**
-	 * Set the type download client adapter used by this engine. This must be called before the
+	 * Set the {@link DownloadClientAdapter} used by this engine. This must be called before the
 	 * engine is initialised, and can't be called again after initialisation
 	 */
 	public void setDownloadAdapter(DownloadClientAdapter adapter) {
+		requireInitialised(false, "setDownloadAdapter()");
 		this.downloadAdapter = adapter;
+	}
+
+	/**
+	 * Set the {@link MessageClientAdapter} used by this engine. This must be called before the
+	 * engine is initialised, and can't be called again after initialisation
+	 */
+	public void setMessageAdapter(MessageClientAdapter adapter) {
+		requireInitialised(false, "setMessageAdapter()");
+		this.messageAdapter = adapter;
 	}
 
 	/**
@@ -70,6 +84,7 @@ public class ClientEngine implements ObjectGraph {
 			return;
 		}
 		requireNotNull(downloadAdapter, "downloadAdapter");
+		requireNotNull(messageAdapter, "messageAdapter");
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(objectGraphId, "objectGraphId");
 		typeDomain = downloadAdapter.loadTypeDomain(typeDomainId);
@@ -79,6 +94,8 @@ public class ClientEngine implements ObjectGraph {
 		for (int i=0; i<initialEntities.length; i++) {
 			entities.addNew(initialEntities[i]);
 		}
+		
+		messageAdapter.subscribeToUpdateMessages(typeDomainId, objectGraphId, this);
 		
 		initialised = true;
 	}
@@ -114,6 +131,29 @@ public class ClientEngine implements ObjectGraph {
 		if (initialised != requiredStatus) {
 			throw new InitialisationException(methodName + " can't be called " + (requiredStatus ? "before" : "after")
 					+ " initialise()");
+		}
+	}
+
+	/**
+	 * @private
+	 */
+	public void acceptUpdateMessage(UpdateMessage message) {
+		OgreLog.info("Accepted update message " + message);
+		mergeCompleteEntities(message.getCompleteEntities());
+	}
+
+	/**
+	 * Merge a number of entities into this engine. For each entity, if the engine already contains
+	 * an entity with the same type and id, the existing entity will be updated with values from the
+	 * new entity. Otherwise, the new entity will be added to this engine.
+	 */
+	void mergeCompleteEntities(Entity[] completeEntities) {
+		for (int i=0; i<completeEntities.length; i++) {
+			if (entities.containsSimilar(completeEntities[i])) {
+				throw new OgreException("Entity merging is not supported yet");
+			} else {
+				entities.addNew(completeEntities[i]);
+			}
 		}
 	}
 }

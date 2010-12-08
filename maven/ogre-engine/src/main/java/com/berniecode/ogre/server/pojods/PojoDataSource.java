@@ -1,8 +1,10 @@
 package com.berniecode.ogre.server.pojods;
 
 import com.berniecode.ogre.InitialisingBean;
+import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleList;
 import com.berniecode.ogre.enginelib.server.DataSource;
+import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.EntityType;
@@ -21,15 +23,14 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
  */
 public class PojoDataSource extends InitialisingBean implements DataSource {
 
-	EDRMapper edrMapper;
-	TypeDomain typeDomain;
-
+	private EDRMapper edrMapper;
 	private String objectGraphId;
-
-	private EntityStore entities = new EntityStore();
-
 	private IdMapper idMapper = new DefaultIdMapper();
 	private UpdateMessageListener updateMessageListener;
+
+
+	private TypeDomain typeDomain;
+	private EntityStore entities = new EntityStore();
 	
 	//
 	// INITIALISATION
@@ -44,7 +45,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		
 		typeDomain = edrMapper.getTypeDomain();
 		
-		// TODO log type domain here, if level is correct
+		if (OgreLog.isDebugEnabled()) {
+			OgreLog.debug("PojoDataSource created new type domain:\n" + EDRDescriber.describeTypeDomain(typeDomain));
+		}
 	}
 
 	/**
@@ -131,8 +134,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		}
 		Entity[] newEntitiesArr = new Entity[newEntities.size()];
 		newEntities.copyToArray(newEntitiesArr);
-		updateMessageListener.acceptUpdateMessage(new ImmutableUpdateMessage(
-				typeDomain.getTypeDomainId(), objectGraphId, newEntitiesArr));
+		if (updateMessageListener != null) {
+			updateMessageListener.acceptUpdateMessage(new ImmutableUpdateMessage(
+					typeDomain.getTypeDomainId(), objectGraphId, newEntitiesArr));
+		}
 	}
 
 	/**

@@ -26,9 +26,5 @@ public class ClientEngineTest extends OgreTestCase {
 			ce.getTypeDomain();
 			fail("ClientEngine.getTypeDomain() should throw an exception if called before initialise()");
 		} catch (InitialisationException e) {}
-		
-		//TODO simulate IOFailureException
-		
-		//TODO use JMock to provide dependencies and test (A) that double initialisation is OK and (B) that setTypeDoaminId() after initialise() is not
 	}
 }

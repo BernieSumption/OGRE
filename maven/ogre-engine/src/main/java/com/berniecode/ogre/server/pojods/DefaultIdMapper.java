@@ -3,7 +3,7 @@ package com.berniecode.ogre.server.pojods;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.berniecode.ogre.enginelib.platformhooks.OgreLog;
+import com.berniecode.ogre.enginelib.OgreLog;
 
 /**
  * An {@link IdMapper} that assigns incrementing IDs to objects.

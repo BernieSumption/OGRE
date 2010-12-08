@@ -5,5 +5,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ogre-xlanguage"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="/Users/bernie/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/bernie/.m2/repository/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/bernie/.m2/repository/org/jmock/jmock/2.5.1/jmock-2.5.1.jar" sourcepath="/Users/bernie/.m2/repository/org/jmock/jmock/2.5.1/jmock-2.5.1-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

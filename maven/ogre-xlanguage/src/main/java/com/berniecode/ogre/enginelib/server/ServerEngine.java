@@ -19,6 +19,8 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 public class ServerEngine implements UpdateMessageListener {
 
 	private DataSource[] dataSources;
+	private MessageServerAdapter messageAdapter;
+	
 	private boolean initialised = false;
 	
 	// A map of type domain id to TypeDomain object
@@ -41,11 +43,20 @@ public class ServerEngine implements UpdateMessageListener {
 	/**
 	 * Set the set of object graphs used by this engine.
 	 * 
-	 * <p>Must be called before 
+	 * <p>Must be called before {@link #initialise()}
 	 */
 	public void setDataSources(DataSource[] dataAdapters) {
 		requireInitialised(false, "setDataAdapters()");
 		this.dataSources = dataAdapters;
+	}
+
+	/**
+	 * Provide a {@link MessageServerAdapter} to send update messages to clients
+	 * 
+	 * <p>Must be called before {@link #initialise()}
+	 */
+	public void setMessageAdapter(MessageServerAdapter messageAdapter) {
+		this.messageAdapter = messageAdapter;
 	}
 	
 	/**
@@ -59,6 +70,7 @@ public class ServerEngine implements UpdateMessageListener {
 		}
 		initialised = true;
 		requireNotNull(dataSources, "dataSources");
+		requireNotNull(messageAdapter, "messageAdapter");
 		for (int i = 0; i < dataSources.length; i++) {
 			DataSource dataSource = dataSources[i];
 			TypeDomain typeDomain = dataSource.getTypeDomain();
@@ -68,7 +80,7 @@ public class ServerEngine implements UpdateMessageListener {
 				throw new OgreException("Two DataSource objects provide the same type domain id ('"+ tdId +
 						"') but the TypeDomain objects returned from DataSource.getTypeDomain() are different.");
 			}
-			typeDomains.put(typeDomain.getTypeDomainId(), typeDomain);
+			typeDomains.put(tdId, typeDomain);
 			dataSource.setUpdateMessageListener(this);
 		}
 	}
@@ -131,7 +143,7 @@ public class ServerEngine implements UpdateMessageListener {
 	 * @private
 	 */
 	public void acceptUpdateMessage(UpdateMessage message) {
-//		messageBridge.
+		messageAdapter.publishUpdateMessage(message);
 	}
 
 }

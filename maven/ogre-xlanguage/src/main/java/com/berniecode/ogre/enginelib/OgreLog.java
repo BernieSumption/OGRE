@@ -1,4 +1,6 @@
-package com.berniecode.ogre.enginelib.platformhooks;
+package com.berniecode.ogre.enginelib;
+
+import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
 
 /**
  * 
@@ -7,10 +9,8 @@ package com.berniecode.ogre.enginelib.platformhooks;
  * @jtoxNative - not translated into other languages
  */
 public class OgreLog {
-
-	//
-	// PUBLIC API - MUST BE RE-IMPLEMENTED IN EVERY HOST LANGUAGE
-	//
+	
+	private OgreLog() {}
 
 	public static final int NONE = 10;
 	public static final int ERROR = 5;
@@ -18,8 +18,14 @@ public class OgreLog {
 	public static final int INFO = 3;
 	public static final int DEBUG = 2;
 
+
+	private static int currentLevel = DEBUG;
+
+	private static LogWriter writer = new StdErrLogWriter();
+	
+
 	public static void setLevel(int newLevel) {
-		level = newLevel;
+		currentLevel = newLevel;
 	}
 
 	public static void error(String message) {
@@ -37,16 +43,24 @@ public class OgreLog {
 	public static void debug(String message) {
 		doLog(DEBUG, "DEBUG", message);
 	}
-
-	//
-	// PRIVATE API - JAVA ONLY
-	//
 	
-	private OgreLog() {}
-
-	public static interface LogWriter {
-		public void acceptMessage(int level, String levelDescription, String message);
+	public static boolean isDebugEnabled() {
+		return isEnabled(DEBUG);
 	}
+	
+	public static boolean isInfoEnabled() {
+		return isEnabled(INFO);
+	}
+	
+	public static boolean isWarnEnabled() {
+		return isEnabled(WARN);
+	}
+	
+	public static boolean isErrorEnabled() {
+		return isEnabled(ERROR);
+	}
+	
+
 
 	/**
 	 * Set a LogWriter to handle log messages. This can be used to redirect OGRE log messages to any
@@ -59,19 +73,14 @@ public class OgreLog {
 		OgreLog.writer = writer;
 	}
 
-	private static int level = DEBUG;
-
-	private static LogWriter writer = new StdErrLogWriter();
-
 	private static void doLog(int level, String levelDescription, String message) {
-		if (OgreLog.level <= level) {
+		if (OgreLog.currentLevel <= level) {
 			writer.acceptMessage(level, levelDescription, message);
 		}
 	}
 
-	private static class StdErrLogWriter implements LogWriter {
-		public void acceptMessage(int level, String levelDescription, String message) {
-			System.err.println("[OGRE] " + levelDescription + " - " + message);
-		}
+	private static boolean isEnabled(int level) {
+		return currentLevel <= level;
 	}
+
 }

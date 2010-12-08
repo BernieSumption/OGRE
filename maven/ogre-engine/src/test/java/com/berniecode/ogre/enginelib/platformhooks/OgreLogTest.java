@@ -2,7 +2,8 @@ package com.berniecode.ogre.enginelib.platformhooks;
 
 import junit.framework.TestCase;
 
-import com.berniecode.ogre.enginelib.platformhooks.OgreLog.LogWriter;
+import com.berniecode.ogre.enginelib.LogWriter;
+import com.berniecode.ogre.enginelib.OgreLog;
 
 /**
  * 

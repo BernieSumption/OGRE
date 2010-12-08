@@ -5,8 +5,8 @@ import java.lang.reflect.Modifier;
 
 import junit.framework.TestCase;
 
+import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.Convert;
-import com.berniecode.ogre.enginelib.platformhooks.OgreLog;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 
 public class TestStaticUtilityClasses extends TestCase {
