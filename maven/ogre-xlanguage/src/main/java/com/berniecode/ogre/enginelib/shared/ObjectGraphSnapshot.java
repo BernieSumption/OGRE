@@ -1,18 +1,17 @@
 package com.berniecode.ogre.enginelib.shared;
 
 /**
- * A simple implementation of the {@link ObjectGraph} interface for which all values must be
- * provided in the constructor
+ * A simple immutable record of the state of an object graph
  * 
  * @author Bernie Sumption
  */
-public class ImmutableObjectGraph implements ObjectGraph {
+public class ObjectGraphSnapshot implements ObjectGraph {
 	
 	private final TypeDomain typeDomain;
 	private final String objectGraphId;
 	private final Entity[] entities;
 
-	public ImmutableObjectGraph(TypeDomain typeDomain, String objectGraphId, Entity[] entities) {
+	public ObjectGraphSnapshot(TypeDomain typeDomain, String objectGraphId, Entity[] entities) {
 		this.typeDomain = typeDomain;
 		this.objectGraphId = objectGraphId;
 		this.entities = entities;

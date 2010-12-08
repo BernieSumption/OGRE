@@ -12,10 +12,6 @@ import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityType;
-import com.berniecode.ogre.enginelib.shared.ImmutableEntity;
-import com.berniecode.ogre.enginelib.shared.ImmutableEntityType;
-import com.berniecode.ogre.enginelib.shared.ImmutableProperty;
-import com.berniecode.ogre.enginelib.shared.ImmutableTypeDomain;
 import com.berniecode.ogre.enginelib.shared.IntegerPropertyType;
 import com.berniecode.ogre.enginelib.shared.Property;
 import com.berniecode.ogre.enginelib.shared.PropertyType;
@@ -100,7 +96,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		
 		Collections.sort(entityTypes, NamedComparator.INSTANCE);
 
-		typeDomain = new ImmutableTypeDomain(typeDomainId, entityTypes.toArray(new EntityType[0]));
+		typeDomain = new TypeDomain(typeDomainId, entityTypes.toArray(new EntityType[0]));
 	}
 
 	//
@@ -141,7 +137,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		
 		Collections.sort(properties, NamedComparator.INSTANCE);
 		
-		return new ImmutableEntityType(name, properties.toArray(new Property[0]));
+		return new EntityType(name, properties.toArray(new Property[0]));
 	}
 
 	/**
@@ -150,7 +146,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 */
 	protected Property createProperty(Method method) {
 		PropertyType propertyType = createPropertyType(method.getReturnType());
-		ImmutableProperty property = new ImmutableProperty(Utils.getPropertyNameForGetter(method), propertyType);
+		Property property = new Property(Utils.getPropertyNameForGetter(method), propertyType);
 		propertyToMethod.put(property, method);
 		return property;
 	}
@@ -207,7 +203,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			values.add(getValueForProperty(entityObject, property));
 		}
 		
-		return new ImmutableEntity(entityType, id, values.toArray());
+		return new Entity(entityType, id, values.toArray());
 	}
 
 	/**

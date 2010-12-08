@@ -48,15 +48,16 @@ public class EntityStore {
 	 *             the similar entity
 	 */
 	public void merge(Entity sourceEntity) {
-		Entity targetEntity = (Entity) getEntityMap(sourceEntity.getEntityType()).get(Convert.longToObject(sourceEntity.getId()));
+		Entity targetEntity = getEntity(sourceEntity.getEntityType(), sourceEntity.getId());
 		if (targetEntity == null) {
-			
+			addNew(sourceEntity);
+		} else {
+			targetEntity.merge(sourceEntity);
 		}
 	}
-	
+
 	private Entity getEntity(EntityType entityType, long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return (Entity) getEntityMap(entityType).get(Convert.longToObject(id));
 	}
 
 	private SimpleMap getEntityMap(EntityType entityType) {

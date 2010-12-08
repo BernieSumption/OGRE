@@ -6,7 +6,15 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-public interface Property extends Named {
+public class Property implements Named {
+
+	private String name;
+	private PropertyType propertyType;
+
+	public Property(String name, PropertyType propertyType) {
+		this.name = name;
+		this.propertyType = propertyType;
+	}
 
 	/**
 	 * @return The name of this property. Property names should be lower case words separated by
@@ -14,10 +22,22 @@ public interface Property extends Named {
 	 *         property naming convention in the client language, e.g. getPropertyName() for Java or
 	 *         propertyName in ActionScript.
 	 */
-	String getName();
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	/**
 	 * @return The type of this property.
 	 */
-	PropertyType getPropertyType();
+	public PropertyType getPropertyType() {
+		return propertyType;
+	}
+
+	public void setPropertyType(PropertyType propertyType) {
+		this.propertyType = propertyType;
+	}
 }

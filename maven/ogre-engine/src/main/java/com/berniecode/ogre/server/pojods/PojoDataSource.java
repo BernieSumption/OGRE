@@ -7,7 +7,7 @@ import com.berniecode.ogre.enginelib.server.DataSource;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.ImmutableObjectGraph;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphSnapshot;
 import com.berniecode.ogre.enginelib.shared.ImmutableUpdateMessage;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.SimpleList;
@@ -96,7 +96,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	@Override
 	public ObjectGraph createSnapshot() {
-		return new ImmutableObjectGraph(typeDomain, objectGraphId, entities.getAllEntities());
+		return new ObjectGraphSnapshot(typeDomain, objectGraphId, entities.getAllEntities());
 	}
 
 	@Override
