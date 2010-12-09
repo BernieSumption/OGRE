@@ -5,15 +5,27 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-public interface PropertyValue {
+public class PropertyValue {
+
+	private final Property property;
+	private final Object value;
+	
+	public PropertyValue(Property property, Object value) {
+		this.property = property;
+		this.value = value;
+	}
 
 	/**
 	 * @return The {@link Property} that this value is for
 	 */
-	Property getProperty();
+	public Property getProperty() {
+		return property;
+	}
 
 	/**
 	 * @return The value of this property
 	 */
-	Object getValue();
+	public Object getValue() {
+		return value;
+	}
 }

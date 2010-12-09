@@ -1,6 +1,5 @@
 package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
 /**
  * A single object in an {@link ObjectGraph}, uniquely identified by a tuple of its entity type and
@@ -10,8 +9,8 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
  */
 public class Entity {
 
-	private EntityType entityType;
-	private long id;
+	private final EntityType entityType;
+	private final long id;
 	private Object[] values;
 
 	public Entity(EntityType entityType, long id, Object[] values) {
@@ -27,10 +26,6 @@ public class Entity {
 		return entityType;
 	}
 
-	public void setEntityType(EntityType entityType) {
-		this.entityType = entityType;
-	}
-
 	/**
 	 * @return The ID of this entity, unique within the scope of its entity type
 	 */
@@ -38,24 +33,18 @@ public class Entity {
 		return id;
 	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	/**
-	 * @return An array of values for this Entity, one for each {@link Property} in the associated
-	 *         {@link EntityType}, and in the same order. The returned array is not safe to modify.
-	 *         It must be copied before being passed outside of OGRE.
+	 * @return The value for a property of this {@link Entity}
 	 */
-	public Object[] getValues() {
-		return values;
+	public Object getPropertyValue(Property property) {
+		return values[property.getPropertyIndex()];
 	}
 
 	public void setValues(Object[] values) {
 		this.values = values;
 	}
-
-	void merge(Entity sourceEntity) {
-		throw new OgreException("Entity merging is not implemented yet");
+	
+	public String toString() {
+		return entityType + "#" + id;
 	}
 }

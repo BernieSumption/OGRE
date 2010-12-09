@@ -149,10 +149,17 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 	 */
 	void mergeCompleteEntities(Entity[] completeEntities) {
 		for (int i=0; i<completeEntities.length; i++) {
-			if (entities.containsSimilar(completeEntities[i])) {
-				entities.merge(completeEntities[i]);
+			Entity completeEntity = completeEntities[i];
+			if (entities.containsSimilar(completeEntity)) {
+				if (OgreLog.isInfoEnabled()) {
+					OgreLog.info("ClientStore: replacing entity " + completeEntity + " with new complete entity");
+				}
+				entities.replace(completeEntity);
 			} else {
-				entities.addNew(completeEntities[i]);
+				if (OgreLog.isInfoEnabled()) {
+					OgreLog.info("ClientStore: adding new entity " + completeEntity);
+				}
+				entities.addNew(completeEntity);
 			}
 		}
 	}

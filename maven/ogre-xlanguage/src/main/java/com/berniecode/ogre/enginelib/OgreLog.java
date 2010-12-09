@@ -12,14 +12,14 @@ public class OgreLog {
 	
 	private OgreLog() {}
 
-	public static final int NONE = 10;
-	public static final int ERROR = 5;
-	public static final int WARN = 4;
-	public static final int INFO = 3;
-	public static final int DEBUG = 2;
+	public static final int LEVEL_NONE = 10;
+	public static final int LEVEL_ERROR = 5;
+	public static final int LEVEL_WARN = 4;
+	public static final int LEVEL_INFO = 3;
+	public static final int LEVEL_DEBUG = 2;
 
 
-	private static int currentLevel = DEBUG;
+	private static int currentLevel = LEVEL_DEBUG;
 
 	private static LogWriter writer = new StdErrLogWriter();
 	
@@ -29,35 +29,35 @@ public class OgreLog {
 	}
 
 	public static void error(String message) {
-		doLog(ERROR, "ERROR", message);
+		doLog(LEVEL_ERROR, "LEVEL_ERROR", message);
 	}
 
 	public static void warn(String message) {
-		doLog(WARN, "WARN", message);
+		doLog(LEVEL_WARN, "LEVEL_WARN", message);
 	}
 
 	public static void info(String message) {
-		doLog(INFO, "INFO", message);
+		doLog(LEVEL_INFO, "LEVEL_INFO", message);
 	}
 
 	public static void debug(String message) {
-		doLog(DEBUG, "DEBUG", message);
+		doLog(LEVEL_DEBUG, "LEVEL_DEBUG", message);
 	}
 	
 	public static boolean isDebugEnabled() {
-		return isEnabled(DEBUG);
+		return isEnabled(LEVEL_DEBUG);
 	}
 	
 	public static boolean isInfoEnabled() {
-		return isEnabled(INFO);
+		return isEnabled(LEVEL_INFO);
 	}
 	
 	public static boolean isWarnEnabled() {
-		return isEnabled(WARN);
+		return isEnabled(LEVEL_WARN);
 	}
 	
 	public static boolean isErrorEnabled() {
-		return isEnabled(ERROR);
+		return isEnabled(LEVEL_ERROR);
 	}
 	
 

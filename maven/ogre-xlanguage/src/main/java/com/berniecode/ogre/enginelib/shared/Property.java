@@ -8,12 +8,14 @@ package com.berniecode.ogre.enginelib.shared;
  */
 public class Property implements Named {
 
-	private String name;
-	private PropertyType propertyType;
+	private final String name;
+	private final PropertyType propertyType;
+	private final int propertyIndex;
 
-	public Property(String name, PropertyType propertyType) {
+	public Property(String name, PropertyType propertyType, int propertyIndex) {
 		this.name = name;
 		this.propertyType = propertyType;
+		this.propertyIndex = propertyIndex;
 	}
 
 	/**
@@ -26,10 +28,6 @@ public class Property implements Named {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	/**
 	 * @return The type of this property.
 	 */
@@ -37,7 +35,10 @@ public class Property implements Named {
 		return propertyType;
 	}
 
-	public void setPropertyType(PropertyType propertyType) {
-		this.propertyType = propertyType;
+	/**
+	 * The position of this property in the parent {@link EntityType}'s properties array.
+	 */
+	public int getPropertyIndex() {
+		return propertyIndex;
 	}
 }

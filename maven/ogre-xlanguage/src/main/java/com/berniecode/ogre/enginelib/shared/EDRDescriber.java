@@ -83,10 +83,9 @@ public class EDRDescriber {
 		  .add("#")
 		  .addNumber(entity.getId());
 		Property[] properties = entity.getEntityType().getProperties();
-		Object[] values = entity.getValues();
 		for (int i=0; i<properties.length; i++) {
 			sc.add("\n");
-			doDescribeValue(values[i], properties[i], sc, indent+1);
+			doDescribeValue(entity.getPropertyValue(properties[i]), properties[i], sc, indent+1);
 		}
 	}
 

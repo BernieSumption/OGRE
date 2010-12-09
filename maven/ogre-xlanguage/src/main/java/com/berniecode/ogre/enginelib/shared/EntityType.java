@@ -37,4 +37,8 @@ public class EntityType implements Named {
 	public void setProperties(Property[] properties) {
 		this.properties = properties;
 	}
+	
+	public String toString() {
+		return name;
+	}
 }

@@ -25,29 +25,26 @@ End-to-end entity snapshot for integers only:\
 End-to-end update detection:\
   - Detection and transmission of new entities\
   - Detection of updates and transmission as complete entities\
-  - Transmission of updates as partial entities\
   - Detection and transmission of deleted entities\
-** check ** do I really need data versioning in first take? Can I put it in the issue tracker and skip it?\
-  - dataVersion of updates.\
-  - re-downloading of snapshots if dataVersion out of sequence (make an option?)\
-  - dataVersionScheme, re-downloading of snapshot if changes\
 Strongly typed facade:\
   - JDK proxy backed view onto client engine\
-  - update tests to use view instead of interrogating client engine directly\
-\
-Get issue tracker working, put wishlist up there:\
-  - typeDomainScheme, similar to serialVersionUid, to handle changes to type domain\
-  \
-\
-\
-[step 2: more types]\
-\
-Building on the integer-only system, add more types one by one across the whole slice:\
+More types\
   - strings\
   - floats\
   - bytes\
   - entity references\
   - collections\
+Demo applications\
+  - visual graph\
+  - regression tester - creates random graphs and changes them randomly, multi threaded\
+\
+Get issue tracker working, put wishlist up there:\
+  - Transmission of updates as partial entities\
+  - dataVersion and dataVersionScheme to cope with network outage\
+  - typeDomainScheme, similar to serialVersionUid, to handle changes to type domain (permit addition of server properties without client update)\
+\
+[step 2: more types]\
+\
 \
 [step 3: data negotiation]\
 \

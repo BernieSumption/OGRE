@@ -14,7 +14,6 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
  * 
  * @author Bernie Sumption
  */
-//TODO get binary serialisation working with Java serialisation
 public class EndToEndTest extends OgreTestCase {
 
 	private MockDownloadBridge dlBridge;

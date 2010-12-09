@@ -2,6 +2,7 @@ package com.berniecode.ogre.server.pojods;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -125,17 +126,18 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is an enum type");
 		}
 		if (klass.isPrimitive()) {
-			throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is an primitive type");
+			throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is a primitive type");
 		}
 		String name = getEntityTypeNameForClass(klass);
 		List<Property> properties = new ArrayList<Property>();
-		for (Method method : klass.getMethods()) {
+		Method[] methods = klass.getMethods();
+		Arrays.sort(methods, new MethodNameComparator());
+		int propertyIndex = 0;
+		for (Method method : methods) {
 			if (Utils.isGetterMethod(method)) {
-				properties.add(createProperty(method));
+				properties.add(createProperty(method, propertyIndex++));
 			}
 		}
-		
-		Collections.sort(properties, NamedComparator.INSTANCE);
 		
 		return new EntityType(name, properties.toArray(new Property[0]));
 	}
@@ -144,9 +146,9 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * Convert a {@link Method} to a {@link Property}. This method can be overridden by subclasses that
 	 * want to alter the default mapping behaviour.
 	 */
-	protected Property createProperty(Method method) {
+	protected Property createProperty(Method method, int propertyIndex) {
 		PropertyType propertyType = createPropertyType(method.getReturnType());
-		Property property = new Property(Utils.getPropertyNameForGetter(method), propertyType);
+		Property property = new Property(Utils.getPropertyNameForGetter(method), propertyType, propertyIndex);
 		propertyToMethod.put(property, method);
 		return property;
 	}

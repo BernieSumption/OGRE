@@ -3,7 +3,6 @@ package com.berniecode.ogre.server.pojods;
 import java.util.Date;
 
 import com.berniecode.ogre.OgreTestCase;
-import com.berniecode.ogre.enginelib.shared.Entity;
 
 public class PojoDataSourceTest extends OgreTestCase {
 
@@ -112,8 +111,12 @@ public class PojoDataSourceTest extends OgreTestCase {
 			dataSource.getTypeDomain());
 		
 		dataSource.setEntityObjects(new SimpleEntityClassOne());
-		Entity[] entities = dataSource.createSnapshot().getEntities();
-		assertEquals(10, entities[0].getValues()[0]);
+
+		assertEquals(
+			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
+			"  Entity com.berniecode.ogre.server.pojods.SimpleInterface#1" +
+			"    public_int_property=10",
+			dataSource.createSnapshot());
 	}
 	
 	public void testTypesCantBeSupertypesOfEachOther() {

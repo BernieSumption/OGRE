@@ -30,6 +30,22 @@ public class EntityStore {
 	}
 
 	/**
+	 * @return a single {@link Entity} from this store specified by type and id, or null if there is
+	 *         no such {@link Entity} in the store
+	 */
+	public Entity get(EntityType entityType, long id) {
+		return (Entity) getEntityMap(entityType).get(Convert.longToObject(id));
+	}
+
+	/**
+	 * @return a single {@link Entity} from this store with the same type and id as the specified
+	 *         entity, or null if there is no such {@link Entity} in the store
+	 */
+	public Entity getSimilar(Entity entity) {
+		return get(entity.getEntityType(), entity.getId());
+	}
+
+	/**
 	 * Add an {@link Entity} that does not already exist in this store.
 	 * 
 	 * @throws OgreException if this store already contains an entity with the same name and ID
@@ -38,26 +54,15 @@ public class EntityStore {
 		if (contains(entity.getEntityType(), entity.getId())) {
 			throw new OgreException("The entity " + entity + " already exists in this store");
 		}
-		getEntityMap(entity.getEntityType()).put(Convert.longToObject(entity.getId()), entity);
+		replace(entity);
 	}
 
 	/**
-	 * Add an {@link Entity} to this store. If an entity with the same type and id already exists in this store, it will be updated with 
-	 * 
-	 * @throws OgreException if this store does not contain an entity with the same name and ID and
-	 *             the similar entity
+	 * Add an {@link Entity} to this store, replacing any existing entity with the same type and id
+	 * if such an entity exists
 	 */
-	public void merge(Entity sourceEntity) {
-		Entity targetEntity = getEntity(sourceEntity.getEntityType(), sourceEntity.getId());
-		if (targetEntity == null) {
-			addNew(sourceEntity);
-		} else {
-			targetEntity.merge(sourceEntity);
-		}
-	}
-
-	private Entity getEntity(EntityType entityType, long id) {
-		return (Entity) getEntityMap(entityType).get(Convert.longToObject(id));
+	public void replace(Entity entity) {
+		getEntityMap(entity.getEntityType()).put(Convert.longToObject(entity.getId()), entity);
 	}
 
 	private SimpleMap getEntityMap(EntityType entityType) {

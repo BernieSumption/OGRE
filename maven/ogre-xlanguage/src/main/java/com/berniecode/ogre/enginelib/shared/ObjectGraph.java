@@ -21,8 +21,7 @@ public interface ObjectGraph {
 	String getObjectGraphId();
 
 	/**
-	 * @return All {@link Entity}s in this object graph. The returned array is not safe to modify.
-	 *         It must be copied before being passed outside of OGRE
+	 * @return All {@link Entity}s in this object graph.
 	 */
 	Entity[] getEntities();
 

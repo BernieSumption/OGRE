@@ -7,11 +7,11 @@ import com.berniecode.ogre.enginelib.server.DataSource;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphSnapshot;
-import com.berniecode.ogre.enginelib.shared.ImmutableUpdateMessage;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphSnapshot;
 import com.berniecode.ogre.enginelib.shared.SimpleList;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
@@ -114,9 +114,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * <ul>
 	 * <li>Any objects that are not part of this graph will be added, and broadcast to clients
 	 * <li>Any objects that are already part of this graph will be checked for modifications, and
-	 *     any changed property values will be broadcast to clients
+	 * any changed property values will be broadcast to clients
 	 * <li>Any objects in the graph that are not in the array passed to this method will be removed
-	 *     from the graph.
+	 * from the graph.
 	 * </ul>
 	 * 
 	 * <p>
@@ -134,8 +134,15 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		for (int i=0; i<entityObjects.length; i++) {
 			long id = idMapper.getId(entityObjects[i]);
 			Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
-			completeEntities.add(newEntity);
-			entities.merge(newEntity);
+			Entity similar = entities.getSimilar(newEntity);
+			if (similar == null) {
+				completeEntities.add(newEntity);
+				entities.addNew(newEntity);
+			} else {
+				//TODO implement entity updates here
+				completeEntities.add(newEntity);
+				entities.replace(newEntity);
+			}
 		}
 		sendUpdateMessage(completeEntities);
 	}
@@ -144,7 +151,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		Entity[] newEntitiesArr = new Entity[completeEntities.size()];
 		completeEntities.copyToArray(newEntitiesArr);
 		if (updateMessageListener != null) {
-			updateMessageListener.acceptUpdateMessage(new ImmutableUpdateMessage(
+			updateMessageListener.acceptUpdateMessage(new UpdateMessage(
 					typeDomain.getTypeDomainId(), objectGraphId, newEntitiesArr));
 		}
 	}
