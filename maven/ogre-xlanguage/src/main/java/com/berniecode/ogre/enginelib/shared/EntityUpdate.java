@@ -1,16 +1,22 @@
 package com.berniecode.ogre.enginelib.shared;
 
-public interface EntityUpdate {
+
+/**
+ * Contains new values for some or all of an {@link Entity}'s properties
+ *
+ * @author Bernie Sumption
+ */
+public interface EntityUpdate extends EntityReference {
 
 	/**
-	 * @return A single value .
+	 * @return A single value.
 	 */
-	public abstract Object getValue(int propertyIndex);
+	public Object getValue(int propertyIndex);
 
 	/**
-	 * @return an array of flags indicating whether the value with the same position in the
-	 *         {@link #getValues()} array is an update.
+	 * Check whether this {@link EntityUpdate} has a new value for the property at the specified
+	 * index.
 	 */
-	public abstract boolean hasUpdatedValue(int propertyIndex);
+	public boolean hasUpdatedValue(int propertyIndex);
 
 }

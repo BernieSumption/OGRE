@@ -8,9 +8,8 @@ import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.EntityUpdate;
 import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
@@ -97,13 +96,13 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	@Override
-	public ObjectGraphValue createSnapshot() {
+	public ObjectGraphValueMessage createSnapshot() {
 		Entity[] allEntities = entities.getAllEntities();
 		EntityValueMessage[] entityValues = new EntityValueMessage[allEntities.length];
 		for (int i=0; i<allEntities.length; i++) {
 			entityValues[i] = EntityValueMessage.build(allEntities[i]);
 		}
-		return new ObjectGraphValue(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
+		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
 	}
 
 	@Override
@@ -146,7 +145,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 			if (similar == null) {
 				completeEntities.add(EntityValueMessage.build(newEntity));
 			} else {
-				EntityUpdate diff = EntityDiffMessage.build(similar, newEntity);
+				EntityDiffMessage diff = EntityDiffMessage.build(similar, newEntity);
 				if (diff != null) {
 					if (OgreLog.isInfoEnabled()) {
 						OgreLog.info("PojDataSource: detected change on " + similar);
@@ -160,10 +159,14 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	private void sendUpdateMessage(EntityValueMessage[] newEntities, EntityDiffMessage[] entityDiffs) {
-		//TODO debug log describe update message here
 		if (updateMessageListener != null) {
-			updateMessageListener.acceptUpdateMessage(new UpdateMessage(
-					typeDomain.getTypeDomainId(), objectGraphId, newEntities, entityDiffs));
+			UpdateMessage message = new UpdateMessage(
+					typeDomain.getTypeDomainId(), objectGraphId, newEntities, entityDiffs);
+			if (OgreLog.isDebugEnabled()) {
+				OgreLog.debug("PojoDataSource: broadcasting new update message:\n"
+						+ EDRDescriber.describeUpdateMessage(typeDomain, message));
+			}
+			updateMessageListener.acceptUpdateMessage(message);
 		}
 	}
 

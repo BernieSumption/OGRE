@@ -26,8 +26,8 @@ public class EntityDiffMessage implements EntityReference, EntityUpdate {
 	 * @return An {@link EntityDiffMessage} object that if applied to the entity <code>from</code> will
 	 *         change its values to be equal to those of <code>to</code>
 	 */
-	//TODO: tests, and EDR describing
-	public static EntityUpdate build(Entity from, Entity to) {
+	//TODO: tests
+	public static EntityDiffMessage build(Entity from, Entity to) {
 		EntityType entityType = from.getEntityType();
 		if (entityType != to.getEntityType()) {
 			throw new OgreException("Can't build an EntityDiffMessage from " + from + " to " + to + " because their entityTypes are different");

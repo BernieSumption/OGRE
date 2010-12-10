@@ -5,11 +5,12 @@ import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
+import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
@@ -93,7 +94,7 @@ public class ClientEngine implements UpdateMessageListener {
 		
 		entities = new EntityStore(typeDomain, false);
 		
-		ObjectGraphValue objectGraph = downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId);
+		ObjectGraphValueMessage objectGraph = downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId);
 		EntityValueMessage[] initialValues = objectGraph.getEntityValues();
 		for (int i=0; i<initialValues.length; i++) {
 			entities.put(initialValues[i].toEntity(typeDomain));
@@ -142,8 +143,10 @@ public class ClientEngine implements UpdateMessageListener {
 	 * @private
 	 */
 	public void acceptUpdateMessage(UpdateMessage message) {
-		OgreLog.info("Accepted update message " + message);
-		//TODO describe and log update message
+		OgreLog.info("ClientEngine: accepted update message " + message);
+		if (OgreLog.isDebugEnabled()) {
+			OgreLog.debug(EDRDescriber.describeUpdateMessage(typeDomain, message));
+		}
 		mergeCompleteEntities(message.getEntityValues());
 		mergeEntityDiffs(message.getEntityDiffs());
 	}
@@ -193,12 +196,12 @@ public class ClientEngine implements UpdateMessageListener {
 	/**
 	 * @return a snapshot of the state of this object graph, useful for debugging
 	 */
-	public ObjectGraphValue createSnapshot() {
+	public ObjectGraphValueMessage createSnapshot() {
 		Entity[] allEntities = entities.getAllEntities();
 		EntityValueMessage[] entityValues = new EntityValueMessage[allEntities.length];
 		for (int i=0; i<allEntities.length; i++) {
 			entityValues[i] = EntityValueMessage.build(allEntities[i]);
 		}
-		return new ObjectGraphValue(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
+		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
 	}
 }

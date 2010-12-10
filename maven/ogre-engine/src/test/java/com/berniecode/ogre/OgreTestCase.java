@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 public abstract class OgreTestCase extends TestCase {
@@ -34,7 +34,7 @@ public abstract class OgreTestCase extends TestCase {
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeTypeDomain(actual));
 	}
 	
-	protected void assertObjectGraphState(String expected, ObjectGraphValue actual, TypeDomain typeDomain) {
+	protected void assertObjectGraphState(String expected, ObjectGraphValueMessage actual, TypeDomain typeDomain) {
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(typeDomain, actual));
 	}
 	
