@@ -59,14 +59,6 @@ public class ValueUtils {
 		}
 		return true;
 	}
-	
-	/**
-	 * Convert a {@link Long} into an object suitable for use as a map key
-	 */
-	//TODO do I still need this after EntityMap refactor?
-	public static Object boxLong(long in) {
-		return Long.valueOf(in);
-	}
 
 	/**
 	 * Perform a shallow copy of an array.

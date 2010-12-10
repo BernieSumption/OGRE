@@ -6,15 +6,14 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-//TODO change this message to contain only EntityValue (being entityIndex, entityId and array of values) 
 public class UpdateMessage {
 
 	private final String typeDomainId;
 	private final String objectGraphId;
-	private final EntityValue[] entities;
-	private final EntityDiff[] entityDiffs;
+	private final EntityValueMessage[] entities;
+	private final EntityDiffMessage[] entityDiffs;
 
-	public UpdateMessage(String typeDomainId, String objectGraphId, EntityValue[] entities, EntityDiff[] entityDiffs) {
+	public UpdateMessage(String typeDomainId, String objectGraphId, EntityValueMessage[] entities, EntityDiffMessage[] entityDiffs) {
 		this.typeDomainId = typeDomainId;
 		this.objectGraphId = objectGraphId;
 		this.entities = entities;
@@ -40,14 +39,14 @@ public class UpdateMessage {
 	/**
 	 * @return {@link Entity}s that have been created or updated.
 	 */
-	public EntityValue[] getEntityValues() {
+	public EntityValueMessage[] getEntityValues() {
 		return entities;
 	}
 
 	/**
-	 * @return {@link EntityDiff}s for entities that have been updated
+	 * @return {@link EntityDiffMessage}s for entities that have been updated
 	 */
-	public EntityDiff[] getEntityDiffs() {
+	public EntityDiffMessage[] getEntityDiffs() {
 		return entityDiffs;
 	}
 

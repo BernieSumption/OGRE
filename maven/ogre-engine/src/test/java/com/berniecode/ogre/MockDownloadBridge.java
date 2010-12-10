@@ -29,8 +29,8 @@ public class MockDownloadBridge implements DownloadClientAdapter {
 	}
 
 	@Override
-	public ObjectGraphValue loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException {
-		return server.getObjectGraph(typeDomain.getTypeDomainId(), objectGraphId);
+	public ObjectGraphValue loadObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException {
+		return server.getObjectGraph(typeDomainId, objectGraphId);
 	}
 
 }

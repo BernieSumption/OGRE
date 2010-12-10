@@ -9,13 +9,13 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-public class EntityValue implements EntityReference {
+public class EntityValueMessage implements EntityReference, EntityUpdate {
 
 	private final int entityTypeIndex;
 	private final long entityId;
 	private final Object[] values;
 	
-	public EntityValue(int entityIndex, long entityId, Object[] values) {
+	public EntityValueMessage(int entityIndex, long entityId, Object[] values) {
 		this.entityTypeIndex = entityIndex;
 		this.entityId = entityId;
 		this.values = values;
@@ -34,17 +34,24 @@ public class EntityValue implements EntityReference {
 	}
 
 	/**
-	 * Create an {@link EntityValue} from an {@link Entity}
+	 * Create an {@link EntityValueMessage} from an {@link Entity}
 	 */
-	public static EntityValue build(Entity entity) {
-		return new EntityValue(entity.getEntityTypeIndex(), entity.getEntityId(), entity.copyValues());
+	public static EntityValueMessage build(Entity entity) {
+		return new EntityValueMessage(entity.getEntityTypeIndex(), entity.getEntityId(), entity.copyValues());
 	}
 
 	/**
-	 * @return an {@link Entity} with the same type, id and data as this {@link EntityValue}
+	 * @return an {@link Entity} with the same type, id and data as this {@link EntityValueMessage}
 	 */
 	public Entity toEntity(TypeDomain typeDomain) {
 		return new Entity(typeDomain.getEntityType(entityTypeIndex), entityId, values);
+	}
+
+	/**
+	 * @see EntityUpdate#hasUpdatedValue(int)
+	 */
+	public boolean hasUpdatedValue(int propertyIndex) {
+		return true; // an EntityValueMessage updates every property
 	}
 
 }

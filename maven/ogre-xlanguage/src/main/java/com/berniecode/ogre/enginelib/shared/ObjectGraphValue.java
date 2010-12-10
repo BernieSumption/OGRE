@@ -13,9 +13,9 @@ public class ObjectGraphValue {
 	
 	private final String typeDomainId;
 	private final String objectGraphId;
-	private final EntityValue[] entityValues;
+	private final EntityValueMessage[] entityValues;
 
-	public ObjectGraphValue(String typeDomainId, String objectGraphId, EntityValue[] values) {
+	public ObjectGraphValue(String typeDomainId, String objectGraphId, EntityValueMessage[] values) {
 		this.typeDomainId = typeDomainId;
 		this.objectGraphId = objectGraphId;
 		this.entityValues = values;
@@ -29,7 +29,7 @@ public class ObjectGraphValue {
 		return objectGraphId;
 	}
 
-	public EntityValue[] getEntityValues() {
+	public EntityValueMessage[] getEntityValues() {
 		return entityValues;
 	}
 

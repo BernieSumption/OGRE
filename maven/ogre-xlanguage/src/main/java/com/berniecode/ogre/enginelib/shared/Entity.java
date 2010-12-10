@@ -54,12 +54,11 @@ public class Entity implements EntityReference {
 		return entityType.getEntityTypeIndex();
 	}
 
-	public void updateFromEntityValue(EntityValue entityValue) {
-		//TODO merge values here
-	}
-
-	public void updateFromEntityDiff(EntityDiff diff) {
-		// TODO Auto-generated method stub
-		
+	public void update(EntityUpdate update) {
+		for (int i=0; i<entityType.getPropertyCount(); i++) {
+			if (update.hasUpdatedValue(i)) {
+				values[i] = update.getValue(i);
+			}
+		}
 	}
 }

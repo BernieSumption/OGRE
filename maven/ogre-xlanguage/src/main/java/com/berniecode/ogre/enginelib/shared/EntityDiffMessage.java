@@ -8,31 +8,29 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  *
  * @author Bernie Sumption
  */
-//TODO make this EntityDiffMessage
-public class EntityDiff {
+public class EntityDiffMessage implements EntityReference, EntityUpdate {
 
-	private final EntityType entityType;
-	private final long id;
+	private final int entityTypeIndex;
+	private final long entityId;
 	private final Object[] values;
 	private final boolean[] isChanged;
 
-	//TODO make it entityTypeIndex
-	public EntityDiff(EntityType entityType, long id, Object[] values, boolean[] changed) {
-		this.entityType = entityType;
-		this.id = id;
+	public EntityDiffMessage(int entityTypeIndex, long id, Object[] values, boolean[] isChanged) {
+		this.entityTypeIndex = entityTypeIndex;
+		this.entityId = id;
 		this.values = values;
-		this.isChanged = changed;
+		this.isChanged = isChanged;
 	}
 
 	/**
-	 * @return An {@link EntityDiff} object that if applied to the entity <code>from</code> will
+	 * @return An {@link EntityDiffMessage} object that if applied to the entity <code>from</code> will
 	 *         change its values to be equal to those of <code>to</code>
 	 */
 	//TODO: tests, and EDR describing
-	public static EntityDiff build(Entity from, Entity to) {
+	public static EntityUpdate build(Entity from, Entity to) {
 		EntityType entityType = from.getEntityType();
 		if (entityType != to.getEntityType()) {
-			throw new OgreException("Can't build an EntityDiff from " + from + " to " + to + " because their entityTypes are different");
+			throw new OgreException("Can't build an EntityDiffMessage from " + from + " to " + to + " because their entityTypes are different");
 		}
 		int propertyCount = entityType.getPropertyCount();
 		Object[] changedValues = new Object[propertyCount];
@@ -51,25 +49,25 @@ public class EntityDiff {
 		if (!anyChanged) {
 			return null;
 		}
-		return new EntityDiff(entityType, from.getEntityId(), changedValues, changed);
+		return new EntityDiffMessage(entityType.getEntityTypeIndex(), from.getEntityId(), changedValues, changed);
 	}
 
 	/**
 	 * @return The type of this Entity
 	 */
-	public EntityType getEntityType() {
-		return entityType;
+	public int getEntityTypeIndex() {
+		return entityTypeIndex;
 	}
 
 	/**
 	 * @return The ID of this entity, unique within the scope of its entity type
 	 */
-	public long getId() {
-		return id;
+	public long getEntityId() {
+		return entityId;
 	}
 
 	/**
-	 * @return A single value .
+	 * @see EntityUpdate#getValue(int)
 	 */
 	public Object getValue(int propertyIndex) {
 		if (!hasUpdatedValue(propertyIndex)) {
@@ -79,15 +77,14 @@ public class EntityDiff {
 	}
 
 	/**
-	 * @return an array of flags indicating whether the value with the same position in the
-	 *         {@link #getValues()} array is an update.
+	 * @see EntityUpdate#hasUpdatedValue(int)
 	 */
 	public boolean hasUpdatedValue(int propertyIndex) {
 		return isChanged[propertyIndex];
 	}
 
 	public String toString() {
-		return "EntityDiff for " + entityType + "#" + id;
+		return "EntityDiffMessage for entity " + entityTypeIndex + "#" + entityId;
 	}
 
 }

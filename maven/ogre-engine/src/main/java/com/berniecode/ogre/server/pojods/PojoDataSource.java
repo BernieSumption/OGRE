@@ -6,9 +6,10 @@ import com.berniecode.ogre.enginelib.platformhooks.ArrayBuilder;
 import com.berniecode.ogre.enginelib.server.DataSource;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
-import com.berniecode.ogre.enginelib.shared.EntityDiff;
+import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.EntityValue;
+import com.berniecode.ogre.enginelib.shared.EntityUpdate;
+import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
@@ -43,7 +44,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		requireNotNull(idMapper, "idMapper");
 		
 		typeDomain = edrMapper.getTypeDomain();
-		entities = new EntityStore(typeDomain);
+		entities = new EntityStore(typeDomain, true);
 		
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug("PojoDataSource created new type domain:\n" + EDRDescriber.describeTypeDomain(typeDomain));
@@ -98,9 +99,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	@Override
 	public ObjectGraphValue createSnapshot() {
 		Entity[] allEntities = entities.getAllEntities();
-		EntityValue[] entityValues = new EntityValue[allEntities.length];
+		EntityValueMessage[] entityValues = new EntityValueMessage[allEntities.length];
 		for (int i=0; i<allEntities.length; i++) {
-			entityValues[i] = EntityValue.build(allEntities[i]);
+			entityValues[i] = EntityValueMessage.build(allEntities[i]);
 		}
 		return new ObjectGraphValue(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
 	}
@@ -136,34 +137,29 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 */
 	public void setEntityObjects(Object ... entityObjects) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
-		ArrayBuilder completeEntities = new ArrayBuilder(EntityValue.class);
-		ArrayBuilder entityDiffs = new ArrayBuilder(EntityDiff.class);
+		ArrayBuilder completeEntities = new ArrayBuilder(EntityValueMessage.class);
+		ArrayBuilder entityDiffs = new ArrayBuilder(EntityDiffMessage.class);
 		for (int i=0; i<entityObjects.length; i++) {
 			long id = idMapper.getId(entityObjects[i]);
 			Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
 			Entity similar = entities.getSimilar(newEntity);
 			if (similar == null) {
-				completeEntities.add(EntityValue.build(newEntity));
-				entities.addNew(newEntity);
+				completeEntities.add(EntityValueMessage.build(newEntity));
 			} else {
-				EntityDiff diff = EntityDiff.build(similar, newEntity);
+				EntityUpdate diff = EntityDiffMessage.build(similar, newEntity);
 				if (diff != null) {
 					if (OgreLog.isInfoEnabled()) {
 						OgreLog.info("PojDataSource: detected change on " + similar);
 					}
 					entityDiffs.add(diff);
-					entities.replace(newEntity);
-				} else {
-					if (OgreLog.isDebugEnabled()) {
-						OgreLog.debug("PojoDataSource: no changes on " + similar);
-					}
 				}
 			}
+			entities.put(newEntity);
 		}
-		sendUpdateMessage((EntityValue[]) completeEntities.buildArray(), (EntityDiff[]) entityDiffs.buildArray());
+		sendUpdateMessage((EntityValueMessage[]) completeEntities.buildArray(), (EntityDiffMessage[]) entityDiffs.buildArray());
 	}
 
-	private void sendUpdateMessage(EntityValue[] newEntities, EntityDiff[] entityDiffs) {
+	private void sendUpdateMessage(EntityValueMessage[] newEntities, EntityDiffMessage[] entityDiffs) {
 		//TODO debug log describe update message here
 		if (updateMessageListener != null) {
 			updateMessageListener.acceptUpdateMessage(new UpdateMessage(

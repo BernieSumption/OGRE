@@ -1,11 +1,10 @@
 package com.berniecode.ogre.enginelib.server;
 
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
-import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleMap;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
+import com.berniecode.ogre.enginelib.platformhooks.StringMap;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
-import com.berniecode.ogre.enginelib.shared.SimpleMap;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
@@ -26,7 +25,7 @@ public class ServerEngine implements UpdateMessageListener {
 	private boolean initialised = false;
 	
 	// A map of type domain id to TypeDomain object
-	private SimpleMap typeDomains = new NativeSimpleMap();
+	private StringMap typeDomains = new StringMap();
 	
 	//
 	// INITIALISATION
@@ -77,7 +76,6 @@ public class ServerEngine implements UpdateMessageListener {
 			DataSource dataSource = dataSources[i];
 			TypeDomain typeDomain = dataSource.getTypeDomain();
 			String tdId = typeDomain.getTypeDomainId();
-			//TODO unit test with multiple data sources
 			if (typeDomains.contains(tdId) && typeDomains.get(tdId) != typeDomain) {
 				throw new OgreException("Two DataSource objects provide the same type domain id ('"+ tdId +
 						"') but the TypeDomain objects returned from DataSource.getTypeDomain() are different.");

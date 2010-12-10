@@ -9,15 +9,15 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
  * 
  * @author Bernie Sumption
  */
-//TODO serious clean-up of public API
 public class EntityStore {
 	
 	private final TypeDomain typeDomain;
-	
 	private final EntityMap[] entityMaps;
+	private final boolean allowReplace;
 	
-	public EntityStore(TypeDomain typeDomain) {
+	public EntityStore(TypeDomain typeDomain, boolean allowReplace) {
 		this.typeDomain = typeDomain;
+		this.allowReplace = allowReplace;
 		entityMaps = new EntityMap[typeDomain.getEntityTypes().length];
 		for (int i=0; i<entityMaps.length; i++) {
 			entityMaps[i] = new EntityMap();
@@ -54,21 +54,15 @@ public class EntityStore {
 	public Entity getSimilar(EntityReference reference) {
 		return get(typeDomain.getEntityType(reference.getEntityTypeIndex()), reference.getEntityId());
 	}
-	
-	public void replace(Entity entity) {
-		entityMaps[entity.getEntityTypeIndex()].put(entity);
-	}
 
 	/**
 	 * Add an {@link Entity} that does not already exist in this store.
 	 * 
 	 * @throws OgreException if this store already contains an entity with the same name and ID
 	 */
-	//TODO test with existing entity
-	public void addNew(Entity entity) throws OgreException {
-		Entity existing = getSimilar(entity);
-		if (existing != null) {
-			throw new OgreException("The entity " + existing + " already exists in this store");
+	public void put(Entity entity) throws OgreException {
+		if (!allowReplace && containsSimilar(entity)) {
+			throw new OgreException("The entity " + getSimilar(entity) + " already exists in this store");
 		}
 		entityMaps[entity.getEntityTypeIndex()].put(entity);
 	}

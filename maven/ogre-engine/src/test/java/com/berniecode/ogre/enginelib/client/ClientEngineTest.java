@@ -26,7 +26,5 @@ public class ClientEngineTest extends OgreTestCase {
 			ce.getTypeDomain();
 			fail("ClientEngine.getTypeDomain() should throw an exception if called before initialise()");
 		} catch (InitialisationException e) {}
-		
-		//TODO comprehensive tests of mergeCompleteEntities and mergeEntityDiffs
 	}
 }

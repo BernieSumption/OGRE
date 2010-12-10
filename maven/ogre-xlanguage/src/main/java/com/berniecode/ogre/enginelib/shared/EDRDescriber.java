@@ -69,14 +69,14 @@ public class EDRDescriber {
 		  .add(objectGraph.getTypeDomainId())
 		  .add("/")
 		  .add(objectGraph.getObjectGraphId());
-		EntityValue[] entities = objectGraph.getEntityValues();
+		EntityValueMessage[] entities = objectGraph.getEntityValues();
 		for (int i=0; i<entities.length; i++) {
 			sc.add("\n");
 			doDescribeEntity(typeDomain, entities[i], sc, indent+1);
 		}
 	}
 
-	private static void doDescribeEntity(TypeDomain typeDomain, EntityValue entityValue, StringConcatenator sc, int indent) {
+	private static void doDescribeEntity(TypeDomain typeDomain, EntityValueMessage entityValue, StringConcatenator sc, int indent) {
 		EntityType entityType = typeDomain.getEntityType(entityValue.getEntityTypeIndex());
 		doIndent(sc, indent);
 		sc.add("Entity ")

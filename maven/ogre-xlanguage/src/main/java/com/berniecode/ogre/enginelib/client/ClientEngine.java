@@ -6,9 +6,9 @@ import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.Entity;
-import com.berniecode.ogre.enginelib.shared.EntityDiff;
+import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.EntityValue;
+import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
@@ -91,12 +91,12 @@ public class ClientEngine implements UpdateMessageListener {
 		requireNotNull(objectGraphId, "objectGraphId");
 		typeDomain = downloadAdapter.loadTypeDomain(typeDomainId);
 		
-		entities = new EntityStore(typeDomain);
+		entities = new EntityStore(typeDomain, false);
 		
-		ObjectGraphValue objectGraph = downloadAdapter.loadObjectGraph(typeDomain, objectGraphId);
-		EntityValue[] initialValues = objectGraph.getEntityValues();
+		ObjectGraphValue objectGraph = downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId);
+		EntityValueMessage[] initialValues = objectGraph.getEntityValues();
 		for (int i=0; i<initialValues.length; i++) {
-			entities.addNew(initialValues[i].toEntity(typeDomain));
+			entities.put(initialValues[i].toEntity(typeDomain));
 		}
 		
 		messageAdapter.subscribeToUpdateMessages(typeDomainId, objectGraphId, this);
@@ -153,38 +153,38 @@ public class ClientEngine implements UpdateMessageListener {
 	 * an entity with the same type and id, the existing entity will be updated with values from the
 	 * new entity. Otherwise, the new entity will be added to this engine.
 	 */
-	void mergeCompleteEntities(EntityValue[] entityValues) {
+	void mergeCompleteEntities(EntityValueMessage[] entityValues) {
 		for (int i=0; i<entityValues.length; i++) {
-			EntityValue entityValue = entityValues[i];
+			EntityValueMessage entityValue = entityValues[i];
 			Entity existingEntity = entities.getSimilar(entityValue);
 			if (existingEntity != null) {
 				if (OgreLog.isInfoEnabled()) {
 					OgreLog.info("ClientStore: replacing entity " + entityValue + " with new complete entity");
 				}
-				existingEntity.updateFromEntityValue(entityValue);
+				existingEntity.update(entityValue);
 			} else {
 				if (OgreLog.isInfoEnabled()) {
 					OgreLog.info("ClientStore: adding new entity " + entityValue);
 				}
-				entities.addNew(entityValue.toEntity(typeDomain));
+				entities.put(entityValue.toEntity(typeDomain));
 			}
 		}
 	}
 
 	/**
-	 * Merge a number of {@link EntityDiff} objects
+	 * Merge a number of {@link EntityDiffMessage} objects
 	 */
-	private void mergeEntityDiffs(EntityDiff[] entityDiffs) {
+	private void mergeEntityDiffs(EntityDiffMessage[] entityDiffs) {
 		for (int i=0; i<entityDiffs.length; i++) {
-			EntityDiff diff = entityDiffs[i];
-			Entity target = entities.get(diff.getEntityType(), diff.getId());
+			EntityDiffMessage diff = entityDiffs[i];
+			Entity target = entities.getSimilar(diff);
 			if (target == null) {
 				OgreLog.error("ClientEngine: received diff '" + diff + "' but there is no local entity of the same ID and type to apply it to");
 			} else {
 				if (OgreLog.isInfoEnabled()) {
 					OgreLog.info("ClientStore: updating values of " + target);
 				}
-				target.updateFromEntityDiff(diff);
+				target.update(diff);
 			}
 		}
 	}
@@ -195,9 +195,9 @@ public class ClientEngine implements UpdateMessageListener {
 	 */
 	public ObjectGraphValue createSnapshot() {
 		Entity[] allEntities = entities.getAllEntities();
-		EntityValue[] entityValues = new EntityValue[allEntities.length];
+		EntityValueMessage[] entityValues = new EntityValueMessage[allEntities.length];
 		for (int i=0; i<allEntities.length; i++) {
-			entityValues[i] = EntityValue.build(allEntities[i]);
+			entityValues[i] = EntityValueMessage.build(allEntities[i]);
 		}
 		return new ObjectGraphValue(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
 	}
