@@ -6,6 +6,7 @@ import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
@@ -140,6 +141,7 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 	public void acceptUpdateMessage(UpdateMessage message) {
 		OgreLog.info("Accepted update message " + message);
 		mergeCompleteEntities(message.getCompleteEntities());
+		mergeEntityDiffs(message.getEntityDiffs());
 	}
 
 	/**
@@ -161,6 +163,21 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 				}
 				entities.addNew(completeEntity);
 			}
+		}
+	}
+
+	/**
+	 * Merge a number of {@link EntityDiff} objects
+	 */
+	private void mergeEntityDiffs(EntityDiff[] entityDiffs) {
+		for (int i=0; i<entityDiffs.length; i++) {
+			EntityDiff diff = entityDiffs[i];
+			Entity target = entities.get(diff.getEntityType(), diff.getId());
+			Entity newEntity = diff.apply(target);
+			if (OgreLog.isInfoEnabled()) {
+				OgreLog.info("ClientStore: updating values of " + newEntity);
+			}
+			entities.replace(newEntity);
 		}
 	}
 }

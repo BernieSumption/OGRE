@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
 
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.platformhooks.Convert;
+import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 
 public class TestStaticUtilityClasses extends TestCase {
@@ -15,7 +15,7 @@ public class TestStaticUtilityClasses extends TestCase {
 		doTestNoArgPrivateConstructor(EDRDescriber.class);
 		doTestNoArgPrivateConstructor(Utils.class);
 		doTestNoArgPrivateConstructor(OgreLog.class);
-		doTestNoArgPrivateConstructor(Convert.class);
+		doTestNoArgPrivateConstructor(ValueUtils.class);
 	}
 	
 	

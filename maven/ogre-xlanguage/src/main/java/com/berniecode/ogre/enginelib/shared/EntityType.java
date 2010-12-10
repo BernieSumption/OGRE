@@ -6,6 +6,7 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
+//TODO try making this immutable
 public class EntityType implements Named {
 
 	private String name;

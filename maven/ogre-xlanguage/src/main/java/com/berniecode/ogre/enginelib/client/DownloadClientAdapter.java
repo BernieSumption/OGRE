@@ -20,5 +20,7 @@ public interface DownloadClientAdapter {
 	/**
 	 * Load a snapshot of the state of an object graph 
 	 */
+	//TODO change to ObjectGraphValue, being (typeDomainId, objectGraphId and array of EntityValue)
+	//TODO change TypeDomain typeDomain to String typeDomainId, in light of above
 	ObjectGraph loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException;
 }

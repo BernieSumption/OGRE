@@ -6,7 +6,7 @@ import java.util.Comparator;
 import com.berniecode.ogre.enginelib.shared.Named;
 
 /**
- * Compare two {@link Named} objects
+ * ValueUtils two {@link Named} objects
  *
  * @author Bernie Sumption
  */

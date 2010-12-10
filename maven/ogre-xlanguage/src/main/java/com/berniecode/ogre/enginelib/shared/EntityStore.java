@@ -1,9 +1,9 @@
 package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.platformhooks.Convert;
 import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleList;
 import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleMap;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
+import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
 
 /**
  * A big ol' sack full of {@link Entity}s belonging to a single {@link TypeDomain}
@@ -19,7 +19,7 @@ public class EntityStore {
 	 * Check whether this store contains an entity with a specified type and ID
 	 */
 	public boolean contains(EntityType entityType, long id) {
-		return getEntityMap(entityType).contains(Convert.longToObject(id));
+		return getEntityMap(entityType).contains(ValueUtils.boxLong(id));
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class EntityStore {
 	 *         no such {@link Entity} in the store
 	 */
 	public Entity get(EntityType entityType, long id) {
-		return (Entity) getEntityMap(entityType).get(Convert.longToObject(id));
+		return (Entity) getEntityMap(entityType).get(ValueUtils.boxLong(id));
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class EntityStore {
 	 * if such an entity exists
 	 */
 	public void replace(Entity entity) {
-		getEntityMap(entity.getEntityType()).put(Convert.longToObject(entity.getId()), entity);
+		getEntityMap(entity.getEntityType()).put(ValueUtils.boxLong(entity.getId()), entity);
 	}
 
 	private SimpleMap getEntityMap(EntityType entityType) {

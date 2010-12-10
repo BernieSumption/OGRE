@@ -6,6 +6,7 @@ import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleList;
 import com.berniecode.ogre.enginelib.server.DataSource;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.ObjectGraph;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphSnapshot;
@@ -131,6 +132,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	public void setEntityObjects(Object ... entityObjects) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
 		SimpleList completeEntities = new NativeSimpleList();
+		SimpleList entityDiffs = new NativeSimpleList();
 		for (int i=0; i<entityObjects.length; i++) {
 			long id = idMapper.getId(entityObjects[i]);
 			Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
@@ -139,20 +141,32 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 				completeEntities.add(newEntity);
 				entities.addNew(newEntity);
 			} else {
-				//TODO implement entity updates here
-				completeEntities.add(newEntity);
-				entities.replace(newEntity);
+				EntityDiff diff = EntityDiff.build(similar, newEntity);
+				if (diff != null) {
+					if (OgreLog.isInfoEnabled()) {
+						OgreLog.info("PojDataSource: detected change on " + similar);
+					}
+					entityDiffs.add(diff);
+					entities.replace(newEntity);
+				} else {
+					if (OgreLog.isDebugEnabled()) {
+						OgreLog.debug("PojoDataSource: no changes on " + similar);
+					}
+				}
 			}
 		}
-		sendUpdateMessage(completeEntities);
+		sendUpdateMessage(completeEntities, entityDiffs);
 	}
 
-	private void sendUpdateMessage(SimpleList completeEntities) {
+	private void sendUpdateMessage(SimpleList completeEntities, SimpleList entityDiffs) {
 		Entity[] newEntitiesArr = new Entity[completeEntities.size()];
 		completeEntities.copyToArray(newEntitiesArr);
+		EntityDiff[] entityDiffsArr = new EntityDiff[entityDiffs.size()];
+		entityDiffs.copyToArray(entityDiffsArr);
+		//TODO debug log describe update message here
 		if (updateMessageListener != null) {
 			updateMessageListener.acceptUpdateMessage(new UpdateMessage(
-					typeDomain.getTypeDomainId(), objectGraphId, newEntitiesArr));
+					typeDomain.getTypeDomainId(), objectGraphId, newEntitiesArr, entityDiffsArr));
 		}
 	}
 

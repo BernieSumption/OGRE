@@ -11,7 +11,7 @@ public class Entity {
 
 	private final EntityType entityType;
 	private final long id;
-	private Object[] values;
+	private final Object[] values;
 
 	public Entity(EntityType entityType, long id, Object[] values) {
 		this.entityType = entityType;
@@ -38,10 +38,6 @@ public class Entity {
 	 */
 	public Object getPropertyValue(Property property) {
 		return values[property.getPropertyIndex()];
-	}
-
-	public void setValues(Object[] values) {
-		this.values = values;
 	}
 	
 	public String toString() {
