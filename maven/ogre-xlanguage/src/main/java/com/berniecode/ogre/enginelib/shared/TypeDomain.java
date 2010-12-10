@@ -8,8 +8,8 @@ package com.berniecode.ogre.enginelib.shared;
  */
 public class TypeDomain {
 
-	private EntityType[] entityTypes;
-	private String typeDomainId;
+	private final EntityType[] entityTypes;
+	private final String typeDomainId;
 
 	public TypeDomain(String typeDomainId, EntityType[] entityTypes) {
 		this.typeDomainId = typeDomainId;
@@ -29,20 +29,12 @@ public class TypeDomain {
 		return typeDomainId;
 	}
 
-	public void setTypeDomainId(String typeDomainId) {
-		this.typeDomainId = typeDomainId;
-	}
-
 	/**
 	 * @return All {@link EntityType}s in this {@link TypeDomain}. The returned array is not safe to
 	 *         modify. It must be copied before being passed outside of OGRE
 	 */
 	public EntityType[] getEntityTypes() {
 		return entityTypes;
-	}
-
-	public void setEntityTypes(EntityType[] entityTypes) {
-		this.entityTypes = entityTypes;
 	}
 
 }

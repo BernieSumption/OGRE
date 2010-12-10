@@ -7,6 +7,7 @@ package com.berniecode.ogre.enginelib.platformhooks;
  * 
  * @jtoxNative - not translated into other languages
  */
+//TODO unit tests
 public class ValueUtils {
 	
 	private ValueUtils() {}

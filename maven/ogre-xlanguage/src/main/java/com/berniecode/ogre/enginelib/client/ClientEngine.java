@@ -140,6 +140,7 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 	 */
 	public void acceptUpdateMessage(UpdateMessage message) {
 		OgreLog.info("Accepted update message " + message);
+		//TODO describe and log update message
 		mergeCompleteEntities(message.getCompleteEntities());
 		mergeEntityDiffs(message.getEntityDiffs());
 	}

@@ -26,6 +26,7 @@ public class EntityDiff {
 	 * @return An {@link EntityDiff} object that if applied to the entity <code>from</code> will
 	 *         change its values to be equal to those of <code>to</code>
 	 */
+	//TODO: tests, and EDR describing
 	public static EntityDiff build(Entity from, Entity to) {
 		if (from.getEntityType() != to.getEntityType()) {
 			throw new OgreException("Can't build an EntityDiff from " + from + " to " + to + " because their entityTypes are different");

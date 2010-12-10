@@ -24,9 +24,10 @@ public class NativeSimpleMap implements SimpleMap {
 		return map.get(key);
 	}
 
+	//TODO unit test of this method
 	public void put(Object key, Object value) {
 		if (!(key instanceof String || key instanceof Long || key instanceof Integer)) {
-			throw new OgreException("Only Strings and numbers are suitable for map keys, do to" +
+			throw new OgreException("Only Strings and numbers are suitable for map keys, due to" +
 					" weirdness with using object keys in other languages.");
 		}
 		map.put(key, value);

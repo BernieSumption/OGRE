@@ -25,11 +25,11 @@
   </build>
 
   <dependencies>
-    <dependency>
+    <!--dependency>
       <groupId>com.berniecode.ogre</groupId>
       <artifactId>ogre-xlanguage</artifactId>
       <version>0.1-SNAPSHOT</version>
-    </dependency>
+    </dependency-->
     
     <dependency>
       <groupId>junit</groupId>

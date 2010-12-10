@@ -1,6 +1,6 @@
 package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleList;
+import com.berniecode.ogre.enginelib.platformhooks.ArrayBuilder;
 import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleMap;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
@@ -50,6 +50,7 @@ public class EntityStore {
 	 * 
 	 * @throws OgreException if this store already contains an entity with the same name and ID
 	 */
+	//TODO test with existing entity
 	public void addNew(Entity entity) throws OgreException {
 		if (contains(entity.getEntityType(), entity.getId())) {
 			throw new OgreException("The entity " + entity + " already exists in this store");
@@ -73,15 +74,13 @@ public class EntityStore {
 	}
 
 	public Entity[] getAllEntities() {
-		SimpleList resultList = new NativeSimpleList();
+		ArrayBuilder resultList = new ArrayBuilder(Entity.class);
 		Object[] collections = entities.getValues();
 		for (int i=0; i<collections.length; i++) {
 			SimpleMap collection = (SimpleMap) collections[i];
 			resultList.addAll(collection.getValues());
 		}
-		Entity[] result = new Entity[resultList.size()];
-		resultList.copyToArray(result);
-		return result;
+		return (Entity[]) resultList.buildArray();
 	}
 
 

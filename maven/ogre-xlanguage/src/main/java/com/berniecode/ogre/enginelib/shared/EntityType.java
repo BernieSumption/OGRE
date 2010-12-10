@@ -6,11 +6,10 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-//TODO try making this immutable
 public class EntityType implements Named {
 
-	private String name;
-	private Property[] properties;
+	private final String name;
+	private final Property[] properties;
 
 	public EntityType(String name, Property[] properties) {
 		this.name = name;
@@ -24,19 +23,12 @@ public class EntityType implements Named {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	/**
 	 * @return The {@link Property}s of this entity type.
 	 */
+	//TODO use immutable accessor
 	public Property[] getProperties() {
 		return properties;
-	}
-
-	public void setProperties(Property[] properties) {
-		this.properties = properties;
 	}
 	
 	public String toString() {
