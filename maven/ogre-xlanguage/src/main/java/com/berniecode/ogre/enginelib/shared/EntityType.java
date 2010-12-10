@@ -6,14 +6,23 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-public class EntityType implements Named {
+public class EntityType {
 
+	private final int index;
 	private final String name;
 	private final Property[] properties;
 
-	public EntityType(String name, Property[] properties) {
+	public EntityType(int index, String name, Property[] properties) {
+		this.index = index;
 		this.name = name;
 		this.properties = properties;
+	}
+
+	/**
+	 * @return The index of this {@link EntityType} in its parent {@link TypeDomain}
+	 */
+	public int getEntityTypeIndex() {
+		return index;
 	}
 
 	/**
@@ -26,9 +35,15 @@ public class EntityType implements Named {
 	/**
 	 * @return The {@link Property}s of this entity type.
 	 */
-	//TODO use immutable accessor
-	public Property[] getProperties() {
-		return properties;
+	public Property getProperty(int propertyIndex) {
+		return properties[propertyIndex];
+	}
+
+	/**
+	 * @return The number of {@link Property}s in this entity type.
+	 */
+	public int getPropertyCount() {
+		return properties.length;
 	}
 	
 	public String toString() {

@@ -64,17 +64,17 @@ public class EndToEndTest extends OgreTestCase {
 		assertTrue("Subsequent calls to ClientEngineTest.getTypedomain() should return the same object, not a new TypeDomain fetched over the bridge",
 				clientEngine.getTypeDomain() == clientEngine.getTypeDomain());
 		
-		assertEquals(
+		assertTypeDomainState(
 				"TypeDomain com.berniecode.ogre.test.TypeDomain" +
-				"  EntityType com.berniecode.ogre.EntityClassWithAllFields" +
-				"    8 bit integer property non_nullable_byte" +
-				"    32 bit integer property non_nullable_int" +
-				"    64 bit integer property non_nullable_long" +
-				"    16 bit integer property non_nullable_short" +
-				"    nullable 8 bit integer property nullable_byte" +
-				"    nullable 32 bit integer property nullable_int" +
-				"    nullable 64 bit integer property nullable_long" +
-				"    nullable 16 bit integer property nullable_short",
+				"  0. EntityType com.berniecode.ogre.EntityClassWithAllFields" +
+				"       8 bit integer property non_nullable_byte" +
+				"       32 bit integer property non_nullable_int" +
+				"       64 bit integer property non_nullable_long" +
+				"       16 bit integer property non_nullable_short" +
+				"       nullable 8 bit integer property nullable_byte" +
+				"       nullable 32 bit integer property nullable_int" +
+				"       nullable 64 bit integer property nullable_long" +
+				"       nullable 16 bit integer property nullable_short",
 				clientEngine.getTypeDomain());
 
 	}
@@ -82,7 +82,7 @@ public class EndToEndTest extends OgreTestCase {
 	public void testCorrectObjectsTransferred() throws Exception {
 		ClientEngine clientEngine = createClientEngine();
 		 
-		assertEquals(
+		assertClientEngineState(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    non_nullable_byte=1" +
@@ -97,7 +97,7 @@ public class EndToEndTest extends OgreTestCase {
 		
 	}
 	
-	public void testNewObjectsPropagated() throws Exception {
+	public void testChangesPropagated() throws Exception {
 		ClientEngine clientEngine = createClientEngine();
 		
 		initialEntityObject.setNullableInt(null);
@@ -105,7 +105,7 @@ public class EndToEndTest extends OgreTestCase {
 
 		dataSource.setEntityObjects(initialEntityObject);
 		 
-		assertEquals(
+		assertClientEngineState(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    non_nullable_byte=1" +
@@ -119,12 +119,12 @@ public class EndToEndTest extends OgreTestCase {
 			clientEngine);
 	}
 	
-	public void testChangesPropagated() throws Exception {
+	public void testNewObjectsPropagated() throws Exception {
 		ClientEngine clientEngine = createClientEngine();
 
 		dataSource.setEntityObjects(new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L));
 		 
-		assertEquals(
+		assertClientEngineState(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    non_nullable_byte=1" +

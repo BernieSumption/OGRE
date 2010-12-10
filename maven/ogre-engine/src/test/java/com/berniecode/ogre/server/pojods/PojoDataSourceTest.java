@@ -10,11 +10,11 @@ public class PojoDataSourceTest extends OgreTestCase {
 		
 		PojoDataSource dataSource = createInitialisedDataSource(SimpleEntityClassOne.class, SimpleEntityClassNoFields.class);
 		
-		assertEquals(
+		assertTypeDomainState(
 			"TypeDomain com.berniecode.ogre.test.TypeDomain" +
-			"  EntityType com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields" +
-			"  EntityType com.berniecode.ogre.server.pojods.SimpleEntityClassOne" +
-			"    32 bit integer property public_int_property",
+			"  0. EntityType com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields" +
+			"  1. EntityType com.berniecode.ogre.server.pojods.SimpleEntityClassOne" +
+			"       32 bit integer property public_int_property",
 			dataSource.getTypeDomain());
 	}
 	
@@ -47,12 +47,12 @@ public class PojoDataSourceTest extends OgreTestCase {
 
 		assertTrue(dataSource.containsEntityObject(e0));
 
-		assertEquals(
+		assertObjectGraphState(
 				"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 				"  Entity com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields#1" +
 				"  Entity com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields#2" +
 				"  Entity com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields#3",
-				dataSource.createSnapshot());
+				dataSource.createSnapshot(), dataSource.getTypeDomain());
 
 		assertEquals(1, dataSource.getIdForObject(e0));
 		assertEquals(3, dataSource.getIdForObject(e1));
@@ -104,19 +104,19 @@ public class PojoDataSourceTest extends OgreTestCase {
 	public void testInterfaceTypeCanBeUsedForMapping() {
 		PojoDataSource dataSource = createInitialisedDataSource(SimpleInterface.class);
 
-		assertEquals(
+		assertTypeDomainState(
 			"TypeDomain com.berniecode.ogre.test.TypeDomain" +
-			"  EntityType com.berniecode.ogre.server.pojods.SimpleInterface" +
-			"    32 bit integer property public_int_property",
+			"  0. EntityType com.berniecode.ogre.server.pojods.SimpleInterface" +
+			"       32 bit integer property public_int_property",
 			dataSource.getTypeDomain());
 		
 		dataSource.setEntityObjects(new SimpleEntityClassOne());
 
-		assertEquals(
+		assertObjectGraphState(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.server.pojods.SimpleInterface#1" +
 			"    public_int_property=10",
-			dataSource.createSnapshot());
+			dataSource.createSnapshot(), dataSource.getTypeDomain());
 	}
 	
 	public void testTypesCantBeSupertypesOfEachOther() {
@@ -149,19 +149,19 @@ public class PojoDataSourceTest extends OgreTestCase {
 		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
 		dataSource.initialise();
 
-		assertEquals(
+		assertTypeDomainState(
 				"TypeDomain custom-typedomain-name" +
-				"  EntityType custom-entity-name" +
-				"    32 bit integer property public_int_property",
+				"  0. EntityType custom-entity-name" +
+				"       32 bit integer property public_int_property",
 				dataSource.getTypeDomain());
 		
 		dataSource.setEntityObjects(new SimpleEntityClassOne());
 
-		assertEquals(
+		assertObjectGraphState(
 				"ObjectGraph custom-typedomain-name/TestObjectGraph" +
 				"  Entity custom-entity-name#42" +
 				"    public_int_property=10",
-				dataSource.createSnapshot());
+				dataSource.createSnapshot(), dataSource.getTypeDomain());
 	}
 
 	private PojoDataSource createInitialisedDataSource(Class<?> ... classes) {

@@ -6,7 +6,7 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-public class Property implements Named {
+public class Property {
 
 	private final String name;
 	private final PropertyType propertyType;

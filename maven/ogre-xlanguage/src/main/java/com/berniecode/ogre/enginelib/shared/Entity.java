@@ -1,5 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
+import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
+
 
 /**
  * A single object in an {@link ObjectGraph}, uniquely identified by a tuple of its entity type and
@@ -7,7 +9,7 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-public class Entity {
+public class Entity implements EntityReference {
 
 	private final EntityType entityType;
 	private final long id;
@@ -29,7 +31,7 @@ public class Entity {
 	/**
 	 * @return The ID of this entity, unique within the scope of its entity type
 	 */
-	public long getId() {
+	public long getEntityId() {
 		return id;
 	}
 
@@ -42,5 +44,22 @@ public class Entity {
 	
 	public String toString() {
 		return entityType + "#" + id;
+	}
+
+	public Object[] copyValues() {
+		return ValueUtils.cloneArray(values);
+	}
+
+	public int getEntityTypeIndex() {
+		return entityType.getEntityTypeIndex();
+	}
+
+	public void updateFromEntityValue(EntityValue entityValue) {
+		//TODO merge values here
+	}
+
+	public void updateFromEntityDiff(EntityDiff diff) {
+		// TODO Auto-generated method stub
+		
 	}
 }

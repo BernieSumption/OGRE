@@ -11,10 +11,10 @@ public class UpdateMessage {
 
 	private final String typeDomainId;
 	private final String objectGraphId;
-	private final Entity[] entities;
+	private final EntityValue[] entities;
 	private final EntityDiff[] entityDiffs;
 
-	public UpdateMessage(String typeDomainId, String objectGraphId, Entity[] entities, EntityDiff[] entityDiffs) {
+	public UpdateMessage(String typeDomainId, String objectGraphId, EntityValue[] entities, EntityDiff[] entityDiffs) {
 		this.typeDomainId = typeDomainId;
 		this.objectGraphId = objectGraphId;
 		this.entities = entities;
@@ -40,7 +40,7 @@ public class UpdateMessage {
 	/**
 	 * @return {@link Entity}s that have been created or updated.
 	 */
-	public Entity[] getCompleteEntities() {
+	public EntityValue[] getEntityValues() {
 		return entities;
 	}
 

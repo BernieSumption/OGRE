@@ -2,7 +2,7 @@ package com.berniecode.ogre.enginelib.client;
 
 import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.shared.ObjectGraph;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -22,5 +22,5 @@ public interface DownloadClientAdapter {
 	 */
 	//TODO change to ObjectGraphValue, being (typeDomainId, objectGraphId and array of EntityValue)
 	//TODO change TypeDomain typeDomain to String typeDomainId, in light of above
-	ObjectGraph loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException;
+	ObjectGraphValue loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException;
 }

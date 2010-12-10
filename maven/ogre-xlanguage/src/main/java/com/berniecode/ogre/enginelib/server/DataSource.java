@@ -1,6 +1,6 @@
 package com.berniecode.ogre.enginelib.server;
 
-import com.berniecode.ogre.enginelib.shared.ObjectGraph;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
@@ -23,7 +23,7 @@ public interface DataSource {
 	/**
 	 * @return A snapshot of the state of the object graph
 	 */
-	ObjectGraph createSnapshot();
+	ObjectGraphValue createSnapshot();
 
 	/**
 	 * Set the listener that will be notified about updates to the object graph.

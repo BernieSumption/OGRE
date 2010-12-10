@@ -3,7 +3,6 @@ package com.berniecode.ogre.server.pojods;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,19 +82,23 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	protected final void doInitialise() {
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(classes, "classes");
+
+		Arrays.sort(classes, new ClassNameComparator());
+
+		List<EntityType> entityTypes = new ArrayList<EntityType>();
 		
+		int index = 0;
 		for (Class<?> klass : classes) {
 			for (Class<?> otherClass: classToEntityType.keySet()) {
 				if (otherClass.isAssignableFrom(klass) || klass.isAssignableFrom(otherClass)) {
 					throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is a supertype or subtype of '" + otherClass + "'");
 				}
 			}
-			classToEntityType.put(klass, createEntityType(klass));
+			EntityType entityType = createEntityType(index++, klass);
+			classToEntityType.put(klass, entityType);
+			entityTypes.add(entityType);
 		}
 		
-		List<EntityType> entityTypes = new ArrayList<EntityType>(classToEntityType.values());
-		
-		Collections.sort(entityTypes, NamedComparator.INSTANCE);
 
 		typeDomain = new TypeDomain(typeDomainId, entityTypes.toArray(new EntityType[0]));
 	}
@@ -114,8 +117,9 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 
 	/**
 	 * Convert a {@link Class} to an {@link EntityType}.
+	 * @param entityTypeIndex 
 	 */
-	protected EntityType createEntityType(Class<?> klass) {
+	protected EntityType createEntityType(int entityTypeIndex, Class<?> klass) {
 		if (klass.isAnonymousClass()) {
 			throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is an anonymous type");
 		}
@@ -139,7 +143,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			}
 		}
 		
-		return new EntityType(name, properties.toArray(new Property[0]));
+		return new EntityType(entityTypeIndex, name, properties.toArray(new Property[0]));
 	}
 
 	/**
@@ -201,8 +205,8 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		
 		List<Object> values = new ArrayList<Object>();
 		
-		for (Property property: entityType.getProperties()) {
-			values.add(getValueForProperty(entityObject, property));
+		for (int i=0; i<entityType.getPropertyCount(); i++) {
+			values.add(getValueForProperty(entityObject, entityType.getProperty(i)));
 		}
 		
 		return new Entity(entityType, id, values.toArray());

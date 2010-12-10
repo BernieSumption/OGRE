@@ -31,12 +31,12 @@ public class EDRDescriber {
 	
 	private static void doDescribeEntityType(EntityType entityType, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
-		sc.add("EntityType ");
+		sc.addNumber(entityType.getEntityTypeIndex());
+		sc.add(". EntityType ");
 		sc.add(entityType.getName());
-		Property[] properties = entityType.getProperties();
-		for (int i=0; i<properties.length; i++) {
+		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			sc.add("\n");
-			doDescribeProperty(properties[i], sc, indent+1);
+			doDescribeProperty(entityType.getProperty(i), sc, indent+1);
 		}
 	}
 
@@ -57,35 +57,36 @@ public class EDRDescriber {
 	// DESCRIBE OBJECT GRAPH
 	//
 
-	public static String describeObjectGraph(ObjectGraph objectGraph) {
+	public static String describeObjectGraph(TypeDomain typeDomain, ObjectGraphValue objectGraph) {
 		StringConcatenator sc = new StringConcatenator();
-		doDescribeObjectGraph(objectGraph, sc, 0);
+		doDescribeObjectGraph(typeDomain, objectGraph, sc, 0);
 		return sc.buildString();
 	}
 
-	private static void doDescribeObjectGraph(ObjectGraph objectGraph, StringConcatenator sc, int indent) {
+	private static void doDescribeObjectGraph(TypeDomain typeDomain, ObjectGraphValue objectGraph, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("ObjectGraph ")
-		  .add(objectGraph.getTypeDomain().getTypeDomainId())
+		  .add(objectGraph.getTypeDomainId())
 		  .add("/")
 		  .add(objectGraph.getObjectGraphId());
-		Entity[] entities = objectGraph.getEntities();
+		EntityValue[] entities = objectGraph.getEntityValues();
 		for (int i=0; i<entities.length; i++) {
 			sc.add("\n");
-			doDescribeEntity(entities[i], sc, indent+1);
+			doDescribeEntity(typeDomain, entities[i], sc, indent+1);
 		}
 	}
 
-	private static void doDescribeEntity(Entity entity, StringConcatenator sc, int indent) {
+	private static void doDescribeEntity(TypeDomain typeDomain, EntityValue entityValue, StringConcatenator sc, int indent) {
+		EntityType entityType = typeDomain.getEntityType(entityValue.getEntityTypeIndex());
 		doIndent(sc, indent);
 		sc.add("Entity ")
-		  .add(entity.getEntityType().getName())
+		  .add(entityType.getName())
 		  .add("#")
-		  .addNumber(entity.getId());
-		Property[] properties = entity.getEntityType().getProperties();
-		for (int i=0; i<properties.length; i++) {
+		  .addNumber(entityValue.getEntityId());
+		for (int i=0; i<entityType.getPropertyCount(); i++) {
+			Property property = entityType.getProperty(i);
 			sc.add("\n");
-			doDescribeValue(entity.getPropertyValue(properties[i]), properties[i], sc, indent+1);
+			doDescribeValue(entityValue.getValue(property.getPropertyIndex()), property, sc, indent+1);
 		}
 	}
 

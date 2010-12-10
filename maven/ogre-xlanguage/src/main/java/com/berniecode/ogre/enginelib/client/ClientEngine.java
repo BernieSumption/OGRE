@@ -8,7 +8,8 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.ObjectGraph;
+import com.berniecode.ogre.enginelib.shared.EntityValue;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
@@ -20,7 +21,7 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
  * 
  * @author Bernie Sumption
  */
-public class ClientEngine implements ObjectGraph, UpdateMessageListener {
+public class ClientEngine implements UpdateMessageListener {
 
 	private DownloadClientAdapter downloadAdapter;
 	private String typeDomainId;
@@ -29,7 +30,7 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 
 	private TypeDomain typeDomain;
 
-	private EntityStore entities = new EntityStore();
+	private EntityStore entities;
 	private MessageClientAdapter messageAdapter;
 
 	/**
@@ -90,10 +91,12 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 		requireNotNull(objectGraphId, "objectGraphId");
 		typeDomain = downloadAdapter.loadTypeDomain(typeDomainId);
 		
-		ObjectGraph objectGraph = downloadAdapter.loadObjectGraph(typeDomain, objectGraphId);
-		Entity[] initialEntities = objectGraph.getEntities();
-		for (int i=0; i<initialEntities.length; i++) {
-			entities.addNew(initialEntities[i]);
+		entities = new EntityStore(typeDomain);
+		
+		ObjectGraphValue objectGraph = downloadAdapter.loadObjectGraph(typeDomain, objectGraphId);
+		EntityValue[] initialValues = objectGraph.getEntityValues();
+		for (int i=0; i<initialValues.length; i++) {
+			entities.addNew(initialValues[i].toEntity(typeDomain));
 		}
 		
 		messageAdapter.subscribeToUpdateMessages(typeDomainId, objectGraphId, this);
@@ -141,7 +144,7 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 	public void acceptUpdateMessage(UpdateMessage message) {
 		OgreLog.info("Accepted update message " + message);
 		//TODO describe and log update message
-		mergeCompleteEntities(message.getCompleteEntities());
+		mergeCompleteEntities(message.getEntityValues());
 		mergeEntityDiffs(message.getEntityDiffs());
 	}
 
@@ -150,19 +153,20 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 	 * an entity with the same type and id, the existing entity will be updated with values from the
 	 * new entity. Otherwise, the new entity will be added to this engine.
 	 */
-	void mergeCompleteEntities(Entity[] completeEntities) {
-		for (int i=0; i<completeEntities.length; i++) {
-			Entity completeEntity = completeEntities[i];
-			if (entities.containsSimilar(completeEntity)) {
+	void mergeCompleteEntities(EntityValue[] entityValues) {
+		for (int i=0; i<entityValues.length; i++) {
+			EntityValue entityValue = entityValues[i];
+			Entity existingEntity = entities.getSimilar(entityValue);
+			if (existingEntity != null) {
 				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: replacing entity " + completeEntity + " with new complete entity");
+					OgreLog.info("ClientStore: replacing entity " + entityValue + " with new complete entity");
 				}
-				entities.replace(completeEntity);
+				existingEntity.updateFromEntityValue(entityValue);
 			} else {
 				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: adding new entity " + completeEntity);
+					OgreLog.info("ClientStore: adding new entity " + entityValue);
 				}
-				entities.addNew(completeEntity);
+				entities.addNew(entityValue.toEntity(typeDomain));
 			}
 		}
 	}
@@ -174,11 +178,27 @@ public class ClientEngine implements ObjectGraph, UpdateMessageListener {
 		for (int i=0; i<entityDiffs.length; i++) {
 			EntityDiff diff = entityDiffs[i];
 			Entity target = entities.get(diff.getEntityType(), diff.getId());
-			Entity newEntity = diff.apply(target);
-			if (OgreLog.isInfoEnabled()) {
-				OgreLog.info("ClientStore: updating values of " + newEntity);
+			if (target == null) {
+				OgreLog.error("ClientEngine: received diff '" + diff + "' but there is no local entity of the same ID and type to apply it to");
+			} else {
+				if (OgreLog.isInfoEnabled()) {
+					OgreLog.info("ClientStore: updating values of " + target);
+				}
+				target.updateFromEntityDiff(diff);
 			}
-			entities.replace(newEntity);
 		}
+	}
+	
+
+	/**
+	 * @return a snapshot of the state of this object graph, useful for debugging
+	 */
+	public ObjectGraphValue createSnapshot() {
+		Entity[] allEntities = entities.getAllEntities();
+		EntityValue[] entityValues = new EntityValue[allEntities.length];
+		for (int i=0; i<allEntities.length; i++) {
+			entityValues[i] = EntityValue.build(allEntities[i]);
+		}
+		return new ObjectGraphValue(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
 	}
 }

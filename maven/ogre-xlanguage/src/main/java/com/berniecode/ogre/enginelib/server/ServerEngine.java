@@ -4,15 +4,17 @@ import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NativeSimpleMap;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
-import com.berniecode.ogre.enginelib.shared.ObjectGraph;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
 import com.berniecode.ogre.enginelib.shared.SimpleMap;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
- * A ServerEngineTest provides access to any number of object graphs belonging to any number of type
- * domains
+ * A {@link ServerEngine} contains a number of object graphs
+ * 
+ * <p>
+ * Each object graph is managed by a {@link DataSource}.
  * 
  * @author Bernie Sumption
  */
@@ -109,7 +111,7 @@ public class ServerEngine implements UpdateMessageListener {
 	 * @throws NoSuchThingException if this {@link ServerEngineTest} does not manage the specified type
 	 *             domain or object graph
 	 */
-	public ObjectGraph getObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException {
+	public ObjectGraphValue getObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException {
 		requireInitialised(true, "getObjectGraph()");
 		for (int i = 0; i < dataSources.length; i++) {
 			String tdId = dataSources[i].getTypeDomain().getTypeDomainId();

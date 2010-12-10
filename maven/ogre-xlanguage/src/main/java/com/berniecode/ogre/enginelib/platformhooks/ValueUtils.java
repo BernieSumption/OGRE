@@ -1,5 +1,7 @@
 package com.berniecode.ogre.enginelib.platformhooks;
 
+import java.util.Arrays;
+
 /**
  * Cross-language operations for working with values
  *
@@ -61,8 +63,18 @@ public class ValueUtils {
 	/**
 	 * Convert a {@link Long} into an object suitable for use as a map key
 	 */
+	//TODO do I still need this after EntityMap refactor?
 	public static Object boxLong(long in) {
 		return Long.valueOf(in);
+	}
+
+	/**
+	 * Perform a shallow copy of an array.
+	 * 
+	 * @return a new array of the same type as the specified array, containing the same values.
+	 */
+	public static Object[] cloneArray(Object[] values) {
+		return Arrays.copyOf(values, values.length);
 	}
 
 }

@@ -6,6 +6,7 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
+//TODO: change this to EntityMap: long to Entity
 public interface SimpleMap {
 
 	/**

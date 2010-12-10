@@ -2,8 +2,9 @@ package com.berniecode.ogre;
 
 import junit.framework.TestCase;
 
+import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
-import com.berniecode.ogre.enginelib.shared.ObjectGraph;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 public abstract class OgreTestCase extends TestCase {
@@ -29,12 +30,16 @@ public abstract class OgreTestCase extends TestCase {
 		assertEquals(expected, actual);
 	}
 	
-	protected void assertEquals(String expected, TypeDomain actual) {
+	protected void assertTypeDomainState(String expected, TypeDomain actual) {
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeTypeDomain(actual));
 	}
 	
-	protected void assertEquals(String expected, ObjectGraph actual) {
-		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(actual));
+	protected void assertObjectGraphState(String expected, ObjectGraphValue actual, TypeDomain typeDomain) {
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(typeDomain, actual));
+	}
+	
+	protected void assertClientEngineState(String expected, ClientEngine actual) {
+		assertObjectGraphState(expected, actual.createSnapshot(), actual.getTypeDomain());
 	}
 
 }

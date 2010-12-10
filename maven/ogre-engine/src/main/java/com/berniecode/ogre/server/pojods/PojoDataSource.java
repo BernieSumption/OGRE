@@ -8,8 +8,8 @@ import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.ObjectGraph;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphSnapshot;
+import com.berniecode.ogre.enginelib.shared.EntityValue;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphValue;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
@@ -29,7 +29,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 
 	private TypeDomain typeDomain;
-	private EntityStore entities = new EntityStore();
+	private EntityStore entities;
 	
 	//
 	// INITIALISATION
@@ -43,6 +43,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		requireNotNull(idMapper, "idMapper");
 		
 		typeDomain = edrMapper.getTypeDomain();
+		entities = new EntityStore(typeDomain);
 		
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug("PojoDataSource created new type domain:\n" + EDRDescriber.describeTypeDomain(typeDomain));
@@ -95,8 +96,13 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	@Override
-	public ObjectGraph createSnapshot() {
-		return new ObjectGraphSnapshot(typeDomain, objectGraphId, entities.getAllEntities());
+	public ObjectGraphValue createSnapshot() {
+		Entity[] allEntities = entities.getAllEntities();
+		EntityValue[] entityValues = new EntityValue[allEntities.length];
+		for (int i=0; i<allEntities.length; i++) {
+			entityValues[i] = EntityValue.build(allEntities[i]);
+		}
+		return new ObjectGraphValue(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
 	}
 
 	@Override
@@ -130,14 +136,14 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 */
 	public void setEntityObjects(Object ... entityObjects) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
-		ArrayBuilder completeEntities = new ArrayBuilder(Entity.class);
+		ArrayBuilder completeEntities = new ArrayBuilder(EntityValue.class);
 		ArrayBuilder entityDiffs = new ArrayBuilder(EntityDiff.class);
 		for (int i=0; i<entityObjects.length; i++) {
 			long id = idMapper.getId(entityObjects[i]);
 			Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
 			Entity similar = entities.getSimilar(newEntity);
 			if (similar == null) {
-				completeEntities.add(newEntity);
+				completeEntities.add(EntityValue.build(newEntity));
 				entities.addNew(newEntity);
 			} else {
 				EntityDiff diff = EntityDiff.build(similar, newEntity);
@@ -154,10 +160,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 				}
 			}
 		}
-		sendUpdateMessage((Entity[]) completeEntities.buildArray(), (EntityDiff[]) entityDiffs.buildArray());
+		sendUpdateMessage((EntityValue[]) completeEntities.buildArray(), (EntityDiff[]) entityDiffs.buildArray());
 	}
 
-	private void sendUpdateMessage(Entity[] newEntities, EntityDiff[] entityDiffs) {
+	private void sendUpdateMessage(EntityValue[] newEntities, EntityDiff[] entityDiffs) {
 		//TODO debug log describe update message here
 		if (updateMessageListener != null) {
 			updateMessageListener.acceptUpdateMessage(new UpdateMessage(

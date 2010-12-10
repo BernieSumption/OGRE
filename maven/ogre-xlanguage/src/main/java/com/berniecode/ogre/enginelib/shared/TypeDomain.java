@@ -37,4 +37,11 @@ public class TypeDomain {
 		return entityTypes;
 	}
 
+	/**
+	 * @return A single {@link EntityType} identified by its order in this {@link TypeDomain}
+	 */
+	public EntityType getEntityType(int entityTypeIndex) {
+		return entityTypes[entityTypeIndex];
+	}
+
 }

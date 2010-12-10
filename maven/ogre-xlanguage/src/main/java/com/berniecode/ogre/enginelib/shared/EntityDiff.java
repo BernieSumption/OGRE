@@ -8,6 +8,7 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  *
  * @author Bernie Sumption
  */
+//TODO make this EntityDiffMessage
 public class EntityDiff {
 
 	private final EntityType entityType;
@@ -15,6 +16,7 @@ public class EntityDiff {
 	private final Object[] values;
 	private final boolean[] isChanged;
 
+	//TODO make it entityTypeIndex
 	public EntityDiff(EntityType entityType, long id, Object[] values, boolean[] changed) {
 		this.entityType = entityType;
 		this.id = id;
@@ -28,15 +30,16 @@ public class EntityDiff {
 	 */
 	//TODO: tests, and EDR describing
 	public static EntityDiff build(Entity from, Entity to) {
-		if (from.getEntityType() != to.getEntityType()) {
+		EntityType entityType = from.getEntityType();
+		if (entityType != to.getEntityType()) {
 			throw new OgreException("Can't build an EntityDiff from " + from + " to " + to + " because their entityTypes are different");
 		}
-		Property[] properties = from.getEntityType().getProperties();
-		Object[] changedValues = new Object[properties.length];
-		boolean[] changed = new boolean[properties.length];
+		int propertyCount = entityType.getPropertyCount();
+		Object[] changedValues = new Object[propertyCount];
+		boolean[] changed = new boolean[propertyCount];
 		boolean anyChanged = false;
-		for (int i=0; i<properties.length; i++) {
-			Property property = properties[i];
+		for (int i=0; i<propertyCount; i++) {
+			Property property = entityType.getProperty(i);
 			Object fromValue = from.getPropertyValue(property);
 			Object toValue = to.getPropertyValue(property);
 			if (!ValueUtils.valuesAreEquivalent(fromValue, toValue)) {
@@ -48,25 +51,7 @@ public class EntityDiff {
 		if (!anyChanged) {
 			return null;
 		}
-		return new EntityDiff(from.getEntityType(), from.getId(), changedValues, changed);
-	}
-
-	/**
-	 * Create a new {@link Entity} that is the result of applying these differences to another Entity.
-	 * 
-	 * <p>The target entity is not modified
-	 */
-	public Entity apply(Entity target) {
-		Property[] properties = target.getEntityType().getProperties();
-		Object[] newValues = new Object[properties.length];
-		for (int i=0; i<properties.length; i++) {
-			if (isChanged[i]) {
-				newValues[i] = values[i];
-			} else {
-				newValues[i] = target.getPropertyValue(properties[i]);
-			}
-		}
-		return new Entity(entityType, id, newValues);
+		return new EntityDiff(entityType, from.getEntityId(), changedValues, changed);
 	}
 
 	/**
@@ -75,32 +60,31 @@ public class EntityDiff {
 	public EntityType getEntityType() {
 		return entityType;
 	}
-//
-//	public void setEntityType(EntityType entityType) {
-//		this.entityType = entityType;
-//	}
-//
+
 	/**
 	 * @return The ID of this entity, unique within the scope of its entity type
 	 */
 	public long getId() {
 		return id;
 	}
-//
-//	public void setId(long id) {
-//		this.id = id;
-//	}
-//
-//	/**
-//	 * @return An array of updated values for this Entity.
-//	 */
-//	public PropertyValue[] getValues() {
-//		return values;
-//	}
-//
-//	public void setValues(PropertyValue[] values) {
-//		this.values = values;
-//	}
+
+	/**
+	 * @return A single value .
+	 */
+	public Object getValue(int propertyIndex) {
+		if (!hasUpdatedValue(propertyIndex)) {
+			throw new OgreException(this + " has no value for property " + propertyIndex);
+		}
+		return values[propertyIndex];
+	}
+
+	/**
+	 * @return an array of flags indicating whether the value with the same position in the
+	 *         {@link #getValues()} array is an update.
+	 */
+	public boolean hasUpdatedValue(int propertyIndex) {
+		return isChanged[propertyIndex];
+	}
 
 	public String toString() {
 		return "EntityDiff for " + entityType + "#" + id;
