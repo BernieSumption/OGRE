@@ -14,7 +14,6 @@ TODO in formal spec, make sure that when an entity is deleted, it is not necessa
 \
 Roadmap to v0.1:\
 \
-[step 1: integers only]\
 End-to-end type domain download for integers only:\
   - PojoDataSource produces type domain from class\
   - Client engine receives and validates type domain (no encoding)\
@@ -26,8 +25,6 @@ End-to-end update detection:\
   - Detection and transmission of new entities\
   - Detection of updates and transmission as complete entities\
   - Detection and transmission of deleted entities\
-Strongly typed facade:\
-  - JDK proxy backed view onto client engine\
 More types\
   - strings\
   - floats\
@@ -35,11 +32,11 @@ More types\
   - entity references\
   - collections\
 Demo applications\
-  - visual graph\
   - regression tester - creates random graphs and changes them randomly, multi threaded\
 \
 Get issue tracker working, put wishlist up there:\
-  - Transmission of updates as partial entities\
+  - Java client facade: JDK proxy backed view onto client engine\
+  - visual graph (requires strongly typed facade: JDK proxy backed view onto client engine)\
   - dataVersion and dataVersionScheme to cope with network outage\
   - typeDomainScheme, similar to serialVersionUid, to handle changes to type domain (permit addition of server properties without client update)\
 \
