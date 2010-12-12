@@ -47,13 +47,6 @@ public class PojoDataSourceTest extends OgreTestCase {
 
 		assertTrue(dataSource.containsEntityObject(e0));
 
-		assertObjectGraphState(
-				"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
-				"  Entity com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields#1" +
-				"  Entity com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields#2" +
-				"  Entity com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields#3",
-				dataSource.createSnapshot(), dataSource.getTypeDomain());
-
 		assertEquals(1, dataSource.getIdForObject(e0));
 		assertEquals(3, dataSource.getIdForObject(e1));
 		assertEquals(2, dataSource.getIdForObject(e2));

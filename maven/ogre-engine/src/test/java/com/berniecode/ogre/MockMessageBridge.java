@@ -10,10 +10,13 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 public class MockMessageBridge implements MessageServerAdapter, MessageClientAdapter {
 	
+	private int messageCount = 0;
+	
 	List<ListenerHolder> holders = new ArrayList<ListenerHolder>();
 
 	@Override
 	public void publishUpdateMessage(UpdateMessage message) {
+		messageCount++;
 		String key = getKey(message.getTypeDomainId(), message.getObjectGraphId());
 		for (ListenerHolder holder: holders) {
 			if (holder.key.equals(key)) {
@@ -29,6 +32,14 @@ public class MockMessageBridge implements MessageServerAdapter, MessageClientAda
 
 	private String getKey(String typeDomainId, String objectGraphId) {
 		return typeDomainId + "/" + objectGraphId;
+	}
+
+	public void resetMessageCount() {
+		messageCount = 0;
+	}
+
+	public int getMessageCount() {
+		return messageCount;
 	}
 
 }

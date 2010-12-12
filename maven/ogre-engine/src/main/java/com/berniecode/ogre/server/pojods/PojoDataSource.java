@@ -1,11 +1,14 @@
 package com.berniecode.ogre.server.pojods;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.platformhooks.ArrayBuilder;
 import com.berniecode.ogre.enginelib.server.DataSource;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.shared.EntityDeleteMessage;
 import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
@@ -94,7 +97,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	@Override
 	public ObjectGraphValueMessage createSnapshot() {
-		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entities.getEntityValues());
+		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entities.createEntityValueMessages());
 	}
 
 	@Override
@@ -110,11 +113,12 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * Set the contents of the object graph.
 	 * 
 	 * <ul>
-	 * <li>Any objects that are not part of this graph will be added, and broadcast to clients
-	 * <li>Any objects that are already part of this graph will be checked for modifications, and
-	 * any changed property values will be broadcast to clients
+	 * <li>Any objects that are not part of this graph will be added, and a
+	 *     {@link EntityValueMessage} will be broadcast to clients
+	 * <li>Any objects that are already part of this graph will be checked for modifications, and a
+	 *     {@link EntityDiffMessage} will be broadcast to clients
 	 * <li>Any objects in the graph that are not in the array passed to this method will be removed
-	 * from the graph.
+	 *     from the graph.
 	 * </ul>
 	 * 
 	 * <p>
@@ -128,8 +132,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 */
 	public void setEntityObjects(Object ... entityObjects) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
-		ArrayBuilder completeEntities = new ArrayBuilder(EntityValueMessage.class);
-		ArrayBuilder entityDiffs = new ArrayBuilder(EntityDiffMessage.class);
+		List<EntityValueMessage> completeEntities = new ArrayList<EntityValueMessage>();
+		List<EntityDiffMessage> entityDiffs = new ArrayList<EntityDiffMessage>();
+		List<EntityDeleteMessage> entityDeletes = new ArrayList<EntityDeleteMessage>();
+		List<Entity> newEntities = new ArrayList<Entity>();
 		for (int i=0; i<entityObjects.length; i++) {
 			long id = idMapper.getId(entityObjects[i]);
 			Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
@@ -146,14 +152,35 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 				}
 			}
 			entities.put(newEntity);
+			newEntities.add(newEntity);
 		}
-		sendUpdateMessage((EntityValueMessage[]) completeEntities.buildArray(), (EntityDiffMessage[]) entityDiffs.buildArray());
+		
+		for (Entity oldEntity: entities.getEntities()) {
+			if (!newEntities.contains(oldEntity)) {
+				entities.removeSimilar(oldEntity);
+				entityDeletes.add(EntityDeleteMessage.build(oldEntity));
+			}
+		}
+		
+		sendUpdateMessage(completeEntities, entityDiffs, entityDeletes);
 	}
 
-	private void sendUpdateMessage(EntityValueMessage[] newEntities, EntityDiffMessage[] entityDiffs) {
+	private void sendUpdateMessage(
+			List<EntityValueMessage> newEntities,
+			List<EntityDiffMessage> entityDiffs,
+			List<EntityDeleteMessage> entityDeletes) {
+		
+		if (newEntities.size() == 0 && entityDiffs.size() == 0 && entityDeletes.size() == 0) {
+			return;
+		}
+		
 		if (updateMessageListener != null) {
 			UpdateMessage message = new UpdateMessage(
-					typeDomain.getTypeDomainId(), objectGraphId, newEntities, entityDiffs);
+					typeDomain.getTypeDomainId(),
+					objectGraphId,
+					newEntities.toArray(new EntityValueMessage[0]),
+					entityDiffs.toArray(new EntityDiffMessage[0]),
+					entityDeletes.toArray(new EntityDeleteMessage[0]));
 			if (OgreLog.isDebugEnabled()) {
 				OgreLog.debug("PojoDataSource: broadcasting new update message:\n"
 						+ EDRDescriber.describeUpdateMessage(typeDomain, message));

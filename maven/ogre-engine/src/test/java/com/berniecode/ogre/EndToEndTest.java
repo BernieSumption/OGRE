@@ -29,8 +29,6 @@ public class EndToEndTest extends OgreTestCase {
 		dataSource.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class));
 		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
 		dataSource.initialise();
-		
-		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L));
 
 		serverEngine = new ServerEngine();
 		serverEngine.setDataSource(dataSource);
@@ -38,6 +36,8 @@ public class EndToEndTest extends OgreTestCase {
 		serverEngine.initialise();
 
 		dlBridge = new InProcessDownloadBridge(serverEngine);
+		
+		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L));
 	};
 
 	public void testFetchTypeDomain() throws Exception {
@@ -102,8 +102,13 @@ public class EndToEndTest extends OgreTestCase {
 		
 		initialEntityObject.setNullableInt(null);
 		initialEntityObject.setNonNullableLong(42L);
+		
+		assertEquals(1, msgBridge.getMessageCount());
 
+		// changes propagated
 		dataSource.setEntityObjects(initialEntityObject);
+
+		assertEquals(2, msgBridge.getMessageCount());
 		 
 		assertClientEngineState(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
@@ -117,22 +122,23 @@ public class EndToEndTest extends OgreTestCase {
 			"    nullable_long=8" +
 			"    nullable_short=4",
 			clientEngine);
-	}
-	
-	public void testNewObjectsPropagated() throws Exception {
-		ClientEngine clientEngine = createClientEngine();
+		
+		// new objects propagated
+		EntityClassWithAllFields newEntityObject = new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L);
 
-		dataSource.setEntityObjects(new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L));
+		dataSource.setEntityObjects(initialEntityObject, newEntityObject);
+
+		assertEquals(3, msgBridge.getMessageCount());
 		 
 		assertClientEngineState(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    non_nullable_byte=1" +
 			"    non_nullable_int=5" +
-			"    non_nullable_long=7" +
+			"    non_nullable_long=42" +
 			"    non_nullable_short=3" +
 			"    nullable_byte=2" +
-			"    nullable_int=6" +
+			"    nullable_int=null" +
 			"    nullable_long=8" +
 			"    nullable_short=4" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#2" +
@@ -145,8 +151,29 @@ public class EndToEndTest extends OgreTestCase {
 			"    nullable_long=18" +
 			"    nullable_short=14",
 			clientEngine);
-	}
+		
+		// removes propagated
+		dataSource.setEntityObjects(newEntityObject);
 
+		assertEquals(4, msgBridge.getMessageCount());
+		 
+		assertClientEngineState(
+			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
+			"  Entity com.berniecode.ogre.EntityClassWithAllFields#2" +
+			"    non_nullable_byte=11" +
+			"    non_nullable_int=15" +
+			"    non_nullable_long=17" +
+			"    non_nullable_short=13" +
+			"    nullable_byte=12" +
+			"    nullable_int=16" +
+			"    nullable_long=18" +
+			"    nullable_short=14",
+			clientEngine);
+		
+		// non-changes don't create extra update messages
+		dataSource.setEntityObjects(newEntityObject);
+		assertEquals(4, msgBridge.getMessageCount());
+	}
 	private ClientEngine createClientEngine() throws Exception {
 		return createClientEngine(TYPE_DOMAIN_ID);
 	}

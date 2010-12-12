@@ -35,8 +35,8 @@ public class EntityStore {
 	/**
 	 * Check whether this store contains an entity with the same type and id as the specified entity
 	 */
-	public boolean containsSimilar(EntityReference entityValue) {
-		return contains(entityValue.getEntityTypeIndex(), entityValue.getEntityId());
+	public boolean containsSimilar(EntityReference reference) {
+		return contains(reference.getEntityTypeIndex(), reference.getEntityId());
 	}
 
 	/**
@@ -56,6 +56,13 @@ public class EntityStore {
 	}
 
 	/**
+	 * Remove an entity from this store
+	 */
+	public void removeSimilar(EntityReference reference) {
+		entityMaps[reference.getEntityTypeIndex()].remove(reference.getEntityId());
+	}
+
+	/**
 	 * Add an {@link Entity} that does not already exist in this store.
 	 * 
 	 * @throws OgreException if this store already contains an entity with the same name and ID
@@ -68,9 +75,9 @@ public class EntityStore {
 	}
 
 	/**
-	 * @return
+	 * @return an {@link EntityValueMessage} for each {@link Entity} in this store
 	 */
-	public EntityValueMessage[] getEntityValues() {
+	public EntityValueMessage[] createEntityValueMessages() {
 		ArrayBuilder resultList = new ArrayBuilder(EntityValueMessage.class);
 		for (int i=0; i<entityMaps.length; i++) {
 			Entity[] entities = entityMaps[i].getEntities();
@@ -79,6 +86,18 @@ public class EntityStore {
 			}
 		}
 		return (EntityValueMessage[]) resultList.buildArray();
+	}
+
+
+	/**
+	 * @return every {@link Entity} in this store
+	 */
+	public Entity[] getEntities() {
+		ArrayBuilder resultList = new ArrayBuilder(Entity.class);
+		for (int i=0; i<entityMaps.length; i++) {
+			resultList.addAll(entityMaps[i].getEntities());
+		}
+		return (Entity[]) resultList.buildArray();
 	}
 
 

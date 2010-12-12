@@ -4,6 +4,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.berniecode.ogre.enginelib.shared.Entity;
+
 /**
  * A utility for building typed arrays
  *
@@ -23,6 +25,15 @@ public class ArrayBuilder {
 	 */
 	public void add(Object object) {
 		contents.add(componentType.cast(object));
+	}
+
+	/**
+	 * Add each value in an array of values
+	 */
+	public void addAll(Entity[] entities) {
+		for (int i=0; i<entities.length; i++) {
+			add(entities[i]);
+		}
 	}
 
 	/**

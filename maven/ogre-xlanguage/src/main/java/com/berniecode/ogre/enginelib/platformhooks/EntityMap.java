@@ -43,4 +43,11 @@ public class EntityMap {
 		return (Entity) entities.get(Long.valueOf(id));
 	}
 
+	/**
+	 * Remove an entity form this map
+	 */
+	public void remove(long id) {
+		entities.remove(Long.valueOf(id));
+	}
+
 }

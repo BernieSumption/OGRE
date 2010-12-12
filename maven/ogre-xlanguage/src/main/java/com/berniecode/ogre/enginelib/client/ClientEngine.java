@@ -6,6 +6,7 @@ import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.shared.EntityDeleteMessage;
 import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
@@ -138,6 +139,7 @@ public class ClientEngine implements UpdateMessageListener {
 		}
 		mergeCompleteEntities(message.getEntityValues());
 		mergeEntityDiffs(message.getEntityDiffs());
+		mergeEntityDeletes(message.getEntityDeletes());
 	}
 
 	/**
@@ -181,6 +183,21 @@ public class ClientEngine implements UpdateMessageListener {
 			}
 		}
 	}
+
+	private void mergeEntityDeletes(EntityDeleteMessage[] entityDeletes) {
+		for (int i=0; i<entityDeletes.length; i++) {
+			EntityDeleteMessage entityDelete = entityDeletes[i];
+			Entity target = entities.getSimilar(entityDelete);
+			if (target == null) {
+				OgreLog.error("ClientEngine: received delete '" + entityDelete + "' but there is no local entity of the same ID and type to apply it to");
+			} else {
+				if (OgreLog.isInfoEnabled()) {
+					OgreLog.info("ClientStore: deleting entity " + target);
+				}
+				entities.removeSimilar(target);
+			}
+		}
+	}
 	
 
 	/**
@@ -188,6 +205,6 @@ public class ClientEngine implements UpdateMessageListener {
 	 */
 	public ObjectGraphValueMessage createSnapshot() {
 		requireInitialised(true, "createSnapshot()");
-		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entities.getEntityValues());
+		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entities.createEntityValueMessages());
 	}
 }

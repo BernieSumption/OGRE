@@ -12,12 +12,14 @@ public class UpdateMessage {
 	private final String objectGraphId;
 	private final EntityValueMessage[] entities;
 	private final EntityDiffMessage[] entityDiffs;
+	private final EntityDeleteMessage[] entityDeletes;
 
-	public UpdateMessage(String typeDomainId, String objectGraphId, EntityValueMessage[] entities, EntityDiffMessage[] entityDiffs) {
+	public UpdateMessage(String typeDomainId, String objectGraphId, EntityValueMessage[] entities, EntityDiffMessage[] entityDiffs, EntityDeleteMessage[] entityDeletes) {
 		this.typeDomainId = typeDomainId;
 		this.objectGraphId = objectGraphId;
 		this.entities = entities;
 		this.entityDiffs = entityDiffs;
+		this.entityDeletes = entityDeletes;
 	}
 
 	/**
@@ -48,6 +50,13 @@ public class UpdateMessage {
 	 */
 	public EntityDiffMessage[] getEntityDiffs() {
 		return entityDiffs;
+	}
+
+	/**
+	 * @return {@link EntityDeleteMessage}s for entities that have been removed
+	 */
+	public EntityDeleteMessage[] getEntityDeletes() {
+		return entityDeletes;
 	}
 
 }

@@ -13,6 +13,7 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
+import com.berniecode.ogre.enginelib.shared.EntityDeleteMessage;
 import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
 import com.berniecode.ogre.enginelib.shared.EntityType;
 import com.berniecode.ogre.enginelib.shared.EntityUpdate;
@@ -161,6 +162,7 @@ public class ClientEngineTest extends OgreTestCase {
 	private UpdateMessage createUpdateMessage(EntityUpdate... updates) {
 		List<EntityValueMessage> valueMessages = new ArrayList<EntityValueMessage>();
 		List<EntityDiffMessage> diffMessages = new ArrayList<EntityDiffMessage>();
+		List<EntityDeleteMessage> deleteMessages = new ArrayList<EntityDeleteMessage>();
 		for (EntityUpdate update: updates) {
 			if (update instanceof EntityValueMessage) {
 				valueMessages.add((EntityValueMessage) update);
@@ -171,7 +173,8 @@ public class ClientEngineTest extends OgreTestCase {
 		}
 		return new UpdateMessage(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID,
 				valueMessages.toArray(new EntityValueMessage[0]),
-				diffMessages.toArray(new EntityDiffMessage[0]));
+				diffMessages.toArray(new EntityDiffMessage[0]),
+				deleteMessages.toArray(new EntityDeleteMessage[0]));
 	}
 
 	private ClientEngine createClientEngine() throws NoSuchThingException {
