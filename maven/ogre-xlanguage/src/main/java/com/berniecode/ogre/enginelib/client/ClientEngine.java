@@ -153,13 +153,13 @@ public class ClientEngine implements UpdateMessageListener {
 			Entity existingEntity = entities.getSimilar(entityValue);
 			if (existingEntity != null) {
 				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: replacing entity " + entityValue + " with new complete entity");
+					OgreLog.info("ClientStore: replacing entity " + existingEntity + " with new complete entity value " + entityValue);
 				}
 				existingEntity.update(entityValue);
 			} else {
 				Entity entity = entityValue.toEntity(typeDomain);
 				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: adding new entity " + entity);
+					OgreLog.info("ClientStore: adding new entity " + entity + " due to " + entityValue);
 				}
 				entities.put(entity);
 			}
@@ -177,7 +177,7 @@ public class ClientEngine implements UpdateMessageListener {
 				OgreLog.error("ClientEngine: received diff '" + diff + "' but there is no local entity of the same ID and type to apply it to");
 			} else {
 				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: updating values of " + target);
+					OgreLog.info("ClientStore: updating values of " + target + " due to " + diff);
 				}
 				target.update(diff);
 			}
@@ -192,7 +192,7 @@ public class ClientEngine implements UpdateMessageListener {
 				OgreLog.error("ClientEngine: received delete '" + entityDelete + "' but there is no local entity of the same ID and type to apply it to");
 			} else {
 				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: deleting entity " + target);
+					OgreLog.info("ClientStore: deleting entity " + target + " due to " + entityDelete);
 				}
 				entities.removeSimilar(target);
 			}

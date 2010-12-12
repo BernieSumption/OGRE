@@ -83,7 +83,7 @@ public class EntityDiffMessage implements EntityReference, EntityUpdate {
 	}
 
 	public String toString() {
-		return "EntityDiffMessage for entity (entityTypeIndex=" + entityTypeIndex + ", entityId=" + entityId + ")";
+		return "EntityDiffMessage for entity " + entityTypeIndex + "#" + entityId;
 	}
 
 }

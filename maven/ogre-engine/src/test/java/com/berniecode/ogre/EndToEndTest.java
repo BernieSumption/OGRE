@@ -173,6 +173,15 @@ public class EndToEndTest extends OgreTestCase {
 		// non-changes don't create extra update messages
 		dataSource.setEntityObjects(newEntityObject);
 		assertEquals(4, msgBridge.getMessageCount());
+		
+		// removes propagated
+		dataSource.setEntityObjects();
+
+		assertEquals(5, msgBridge.getMessageCount());
+		 
+		assertClientEngineState(
+			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph",
+			clientEngine);
 	}
 	private ClientEngine createClientEngine() throws Exception {
 		return createClientEngine(TYPE_DOMAIN_ID);

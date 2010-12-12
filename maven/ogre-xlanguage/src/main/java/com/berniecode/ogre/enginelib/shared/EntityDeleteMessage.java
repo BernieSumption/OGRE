@@ -38,7 +38,7 @@ public class EntityDeleteMessage implements EntityReference {
 	}
 
 	public String toString() {
-		return "EntityDeleteMessage for entity (entityTypeIndex=" + entityTypeIndex + ", entityId=" + entityId + ")";
+		return "EntityDeleteMessage for entity " + entityTypeIndex + "#" + entityId;
 	}
 
 }
