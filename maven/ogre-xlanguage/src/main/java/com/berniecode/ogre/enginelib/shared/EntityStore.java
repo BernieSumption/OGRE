@@ -67,12 +67,18 @@ public class EntityStore {
 		entityMaps[entity.getEntityTypeIndex()].put(entity);
 	}
 
-	public Entity[] getAllEntities() {
-		ArrayBuilder resultList = new ArrayBuilder(Entity.class);
+	/**
+	 * @return
+	 */
+	public EntityValueMessage[] getEntityValues() {
+		ArrayBuilder resultList = new ArrayBuilder(EntityValueMessage.class);
 		for (int i=0; i<entityMaps.length; i++) {
-			resultList.addAll(entityMaps[i].getEntities());
+			Entity[] entities = entityMaps[i].getEntities();
+			for (int j=0; j<entities.length; j++) {
+				resultList.add(EntityValueMessage.build(entities[j]));
+			}
 		}
-		return (Entity[]) resultList.buildArray();
+		return (EntityValueMessage[]) resultList.buildArray();
 	}
 
 

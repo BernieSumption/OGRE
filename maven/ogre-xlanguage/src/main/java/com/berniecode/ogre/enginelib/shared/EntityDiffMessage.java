@@ -26,7 +26,6 @@ public class EntityDiffMessage implements EntityReference, EntityUpdate {
 	 * @return An {@link EntityDiffMessage} object that if applied to the entity <code>from</code> will
 	 *         change its values to be equal to those of <code>to</code>
 	 */
-	//TODO: tests
 	public static EntityDiffMessage build(Entity from, Entity to) {
 		EntityType entityType = from.getEntityType();
 		if (entityType != to.getEntityType()) {
@@ -84,7 +83,7 @@ public class EntityDiffMessage implements EntityReference, EntityUpdate {
 	}
 
 	public String toString() {
-		return "EntityDiffMessage for entity " + entityTypeIndex + "#" + entityId;
+		return "EntityDiffMessage for entity (entityTypeIndex=" + entityTypeIndex + ", entityId=" + entityId + ")";
 	}
 
 }

@@ -100,7 +100,13 @@ public class EDRDescriber {
 	//
 	// DESCRIBE UPDATE MESSAGES
 	//
+
 	
+	public static String describeEntityUpdate(TypeDomain typeDomain, EntityUpdate entityUpdate) {
+		StringConcatenator sc = new StringConcatenator();
+		doDescribeEntityUpdate(typeDomain, entityUpdate, sc, 0);
+		return sc.buildString();
+	}
 	
 	public static String describeUpdateMessage(TypeDomain typeDomain, UpdateMessage updateMessage) {
 		StringConcatenator sc = new StringConcatenator();

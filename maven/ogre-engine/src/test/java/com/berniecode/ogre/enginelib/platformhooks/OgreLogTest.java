@@ -40,8 +40,9 @@ public class OgreLogTest extends TestCase {
 		reset();
 		OgreLog.setLevel(OgreLog.LEVEL_DEBUG);
 		OgreLog.debug("a");
+		assertTrue(OgreLog.isDebugEnabled());
 		assertEquals(OgreLog.LEVEL_DEBUG, lastLogLevel);
-		assertEquals("LEVEL_DEBUG", lastLogLevelDesc);
+		assertEquals("DEBUG", lastLogLevelDesc);
 		assertEquals("a", lastLogMessage);
 
 		reset();
@@ -52,8 +53,10 @@ public class OgreLogTest extends TestCase {
 		reset();
 		OgreLog.setLevel(OgreLog.LEVEL_INFO);
 		OgreLog.info("b");
+		assertFalse(OgreLog.isDebugEnabled());
+		assertTrue(OgreLog.isInfoEnabled());
 		assertEquals(OgreLog.LEVEL_INFO, lastLogLevel);
-		assertEquals("LEVEL_INFO", lastLogLevelDesc);
+		assertEquals("INFO", lastLogLevelDesc);
 		assertEquals("b", lastLogMessage);
 
 		reset();
@@ -64,20 +67,25 @@ public class OgreLogTest extends TestCase {
 		reset();
 		OgreLog.setLevel(OgreLog.LEVEL_WARN);
 		OgreLog.warn("c");
+		assertFalse(OgreLog.isInfoEnabled());
+		assertTrue(OgreLog.isWarnEnabled());
 		assertEquals(OgreLog.LEVEL_WARN, lastLogLevel);
-		assertEquals("LEVEL_WARN", lastLogLevelDesc);
+		assertEquals("WARN", lastLogLevelDesc);
 		assertEquals("c", lastLogMessage);
 
 		reset();
 		OgreLog.setLevel(OgreLog.LEVEL_NONE);
 		OgreLog.info("d");
+		assertFalse(OgreLog.isErrorEnabled());
 		assertNoLog();
 
 		reset();
 		OgreLog.setLevel(OgreLog.LEVEL_ERROR);
 		OgreLog.error("d");
+		assertFalse(OgreLog.isWarnEnabled());
+		assertTrue(OgreLog.isErrorEnabled());
 		assertEquals(OgreLog.LEVEL_ERROR, lastLogLevel);
-		assertEquals("LEVEL_ERROR", lastLogLevelDesc);
+		assertEquals("ERROR", lastLogLevelDesc);
 		assertEquals("d", lastLogMessage);
 	}
 	

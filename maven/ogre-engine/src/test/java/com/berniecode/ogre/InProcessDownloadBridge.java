@@ -1,7 +1,6 @@
 package com.berniecode.ogre;
 
 import com.berniecode.ogre.enginelib.client.DownloadClientAdapter;
-import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.server.ServerEngine;
 import com.berniecode.ogre.enginelib.server.ServerEngineTest;
@@ -15,16 +14,16 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * 
  * @author Bernie Sumption
  */
-public class MockDownloadBridge implements DownloadClientAdapter {
+public class InProcessDownloadBridge implements DownloadClientAdapter {
 
 	private final ServerEngine server;
 
-	public MockDownloadBridge(ServerEngine server) {
+	public InProcessDownloadBridge(ServerEngine server) {
 		this.server = server;
 	}
 
 	@Override
-	public TypeDomain loadTypeDomain(String typeDomainId) throws IOFailureException, NoSuchThingException {
+	public TypeDomain loadTypeDomain(String typeDomainId) throws NoSuchThingException {
 		return server.getTypeDomain(typeDomainId);
 	}
 

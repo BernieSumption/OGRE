@@ -26,8 +26,4 @@ public class StringMap {
 		map.put(key, value);
 	}
 
-	public Object[] getValues() {
-		return map.values().toArray();
-	}
-
 }

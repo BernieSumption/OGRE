@@ -1,7 +1,6 @@
 package com.berniecode.ogre;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 public class Utils {
 
@@ -47,15 +46,6 @@ public class Utils {
 			}
 		}
 		return sb.toString();
-	}
-
-	/**
-	 * Concatenate two arrays of the same type into a new array
-	 */
-	public static <T> T[] arrayConcat(T[] array1, T[] array2) {
-		T[] result = Arrays.copyOf(array1, array1.length + array2.length);
-		System.arraycopy(array2, 0, result, array1.length, array2.length);
-		return result;
 	}
 
 }

@@ -26,15 +26,6 @@ public class ArrayBuilder {
 	}
 
 	/**
-	 * Add a number of values. Each value in the array
-	 */
-	public void addAll(Object[] objects) {
-		for (int i=0; i<objects.length; i++) {
-			add(objects[i]);
-		}
-	}
-
-	/**
 	 * Make an array containing all the items added to this builder
 	 */
 	public Object[] buildArray() {

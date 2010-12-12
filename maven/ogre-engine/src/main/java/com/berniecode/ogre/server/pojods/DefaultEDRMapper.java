@@ -152,7 +152,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 */
 	protected Property createProperty(Method method, int propertyIndex) {
 		PropertyType propertyType = createPropertyType(method.getReturnType());
-		Property property = new Property(Utils.getPropertyNameForGetter(method), propertyType, propertyIndex);
+		Property property = new Property(propertyIndex, Utils.getPropertyNameForGetter(method), propertyType);
 		propertyToMethod.put(property, method);
 		return property;
 	}

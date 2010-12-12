@@ -1,7 +1,6 @@
 package com.berniecode.ogre.enginelib.client;
 
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.platformhooks.IOFailureException;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
@@ -52,10 +51,6 @@ public class ClientEngine implements UpdateMessageListener {
 		this.objectGraphId = objectGraphId;
 	}
 
-	public String getObjectGraphId() {
-		return objectGraphId;
-	}
-
 	/**
 	 * Set the {@link DownloadClientAdapter} used by this engine. This must be called before the
 	 * engine is initialised, and can't be called again after initialisation
@@ -82,7 +77,7 @@ public class ClientEngine implements UpdateMessageListener {
 	 * @throws NoSuchThingException if the OGRE server does not have a TypeDomain with the
 	 *             specified ID
 	 */
-	public void initialise() throws NoSuchThingException, IOFailureException {
+	public void initialise() throws NoSuchThingException {
 		if (initialised) {
 			return;
 		}
@@ -115,13 +110,6 @@ public class ClientEngine implements UpdateMessageListener {
 		return typeDomain;
 	}
 
-	/**
-	 * @return an array of all Entities of a specified entity type
-	 */
-	public Entity[] getEntities() {
-		return entities.getAllEntities();
-	}
-
 	//
 	// PRIVATE MACHINERY
 	//
@@ -143,6 +131,7 @@ public class ClientEngine implements UpdateMessageListener {
 	 * @private
 	 */
 	public void acceptUpdateMessage(UpdateMessage message) {
+		requireInitialised(true, "acceptUpdateMessage()");
 		OgreLog.info("ClientEngine: accepted update message " + message);
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug(EDRDescriber.describeUpdateMessage(typeDomain, message));
@@ -156,7 +145,7 @@ public class ClientEngine implements UpdateMessageListener {
 	 * an entity with the same type and id, the existing entity will be updated with values from the
 	 * new entity. Otherwise, the new entity will be added to this engine.
 	 */
-	void mergeCompleteEntities(EntityValueMessage[] entityValues) {
+	private void mergeCompleteEntities(EntityValueMessage[] entityValues) {
 		for (int i=0; i<entityValues.length; i++) {
 			EntityValueMessage entityValue = entityValues[i];
 			Entity existingEntity = entities.getSimilar(entityValue);
@@ -166,10 +155,11 @@ public class ClientEngine implements UpdateMessageListener {
 				}
 				existingEntity.update(entityValue);
 			} else {
+				Entity entity = entityValue.toEntity(typeDomain);
 				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: adding new entity " + entityValue);
+					OgreLog.info("ClientStore: adding new entity " + entity);
 				}
-				entities.put(entityValue.toEntity(typeDomain));
+				entities.put(entity);
 			}
 		}
 	}
@@ -197,11 +187,7 @@ public class ClientEngine implements UpdateMessageListener {
 	 * @return a snapshot of the state of this object graph, useful for debugging
 	 */
 	public ObjectGraphValueMessage createSnapshot() {
-		Entity[] allEntities = entities.getAllEntities();
-		EntityValueMessage[] entityValues = new EntityValueMessage[allEntities.length];
-		for (int i=0; i<allEntities.length; i++) {
-			entityValues[i] = EntityValueMessage.build(allEntities[i]);
-		}
-		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
+		requireInitialised(true, "createSnapshot()");
+		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entities.getEntityValues());
 	}
 }

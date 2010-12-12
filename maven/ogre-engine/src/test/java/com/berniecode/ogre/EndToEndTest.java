@@ -16,7 +16,7 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
  */
 public class EndToEndTest extends OgreTestCase {
 
-	private MockDownloadBridge dlBridge;
+	private InProcessDownloadBridge dlBridge;
 	private MockMessageBridge msgBridge;
 	private PojoDataSource dataSource;
 	private ServerEngine serverEngine;
@@ -37,7 +37,7 @@ public class EndToEndTest extends OgreTestCase {
 		serverEngine.setMessageAdapter(msgBridge = new MockMessageBridge());
 		serverEngine.initialise();
 
-		dlBridge = new MockDownloadBridge(serverEngine);
+		dlBridge = new InProcessDownloadBridge(serverEngine);
 	};
 
 	public void testFetchTypeDomain() throws Exception {

@@ -8,14 +8,14 @@ package com.berniecode.ogre.enginelib.shared;
  */
 public class Property {
 
+	private final int propertyIndex;
 	private final String name;
 	private final PropertyType propertyType;
-	private final int propertyIndex;
 
-	public Property(String name, PropertyType propertyType, int propertyIndex) {
+	public Property(int propertyIndex, String name, PropertyType propertyType) {
+		this.propertyIndex = propertyIndex;
 		this.name = name;
 		this.propertyType = propertyType;
-		this.propertyIndex = propertyIndex;
 	}
 
 	/**

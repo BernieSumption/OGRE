@@ -4,8 +4,10 @@ import junit.framework.TestCase;
 
 import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
+import com.berniecode.ogre.enginelib.shared.EntityUpdate;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 
 public abstract class OgreTestCase extends TestCase {
 
@@ -30,12 +32,20 @@ public abstract class OgreTestCase extends TestCase {
 		assertEquals(expected, actual);
 	}
 	
-	protected void assertTypeDomainState(String expected, TypeDomain actual) {
-		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeTypeDomain(actual));
+	protected void assertTypeDomainState(String expected, TypeDomain typeDomain) {
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeTypeDomain(typeDomain));
 	}
 	
-	protected void assertObjectGraphState(String expected, ObjectGraphValueMessage actual, TypeDomain typeDomain) {
-		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(typeDomain, actual));
+	protected void assertObjectGraphState(String expected, ObjectGraphValueMessage objectGraph, TypeDomain typeDomain) {
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(typeDomain, objectGraph));
+	}
+	
+	protected void assertUpdateMessageState(String expected, UpdateMessage updateMessage, TypeDomain typeDomain) {
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeUpdateMessage(typeDomain, updateMessage));
+	}
+	
+	protected void assertEntityUpdateState(String expected, EntityUpdate entityUpdate, TypeDomain typeDomain) {
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeEntityUpdate(typeDomain, entityUpdate));
 	}
 	
 	protected void assertClientEngineState(String expected, ClientEngine actual) {

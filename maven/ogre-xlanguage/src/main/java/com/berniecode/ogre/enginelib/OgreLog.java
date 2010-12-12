@@ -29,19 +29,19 @@ public class OgreLog {
 	}
 
 	public static void error(String message) {
-		doLog(LEVEL_ERROR, "LEVEL_ERROR", message);
+		doLog(LEVEL_ERROR, "ERROR", message);
 	}
 
 	public static void warn(String message) {
-		doLog(LEVEL_WARN, "LEVEL_WARN", message);
+		doLog(LEVEL_WARN, "WARN", message);
 	}
 
 	public static void info(String message) {
-		doLog(LEVEL_INFO, "LEVEL_INFO", message);
+		doLog(LEVEL_INFO, "INFO", message);
 	}
 
 	public static void debug(String message) {
-		doLog(LEVEL_DEBUG, "LEVEL_DEBUG", message);
+		doLog(LEVEL_DEBUG, "DEBUG", message);
 	}
 	
 	public static boolean isDebugEnabled() {

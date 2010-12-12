@@ -51,10 +51,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	/**
-	 * Provide an alternative {@link EDRMapper}.
-	 * 
-	 * If used at all, this method must be called before initialise(). If no alternative
-	 * {@link EDRMapper} is provided, {@link DefaultEDRMapper} will be used,
+	 * Provide an {@link EDRMapper}.
 	 */
 	public void setEDRMapper(EDRMapper edrMapper) {
 		requireInitialised(false, "setTypeDomainMapper()");
@@ -97,12 +94,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	@Override
 	public ObjectGraphValueMessage createSnapshot() {
-		Entity[] allEntities = entities.getAllEntities();
-		EntityValueMessage[] entityValues = new EntityValueMessage[allEntities.length];
-		for (int i=0; i<allEntities.length; i++) {
-			entityValues[i] = EntityValueMessage.build(allEntities[i]);
-		}
-		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entityValues);
+		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entities.getEntityValues());
 	}
 
 	@Override
