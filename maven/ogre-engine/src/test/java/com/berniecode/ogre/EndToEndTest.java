@@ -113,6 +113,9 @@ public class EndToEndTest extends OgreTestCase {
 		initialEntityObject.setNullableInt(null);
 		initialEntityObject.setNonNullableLong(42L);
 		initialEntityObject.setString("Fizzle");
+		initialEntityObject.setNonNullableDouble(11770.0);
+		initialEntityObject.setNullableDouble(null);
+		initialEntityObject.setNullableFloat(1144.0F);
 		
 		assertEquals(1, msgBridge.getMessageCount());
 
@@ -125,7 +128,10 @@ public class EndToEndTest extends OgreTestCase {
 				"UpdateMessage for object graph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 				"  partial values:" +
 				"    EntityUpdate for com.berniecode.ogre.EntityClassWithAllFields#1" +
+				"      non_nullable_double=11770.0" +
 				"      non_nullable_long=42" +
+				"      nullable_double=null" +
+				"      nullable_float=1144.0" +
 				"      nullable_int=null" +
 				"      string=Fizzle",
 				msgBridge.getLastUpdateMessage(), dataSource.getTypeDomain());
@@ -135,14 +141,14 @@ public class EndToEndTest extends OgreTestCase {
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    non_nullable_byte=1" +
-			"    non_nullable_double=11.0" +
+			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
 			"    non_nullable_int=5" +
 			"    non_nullable_long=42" +
 			"    non_nullable_short=3" +
 			"    nullable_byte=2" +
-			"    nullable_double=12.0" +
-			"    nullable_float=10.0" +
+			"    nullable_double=null" +
+			"    nullable_float=1144.0" +
 			"    nullable_int=null" +
 			"    nullable_long=8" +
 			"    nullable_short=4" +
@@ -178,14 +184,14 @@ public class EndToEndTest extends OgreTestCase {
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    non_nullable_byte=1" +
-			"    non_nullable_double=11.0" +
+			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
 			"    non_nullable_int=5" +
 			"    non_nullable_long=42" +
 			"    non_nullable_short=3" +
 			"    nullable_byte=2" +
-			"    nullable_double=12.0" +
-			"    nullable_float=10.0" +
+			"    nullable_double=null" +
+			"    nullable_float=1144.0" +
 			"    nullable_int=null" +
 			"    nullable_long=8" +
 			"    nullable_short=4" +
@@ -254,6 +260,23 @@ public class EndToEndTest extends OgreTestCase {
 		
 		//TODO for each property, set it to the same value but different object and test no message transferred
 	}
+	
+
+	public void testNonChangesNotPropagated() throws Exception {
+		
+		// set all properties to new objects with the same value but different object identities
+		assertEquals(1, msgBridge.getMessageCount());
+		initialEntityObject.setNullableByte(new Byte((byte) 2));
+		initialEntityObject.setNullableShort(new Short((short) 4));
+		initialEntityObject.setNullableInt(new Integer(6));
+		initialEntityObject.setNullableLong(new Long(8));
+		initialEntityObject.setString(new String("Shizzle"));
+		initialEntityObject.setNullableFloat(new Float(10F));
+		initialEntityObject.setNullableDouble(new Double(12.0));
+		dataSource.setEntityObjects(initialEntityObject);
+		assertEquals(1, msgBridge.getMessageCount());
+	}
+	
 	private ClientEngine createClientEngine() throws Exception {
 		return createClientEngine(TYPE_DOMAIN_ID);
 	}
