@@ -119,22 +119,25 @@ public class EDRDescriber {
 		sc.add("UpdateMessage for object graph ")
 		  .add(updateMessage.getTypeDomainId())
 		  .add("/")
-		  .add(updateMessage.getObjectGraphId())
-		  .add("\nwhole values:");
-		doDescribeEntityUpdates(typeDomain, updateMessage.getEntityValues(), sc, indent + 1);
-		sc.add("\npartial values:");
-		doDescribeEntityUpdates(typeDomain, updateMessage.getEntityDiffs(), sc, indent + 1);
+		  .add(updateMessage.getObjectGraphId());
+		if (updateMessage.getEntityValues().length > 0) {
+			sc.add("\ncomplete values:");
+			doDescribeEntityUpdates(typeDomain, updateMessage.getEntityValues(), sc, indent + 1);
+		}
+		if (updateMessage.getEntityDiffs().length > 0) {
+			sc.add("\npartial values:");
+			doDescribeEntityUpdates(typeDomain, updateMessage.getEntityDiffs(), sc, indent + 1);
+		}
+		if (updateMessage.getEntityDeletes().length > 0) {
+			sc.add("\ndeleted entities:");
+			doDescribeEntityDeletes(typeDomain, updateMessage.getEntityDeletes(), sc, indent + 1);
+		}
 	}
 
 	private static void doDescribeEntityUpdates(TypeDomain typeDomain, EntityUpdate[] entityValues, StringConcatenator sc, int indent) {
-		if (entityValues.length == 0) {
-			sc.add("\n");
-			doIndent(sc, indent);
-			sc.add("[empty]");
-		}
 		for (int i=0; i<entityValues.length; i++) {
 			sc.add("\n");
-			doDescribeEntityUpdate(typeDomain, entityValues[i], sc, indent);
+			doDescribeEntityUpdate(typeDomain, entityValues[i], sc, indent + 1);
 		}
 	}
 
@@ -151,6 +154,22 @@ public class EDRDescriber {
 				doDescribeValue(update.getValue(i), entityType.getProperty(i), sc, indent + 1);
 			}
 		}
+	}
+
+	private static void doDescribeEntityDeletes(TypeDomain typeDomain, EntityDeleteMessage[] entityDeletes, StringConcatenator sc, int indent) {
+		for (int i=0; i<entityDeletes.length; i++) {
+			sc.add("\n");
+			doDescribeEntityDelete(typeDomain, entityDeletes[i], sc, indent + 1);
+		}
+	}
+
+	private static void doDescribeEntityDelete(TypeDomain typeDomain, EntityDeleteMessage delete, StringConcatenator sc, int indent) {
+		doIndent(sc, indent);
+		EntityType entityType = typeDomain.getEntityType(delete.getEntityTypeIndex());
+		sc.add("EntityDelete for ")
+		  .add(entityType)
+		  .add("#")
+		  .addNumber(delete.getEntityId());
 	}
 
 }

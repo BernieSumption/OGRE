@@ -12,9 +12,11 @@ import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityType;
+import com.berniecode.ogre.enginelib.shared.FloatPropertyType;
 import com.berniecode.ogre.enginelib.shared.IntegerPropertyType;
 import com.berniecode.ogre.enginelib.shared.Property;
 import com.berniecode.ogre.enginelib.shared.PropertyType;
+import com.berniecode.ogre.enginelib.shared.StringPropertyType;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -156,6 +158,32 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		propertyToMethod.put(property, method);
 		return property;
 	}
+	
+	private final Map<Class<?>, PropertyType> classToPropertyType;
+	
+	{
+		classToPropertyType = new HashMap<Class<?>, PropertyType>();
+		registerClassMapping(long.class,    new IntegerPropertyType(64, false));
+		registerClassMapping(Long.class,    new IntegerPropertyType(64, true));
+		registerClassMapping(int.class,     new IntegerPropertyType(32, false));
+		registerClassMapping(Integer.class, new IntegerPropertyType(32, true));
+		registerClassMapping(short.class,   new IntegerPropertyType(16, false));
+		registerClassMapping(Short.class,   new IntegerPropertyType(16, true));
+		registerClassMapping(byte.class,    new IntegerPropertyType(8, false));
+		registerClassMapping(Byte.class,    new IntegerPropertyType(8, true));
+		registerClassMapping(String.class,  new StringPropertyType());
+		registerClassMapping(float.class,   new FloatPropertyType(32, false));
+		registerClassMapping(Float.class,   new FloatPropertyType(32, true));
+		registerClassMapping(double.class,  new FloatPropertyType(64, false));
+		registerClassMapping(Double.class,  new FloatPropertyType(64, true));
+	}
+
+	/**
+	 * Register a mapping from a Java method return type to an OGRE {@link PropertyType}
+	 */
+	public void registerClassMapping(Class<?> klass, PropertyType propertyType) {
+		classToPropertyType.put(klass, propertyType);
+	}
 
 	/**
 	 * Convert the return type of a {@link Method} to a {@link PropertyType} for the associated
@@ -163,29 +191,9 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * mapping behaviour.
 	 */
 	protected PropertyType createPropertyType(Class<?> javaType) throws TypeMappingException {
-		if (javaType == long.class) {
-			return new IntegerPropertyType(64, false);
-		}
-		if (javaType == Long.class) {
-			return new IntegerPropertyType(64, true);
-		}
-		if (javaType == int.class) {
-			return new IntegerPropertyType(32, false);
-		}
-		if (javaType == Integer.class) {
-			return new IntegerPropertyType(32, true);
-		}
-		if (javaType == short.class) {
-			return new IntegerPropertyType(16, false);
-		}
-		if (javaType == Short.class) {
-			return new IntegerPropertyType(16, true);
-		}
-		if (javaType == byte.class) {
-			return new IntegerPropertyType(8, false);
-		}
-		if (javaType == Byte.class) {
-			return new IntegerPropertyType(8, true);
+		PropertyType propertyType = classToPropertyType.get(javaType);
+		if (propertyType != null) {
+			return propertyType;
 		}
 		throw new TypeMappingException("No PropertyType mapping defined for class " + javaType);
 	}

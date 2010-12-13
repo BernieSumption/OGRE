@@ -15,6 +15,14 @@ public class EntityClassWithAllFields {
 	private byte nonNullableByte;
 	private Byte nullableByte;
 	
+	private String string;
+
+	private float nonNullableFloat;
+	private Float nullableFloat;
+
+	private double nonNullableDouble;
+	private Double nullableDouble;
+	
 	/**
 	 * Construct with default values for all fields
 	 */
@@ -23,7 +31,9 @@ public class EntityClassWithAllFields {
 	/**
 	 * Construct with specific values for all fields
 	 */
-	public EntityClassWithAllFields(byte b1, Byte b2, short s1, Short s2, int i1, Integer i2, long l1, Long l2) {
+	public EntityClassWithAllFields(byte b1, Byte b2, short s1, Short s2, int i1, Integer i2, 
+			long l1, Long l2, String str, float f1, Float f2,
+			double d1, Double d2) {
 		nonNullableByte = b1;
 		nullableByte = b2;
 		nonNullableShort = s1;
@@ -32,6 +42,11 @@ public class EntityClassWithAllFields {
 		nullableInt = i2;
 		nonNullableLong = l1;
 		nullableLong = l2;
+		string = str;
+		nonNullableFloat = f1;
+		nullableFloat = f2;
+		nonNullableDouble = d1;
+		nullableDouble = d2;
 	}
 
 	public Integer getNullableInt() {
@@ -96,6 +111,46 @@ public class EntityClassWithAllFields {
 
 	public void setNullableByte(Byte nullableByte) {
 		this.nullableByte = nullableByte;
+	}
+
+	public void setString(String string) {
+		this.string = string;
+	}
+
+	public String getString() {
+		return string;
+	}
+
+	public void setNonNullableFloat(float nonNullableFloat) {
+		this.nonNullableFloat = nonNullableFloat;
+	}
+
+	public float getNonNullableFloat() {
+		return nonNullableFloat;
+	}
+
+	public void setNullableFloat(Float nullableFloat) {
+		this.nullableFloat = nullableFloat;
+	}
+
+	public Float getNullableFloat() {
+		return nullableFloat;
+	}
+
+	public void setNonNullableDouble(double nonNullableDouble) {
+		this.nonNullableDouble = nonNullableDouble;
+	}
+
+	public double getNonNullableDouble() {
+		return nonNullableDouble;
+	}
+
+	public void setNullableDouble(Double nullableDouble) {
+		this.nullableDouble = nullableDouble;
+	}
+
+	public Double getNullableDouble() {
+		return nullableDouble;
 	}
 
 }
