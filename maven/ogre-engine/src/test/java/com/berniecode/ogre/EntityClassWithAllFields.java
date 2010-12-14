@@ -23,6 +23,8 @@ public class EntityClassWithAllFields {
 	private double nonNullableDouble;
 	private Double nullableDouble;
 	
+	private byte[] bytes;
+	
 	/**
 	 * Construct with default values for all fields
 	 */
@@ -33,7 +35,7 @@ public class EntityClassWithAllFields {
 	 */
 	public EntityClassWithAllFields(byte b1, Byte b2, short s1, Short s2, int i1, Integer i2, 
 			long l1, Long l2, String str, float f1, Float f2,
-			double d1, Double d2) {
+			double d1, Double d2, byte[] bytes) {
 		nonNullableByte = b1;
 		nullableByte = b2;
 		nonNullableShort = s1;
@@ -47,6 +49,7 @@ public class EntityClassWithAllFields {
 		nullableFloat = f2;
 		nonNullableDouble = d1;
 		nullableDouble = d2;
+		this.bytes = bytes;
 	}
 
 	public Integer getNullableInt() {
@@ -151,6 +154,14 @@ public class EntityClassWithAllFields {
 
 	public Double getNullableDouble() {
 		return nullableDouble;
+	}
+
+	public void setBytes(byte[] bytes) {
+		this.bytes = bytes;
+	}
+
+	public byte[] getBytes() {
+		return bytes;
 	}
 
 }

@@ -22,6 +22,9 @@ public class DefaultIdMapper implements IdMapper {
 
 	@Override
 	public synchronized long getId(Object object) {
+		
+		//TODO log an error if mapping a class that overrides object.equals
+		
 		Long existingId = idMap.get(object);
 		if (existingId != null) {
 			return existingId;

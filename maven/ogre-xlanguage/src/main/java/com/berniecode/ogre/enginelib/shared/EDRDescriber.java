@@ -1,6 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
 import com.berniecode.ogre.enginelib.platformhooks.StringConcatenator;
+import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
 
 public class EDRDescriber {
 
@@ -93,8 +94,18 @@ public class EDRDescriber {
 	private static void doDescribeValue(Object value, Property property, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add(property.getName())
-		  .add("=")
-		  .add(value);
+		  .add("=");
+		if (ValueUtils.isArray(value)) {
+			int length = ValueUtils.getArrayLength(value);
+			for (int i=0; i<length; i++) {
+				if (i > 0) {
+					sc.add(",");
+				}
+				sc.add(ValueUtils.getArrayValue(value, i));
+			}
+		} else {
+			sc.add(value);
+		}
 	}
 	
 	//

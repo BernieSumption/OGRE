@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
+import com.berniecode.ogre.enginelib.shared.BytesPropertyType;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityType;
 import com.berniecode.ogre.enginelib.shared.FloatPropertyType;
@@ -176,6 +177,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		registerClassMapping(Float.class,   new FloatPropertyType(32, true));
 		registerClassMapping(double.class,  new FloatPropertyType(64, false));
 		registerClassMapping(Double.class,  new FloatPropertyType(64, true));
+		registerClassMapping(byte[].class,  new BytesPropertyType());
 	}
 
 	/**
