@@ -8,6 +8,8 @@ public class PojoDataSourceTest extends OgreTestCase {
 	
 	//TODO test mapping works on Entity elements
 	//TODO test mapping breaks properly on Entity element not in type domain
+	//TODO test traversal of tree from root inside setEntityObjects
+	//TODO test circular references
 
 	public void testTypeDomainCreation() throws Exception {
 		

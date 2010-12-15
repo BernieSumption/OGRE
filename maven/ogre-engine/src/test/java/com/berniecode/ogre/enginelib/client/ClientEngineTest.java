@@ -157,6 +157,8 @@ public class ClientEngineTest extends OgreTestCase {
 		
 		OgreLog.setLogWriter(new StdErrLogWriter());
 		
+		//TODO test that an update message that leaves the client engine in an inconsistent state causes a log error but no exception
+		
 	}
 
 	private UpdateMessage createUpdateMessage(EntityUpdate... updates) {

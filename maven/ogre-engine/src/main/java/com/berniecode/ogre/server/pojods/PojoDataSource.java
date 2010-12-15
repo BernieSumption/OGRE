@@ -1,7 +1,10 @@
 package com.berniecode.ogre.server.pojods;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.enginelib.OgreLog;
@@ -97,15 +100,18 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	//
 
 	/**
-	 * Set the contents of the object graph.
+	 * Set the contents of the object graph. The objects passed in to this method are a <strong>set
+	 * of root objects</strong> for the object graph. The object graph is then traversed from these
+	 * roots, and any other objects directly or indirectly referenced by a root object will be
+	 * considered part of the object graph.
 	 * 
 	 * <ul>
 	 * <li>Any objects that are not part of this graph will be added, and a
-	 *     {@link EntityValueMessage} will be broadcast to clients
+	 * {@link EntityValueMessage} will be broadcast to clients
 	 * <li>Any objects that are already part of this graph will be checked for modifications, and a
-	 *     {@link EntityDiffMessage} will be broadcast to clients
+	 * {@link EntityDiffMessage} will be broadcast to clients
 	 * <li>Any objects in the graph that are not in the array passed to this method will be removed
-	 *     from the graph.
+	 * from the graph.
 	 * </ul>
 	 * 
 	 * <p>
@@ -117,16 +123,36 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * @throws ValueMappingException if there is a problem mapping one of the entity objects to an
 	 *             {@link Entity}
 	 */
-	public void setEntityObjects(Object ... entityObjects) throws ValueMappingException {
+	public void setEntityObjects(Object ... objectGraphRoots) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
+		
+		Set<Object> entityObjects = new LinkedHashSet<Object>(Arrays.asList(objectGraphRoots));
+		
+		// iteratively grow the set of entity objects to include any objects referenced by any other objects
+		// in the set. This algorithm depends heavily on the behaviour of LinkedHashMap.addAll()
+		{
+			int processedUpTo = -1;
+			while (entityObjects.size() - 1 > processedUpTo) {
+				int currentIndex = 0;
+				List<Object> toAdd = new ArrayList<Object>();
+				for (Object entityObject: entityObjects) {
+					if (currentIndex > processedUpTo) { 
+						toAdd.addAll(edrMapper.getRelatedObjects(entityObject));
+						processedUpTo = currentIndex;
+					}
+					currentIndex ++;
+				}
+				entityObjects.addAll(toAdd); 
+			}
+		}
+		
+		//for each 
 		List<EntityValueMessage> completeEntities = new ArrayList<EntityValueMessage>();
 		List<EntityDiffMessage> entityDiffs = new ArrayList<EntityDiffMessage>();
 		List<EntityDeleteMessage> entityDeletes = new ArrayList<EntityDeleteMessage>();
 		List<Entity> newEntities = new ArrayList<Entity>();
-		for (int i=0; i<entityObjects.length; i++) {
-			//TODO use get not getSimilar
-			long id = edrMapper.getIdForObject(entityObjects[i]);
-			Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
+		for (Object entityObject: entityObjects) {
+			Entity newEntity = edrMapper.createEntity(entityObject);
 			Entity similar = entities.getSimilar(newEntity);
 			if (similar == null) {
 				completeEntities.add(EntityValueMessage.build(newEntity));

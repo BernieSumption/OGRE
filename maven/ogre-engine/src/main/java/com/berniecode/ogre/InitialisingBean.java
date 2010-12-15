@@ -46,7 +46,7 @@ public abstract class InitialisingBean {
 	 */
 	protected void requireInitialised(boolean requiredStatus, String methodName) {
 		if (initialised != requiredStatus) {
-			throw new InitialisationException(methodName + " can't be called " + (requiredStatus ? "before" : "after")
+			throw new InitialisationException(getClass().getSimpleName() + "." + methodName + " can't be called " + (requiredStatus ? "before" : "after")
 					+ " initialise()");
 		}
 	}

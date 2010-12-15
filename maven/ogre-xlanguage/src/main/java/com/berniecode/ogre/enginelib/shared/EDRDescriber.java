@@ -37,15 +37,9 @@ public class EDRDescriber {
 		sc.add(entityType.getName());
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			sc.add("\n");
-			doDescribeProperty(entityType.getProperty(i), sc, indent+1);
+			doIndent(sc, indent+1);
+			sc.add(entityType.getProperty(i));
 		}
-	}
-
-	private static void doDescribeProperty(Property property, StringConcatenator sc, int indent) {
-		doIndent(sc, indent);
-		sc.add(property.getPropertyType().getDescription())
-		  .add(" property ")
-		  .add(property.getName());
 	}
 
 	private static void doIndent(StringConcatenator sc, int indent) {

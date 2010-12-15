@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
+import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.shared.BytesPropertyType;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityType;
@@ -43,10 +45,10 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 
 	
 	private Set<Class<?>> classes;
-	private IdMapper idMapper = new DefaultIdMapper();
+	private IdMapper idMapper;
 	private String typeDomainId;
 	private TypeDomain typeDomain;
-	
+
 	Map<Class<?>, EntityType> classToEntityType = new HashMap<Class<?>, EntityType>();
 	private Map<Property, Method> propertyToMethod = new HashMap<Property, Method>();
 
@@ -102,12 +104,27 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(classes, "classes");
 
-		List<EntityType> entityTypes = new ArrayList<EntityType>();
-
 		for (Class<?> klass : classes) {
 			registerClassMapping(klass, new ReferencePropertyType(getEntityTypeNameForClass(klass)));
+			
+			try {
+				if (klass.getMethod("equals", Object.class).getDeclaringClass() != Object.class
+						&& idMapper instanceof DefaultIdMapper) {
+					//TODO test this
+					OgreLog.warn(
+							"The class " + klass + " overrides the Object.equals method. DefaultIdMapper " +
+							"uses a HashMap to assign IDs to objects. If the equals() identity of an object" +
+							"changes at any point during its lifetime, this method will break. It is suggested " +
+							"that you provide a custom IdMapper implementation if your objects equality ever changes");
+				}
+			} catch (Exception e) {
+				// never happens
+			}
 		}
 		
+		
+		
+		List<EntityType> entityTypes = new ArrayList<EntityType>();
 		int index = 0;
 		List<Class<?>> processedClasses = new ArrayList<Class<?>>();
 		for (Class<?> klass : classes) {
@@ -122,8 +139,29 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			processedClasses.add(klass);
 		}
 		
-
 		typeDomain = new TypeDomain(typeDomainId, entityTypes.toArray(new EntityType[0]));
+		
+		
+		
+		if (idMapper == null) {
+			idMapper = new DefaultIdMapper();
+			for (Class<?> klass : classes) {
+				registerClassMapping(klass, new ReferencePropertyType(getEntityTypeNameForClass(klass)));
+				
+				try {
+					if (klass.getMethod("equals", Object.class).getDeclaringClass() != Object.class) {
+						//TODO test this
+						OgreLog.warn(
+								"The class " + klass + " overrides the Object.equals method. DefaultIdMapper " +
+								"uses a HashMap to assign IDs to objects. If the equals() identity of an object" +
+								"changes at any point during its lifetime, this method will break. It is suggested " +
+								"that you provide a custom IdMapper implementation if your objects equality ever changes");
+					}
+				} catch (Exception e) {
+					// never happens
+				}
+			}
+		}
 	}
 
 	//
@@ -162,6 +200,9 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		int propertyIndex = 0;
 		for (Method method : methods) {
 			if (Utils.isGetterMethod(method)) {
+				if (!method.isAccessible()) {
+					method.setAccessible(true);
+				}
 				properties.add(createProperty(method, propertyIndex++));
 			}
 		}
@@ -203,7 +244,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	/**
 	 * Register a mapping from a Java method return type to an OGRE {@link PropertyType}
 	 */
-	public void registerClassMapping(Class<?> klass, PropertyType propertyType) {
+	protected void registerClassMapping(Class<?> klass, PropertyType propertyType) {
 		classToPropertyType.put(klass, propertyType);
 	}
 
@@ -213,6 +254,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * mapping behaviour.
 	 */
 	protected PropertyType createPropertyType(Class<?> javaType) throws TypeMappingException {
+		requireInitialised(true, "createPropertyType()");
 		PropertyType propertyType = classToPropertyType.get(javaType);
 		if (propertyType != null) {
 			return propertyType;
@@ -229,6 +271,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 */
 	@Override
 	public long getIdForObject(Object entityObject) {
+		requireInitialised(true, "getIdForObject()");
 		return idMapper.getIdForObject(entityObject);
 	}
 
@@ -237,6 +280,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 */
 	@Override
 	public boolean objectHasId(Object entityObject) {
+		requireInitialised(true, "objectHasId()");
 		return idMapper.objectHasId(entityObject);
 	}
 
@@ -244,26 +288,35 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * Convert an {@link Object} into an {@link Entity} with the specified id.
 	 */
 	@Override
-	public final Entity createEntity(Object entityObject, long id) {
+	public final Entity createEntity(Object entityObject) {
 		requireInitialised(true, "createEntity()");
 		
 		EntityType entityType = getEntityTypeForObject(entityObject);
 		
-		List<Object> values = new ArrayList<Object>(); //TODO use array
+		Object[] values = new Object[entityType.getPropertyCount()];
 		
-		for (int i=0; i<entityType.getPropertyCount(); i++) {
-			values.add(getValueForProperty(entityObject, entityType.getProperty(i)));
+		for (int i=0; i<values.length; i++) {
+			values[i] = getValueForProperty(entityObject, entityType.getProperty(i));
 		}
 		
-		return new Entity(entityType, id, values.toArray());
+		return new Entity(entityType, getIdForObject(entityObject), values);
 	}
+	
+
+	Map<Class<?>, EntityType> entityTypeForObjectCache = new HashMap<Class<?>, EntityType>();
 
 	/**
 	 * Get the {@link EntityType} for an object
 	 */
 	public EntityType getEntityTypeForObject(Object entityObject) {
+		requireInitialised(true, "getEntityTypeForObject()");
+		
 		Class<? extends Object> entityClass = entityObject.getClass();
-		EntityType entityType = null;
+		EntityType entityType = entityTypeForObjectCache.get(entityClass);
+		if (entityType != null) {
+			return entityType;
+		}
+		
 		for (Class<?> klass: classToEntityType.keySet()) {
 			if (klass.isAssignableFrom(entityClass)) {
 				if (entityType == null) {
@@ -278,17 +331,40 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			throw new ValueMappingException("Can't choose EntityType for object of type " + entityObject.getClass()
 					+ " because PojoDataSource was not initialised with that class or a supertype of that class.");
 		}
+		entityTypeForObjectCache.put(entityClass, entityType);
 		return entityType;
 	}
 
+	@Override
+	public List<Object> getRelatedObjects(Object entityObject) {
+		requireInitialised(true, "getRelatedObjects()");
+		
+		EntityType entityType = getEntityTypeForObject(entityObject);
+		
+
+		List<Object> relatedObjects = new ArrayList<Object>();
+		
+		for (int i=0; i<entityType.getPropertyCount(); i++) {
+			Property property = entityType.getProperty(i);
+			if (property.getPropertyType() instanceof ReferencePropertyType) {
+				relatedObjects.add(getRawValueForProperty(entityObject, property));
+			}
+		}
+		return relatedObjects;
+	}
+
 	protected Object getValueForProperty(Object object, Property property) {
+		Object o = getRawValueForProperty(object, property);
+		if (property.getPropertyType() instanceof ReferencePropertyType) {
+			return getIdForObject(o);
+		}
+		return o;
+	}
+
+	protected Object getRawValueForProperty(Object object, Property property) {
 		Method getter = propertyToMethod.get(property);
 		try {
-			Object o = getter.invoke(object);
-			if (property.getPropertyType() instanceof ReferencePropertyType) {
-				return getIdForObject(o);
-			}
-			return o;
+			return getter.invoke(object);
 		} catch (Throwable t) {
 			throw new ValueMappingException("Exception thrown while invoking getter method " + getter, t);
 		}
@@ -306,5 +382,52 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 */
 	protected String getEntityTypeNameForClass(Class<?> klass) {
 		return klass.getName();
+	}
+	
+	
+	/**
+	 * The detault {@link IdMapper}, automatically assigns an ID to each object.
+	 *
+	 * @author Bernie Sumption
+	 */
+	class DefaultIdMapper implements IdMapper {
+		
+		// stores a map of object to id, for each EntityType
+		Map<EntityType, Map<Object, Long>> idMap = new HashMap<EntityType, Map<Object,Long>>();
+		
+		// stores the current assigned ID, for each EntityType
+		Map<EntityType, Long> nextFreeId = new HashMap<EntityType, Long>();
+		
+		public DefaultIdMapper() {
+			for (EntityType entityType: typeDomain.getEntityTypes()) {
+				idMap.put(entityType, new LinkedHashMap<Object, Long>());
+				nextFreeId.put(entityType, 1L);
+			}
+		}
+
+		@Override
+		public synchronized long getIdForObject(Object entityObject) {
+
+			EntityType entityType = getEntityTypeForObject(entityObject);
+			
+			Long existingId = idMap.get(entityType).get(entityObject);
+			if (existingId != null) {
+				return existingId;
+			}
+			long thisId = nextFreeId.get(entityType);
+			nextFreeId.put(entityType, thisId + 1);
+			if (OgreLog.isDebugEnabled()) {
+				OgreLog.debug("Assigned id " +  thisId + " to object '" + entityObject + "'");
+			}
+			idMap.get(entityType).put(entityObject, thisId);
+			return thisId;
+		}
+
+
+		@Override
+		public synchronized boolean objectHasId(Object entityObject) {
+			EntityType entityType = getEntityTypeForObject(entityObject);
+			return idMap.get(entityType).containsKey(entityObject);
+		}
 	}
 }

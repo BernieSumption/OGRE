@@ -43,6 +43,6 @@ public class Property {
 	}
 	
 	public String toString() {
-		return propertyType.getDescription() + " property " + name; //TODO use this in EDRDescriber
+		return propertyType.getDescription() + " property " + name;
 	}
 }
