@@ -1,0 +1,53 @@
+message ObjectGraph {
+  // the domain to which this data should be applied.
+  required string domainId = 1;
+  
+  // A unique ID that should change if and only if the dataVersion numbering
+  // is reset, e.g. if the system restarts and loses its data.
+  required string dataVersionScheme = 2;
+  
+  // the version of the data that this response updates to.
+  required int32 dataVersion = 3;
+  
+  // a number of complete entities to create or update
+  repeated EntityValue entityValues = 4;
+  
+  // a number of entities partial entity updates
+  repeated EntityUpdate entityUpdates = 5;
+}
+
+message EntityValue {
+  // the class of the entity being created or updated
+  required int32 classId = 1;
+  
+  // the ID of the entity being created or updated
+  required int64 entityId = 2;
+  
+  // A value for each property in the associated class,
+  // presented in the same order as defined in the class.
+  repeated PropertyValue propertyValues = 3;
+}
+
+message EntityUpdate {
+  // the class of the entity being created or updated
+  required int32 classId = 1;
+  
+  // the ID of the entity being created or updated
+  required int64 entityId = 2;
+  
+  // one or more property updates to apply to the entity
+  repeated PropertyUpdate propertyUpdates = 3;
+}
+
+message PropertyUpdate {
+  // the property to apply the update to
+  required int32 propertyCode = 1;
+  
+  required PropertyValue newValue = 2;
+}
+
+message PropertyValue {
+  // a byte array with the property value. If the byte array is not
+  // present, the value is considered to be null.
+  optional bytes data = 1;
+}

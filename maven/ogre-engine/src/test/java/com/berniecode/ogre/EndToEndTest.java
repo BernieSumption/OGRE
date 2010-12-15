@@ -1,6 +1,5 @@
 package com.berniecode.ogre;
 
-
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
@@ -27,7 +26,7 @@ public class EndToEndTest extends OgreTestCase {
 	protected void setUp() throws Exception {
 		OgreLog.info("EndToEndTest.setUp() Creating new OGRE server");
 		dataSource = new PojoDataSource();
-		dataSource.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class));
+		dataSource.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class, EntityElement.class));
 		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
 		dataSource.initialise();
 
@@ -38,7 +37,7 @@ public class EndToEndTest extends OgreTestCase {
 
 		dlBridge = new InProcessDownloadBridge(serverEngine);
 		
-		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L, "Shizzle", 9.0F, 10.0F, 11.0, 12.0, byteArray(1, 2, 3)));
+		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L, "Shizzle", 9.0F, 10.0F, 11.0, 12.0, byteArray(1, 2, 3), new EntityElement("Hi!")));
 	};
 
 	public void testFetchTypeDomain() throws Exception {
@@ -69,6 +68,7 @@ public class EndToEndTest extends OgreTestCase {
 				"TypeDomain com.berniecode.ogre.test.TypeDomain" +
 				"  0. EntityType com.berniecode.ogre.EntityClassWithAllFields" +
 				"       byte-array property bytes" +
+				"       reference to com.berniecode.ogre.EntityElement property entity_element" +
 				"       8 bit integer property non_nullable_byte" +
 				"       64 bit float property non_nullable_double" +
 				"       32 bit float property non_nullable_float" +
@@ -81,7 +81,9 @@ public class EndToEndTest extends OgreTestCase {
 				"       nullable 32 bit integer property nullable_int" +
 				"       nullable 64 bit integer property nullable_long" +
 				"       nullable 16 bit integer property nullable_short" +
-				"       string property string",
+				"       string property string" +
+				"  1. EntityType com.berniecode.ogre.EntityElement" +
+				"       string property name",
 				clientEngine.getTypeDomain());
 
 	}
@@ -93,6 +95,7 @@ public class EndToEndTest extends OgreTestCase {
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    bytes=1,2,3" +
+			"    entity_element=#2" +
 			"    non_nullable_byte=1" +
 			"    non_nullable_double=11.0" +
 			"    non_nullable_float=9.0" +
@@ -146,6 +149,7 @@ public class EndToEndTest extends OgreTestCase {
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    bytes=11,12,13" +
+			"    entity_element=#2" +
 			"    non_nullable_byte=1" +
 			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
@@ -162,7 +166,7 @@ public class EndToEndTest extends OgreTestCase {
 			clientEngine);
 		
 		// new objects propagated
-		EntityClassWithAllFields newEntityObject = new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L, "my bizzle", 19.0F, 20.0F, 21.0, 22.0, byteArray(4, 5, 6));
+		EntityClassWithAllFields newEntityObject = new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L, "my bizzle", 19.0F, 20.0F, 21.0, 22.0, byteArray(4, 5, 6), new EntityElement("Bye!"));
 
 		dataSource.setEntityObjects(initialEntityObject, newEntityObject);
 
@@ -170,8 +174,9 @@ public class EndToEndTest extends OgreTestCase {
 		assertUpdateMessageState(
 				"UpdateMessage for object graph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 				"  complete values:" +
-				"    EntityUpdate for com.berniecode.ogre.EntityClassWithAllFields#2" +
+				"    EntityUpdate for com.berniecode.ogre.EntityClassWithAllFields#3" +
 				"      bytes=4,5,6" +
+				"      entity_element=#4" +
 				"      non_nullable_byte=11" +
 				"      non_nullable_double=21.0" +
 				"      non_nullable_float=19.0" +
@@ -191,6 +196,7 @@ public class EndToEndTest extends OgreTestCase {
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 			"  Entity com.berniecode.ogre.EntityClassWithAllFields#1" +
 			"    bytes=11,12,13" +
+			"    entity_element=#2" +
 			"    non_nullable_byte=1" +
 			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
@@ -204,8 +210,9 @@ public class EndToEndTest extends OgreTestCase {
 			"    nullable_long=8" +
 			"    nullable_short=4" +
 			"    string=Fizzle" +
-			"  Entity com.berniecode.ogre.EntityClassWithAllFields#2" +
+			"  Entity com.berniecode.ogre.EntityClassWithAllFields#3" +
 			"    bytes=4,5,6" +
+			"    entity_element=#4" +
 			"    non_nullable_byte=11" +
 			"    non_nullable_double=21.0" +
 			"    non_nullable_float=19.0" +
@@ -233,8 +240,9 @@ public class EndToEndTest extends OgreTestCase {
 		 
 		assertClientEngineState(
 			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
-			"  Entity com.berniecode.ogre.EntityClassWithAllFields#2" +
+			"  Entity com.berniecode.ogre.EntityClassWithAllFields#3" +
 			"    bytes=4,5,6" +
+			"    entity_element=#4" +
 			"    non_nullable_byte=11" +
 			"    non_nullable_double=21.0" +
 			"    non_nullable_float=19.0" +
@@ -261,7 +269,7 @@ public class EndToEndTest extends OgreTestCase {
 		assertUpdateMessageState(
 				"UpdateMessage for object graph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
 				"  deleted entities:" +
-				"    EntityDelete for com.berniecode.ogre.EntityClassWithAllFields#2",
+				"    EntityDelete for com.berniecode.ogre.EntityClassWithAllFields#3",
 				msgBridge.getLastUpdateMessage(), dataSource.getTypeDomain());
 		 
 		assertClientEngineState(

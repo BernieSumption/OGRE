@@ -5,6 +5,9 @@ import java.util.Date;
 import com.berniecode.ogre.OgreTestCase;
 
 public class PojoDataSourceTest extends OgreTestCase {
+	
+	//TODO test mapping works on Entity elements
+	//TODO test mapping breaks properly on Entity element not in type domain
 
 	public void testTypeDomainCreation() throws Exception {
 		
@@ -138,7 +141,6 @@ public class PojoDataSourceTest extends OgreTestCase {
 	public void testCustomMappers() {
 		PojoDataSource dataSource = new PojoDataSource();
 		dataSource.setEDRMapper(new EDRMapperImplementation());
-		dataSource.setIdMapper(new IdMapperImplementation());
 		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
 		dataSource.initialise();
 
@@ -238,12 +240,12 @@ class EntityClassWithPropertyThatThrowsException {
 
 class IdMapperImplementation implements IdMapper {
 	@Override
-	public long getId(Object entityObject) {
+	public long getIdForObject(Object entityObject) {
 		return 42;
 	}
 
 	@Override
-	public boolean hasId(Object entityObject) {
+	public boolean objectHasId(Object entityObject) {
 		return false;
 	}
 }
@@ -252,7 +254,10 @@ class IdMapperImplementation implements IdMapper {
 class EDRMapperImplementation extends DefaultEDRMapper {
 	
 	public EDRMapperImplementation() {
-		super("custom-typedomain-name", SimpleInterface.class);
+		setTypeDomainId("custom-typedomain-name");
+		setClasses(SimpleInterface.class);
+		setIdMapper(new IdMapperImplementation());
+		initialise();
 	}
 	
 	@Override

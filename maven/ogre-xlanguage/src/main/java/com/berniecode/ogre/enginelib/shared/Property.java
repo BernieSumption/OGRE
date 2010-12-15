@@ -41,4 +41,8 @@ public class Property {
 	public int getPropertyIndex() {
 		return propertyIndex;
 	}
+	
+	public String toString() {
+		return propertyType.getDescription() + " property " + name; //TODO use this in EDRDescriber
+	}
 }

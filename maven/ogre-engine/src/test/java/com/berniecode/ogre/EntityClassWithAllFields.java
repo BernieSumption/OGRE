@@ -24,6 +24,7 @@ public class EntityClassWithAllFields {
 	private Double nullableDouble;
 	
 	private byte[] bytes;
+	private EntityElement entityElement;
 	
 	/**
 	 * Construct with default values for all fields
@@ -35,7 +36,7 @@ public class EntityClassWithAllFields {
 	 */
 	public EntityClassWithAllFields(byte b1, Byte b2, short s1, Short s2, int i1, Integer i2, 
 			long l1, Long l2, String str, float f1, Float f2,
-			double d1, Double d2, byte[] bytes) {
+			double d1, Double d2, byte[] bs, EntityElement e) {
 		nonNullableByte = b1;
 		nullableByte = b2;
 		nonNullableShort = s1;
@@ -49,7 +50,8 @@ public class EntityClassWithAllFields {
 		nullableFloat = f2;
 		nonNullableDouble = d1;
 		nullableDouble = d2;
-		this.bytes = bytes;
+		bytes = bs;
+		entityElement = e;
 	}
 
 	public Integer getNullableInt() {
@@ -164,4 +166,31 @@ public class EntityClassWithAllFields {
 		return bytes;
 	}
 
+	public void setEntityElement(EntityElement entityElement) {
+		this.entityElement = entityElement;
+	}
+
+	public EntityElement getEntityElement() {
+		return entityElement;
+	}
+
+}
+
+class EntityElement {
+	
+	private String name;
+
+	public EntityElement(String name) {
+		this.name = name;
+		
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+	
 }

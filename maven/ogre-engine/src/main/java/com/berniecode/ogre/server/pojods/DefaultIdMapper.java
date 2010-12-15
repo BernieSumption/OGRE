@@ -21,7 +21,7 @@ public class DefaultIdMapper implements IdMapper {
 	long idCounter = 1;
 
 	@Override
-	public synchronized long getId(Object object) {
+	public synchronized long getIdForObject(Object object) {
 		
 		//TODO log an error if mapping a class that overrides object.equals
 		
@@ -37,7 +37,7 @@ public class DefaultIdMapper implements IdMapper {
 
 
 	@Override
-	public synchronized boolean hasId(Object entityObject) {
+	public synchronized boolean objectHasId(Object entityObject) {
 		return idMap.containsKey(entityObject);
 	}
 

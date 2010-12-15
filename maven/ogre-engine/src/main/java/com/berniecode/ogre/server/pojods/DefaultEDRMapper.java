@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,7 @@ import com.berniecode.ogre.enginelib.shared.FloatPropertyType;
 import com.berniecode.ogre.enginelib.shared.IntegerPropertyType;
 import com.berniecode.ogre.enginelib.shared.Property;
 import com.berniecode.ogre.enginelib.shared.PropertyType;
+import com.berniecode.ogre.enginelib.shared.ReferencePropertyType;
 import com.berniecode.ogre.enginelib.shared.StringPropertyType;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
@@ -38,13 +40,16 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * @author Bernie Sumption
  */
 public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
+
 	
-	private Class<?>[] classes;
+	private Set<Class<?>> classes;
+	private IdMapper idMapper = new DefaultIdMapper();
+	private String typeDomainId;
+	private TypeDomain typeDomain;
+	
 	Map<Class<?>, EntityType> classToEntityType = new HashMap<Class<?>, EntityType>();
 	private Map<Property, Method> propertyToMethod = new HashMap<Property, Method>();
 
-	private String typeDomainId;
-	private TypeDomain typeDomain;
 	
 	//
 	// INITIALISATION
@@ -58,7 +63,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 */
 	public DefaultEDRMapper(String typeDomainId, Class<?> ... classes) {
 		this.typeDomainId = typeDomainId;
-		this.classes = classes;
+		setClasses(classes);
 		initialise();
 	}
 
@@ -73,9 +78,20 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	/**
 	 * Provide a set of classes to map as a {@link TypeDomain}. Must be called before {@link #initialise()}
 	 */
-	public void setClasses(Class<?>[] classes) {
+	public void setClasses(Class<?>... classes) {
 		requireInitialised(false, "setTypeDomain()");
-		this.classes = classes;
+		Arrays.sort(classes, new ClassNameComparator());
+		this.classes = new LinkedHashSet<Class<?>>(Arrays.asList(classes)); 
+	}
+
+	/**
+	 * Provide an alternative {@link IdMapper} implementation. If called at all, this method must be
+	 * called before {@link #initialise()}. If it is not called before {@link #initialise()},
+	 * {@link DefaultIdMapper} will be used.
+	 */
+	public void setIdMapper(IdMapper idMapper) {
+		requireInitialised(false, "setIdMapper()");
+		this.idMapper = idMapper;
 	}
 
 	/**
@@ -86,13 +102,16 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(classes, "classes");
 
-		Arrays.sort(classes, new ClassNameComparator());
-
 		List<EntityType> entityTypes = new ArrayList<EntityType>();
+
+		for (Class<?> klass : classes) {
+			registerClassMapping(klass, new ReferencePropertyType(getEntityTypeNameForClass(klass)));
+		}
 		
 		int index = 0;
+		List<Class<?>> processedClasses = new ArrayList<Class<?>>();
 		for (Class<?> klass : classes) {
-			for (Class<?> otherClass: classToEntityType.keySet()) {
+			for (Class<?> otherClass: processedClasses) {
 				if (otherClass.isAssignableFrom(klass) || klass.isAssignableFrom(otherClass)) {
 					throw new TypeMappingException("The class '" + klass + "' can't be mapped because it is a supertype or subtype of '" + otherClass + "'");
 				}
@@ -100,6 +119,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			EntityType entityType = createEntityType(index++, klass);
 			classToEntityType.put(klass, entityType);
 			entityTypes.add(entityType);
+			processedClasses.add(klass);
 		}
 		
 
@@ -205,6 +225,22 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	//
 
 	/**
+	 * @see com.berniecode.ogre.server.pojods.IdMapper#getIdForObject(Object)
+	 */
+	@Override
+	public long getIdForObject(Object entityObject) {
+		return idMapper.getIdForObject(entityObject);
+	}
+
+	/**
+	 * @see com.berniecode.ogre.server.pojods.IdMapper#objectHasId(Object)
+	 */
+	@Override
+	public boolean objectHasId(Object entityObject) {
+		return idMapper.objectHasId(entityObject);
+	}
+
+	/**
 	 * Convert an {@link Object} into an {@link Entity} with the specified id.
 	 */
 	@Override
@@ -213,7 +249,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		
 		EntityType entityType = getEntityTypeForObject(entityObject);
 		
-		List<Object> values = new ArrayList<Object>();
+		List<Object> values = new ArrayList<Object>(); //TODO use array
 		
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			values.add(getValueForProperty(entityObject, entityType.getProperty(i)));
@@ -248,7 +284,11 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	protected Object getValueForProperty(Object object, Property property) {
 		Method getter = propertyToMethod.get(property);
 		try {
-			return getter.invoke(object);
+			Object o = getter.invoke(object);
+			if (property.getPropertyType() instanceof ReferencePropertyType) {
+				return getIdForObject(o);
+			}
+			return o;
 		} catch (Throwable t) {
 			throw new ValueMappingException("Exception thrown while invoking getter method " + getter, t);
 		}

@@ -27,7 +27,6 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	private EDRMapper edrMapper;
 	private String objectGraphId;
-	private IdMapper idMapper = new DefaultIdMapper();
 	private UpdateMessageListener updateMessageListener;
 
 
@@ -43,7 +42,6 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	protected void doInitialise() {
 		requireNotNull(edrMapper, "edrMapper");
 		requireNotNull(objectGraphId, "objectGraphId");
-		requireNotNull(idMapper, "idMapper");
 		
 		typeDomain = edrMapper.getTypeDomain();
 		entities = new EntityStore(typeDomain, true);
@@ -59,17 +57,6 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	public void setEDRMapper(EDRMapper edrMapper) {
 		requireInitialised(false, "setTypeDomainMapper()");
 		this.edrMapper = edrMapper;
-	}
-
-	/**
-	 * Provide an alternative {@link IdMapper}.
-	 * 
-	 * If used at all, this method must be called before initialise(). If no alternative
-	 * {@link IdMapper} is provided, {@link DefaultIdMapper} will be used
-	 */
-	public void setIdMapper(IdMapper idMapper) {
-		requireInitialised(false, "setIdMapper()");
-		this.idMapper = idMapper;
 	}
 
 	/**
@@ -137,7 +124,8 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		List<EntityDeleteMessage> entityDeletes = new ArrayList<EntityDeleteMessage>();
 		List<Entity> newEntities = new ArrayList<Entity>();
 		for (int i=0; i<entityObjects.length; i++) {
-			long id = idMapper.getId(entityObjects[i]);
+			//TODO use get not getSimilar
+			long id = edrMapper.getIdForObject(entityObjects[i]);
 			Entity newEntity = edrMapper.createEntity(entityObjects[i], id);
 			Entity similar = entities.getSimilar(newEntity);
 			if (similar == null) {
@@ -193,7 +181,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * Check whether an object is currently part of the object graph
 	 */
 	public boolean containsEntityObject(Object entityObject) {
-		return idMapper.hasId(entityObject);
+		return edrMapper.objectHasId(entityObject);
 	}
 
 	/**
@@ -201,7 +189,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * a new ID to be assigned to the object.
 	 */
 	public long getIdForObject(Object entityObject) {
-		return idMapper.getId(entityObject);
+		return edrMapper.getIdForObject(entityObject);
 	}
 
 }

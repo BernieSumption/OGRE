@@ -10,7 +10,7 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * 
  * @author Bernie Sumption
  */
-public interface EDRMapper {
+public interface EDRMapper extends IdMapper {
 	
 	/**
 	 * @return The TypeDOmain mapped by this {@link EDRMapper}

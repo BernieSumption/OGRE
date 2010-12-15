@@ -12,11 +12,11 @@ public interface IdMapper {
 	/**
 	 * @return the ID of the specified object
 	 */
-	long getId(Object entityObject);
+	long getIdForObject(Object entityObject);
 
 	/**
 	 * Check whether an object has an ID
 	 */
-	boolean hasId(Object entityObject);
+	boolean objectHasId(Object entityObject);
 
 }
