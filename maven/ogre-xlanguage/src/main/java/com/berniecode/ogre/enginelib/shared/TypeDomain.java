@@ -1,5 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
+import com.berniecode.ogre.enginelib.platformhooks.StringMap;
+
 
 /**
  * A collection of {@link EntityType}s.
@@ -8,12 +10,16 @@ package com.berniecode.ogre.enginelib.shared;
  */
 public class TypeDomain {
 
+	private final StringMap entityTypesByName = new StringMap();
 	private final EntityType[] entityTypes;
 	private final String typeDomainId;
 
 	public TypeDomain(String typeDomainId, EntityType[] entityTypes) {
 		this.typeDomainId = typeDomainId;
 		this.entityTypes = entityTypes;
+		for (int i = 0; i < entityTypes.length; i++) {
+			entityTypesByName.put(entityTypes[i].getName(), entityTypes[i]);
+		}
 	}
 
 	/**
@@ -42,6 +48,13 @@ public class TypeDomain {
 	 */
 	public EntityType getEntityType(int entityTypeIndex) {
 		return entityTypes[entityTypeIndex];
+	}
+
+	/**
+	 * @return A single {@link EntityType} identified by its name
+	 */
+	public EntityType getEntityTypeByName(String entityName) {
+		return (EntityType) entityTypesByName.get(entityName);
 	}
 
 }

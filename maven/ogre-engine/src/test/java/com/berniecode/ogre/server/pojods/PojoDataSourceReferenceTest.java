@@ -3,6 +3,7 @@ package com.berniecode.ogre.server.pojods;
 import com.berniecode.ogre.AbstractHasId;
 import com.berniecode.ogre.HasIdMapper;
 import com.berniecode.ogre.OgreTestCase;
+import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
@@ -126,8 +127,29 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 				"    EntityUpdate for A#2" +
 				"      b=#1",
 				lastUpdateMessage, dataSource.getTypeDomain());
+	}
+	
+	public void testMethodsReturningSubtypesAreNotMappedAsSupertype() {
+		
+		requireOneLogError(OgreLog.LEVEL_WARN);
+		
+		PojoDataSource dataSource = createInitialisedDataSource(I1.class, I2.class);
+
+		assertTypeDomainState(
+			"TypeDomain TypeDomain" +
+			"  0. EntityType I1" +
+			"  1. EntityType I2" +
+			"       string property property",
+			dataSource.getTypeDomain());
+		
+
+		dataSource.setEntityObjects(new I1Impl());
 		
 		
+		assertObjectGraphState(
+				"ObjectGraph TypeDomain/TestObjectGraph" +
+				"  Entity I1#1",
+				dataSource.createSnapshot(), dataSource.getTypeDomain());
 	}
 	
 }
@@ -164,4 +186,30 @@ class B extends AbstractHasId {
 	public A getA() {
 		return a;
 	}
+}
+
+interface I1 {
+	public I2Impl getI2();
+}
+
+class I1Impl implements I1 {
+
+	@Override
+	public I2Impl getI2() {
+		return new I2Impl();
+	}
+	
+}
+
+interface I2 {
+	String getProperty();
+}
+
+class I2Impl implements I2 {
+
+	@Override
+	public String getProperty() {
+		return "value";
+	}
+	
 }

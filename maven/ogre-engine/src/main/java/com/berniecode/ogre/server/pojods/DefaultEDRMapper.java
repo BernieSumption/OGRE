@@ -107,22 +107,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 
 		for (Class<?> klass : classes) {
 			registerClassMapping(klass, new ReferencePropertyType(getEntityTypeNameForClass(klass)));
-			
-			try {
-				if (klass.getMethod("equals", Object.class).getDeclaringClass() != Object.class
-						&& idMapper instanceof DefaultIdMapper) {
-					OgreLog.warn(
-							"The class " + klass + " overrides the Object.equals method. DefaultIdMapper " +
-							"uses a HashMap to assign IDs to objects. If the equals() identity of an object" +
-							"changes at any point during its lifetime, this method will break. It is suggested " +
-							"that you provide a custom IdMapper implementation if your objects equality ever changes");
-				}
-			} catch (Exception e) {
-				// never happens
-			}
 		}
-		
-		
 		
 		List<EntityType> entityTypes = new ArrayList<EntityType>();
 		int index = 0;
@@ -159,7 +144,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 								"equality never changes");
 					}
 				} catch (Exception e) {
-					// never happens
+					// never happens, I promise
 				}
 			}
 		}
@@ -170,7 +155,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	//
 
 	/**
-	 * Get the {@link TypeDomain} associated mapped by this {@link DefaultEDRMapper}
+	 * Get the {@link TypeDomain} mapped by this {@link DefaultEDRMapper}
 	 */
 	public TypeDomain getTypeDomain() {
 		requireInitialised(true, "getTypeDomain()");
@@ -200,11 +185,15 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		Arrays.sort(methods, new MethodNameComparator());
 		int propertyIndex = 0;
 		for (Method method : methods) {
-			if (Utils.isGetterMethod(method) && isMappableMethod(method)) {
-				if (!method.isAccessible()) {
-					method.setAccessible(true);
+			if (Utils.isGetterMethod(method)) {
+				if (isMappableMethod(method)) {
+					if (!method.isAccessible()) {
+						method.setAccessible(true);
+					}
+					properties.add(createProperty(method, propertyIndex++));
+				} else {
+					OgreLog.warn("Ignoring non-mappable getter method " + method);
 				}
-				properties.add(createProperty(method, propertyIndex++));
 			}
 		}
 		
@@ -227,7 +216,6 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * "java_bean_property"
 	 */
 	protected String getPropertyNameForMethod(Method method) {
-		//TODO test that the class still works if this is overridden
 		return Utils.getPropertyNameForGetter(method);
 	}
 
@@ -422,7 +410,6 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		public DefaultIdMapper() {
 			for (EntityType entityType: typeDomain.getEntityTypes()) {
 				idMap.put(entityType, new WeakHashMap<Object, Long>());
-				//TODO test that unused objects are freed.
 				nextFreeId.put(entityType, 1L);
 			}
 		}

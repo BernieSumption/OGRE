@@ -2,6 +2,8 @@ package com.berniecode.ogre.server.pojods;
 
 import java.util.Date;
 
+import com.berniecode.ogre.AbstractHasId;
+import com.berniecode.ogre.HasIdMapper;
 import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.OgreLog;
 
@@ -165,10 +167,37 @@ public class PojoDataSourceBasicTypesTest extends OgreTestCase {
 		requireOneLogError(OgreLog.LEVEL_WARN);
 		createInitialisedDataSource(ClassWithCustomEquals.class);
 	}
+	
+	public void testDifferentObjectsWithSameId() {
+		PojoDataSource dataSource = createInitialisedDataSource(new HasIdMapper(), SimpleInterface.class);
+		
+		dataSource.setEntityObjects(new SimpleInterfaceImpl(10L), new SimpleInterfaceImpl(100L));
+
+		assertObjectGraphState(
+			"ObjectGraph TypeDomain/TestObjectGraph" +
+			"  Entity SimpleInterface#10" +
+			"    public_int_property=8" +
+			"  Entity SimpleInterface#100" +
+			"    public_int_property=98",
+			dataSource.createSnapshot(), dataSource.getTypeDomain());
+	}
 }
 
 interface SimpleInterface {
 	int getPublicIntProperty();
+}
+
+class SimpleInterfaceImpl extends AbstractHasId implements SimpleInterface {
+
+	public SimpleInterfaceImpl(long id) {
+		super(id);
+	}
+
+	@Override
+	public int getPublicIntProperty() {
+		return (int) _getId() - 2;
+	}
+	
 }
 
 interface SimpleInterfaceChild extends SimpleInterface {

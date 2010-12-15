@@ -13,6 +13,7 @@ public class AbstractHasId implements HasId {
 		return id;
 	}
 	
+	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "#" + id;
 	}

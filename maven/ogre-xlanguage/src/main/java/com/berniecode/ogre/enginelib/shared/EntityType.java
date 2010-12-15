@@ -1,5 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
+import com.berniecode.ogre.enginelib.platformhooks.ArrayBuilder;
+
 /**
  * A description of an entity. EntityType is to {@link Entity} as java.lang.Class is to
  * java.lang.Object.
@@ -11,11 +13,20 @@ public class EntityType {
 	private final int index;
 	private final String name;
 	private final Property[] properties;
+	private Property[] referenceProperties;
 
 	public EntityType(int index, String name, Property[] properties) {
 		this.index = index;
 		this.name = name;
 		this.properties = properties;
+		
+		ArrayBuilder builder = new ArrayBuilder(Property.class);
+		for (int i=0; i<properties.length; i++) {
+			if (properties[i].getPropertyType() instanceof ReferencePropertyType) {
+				builder.add(properties[i]);
+			}
+		}
+		referenceProperties = (Property[]) builder.buildArray();
 	}
 
 	/**
@@ -48,5 +59,12 @@ public class EntityType {
 	
 	public String toString() {
 		return name;
+	}
+
+	/**
+	 * @return an array of all the reference properties in this {@link EntityType}
+	 */
+	public Property[] getReferenceProperties() {
+		return referenceProperties;
 	}
 }

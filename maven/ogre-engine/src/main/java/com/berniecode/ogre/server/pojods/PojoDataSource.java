@@ -2,6 +2,7 @@ package com.berniecode.ogre.server.pojods;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +41,7 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
  * @author Bernie Sumption
  */
 public class PojoDataSource extends InitialisingBean implements DataSource {
+
 
 	private EDRMapper edrMapper;
 	private String objectGraphId;
@@ -100,7 +102,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	@Override
 	public ObjectGraphValueMessage createSnapshot() {
-		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, entities.createEntityValueMessages());
+		EntityValueMessage[] messages = entities.createEntityValueMessages();
+		Arrays.sort(messages, new EntityValueMessageComparator());
+		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, messages);
 	}
 
 	@Override
@@ -229,6 +233,23 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 */
 	public long getIdForObject(Object entityObject) {
 		return edrMapper.getIdForObject(entityObject);
+	}
+	
+
+	// sorts EntityValueMessages first by entityTypeId, then by entityId
+	private final class EntityValueMessageComparator implements Comparator<EntityValueMessage> {
+		@Override
+		public int compare(EntityValueMessage o1, EntityValueMessage o2) {
+			if (o1.getEntityTypeIndex() != o2.getEntityTypeIndex()) {
+				return compareNumbers(o1.getEntityTypeIndex(), o2.getEntityTypeIndex());
+			} else {
+				return compareNumbers(o1.getEntityId(), o2.getEntityId());
+			}
+		}
+
+		private int compareNumbers(long o1Id, long o2Id) {
+			return (o1Id < o2Id ? -1 : (o1Id == o2Id ? 0 : 1));
+		}
 	}
 
 }

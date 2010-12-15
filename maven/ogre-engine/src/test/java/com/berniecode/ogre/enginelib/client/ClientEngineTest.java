@@ -17,6 +17,7 @@ import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
 import com.berniecode.ogre.enginelib.shared.IntegerPropertyType;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.Property;
+import com.berniecode.ogre.enginelib.shared.ReferencePropertyType;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessage;
 
@@ -139,9 +140,31 @@ public class ClientEngineTest extends OgreTestCase {
 		requireOneLogError(OgreLog.LEVEL_ERROR);
 		
 		ce.acceptUpdateMessage(createUpdateMessage(new EntityDiffMessage(0, 100, new Object[] {10, null}, new boolean[] {true, false})));
-
 		
-		//TODO test that an update message that leaves the client engine in an inconsistent state causes a log error but no exception
+	}
+
+	public void testEntityMergingError() throws Exception {
+
+		entityType0 = new EntityType(0, "entityType0", new Property[] {
+				new Property(0, "reference", new ReferencePropertyType("entityType0"))
+		});
+		
+		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0 });
+		
+
+		ClientEngine ce = createClientEngine();
+		ce.initialise();
+
+		requireOneLogError(OgreLog.LEVEL_ERROR);
+		
+		// test new entity created with complete value
+		ce.acceptUpdateMessage(createUpdateMessage(new EntityValueMessage(0, 200, new Object[] {10L})));
+
+		assertClientEngineState(
+			"ObjectGraph TypeDomain/TestObjectGraph" +
+			"  Entity entityType0#200" +
+			"    reference=#10",
+			ce);
 		
 	}
 

@@ -132,6 +132,9 @@ public class ClientEngine implements UpdateMessageListener {
 	 * @private
 	 */
 	public void acceptUpdateMessage(UpdateMessage message) {
+		
+		//TODO perform validation on the update message - check that the untyped Object[] values array is of the correct type
+		
 		requireInitialised(true, "acceptUpdateMessage()");
 		OgreLog.info("ClientEngine: accepted update message " + message);
 		if (OgreLog.isDebugEnabled()) {
@@ -140,6 +143,10 @@ public class ClientEngine implements UpdateMessageListener {
 		mergeCompleteEntities(message.getEntityValues());
 		mergeEntityDiffs(message.getEntityDiffs());
 		mergeEntityDeletes(message.getEntityDeletes());
+		
+
+		//TODO  move this to before ClientEngine state is compromised! refuse to accept messages that will leave it in a bad state
+		entities.checkIntegrity();
 	}
 
 	/**
