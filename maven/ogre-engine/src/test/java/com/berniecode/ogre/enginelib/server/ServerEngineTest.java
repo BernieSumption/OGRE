@@ -1,7 +1,5 @@
 package com.berniecode.ogre.enginelib.server;
 
-import org.jmock.Mockery;
-
 import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
@@ -13,8 +11,6 @@ import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
  * @author Bernie Sumption
  */
 public class ServerEngineTest extends OgreTestCase {
-	
-	private Mockery context = new Mockery();
 
 	public void testInitialisation() throws NoSuchThingException {
 		ServerEngine se = new ServerEngine();

@@ -14,7 +14,8 @@ public class EntityDiffMessageTest extends OgreTestCase {
 	private TypeDomain typeDomain;
 	private EntityType entityType1;
 
-	public void setUp() {
+	@Override
+	public void doAdditionalSetup() {
 
 		entityType0 = new EntityType(0, "entityType0", new Property[] {
 				new Property(0, "property0", new IntegerPropertyType(32, false)),

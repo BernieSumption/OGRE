@@ -20,16 +20,12 @@ public class Utils {
 	}
 
 	/**
-	 * Convert a getter method, e.g. getMyXMLDocument() into a property name "get_my_XML_document"
+	 * Convert a getter method, e.g. getMyDog() into a property name "my_dog"
 	 */
 	public static String getPropertyNameForGetter(Method method) {
 		return getPropertyNameForGetter(method.getName());
 	}
 
-	/**
-	 * Convert a getter method name, e.g. "getMyXMLDocument" into a property name
-	 * "get_my_XML_document"
-	 */
 	protected static String getPropertyNameForGetter(String name) {
 		if (name.startsWith("get") && name.length() > 3) {
 			name = name.substring(3);

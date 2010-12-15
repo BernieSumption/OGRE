@@ -22,7 +22,20 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
  * A {@link DataSource} that extracts a {@link TypeDomain} from a set of java classes and an
- * {@link ObjectGraph} from from a set of java objects
+ * {@link ObjectGraph} from from a set of java objects.
+ * 
+ * <p>
+ * Each time your data has changed (or on a regular schedule if you don't know when your data has
+ * changed) you should call {@link #setEntityObjects(Object...)} passing in a set of objects that
+ * form root nodes of the object graph. {@link PojoDataSource} will traverse the java object graph
+ * from the provided root nodes and find any objects directly or indirectly referenced by the root
+ * nodes.
+ * 
+ * <p>
+ * {@link PojoDataSource} maintains a complete copy of the object graph data in memory, and uses
+ * this to detect changes on any object. For this reason it will consume memory and CPU resources in
+ * proportion to both the size of the object graph, and the frequency of calls to
+ * {@link #setEntityObjects(Object...)}.
  * 
  * @author Bernie Sumption
  */

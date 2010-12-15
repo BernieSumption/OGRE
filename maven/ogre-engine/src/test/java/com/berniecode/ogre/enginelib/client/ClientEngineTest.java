@@ -3,16 +3,12 @@ package com.berniecode.ogre.enginelib.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hamcrest.core.IsNot;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
 
 import com.berniecode.ogre.OgreTestCase;
-import com.berniecode.ogre.enginelib.LogWriter;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
 import com.berniecode.ogre.enginelib.shared.EntityDeleteMessage;
 import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
 import com.berniecode.ogre.enginelib.shared.EntityType;
@@ -33,8 +29,6 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessage;
  */
 public class ClientEngineTest extends OgreTestCase {
 	
-	private Mockery context;
-	
 	private EntityType entityType0;
 	private EntityType entityType1;
 	private TypeDomain typeDomain;
@@ -44,9 +38,8 @@ public class ClientEngineTest extends OgreTestCase {
 	private DownloadClientAdapter downloadClientAdapter;
 	private MessageClientAdapter messageClientAdapter;
 
-	public void setUp() throws Exception {
-		
-		context = new Mockery();
+	@Override
+	public void doAdditionalSetup() throws Exception {
 
 		downloadClientAdapter = context.mock(DownloadClientAdapter.class); 
 		messageClientAdapter = context.mock(MessageClientAdapter.class); 
@@ -115,7 +108,7 @@ public class ClientEngineTest extends OgreTestCase {
 		ce.acceptUpdateMessage(createUpdateMessage(new EntityValueMessage(0, 200, new Object[] {5, 6L})));
 
 		assertClientEngineState(
-			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
+			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity entityType0#200" +
 			"    property0=5" +
 			"    property1=6",
@@ -125,7 +118,7 @@ public class ClientEngineTest extends OgreTestCase {
 		ce.acceptUpdateMessage(createUpdateMessage(new EntityValueMessage(0, 200, new Object[] {7, 8L})));
 
 		assertClientEngineState(
-			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
+			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity entityType0#200" +
 			"    property0=7" +
 			"    property1=8",
@@ -135,7 +128,7 @@ public class ClientEngineTest extends OgreTestCase {
 		ce.acceptUpdateMessage(createUpdateMessage(new EntityDiffMessage(0, 200, new Object[] {9, null}, new boolean[] {true, false})));
 
 		assertClientEngineState(
-			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
+			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity entityType0#200" +
 			"    property0=9" +
 			"    property1=8",
@@ -143,19 +136,10 @@ public class ClientEngineTest extends OgreTestCase {
 		
 		// test partial value without existing entity causes log error but no exception failure
 		
-		final LogWriter mockLogWriter = context.mock(LogWriter.class);
-		OgreLog.setLogWriter(mockLogWriter);
-
-		context.checking(new Expectations() {{
-			allowing (mockLogWriter).acceptMessage(with(IsNot.not((equal(OgreLog.LEVEL_ERROR)))), with(any(String.class)), with(any(String.class)));
-		    oneOf (mockLogWriter).acceptMessage(with(equal(OgreLog.LEVEL_ERROR)), with(equal("ERROR")), with(any(String.class)));
-		}});
+		requireOneLogError(OgreLog.LEVEL_ERROR);
 		
 		ce.acceptUpdateMessage(createUpdateMessage(new EntityDiffMessage(0, 100, new Object[] {10, null}, new boolean[] {true, false})));
 
-		context.assertIsSatisfied();
-		
-		OgreLog.setLogWriter(new StdErrLogWriter());
 		
 		//TODO test that an update message that leaves the client engine in an inconsistent state causes a log error but no exception
 		

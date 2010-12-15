@@ -4,11 +4,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
@@ -100,6 +100,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * Initialise this mapper. Before calling this method, a {@link #setTypeDomainId(String)} and
 	 * {@link #setClasses(Set)} must have been called.
 	 */
+	@Override
 	protected final void doInitialise() {
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(classes, "classes");
@@ -110,7 +111,6 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			try {
 				if (klass.getMethod("equals", Object.class).getDeclaringClass() != Object.class
 						&& idMapper instanceof DefaultIdMapper) {
-					//TODO test this
 					OgreLog.warn(
 							"The class " + klass + " overrides the Object.equals method. DefaultIdMapper " +
 							"uses a HashMap to assign IDs to objects. If the equals() identity of an object" +
@@ -150,12 +150,13 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 				
 				try {
 					if (klass.getMethod("equals", Object.class).getDeclaringClass() != Object.class) {
-						//TODO test this
 						OgreLog.warn(
-								"The class " + klass + " overrides the Object.equals method. DefaultIdMapper " +
-								"uses a HashMap to assign IDs to objects. If the equals() identity of an object" +
-								"changes at any point during its lifetime, this method will break. It is suggested " +
-								"that you provide a custom IdMapper implementation if your objects equality ever changes");
+								"The class " + klass + " overrides the Object.equals method, but no custom IdMapper " +
+								"has been provided. By default, DefaultEDRMapper uses a HashMap to track the mappoing of " +
+								"objects to their ID. If the equals() identity of an object changes at any point during " +
+								"its lifetime, it will be assinged a new ID and all references to it will break. It is suggested " +
+								"that you provide a custom IdMapper implementation, unless you are really sure that your objects " +
+								"equality never changes");
 					}
 				} catch (Exception e) {
 					// never happens
@@ -199,7 +200,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		Arrays.sort(methods, new MethodNameComparator());
 		int propertyIndex = 0;
 		for (Method method : methods) {
-			if (Utils.isGetterMethod(method)) {
+			if (Utils.isGetterMethod(method) && isMappableMethod(method)) {
 				if (!method.isAccessible()) {
 					method.setAccessible(true);
 				}
@@ -211,12 +212,32 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	}
 
 	/**
+	 * Override this method to control whether individual getter methods are mapped to OGRE properties. If
+	 * this method returns true for a property, it will be mapped to a property.
+	 * 
+	 * <p>The default behaviour is to map any getter methods that have mappable return types.
+	 */
+	protected boolean isMappableMethod(Method method) {
+		return classToPropertyType.containsKey(method.getReturnType());
+	}
+
+	/**
+	 * Choose an OGRE property name for a given getter method. The default implementation is
+	 * {@link Utils#getPropertyNameForGetter(Method)} which converts getJavaBeanProperty into
+	 * "java_bean_property"
+	 */
+	protected String getPropertyNameForMethod(Method method) {
+		//TODO test that the class still works if this is overridden
+		return Utils.getPropertyNameForGetter(method);
+	}
+
+	/**
 	 * Convert a {@link Method} to a {@link Property}. This method can be overridden by subclasses that
 	 * want to alter the default mapping behaviour.
 	 */
 	protected Property createProperty(Method method, int propertyIndex) {
 		PropertyType propertyType = createPropertyType(method.getReturnType());
-		Property property = new Property(propertyIndex, Utils.getPropertyNameForGetter(method), propertyType);
+		Property property = new Property(propertyIndex, getPropertyNameForMethod(method), propertyType);
 		propertyToMethod.put(property, method);
 		return property;
 	}
@@ -386,7 +407,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	
 	
 	/**
-	 * The detault {@link IdMapper}, automatically assigns an ID to each object.
+	 * The default {@link IdMapper}, automatically assigns an ID to each object.
 	 *
 	 * @author Bernie Sumption
 	 */
@@ -400,7 +421,8 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		
 		public DefaultIdMapper() {
 			for (EntityType entityType: typeDomain.getEntityTypes()) {
-				idMap.put(entityType, new LinkedHashMap<Object, Long>());
+				idMap.put(entityType, new WeakHashMap<Object, Long>());
+				//TODO test that unused objects are freed.
 				nextFreeId.put(entityType, 1L);
 			}
 		}

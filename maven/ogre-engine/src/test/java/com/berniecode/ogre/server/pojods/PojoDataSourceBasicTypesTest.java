@@ -3,22 +3,18 @@ package com.berniecode.ogre.server.pojods;
 import java.util.Date;
 
 import com.berniecode.ogre.OgreTestCase;
+import com.berniecode.ogre.enginelib.OgreLog;
 
-public class PojoDataSourceTest extends OgreTestCase {
-	
-	//TODO test mapping works on Entity elements
-	//TODO test mapping breaks properly on Entity element not in type domain
-	//TODO test traversal of tree from root inside setEntityObjects
-	//TODO test circular references
+public class PojoDataSourceBasicTypesTest extends OgreTestCase {
 
 	public void testTypeDomainCreation() throws Exception {
 		
 		PojoDataSource dataSource = createInitialisedDataSource(SimpleEntityClassOne.class, SimpleEntityClassNoFields.class);
 		
 		assertTypeDomainState(
-			"TypeDomain com.berniecode.ogre.test.TypeDomain" +
-			"  0. EntityType com.berniecode.ogre.server.pojods.SimpleEntityClassNoFields" +
-			"  1. EntityType com.berniecode.ogre.server.pojods.SimpleEntityClassOne" +
+			"TypeDomain TypeDomain" +
+			"  0. EntityType SimpleEntityClassNoFields" +
+			"  1. EntityType SimpleEntityClassOne" +
 			"       32 bit integer property public_int_property",
 			dataSource.getTypeDomain());
 	}
@@ -57,12 +53,16 @@ public class PojoDataSourceTest extends OgreTestCase {
 		assertEquals(2, dataSource.getIdForObject(e2));
 	}
 	
+	public void testUnMappableTypesAreIgnored() {
+		PojoDataSource dataSource = createInitialisedDataSource(EntityClassWithDateProperty.class);
+		assertTypeDomainState(
+				"TypeDomain TypeDomain" +
+				"  0. EntityType EntityClassWithDateProperty" +
+				"       string property dummy",
+				dataSource.getTypeDomain());
+	}
+	
 	public void testMappingFailsForUnmappableType() {
-		try {
-			createInitialisedDataSource(EntityClassWithDateProperty.class);
-			fail("A TypeMappingException should have been thrown when trying to map the Date type");
-		} catch (TypeMappingException e) {
-		}
 
 		try {
 			createInitialisedDataSource(EnumType.class);
@@ -103,16 +103,16 @@ public class PojoDataSourceTest extends OgreTestCase {
 		PojoDataSource dataSource = createInitialisedDataSource(SimpleInterface.class);
 
 		assertTypeDomainState(
-			"TypeDomain com.berniecode.ogre.test.TypeDomain" +
-			"  0. EntityType com.berniecode.ogre.server.pojods.SimpleInterface" +
+			"TypeDomain TypeDomain" +
+			"  0. EntityType SimpleInterface" +
 			"       32 bit integer property public_int_property",
 			dataSource.getTypeDomain());
 		
 		dataSource.setEntityObjects(new SimpleEntityClassOne());
 
 		assertObjectGraphState(
-			"ObjectGraph com.berniecode.ogre.test.TypeDomain/TestObjectGraph" +
-			"  Entity com.berniecode.ogre.server.pojods.SimpleInterface#1" +
+			"ObjectGraph TypeDomain/TestObjectGraph" +
+			"  Entity SimpleInterface#1" +
 			"    public_int_property=10",
 			dataSource.createSnapshot(), dataSource.getTypeDomain());
 	}
@@ -160,17 +160,10 @@ public class PojoDataSourceTest extends OgreTestCase {
 				"    public_int_property=10",
 				dataSource.createSnapshot(), dataSource.getTypeDomain());
 	}
-
-	private PojoDataSource createInitialisedDataSource(Class<?> ... classes) {
-		PojoDataSource dataSource = new PojoDataSource();
-		DefaultEDRMapper edrMapper = new DefaultEDRMapper();
-		edrMapper.setTypeDomainId(TYPE_DOMAIN_ID);
-		edrMapper.setClasses(classes);
-		edrMapper.initialise();
-		dataSource.setEDRMapper(edrMapper);
-		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
-		dataSource.initialise();
-		return dataSource;
+	
+	public void testLogWarningWhenClassOverridesEquals() {
+		requireOneLogError(OgreLog.LEVEL_WARN);
+		createInitialisedDataSource(ClassWithCustomEquals.class);
 	}
 }
 
@@ -218,6 +211,7 @@ class SimpleEntityClassNoFields {
 		this.name = name;
 	}
 	
+	@Override
 	public String toString() {
 		return name;
 	}
@@ -226,6 +220,9 @@ class SimpleEntityClassNoFields {
 class EntityClassWithDateProperty {
 	public Date getDate() {
 		return new Date();
+	}
+	public String getDummy() {
+		return null;
 	}
 }
 
@@ -236,6 +233,16 @@ enum EnumType {
 class EntityClassWithPropertyThatThrowsException {
 	public int getBadProperty() {
 		throw new RuntimeException("the message");
+	}
+}
+
+class ClassWithCustomEquals {
+	public String getName() {
+		return "dummy";
+	}
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
 	}
 }
 
@@ -251,7 +258,6 @@ class IdMapperImplementation implements IdMapper {
 		return false;
 	}
 }
-
 
 class EDRMapperImplementation extends DefaultEDRMapper {
 	
