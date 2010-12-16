@@ -8,5 +8,5 @@ package com.berniecode.ogre.enginelib.shared;
  */
 public interface UpdateMessageListener {
 
-	void acceptUpdateMessage(UpdateMessage message);
+	void acceptUpdateMessage(ObjectGraphUpdate message);
 }

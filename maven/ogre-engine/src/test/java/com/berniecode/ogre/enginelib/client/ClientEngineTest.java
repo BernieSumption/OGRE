@@ -19,7 +19,7 @@ import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.Property;
 import com.berniecode.ogre.enginelib.shared.ReferencePropertyType;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.UpdateMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 
 /**
  * A ClientEngineTest configures and executes the replication of a single object graph. It is the
@@ -168,7 +168,7 @@ public class ClientEngineTest extends OgreTestCase {
 		
 	}
 
-	private UpdateMessage createUpdateMessage(EntityUpdate... updates) {
+	private ObjectGraphUpdate createUpdateMessage(EntityUpdate... updates) {
 		List<EntityValueMessage> valueMessages = new ArrayList<EntityValueMessage>();
 		List<EntityDiffMessage> diffMessages = new ArrayList<EntityDiffMessage>();
 		List<EntityDeleteMessage> deleteMessages = new ArrayList<EntityDeleteMessage>();
@@ -180,7 +180,7 @@ public class ClientEngineTest extends OgreTestCase {
 				diffMessages.add((EntityDiffMessage) update);
 			}
 		}
-		return new UpdateMessage(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID,
+		return new ObjectGraphUpdate(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID,
 				valueMessages.toArray(new EntityValueMessage[0]),
 				diffMessages.toArray(new EntityDiffMessage[0]),
 				deleteMessages.toArray(new EntityDeleteMessage[0]));

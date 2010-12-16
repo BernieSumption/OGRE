@@ -14,7 +14,7 @@ import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.EntityUpdate;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.UpdateMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.IdMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
@@ -68,7 +68,7 @@ public abstract class OgreTestCase extends TestCase {
 		assertState(expected, EDRDescriber.describeObjectGraph(typeDomain, objectGraph));
 	}
 	
-	protected void assertUpdateMessageState(String expected, UpdateMessage updateMessage, TypeDomain typeDomain) {
+	protected void assertUpdateMessageState(String expected, ObjectGraphUpdate updateMessage, TypeDomain typeDomain) {
 		assertState(expected, EDRDescriber.describeUpdateMessage(typeDomain, updateMessage));
 	}
 	

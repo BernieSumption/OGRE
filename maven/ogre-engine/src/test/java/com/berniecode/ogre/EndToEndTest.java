@@ -134,7 +134,7 @@ public class EndToEndTest extends OgreTestCase {
 		
 		assertEquals(2, msgBridge.getMessageCount());
 		assertUpdateMessageState(
-				"UpdateMessage for object graph TypeDomain/TestObjectGraph" +
+				"ObjectGraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
 				"    EntityUpdate for EntityClassWithAllFields#1" +
 				"      bytes=11,12,13" +
@@ -176,7 +176,7 @@ public class EndToEndTest extends OgreTestCase {
 
 		assertEquals(3, msgBridge.getMessageCount());
 		assertUpdateMessageState(
-				"UpdateMessage for object graph TypeDomain/TestObjectGraph" +
+				"ObjectGraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for EntityClassWithAllFields#2" +
 				"      bytes=4,5,6" +
@@ -243,7 +243,7 @@ public class EndToEndTest extends OgreTestCase {
 
 		assertEquals(4, msgBridge.getMessageCount());
 		assertUpdateMessageState(
-				"UpdateMessage for object graph TypeDomain/TestObjectGraph" +
+				"ObjectGraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  deleted entities:" +
 				"    EntityDelete for EntityClassWithAllFields#1" +
 				"    EntityDelete for EntityElement#1",
@@ -280,7 +280,7 @@ public class EndToEndTest extends OgreTestCase {
 
 		assertEquals(5, msgBridge.getMessageCount());
 		assertUpdateMessageState(
-				"UpdateMessage for object graph TypeDomain/TestObjectGraph" +
+				"ObjectGraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  deleted entities:" +
 				"    EntityDelete for EntityClassWithAllFields#2" +
 				"    EntityDelete for EntityElement#2",

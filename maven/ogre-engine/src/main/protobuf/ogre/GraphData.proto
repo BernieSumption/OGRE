@@ -1,0 +1,104 @@
+package ogre;
+
+option java_package = "com.berniecode.ogre.wireformat";
+option java_outer_classname = "OgreWireFormatV1Protos";
+
+
+// these messages map directly onto the classes with the same name
+// in the com.berniecode.ogre.enginelib.shared package. This file
+// only contains comments to highlight unusual behaviour or requirements
+// that aren't obvious from the JavaDoc comments in those classes
+
+
+message TypeDomain {
+
+	required string typeDomainId = 1;
+	// the EntityType.entityTypeIndex property is derived from the position in this array
+	repeated EntityType entityTypes = 2;
+	
+
+	message EntityType {
+	
+		required string name = 1;
+		// the Property.propertyIndex property is derived from the position in this array
+		repeated Property properties = 2;
+	
+	
+		message Property {
+		
+			required string name = 1;
+			required PropertyType propertyType = 2;
+			required bool isNullable = 3;
+			optional string referenceType = 4; // only required if propertyType == REFERENCE
+			
+			
+			enum PropertyType {
+				INT       = 0;
+				BIGINT    = 1;
+				FLOAT     = 2;
+				DOUBLE    = 3;
+				STRING    = 4;
+				BYTES     = 5;
+				REFERENCE = 6;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+message ObjectGraphUpdate {
+
+	required string typeDomainId = 1;
+	required string objectGraphId = 2;
+	repeated EntityValue entities = 3; // Must contain complete-style EntityValues
+	repeated EntityValue entityUpdates = 4; // Must contain complete-style EntityValues
+	repeated EntityDelete entityDeletes = 5;
+	
+	// There are two flavours of validation for this message. "complete-style" maps onto the Entity class in Java,
+	// and "diff-style" maps onto the EntityDiff class.
+	// complete-style validation rules:
+	//     1. The propertyIndices array must be empty
+	//     2. There must be exactly one PropertyValue per Property in the associated EntityType. The position of the
+	//        PropertyValue in the propertyValues array is interpreted as the propertyIndex
+	// diff-style validation rules:
+	//     1. The propertyIndices array must have the same number of entries as the propertyValues array
+	//     2. Each entry in the propertyIndices array is interpreted as the propertyIndex for the PropertyValue
+	//        at the same position in the propertyValues array
+	message EntityValue {
+	
+		required int32 entityTypeIndex = 1;
+		required int64 entityId = 2;
+		repeated int32 propertyIndices = 3 [packed=true];
+		repeated PropertyValue propertyValues = 4;
+		
+
+		message PropertyValue {
+			
+			// if the parent EntityValue.isPartial == true, this field must be ommitted and its value will be derived
+			// from the PropertyValue's position in the propertyValues array. Otherwise it is required.
+			optional int32 propertyIndex = 1;
+			
+			// exactly one of the following fields must be provided:
+			
+			optional bool isNull = 2;
+			optional int32 intValue = 3;
+			optional int64 bigIntValue = 4;
+			optional float floatValue = 5;
+			optional double doubleValue = 6;
+			optional string stringValue = 7;
+			optional bytes bytesValue = 8;
+		}
+	}
+	
+	
+	message EntityDelete {
+		required int32 entityTypeIndex = 1;
+		required int64 entityId = 2;
+	}
+}
+
+

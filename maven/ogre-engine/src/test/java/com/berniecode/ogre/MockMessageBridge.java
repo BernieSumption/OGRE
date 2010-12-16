@@ -5,18 +5,18 @@ import java.util.List;
 
 import com.berniecode.ogre.enginelib.client.MessageClientAdapter;
 import com.berniecode.ogre.enginelib.server.MessageServerAdapter;
-import com.berniecode.ogre.enginelib.shared.UpdateMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 public class MockMessageBridge implements MessageServerAdapter, MessageClientAdapter {
 	
 	private int messageCount = 0;
-	private UpdateMessage lastUpdateMessage;
+	private ObjectGraphUpdate lastUpdateMessage;
 	
 	List<ListenerHolder> holders = new ArrayList<ListenerHolder>();
 
 	@Override
-	public void publishUpdateMessage(UpdateMessage message) {
+	public void publishUpdateMessage(ObjectGraphUpdate message) {
 		lastUpdateMessage = message;
 		messageCount++;
 		String key = getKey(message.getTypeDomainId(), message.getObjectGraphId());
@@ -44,7 +44,7 @@ public class MockMessageBridge implements MessageServerAdapter, MessageClientAda
 		return messageCount;
 	}
 
-	public UpdateMessage getLastUpdateMessage() {
+	public ObjectGraphUpdate getLastUpdateMessage() {
 		return lastUpdateMessage;
 	}
 

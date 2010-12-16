@@ -6,7 +6,7 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.StringMap;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.UpdateMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
@@ -142,7 +142,7 @@ public class ServerEngine implements UpdateMessageListener {
 	/**
 	 * @private
 	 */
-	public void acceptUpdateMessage(UpdateMessage message) {
+	public void acceptUpdateMessage(ObjectGraphUpdate message) {
 		messageAdapter.publishUpdateMessage(message);
 	}
 

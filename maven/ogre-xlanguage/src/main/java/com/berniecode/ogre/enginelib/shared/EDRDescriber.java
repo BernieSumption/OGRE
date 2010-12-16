@@ -119,15 +119,15 @@ public class EDRDescriber {
 		return sc.buildString();
 	}
 	
-	public static String describeUpdateMessage(TypeDomain typeDomain, UpdateMessage updateMessage) {
+	public static String describeUpdateMessage(TypeDomain typeDomain, ObjectGraphUpdate updateMessage) {
 		StringConcatenator sc = new StringConcatenator();
 		doDescribeUpdateMessage(typeDomain, updateMessage, sc, 0);
 		return sc.buildString();
 	}
 	
-	private static void doDescribeUpdateMessage(TypeDomain typeDomain, UpdateMessage updateMessage, StringConcatenator sc, int indent) {
+	private static void doDescribeUpdateMessage(TypeDomain typeDomain, ObjectGraphUpdate updateMessage, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
-		sc.add("UpdateMessage for object graph ")
+		sc.add("ObjectGraphUpdate for object graph ")
 		  .add(updateMessage.getTypeDomainId())
 		  .add("/")
 		  .add(updateMessage.getObjectGraphId());

@@ -4,12 +4,12 @@ import com.berniecode.ogre.AbstractHasId;
 import com.berniecode.ogre.HasIdMapper;
 import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.shared.UpdateMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 public class PojoDataSourceReferenceTest extends OgreTestCase {
 	
-	private UpdateMessage lastUpdateMessage;
+	private ObjectGraphUpdate lastUpdateMessage;
 
 	public void testCircularReferences() throws Exception {
 		
@@ -17,7 +17,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		
 		dataSource.setUpdateMessageListener(new UpdateMessageListener() {
 			@Override
-			public void acceptUpdateMessage(UpdateMessage message) {
+			public void acceptUpdateMessage(ObjectGraphUpdate message) {
 				lastUpdateMessage = message;
 			}
 		});
@@ -66,7 +66,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		dataSource.setEntityObjects(a1);
 		
 		assertUpdateMessageState(
-				"UpdateMessage for object graph TypeDomain/TestObjectGraph" +
+				"ObjectGraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for B#3" +
 				"      a=#2" +
@@ -84,7 +84,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		dataSource.setEntityObjects(a1);
 		
 		assertUpdateMessageState(
-				"UpdateMessage for object graph TypeDomain/TestObjectGraph" +
+				"ObjectGraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for B#1" +
 				"      a=#2" +
@@ -101,7 +101,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		
 		
 		assertUpdateMessageState(
-				"UpdateMessage for object graph TypeDomain/TestObjectGraph" +
+				"ObjectGraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for B#3" +
 				"      a=#2",
@@ -112,7 +112,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		dataSource.setEntityObjects(a1, b1, b2, b3);
 		
 		assertUpdateMessageState(
-				"UpdateMessage for object graph TypeDomain/TestObjectGraph" +
+				"ObjectGraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
 				"    EntityUpdate for A#2" +
 				"      b=#3",
@@ -122,7 +122,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		dataSource.setEntityObjects(a1, b1, b2, b3);
 		
 		assertUpdateMessageState(
-				"UpdateMessage for object graph TypeDomain/TestObjectGraph" +
+				"ObjectGraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
 				"    EntityUpdate for A#2" +
 				"      b=#1",

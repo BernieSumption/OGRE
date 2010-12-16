@@ -6,15 +6,15 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-public class UpdateMessage {
+public class ObjectGraphUpdate {
 
 	private final String typeDomainId;
 	private final String objectGraphId;
-	private final EntityValueMessage[] entities;
-	private final EntityDiffMessage[] entityDiffs;
-	private final EntityDeleteMessage[] entityDeletes;
+	private final EntityValueMessage[] entities; //TODO make these Entity objects
+	private final EntityDiffMessage[] entityDiffs; //TODO make these EntityDiff objects, and wire up EntityType correctly
+	private final EntityDeleteMessage[] entityDeletes; //TODO make these EntityDelete, and wire up EntityType correctly
 
-	public UpdateMessage(String typeDomainId, String objectGraphId, EntityValueMessage[] entities, EntityDiffMessage[] entityDiffs, EntityDeleteMessage[] entityDeletes) {
+	public ObjectGraphUpdate(String typeDomainId, String objectGraphId, EntityValueMessage[] entities, EntityDiffMessage[] entityDiffs, EntityDeleteMessage[] entityDeletes) {
 		this.typeDomainId = typeDomainId;
 		this.objectGraphId = objectGraphId;
 		this.entities = entities;

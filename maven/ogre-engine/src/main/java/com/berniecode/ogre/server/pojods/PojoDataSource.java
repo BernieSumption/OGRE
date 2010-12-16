@@ -18,7 +18,7 @@ import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.UpdateMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
@@ -206,7 +206,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		}
 		
 		if (updateMessageListener != null) {
-			UpdateMessage message = new UpdateMessage(
+			ObjectGraphUpdate message = new ObjectGraphUpdate(
 					typeDomain.getTypeDomainId(),
 					objectGraphId,
 					newEntities.toArray(new EntityValueMessage[0]),

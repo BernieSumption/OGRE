@@ -12,7 +12,7 @@ import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.UpdateMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
@@ -131,7 +131,7 @@ public class ClientEngine implements UpdateMessageListener {
 	/**
 	 * @private
 	 */
-	public void acceptUpdateMessage(UpdateMessage message) {
+	public void acceptUpdateMessage(ObjectGraphUpdate message) {
 		
 		//TODO perform validation on the update message - check that the untyped Object[] values array is of the correct type
 		
