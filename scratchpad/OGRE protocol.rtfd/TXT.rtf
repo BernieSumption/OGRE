@@ -4,35 +4,21 @@
 \paperw11900\paperh16840\margl1440\margr1440\vieww18140\viewh18060\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 
-\f0\fs30 \cf0 TODO replace propertyCode with propertyIndex, implicit in ordering.\
-TODO Class > EntityType, EntityValue > Entity\
-TODO int > integer\
-TODO add objectGraphId to object graphs\
-TODO add removal to update message\
-TODO in formal spec, make sure that when an entity is deleted, it is not necessary to manually remove it from every collection\
+\f0\fs30 \cf0 TODO in formal spec, make sure that when an entity is deleted, it is not necessary to manually remove it from every collection\
 \
 \
 Roadmap to v0.1:\
 \
-End-to-end type domain download for integers only:\
-  - PojoDataSource produces type domain from class\
-  - Client engine receives and validates type domain (no encoding)\
-  - Correct metadata generated based on Java integer type\
-End-to-end entity snapshot for integers only:\
-  - PojoDataSource produces entities\
-  - Client engine downloads and validates entity data\
-End-to-end update detection:\
-  - Detection and transmission of new entities\
-  - Detection of updates and transmission as complete entities\
-  - Detection and transmission of deleted entities\
-More types\
-  - strings\
-  - floats\
-  - bytes\
-  - entity references\
-  - collections\
-Demo applications\
-  - regression tester - creates random graphs and changes them randomly, multi threaded\
+* get protobuf serialisation working in EndToEndTest\
+* restore Entity in place of EntityValueMessage\
+* properly specify the expected contents of the Object[] values array in Entity\
+* Validate values of Entities coming in\
+* Wire up reference values to be actual Entity references, not IDs\
+* Do to-many references\
+* stress tester app - creates random graphs and changes them randomly, multi threaded\
+* Strongly types facade\
+* visual graph app\
+\
 \
 Get issue tracker working, put wishlist up there:\
   - Java client facade: JDK proxy backed view onto client engine\

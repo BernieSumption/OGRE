@@ -1,40 +1,40 @@
 
 
-- [NOW!] bitbucket project home, accessed through ogre.beriecode.com
-- [NOW!] maven project layout
-- [NOW!] bug tracker
-- [NOW!] public HG repository
-+ documentation wiki, including:
-	- [done] Introduction to OGRE
-	- [done] Design principles
-	- [v0.1] Quick start guide
-	- [NOW!] Use Cases (1. read-only display app / 2. two-way app)
-	- [v0.2] Guide to user-defined types
-	+ [NOW!] Product roadmap
-		- v0.1: project structure, Java server & client, GuiGraph demo
-		- v0.2: User-defined types
-		- v0.3: ActionScript client
-		- v0.4: Hibernate adaptor, PetClinic demo with both clients
-		- v0.5: Code generation for strongly-typed graph access on the ActionScript client
-		- v0.6: JavaScript client with both demos
-	+ Demo applications
-		+ GuiGraph
-			- [v0.1] Java application with visual graph structure drawn in 2D, modifiable with mouse in real time
-			- [v0.1] Java client showing same graphic syncing in real time
-			- [v0.3] ActionScript client showing same graphic syncing in real time
-		+ PetClinic
-			- [v0.4] Hibernate adapter plugged into existing Spring demo
-			- [v0.4] Java GUI syncing in real time
-			- [v0.4] Flex GUI syncing in real time
-	+ System documentation
-		- [NOW!] Archrtectural overview diagram / slide show
-		- [NOW!] OGRE protocol definition and functional specification including OGRE data model Types/Properties/Entities/Values/Updates, request/response model and required behaviour of servers and clients
-		- [done] OGRE binary wire protocol
-		- [done] built-in types and their encoding
-		- [NOW!] Java server component overview
-		- [v0.1] API documentation (JavaDoc/AsDoc)
-		- [NOW!] Java client component overview
-		- [v0.3] ActionScript client component overview
+	- [NOW!] bitbucket project home, accessed through ogre.beriecode.com
+	- [NOW!] maven project layout
+	- [NOW!] bug tracker
+	- [NOW!] public HG repository
+	+ documentation wiki, including:
+		- [done] Introduction to OGRE
+		- [done] Design principles
+		- [v0.1] Quick start guide
+		- [NOW!] Use Cases (1. read-only display app / 2. two-way app)
+		- [v0.2] Guide to user-defined types
+		+ [NOW!] Product roadmap
+			- v0.1: project structure, Java server & client, GuiGraph demo
+			- v0.2: User-defined types
+			- v0.3: ActionScript client
+			- v0.4: Hibernate adaptor, PetClinic demo with both clients
+			- v0.5: Code generation for strongly-typed graph access on the ActionScript client
+			- v0.6: JavaScript client with both demos
+		+ Demo applications
+			+ GuiGraph
+				- [v0.1] Java application with visual graph structure drawn in 2D, modifiable with mouse in real time
+				- [v0.1] Java client showing same graphic syncing in real time
+				- [v0.3] ActionScript client showing same graphic syncing in real time
+			+ PetClinic
+				- [v0.4] Hibernate adapter plugged into existing Spring demo
+				- [v0.4] Java GUI syncing in real time
+				- [v0.4] Flex GUI syncing in real time
+		+ System documentation
+			- [NOW!] Archrtectural overview diagram / slide show
+			- [NOW!] OGRE protocol definition and functional specification including OGRE data model Types/Properties/Entities/Values/Updates, request/response model and required behaviour of servers and clients
+			- [done] OGRE binary wire protocol
+			- [done] built-in types and their encoding
+			- [NOW!] Java server component overview
+			- [v0.1] API documentation (JavaDoc/AsDoc)
+			- [NOW!] Java client component overview
+			- [v0.3] ActionScript client component overview
 
 
 

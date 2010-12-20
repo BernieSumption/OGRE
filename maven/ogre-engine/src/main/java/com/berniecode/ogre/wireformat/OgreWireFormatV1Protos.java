@@ -9,6 +9,337 @@ public final class OgreWireFormatV1Protos {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public static final class Error extends
+      com.google.protobuf.GeneratedMessage {
+    // Use Error.newBuilder() to construct.
+    private Error() {
+      initFields();
+    }
+    private Error(boolean noInit) {}
+    
+    private static final Error defaultInstance;
+    public static Error getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public Error getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.internal_static_ogre_Error_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.internal_static_ogre_Error_fieldAccessorTable;
+    }
+    
+    // required string errorCode = 1;
+    public static final int ERRORCODE_FIELD_NUMBER = 1;
+    private boolean hasErrorCode;
+    private java.lang.String errorCode_ = "";
+    public boolean hasErrorCode() { return hasErrorCode; }
+    public java.lang.String getErrorCode() { return errorCode_; }
+    
+    // required string humanMessage = 2;
+    public static final int HUMANMESSAGE_FIELD_NUMBER = 2;
+    private boolean hasHumanMessage;
+    private java.lang.String humanMessage_ = "";
+    public boolean hasHumanMessage() { return hasHumanMessage; }
+    public java.lang.String getHumanMessage() { return humanMessage_; }
+    
+    private void initFields() {
+    }
+    public final boolean isInitialized() {
+      if (!hasErrorCode) return false;
+      if (!hasHumanMessage) return false;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (hasErrorCode()) {
+        output.writeString(1, getErrorCode());
+      }
+      if (hasHumanMessage()) {
+        output.writeString(2, getHumanMessage());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (hasErrorCode()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(1, getErrorCode());
+      }
+      if (hasHumanMessage()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(2, getHumanMessage());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> {
+      private com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error result;
+      
+      // Construct using com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error.newBuilder()
+      private Builder() {}
+      
+      private static Builder create() {
+        Builder builder = new Builder();
+        builder.result = new com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error();
+        return builder;
+      }
+      
+      protected com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error internalGetResult() {
+        return result;
+      }
+      
+      public Builder clear() {
+        if (result == null) {
+          throw new IllegalStateException(
+            "Cannot call clear() after build().");
+        }
+        result = new com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error();
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(result);
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error.getDescriptor();
+      }
+      
+      public com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error getDefaultInstanceForType() {
+        return com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error.getDefaultInstance();
+      }
+      
+      public boolean isInitialized() {
+        return result.isInitialized();
+      }
+      public com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error build() {
+        if (result != null && !isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return buildPartial();
+      }
+      
+      private com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        if (!isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return buildPartial();
+      }
+      
+      public com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error buildPartial() {
+        if (result == null) {
+          throw new IllegalStateException(
+            "build() has already been called on this Builder.");
+        }
+        com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error returnMe = result;
+        result = null;
+        return returnMe;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error) {
+          return mergeFrom((com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error other) {
+        if (other == com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error.getDefaultInstance()) return this;
+        if (other.hasErrorCode()) {
+          setErrorCode(other.getErrorCode());
+        }
+        if (other.hasHumanMessage()) {
+          setHumanMessage(other.getHumanMessage());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              setErrorCode(input.readString());
+              break;
+            }
+            case 18: {
+              setHumanMessage(input.readString());
+              break;
+            }
+          }
+        }
+      }
+      
+      
+      // required string errorCode = 1;
+      public boolean hasErrorCode() {
+        return result.hasErrorCode();
+      }
+      public java.lang.String getErrorCode() {
+        return result.getErrorCode();
+      }
+      public Builder setErrorCode(java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasErrorCode = true;
+        result.errorCode_ = value;
+        return this;
+      }
+      public Builder clearErrorCode() {
+        result.hasErrorCode = false;
+        result.errorCode_ = getDefaultInstance().getErrorCode();
+        return this;
+      }
+      
+      // required string humanMessage = 2;
+      public boolean hasHumanMessage() {
+        return result.hasHumanMessage();
+      }
+      public java.lang.String getHumanMessage() {
+        return result.getHumanMessage();
+      }
+      public Builder setHumanMessage(java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasHumanMessage = true;
+        result.humanMessage_ = value;
+        return this;
+      }
+      public Builder clearHumanMessage() {
+        result.hasHumanMessage = false;
+        result.humanMessage_ = getDefaultInstance().getHumanMessage();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:ogre.Error)
+    }
+    
+    static {
+      defaultInstance = new Error(true);
+      com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.internalForceInit();
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:ogre.Error)
+  }
+  
   public static final class TypeDomain extends
       com.google.protobuf.GeneratedMessage {
     // Use TypeDomain.newBuilder() to construct.
@@ -3249,6 +3580,11 @@ public final class OgreWireFormatV1Protos {
   }
   
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_ogre_Error_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ogre_Error_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ogre_TypeDomain_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -3292,43 +3628,52 @@ public final class OgreWireFormatV1Protos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024ogre/GraphData.proto\022\004ogre\"\234\003\n\nTypeDom" +
-      "ain\022\024\n\014typeDomainId\030\001 \002(\t\0220\n\013entityTypes" +
-      "\030\002 \003(\0132\033.ogre.TypeDomain.EntityType\032\305\002\n\n" +
-      "EntityType\022\014\n\004name\030\001 \002(\t\0228\n\nproperties\030\002" +
-      " \003(\0132$.ogre.TypeDomain.EntityType.Proper" +
-      "ty\032\356\001\n\010Property\022\014\n\004name\030\001 \002(\t\022G\n\014propert" +
-      "yType\030\002 \002(\01621.ogre.TypeDomain.EntityType" +
-      ".Property.PropertyType\022\022\n\nisNullable\030\003 \002" +
-      "(\010\022\025\n\rreferenceType\030\004 \001(\t\"`\n\014PropertyTyp" +
-      "e\022\007\n\003INT\020\000\022\n\n\006BIGINT\020\001\022\t\n\005FLOAT\020\002\022\n\n\006DOU",
-      "BLE\020\003\022\n\n\006STRING\020\004\022\t\n\005BYTES\020\005\022\r\n\tREFERENC" +
-      "E\020\006\"\200\005\n\021ObjectGraphUpdate\022\024\n\014typeDomainI" +
-      "d\030\001 \002(\t\022\025\n\robjectGraphId\030\002 \002(\t\0225\n\010entiti" +
-      "es\030\003 \003(\0132#.ogre.ObjectGraphUpdate.Entity" +
-      "Value\022:\n\rentityUpdates\030\004 \003(\0132#.ogre.Obje" +
-      "ctGraphUpdate.EntityValue\022;\n\rentityDelet" +
-      "es\030\005 \003(\0132$.ogre.ObjectGraphUpdate.Entity" +
-      "Delete\032\322\002\n\013EntityValue\022\027\n\017entityTypeInde" +
-      "x\030\001 \002(\005\022\020\n\010entityId\030\002 \002(\003\022\033\n\017propertyInd" +
-      "ices\030\003 \003(\005B\002\020\001\022I\n\016propertyValues\030\004 \003(\01321",
-      ".ogre.ObjectGraphUpdate.EntityValue.Prop" +
-      "ertyValue\032\257\001\n\rPropertyValue\022\025\n\rpropertyI" +
-      "ndex\030\001 \001(\005\022\016\n\006isNull\030\002 \001(\010\022\020\n\010intValue\030\003" +
-      " \001(\005\022\023\n\013bigIntValue\030\004 \001(\003\022\022\n\nfloatValue\030" +
-      "\005 \001(\002\022\023\n\013doubleValue\030\006 \001(\001\022\023\n\013stringValu" +
-      "e\030\007 \001(\t\022\022\n\nbytesValue\030\010 \001(\014\0329\n\014EntityDel" +
-      "ete\022\027\n\017entityTypeIndex\030\001 \002(\005\022\020\n\010entityId" +
-      "\030\002 \002(\003B8\n\036com.berniecode.ogre.wireformat" +
-      "B\026OgreWireFormatV1Protos"
+      "\n\024ogre/GraphData.proto\022\004ogre\"0\n\005Error\022\021\n" +
+      "\terrorCode\030\001 \002(\t\022\024\n\014humanMessage\030\002 \002(\t\"\234" +
+      "\003\n\nTypeDomain\022\024\n\014typeDomainId\030\001 \002(\t\0220\n\013e" +
+      "ntityTypes\030\002 \003(\0132\033.ogre.TypeDomain.Entit" +
+      "yType\032\305\002\n\nEntityType\022\014\n\004name\030\001 \002(\t\0228\n\npr" +
+      "operties\030\002 \003(\0132$.ogre.TypeDomain.EntityT" +
+      "ype.Property\032\356\001\n\010Property\022\014\n\004name\030\001 \002(\t\022" +
+      "G\n\014propertyType\030\002 \002(\01621.ogre.TypeDomain." +
+      "EntityType.Property.PropertyType\022\022\n\nisNu" +
+      "llable\030\003 \002(\010\022\025\n\rreferenceType\030\004 \001(\t\"`\n\014P",
+      "ropertyType\022\007\n\003INT\020\000\022\n\n\006BIGINT\020\001\022\t\n\005FLOA" +
+      "T\020\002\022\n\n\006DOUBLE\020\003\022\n\n\006STRING\020\004\022\t\n\005BYTES\020\005\022\r" +
+      "\n\tREFERENCE\020\006\"\200\005\n\021ObjectGraphUpdate\022\024\n\014t" +
+      "ypeDomainId\030\001 \002(\t\022\025\n\robjectGraphId\030\002 \002(\t" +
+      "\0225\n\010entities\030\003 \003(\0132#.ogre.ObjectGraphUpd" +
+      "ate.EntityValue\022:\n\rentityUpdates\030\004 \003(\0132#" +
+      ".ogre.ObjectGraphUpdate.EntityValue\022;\n\re" +
+      "ntityDeletes\030\005 \003(\0132$.ogre.ObjectGraphUpd" +
+      "ate.EntityDelete\032\322\002\n\013EntityValue\022\027\n\017enti" +
+      "tyTypeIndex\030\001 \002(\005\022\020\n\010entityId\030\002 \002(\003\022\033\n\017p",
+      "ropertyIndices\030\003 \003(\005B\002\020\001\022I\n\016propertyValu" +
+      "es\030\004 \003(\01321.ogre.ObjectGraphUpdate.Entity" +
+      "Value.PropertyValue\032\257\001\n\rPropertyValue\022\025\n" +
+      "\rpropertyIndex\030\001 \001(\005\022\016\n\006isNull\030\002 \001(\010\022\020\n\010" +
+      "intValue\030\003 \001(\005\022\023\n\013bigIntValue\030\004 \001(\003\022\022\n\nf" +
+      "loatValue\030\005 \001(\002\022\023\n\013doubleValue\030\006 \001(\001\022\023\n\013" +
+      "stringValue\030\007 \001(\t\022\022\n\nbytesValue\030\010 \001(\014\0329\n" +
+      "\014EntityDelete\022\027\n\017entityTypeIndex\030\001 \002(\005\022\020" +
+      "\n\010entityId\030\002 \002(\003B8\n\036com.berniecode.ogre." +
+      "wireformatB\026OgreWireFormatV1Protos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_ogre_TypeDomain_descriptor =
+          internal_static_ogre_Error_descriptor =
             getDescriptor().getMessageTypes().get(0);
+          internal_static_ogre_Error_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ogre_Error_descriptor,
+              new java.lang.String[] { "ErrorCode", "HumanMessage", },
+              com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error.class,
+              com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.Error.Builder.class);
+          internal_static_ogre_TypeDomain_descriptor =
+            getDescriptor().getMessageTypes().get(1);
           internal_static_ogre_TypeDomain_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogre_TypeDomain_descriptor,
@@ -3352,7 +3697,7 @@ public final class OgreWireFormatV1Protos {
               com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.TypeDomain.EntityType.Property.class,
               com.berniecode.ogre.wireformat.OgreWireFormatV1Protos.TypeDomain.EntityType.Property.Builder.class);
           internal_static_ogre_ObjectGraphUpdate_descriptor =
-            getDescriptor().getMessageTypes().get(1);
+            getDescriptor().getMessageTypes().get(2);
           internal_static_ogre_ObjectGraphUpdate_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogre_ObjectGraphUpdate_descriptor,

@@ -12,9 +12,9 @@ import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.EntityUpdate;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.IdMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
@@ -30,6 +30,7 @@ public abstract class OgreTestCase extends TestCase {
 	@Override
 	public final void setUp() throws Exception {
 		OgreLog.setLogWriter(new StdErrLogWriter());
+		OgreLog.setLevel(OgreLog.LEVEL_DEBUG);
 		context = new Mockery();
 		doAdditionalSetup();
 	}
