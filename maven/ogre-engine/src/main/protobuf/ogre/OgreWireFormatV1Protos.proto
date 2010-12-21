@@ -1,7 +1,6 @@
 package ogre;
 
 option java_package = "com.berniecode.ogre.wireformat";
-option java_outer_classname = "OgreWireFormatV1Protos";
 
 
 // these messages map directly onto the classes with the same name
@@ -51,7 +50,7 @@ message TypeDomain {
 
 
 
-message GraphData {
+message ObjectGraphUpdate {
 
   required string typeDomainId = 1;
   required string objectGraphId = 2;
