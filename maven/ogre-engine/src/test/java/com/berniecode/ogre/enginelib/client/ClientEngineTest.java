@@ -9,17 +9,16 @@ import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.shared.EntityDeleteMessage;
-import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
+import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.shared.EntityDelete;
+import com.berniecode.ogre.enginelib.shared.EntityDiff;
+import com.berniecode.ogre.enginelib.shared.EntityReference;
 import com.berniecode.ogre.enginelib.shared.EntityType;
-import com.berniecode.ogre.enginelib.shared.EntityUpdate;
-import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
 import com.berniecode.ogre.enginelib.shared.IntegerPropertyType;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.enginelib.shared.Property;
 import com.berniecode.ogre.enginelib.shared.ReferencePropertyType;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 
 /**
  * A ClientEngineTest configures and executes the replication of a single object graph. It is the
@@ -34,7 +33,7 @@ public class ClientEngineTest extends OgreTestCase {
 	private EntityType entityType1;
 	private TypeDomain typeDomain;
 	
-	private ObjectGraphValueMessage valueMessage;
+	private ObjectGraphUpdate initialValueUpdate;
 
 	private DownloadClientAdapter downloadClientAdapter;
 	private MessageClientAdapter messageClientAdapter;
@@ -52,7 +51,7 @@ public class ClientEngineTest extends OgreTestCase {
 		entityType1 = new EntityType(0, "entityType1", new Property[] {});
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0, entityType1 });
 		
-		valueMessage = new ObjectGraphValueMessage(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID, new EntityValueMessage[0]);
+		initialValueUpdate = new ObjectGraphUpdate(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID, null, null, null);
 	}
 
 	public void testInitialiseWithoutDependencies() throws NoSuchThingException {
@@ -106,7 +105,7 @@ public class ClientEngineTest extends OgreTestCase {
 		
 		
 		// test new entity created with complete value
-		ce.acceptUpdateMessage(createUpdateMessage(new EntityValueMessage(0, 200, new Object[] {5, 6L})));
+		ce.acceptUpdateMessage(createUpdateMessage(new Entity(entityType0, 200, new Object[] {5, 6L})));
 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -116,7 +115,7 @@ public class ClientEngineTest extends OgreTestCase {
 			ce);
 		
 		// test entity updated with complete value 
-		ce.acceptUpdateMessage(createUpdateMessage(new EntityValueMessage(0, 200, new Object[] {7, 8L})));
+		ce.acceptUpdateMessage(createUpdateMessage(new Entity(entityType0, 200, new Object[] {7, 8L})));
 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -126,7 +125,7 @@ public class ClientEngineTest extends OgreTestCase {
 			ce);
 		
 		// test entity can be updated with partial update
-		ce.acceptUpdateMessage(createUpdateMessage(new EntityDiffMessage(0, 200, new Object[] {9, null}, new boolean[] {true, false})));
+		ce.acceptUpdateMessage(createUpdateMessage(new EntityDiff(entityType0, 200, new Object[] {9, null}, new boolean[] {true, false})));
 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -139,7 +138,7 @@ public class ClientEngineTest extends OgreTestCase {
 		
 		requireOneLogError(OgreLog.LEVEL_ERROR);
 		
-		ce.acceptUpdateMessage(createUpdateMessage(new EntityDiffMessage(0, 100, new Object[] {10, null}, new boolean[] {true, false})));
+		ce.acceptUpdateMessage(createUpdateMessage(new EntityDiff(entityType0, 100, new Object[] {10, null}, new boolean[] {true, false})));
 		
 	}
 
@@ -158,7 +157,7 @@ public class ClientEngineTest extends OgreTestCase {
 		requireOneLogError(OgreLog.LEVEL_ERROR);
 		
 		// test new entity created with complete value
-		ce.acceptUpdateMessage(createUpdateMessage(new EntityValueMessage(0, 200, new Object[] {10L})));
+		ce.acceptUpdateMessage(createUpdateMessage(new Entity(entityType0, 200, new Object[] {10L})));
 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -168,22 +167,22 @@ public class ClientEngineTest extends OgreTestCase {
 		
 	}
 
-	private ObjectGraphUpdate createUpdateMessage(EntityUpdate... updates) {
-		List<EntityValueMessage> valueMessages = new ArrayList<EntityValueMessage>();
-		List<EntityDiffMessage> diffMessages = new ArrayList<EntityDiffMessage>();
-		List<EntityDeleteMessage> deleteMessages = new ArrayList<EntityDeleteMessage>();
-		for (EntityUpdate update: updates) {
-			if (update instanceof EntityValueMessage) {
-				valueMessages.add((EntityValueMessage) update);
+	private ObjectGraphUpdate createUpdateMessage(EntityReference... updates) {
+		List<Entity> valueMessages = new ArrayList<Entity>();
+		List<EntityDiff> diffMessages = new ArrayList<EntityDiff>();
+		List<EntityDelete> deleteMessages = new ArrayList<EntityDelete>();
+		for (EntityReference update: updates) {
+			if (update instanceof Entity) {
+				valueMessages.add((Entity) update);
 			}
-			else if (update instanceof EntityDiffMessage) {
-				diffMessages.add((EntityDiffMessage) update);
+			else if (update instanceof EntityDiff) {
+				diffMessages.add((EntityDiff) update);
 			}
 		}
 		return new ObjectGraphUpdate(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID,
-				valueMessages.toArray(new EntityValueMessage[0]),
-				diffMessages.toArray(new EntityDiffMessage[0]),
-				deleteMessages.toArray(new EntityDeleteMessage[0]));
+				valueMessages.toArray(new Entity[0]),
+				diffMessages.toArray(new EntityDiff[0]),
+				deleteMessages.toArray(new EntityDelete[0]));
 	}
 
 	private ClientEngine createClientEngine() throws NoSuchThingException {
@@ -198,7 +197,7 @@ public class ClientEngineTest extends OgreTestCase {
 		    will(returnValue(typeDomain));
 		    
 		    oneOf (downloadClientAdapter).loadObjectGraph(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID);
-		    will(returnValue(valueMessage));
+		    will(returnValue(initialValueUpdate));
 		    
 		    oneOf (messageClientAdapter).subscribeToUpdateMessages(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID, ce);
 		}});

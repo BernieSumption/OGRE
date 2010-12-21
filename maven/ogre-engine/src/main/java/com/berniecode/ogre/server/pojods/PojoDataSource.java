@@ -12,13 +12,11 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.server.DataSource;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.Entity;
-import com.berniecode.ogre.enginelib.shared.EntityDeleteMessage;
-import com.berniecode.ogre.enginelib.shared.EntityDiffMessage;
+import com.berniecode.ogre.enginelib.shared.EntityDelete;
+import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.EntityValueMessage;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
+import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
@@ -101,10 +99,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	@Override
-	public ObjectGraphValueMessage createSnapshot() {
-		EntityValueMessage[] messages = entities.createEntityValueMessages();
-		Arrays.sort(messages, new EntityValueMessageComparator());
-		return new ObjectGraphValueMessage(typeDomain.getTypeDomainId(), objectGraphId, messages);
+	public ObjectGraphUpdate createSnapshot() {
+		Entity[] messages = entities.getEntities();
+		Arrays.sort(messages, new EntityComparator());
+		return new ObjectGraphUpdate(typeDomain.getTypeDomainId(), objectGraphId, messages, null, null);
 	}
 
 	@Override
@@ -126,7 +124,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * <li>Any objects that are not part of this graph will be added, and a
 	 * {@link EntityValueMessage} will be broadcast to clients
 	 * <li>Any objects that are already part of this graph will be checked for modifications, and a
-	 * {@link EntityDiffMessage} will be broadcast to clients
+	 * {@link EntityDiff} will be broadcast to clients
 	 * <li>Any objects in the graph that are not in the array passed to this method will be removed
 	 * from the graph.
 	 * </ul>
@@ -164,17 +162,17 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		}
 		
 		//for each 
-		List<EntityValueMessage> completeEntities = new ArrayList<EntityValueMessage>();
-		List<EntityDiffMessage> entityDiffs = new ArrayList<EntityDiffMessage>();
-		List<EntityDeleteMessage> entityDeletes = new ArrayList<EntityDeleteMessage>();
+		List<Entity> completeEntities = new ArrayList<Entity>();
+		List<EntityDiff> entityDiffs = new ArrayList<EntityDiff>();
+		List<EntityDelete> entityDeletes = new ArrayList<EntityDelete>();
 		List<Entity> newEntities = new ArrayList<Entity>();
 		for (Object entityObject: entityObjects) {
 			Entity newEntity = edrMapper.createEntity(entityObject);
 			Entity similar = entities.getSimilar(newEntity);
 			if (similar == null) {
-				completeEntities.add(EntityValueMessage.build(newEntity));
+				completeEntities.add(newEntity);
 			} else {
-				EntityDiffMessage diff = EntityDiffMessage.build(similar, newEntity);
+				EntityDiff diff = EntityDiff.build(similar, newEntity);
 				if (diff != null) {
 					if (OgreLog.isInfoEnabled()) {
 						OgreLog.info("PojDataSource: detected change on " + similar);
@@ -189,7 +187,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		for (Entity oldEntity: entities.getEntities()) {
 			if (!newEntities.contains(oldEntity)) {
 				entities.removeSimilar(oldEntity);
-				entityDeletes.add(EntityDeleteMessage.build(oldEntity));
+				entityDeletes.add(EntityDelete.build(oldEntity));
 			}
 		}
 		
@@ -197,9 +195,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	private void sendUpdateMessage(
-			List<EntityValueMessage> newEntities,
-			List<EntityDiffMessage> entityDiffs,
-			List<EntityDeleteMessage> entityDeletes) {
+			List<Entity> newEntities,
+			List<EntityDiff> entityDiffs,
+			List<EntityDelete> entityDeletes) {
 		
 		if (newEntities.size() == 0 && entityDiffs.size() == 0 && entityDeletes.size() == 0) {
 			return;
@@ -209,9 +207,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 			ObjectGraphUpdate message = new ObjectGraphUpdate(
 					typeDomain.getTypeDomainId(),
 					objectGraphId,
-					newEntities.toArray(new EntityValueMessage[0]),
-					entityDiffs.toArray(new EntityDiffMessage[0]),
-					entityDeletes.toArray(new EntityDeleteMessage[0]));
+					newEntities.toArray(new Entity[0]),
+					entityDiffs.toArray(new EntityDiff[0]),
+					entityDeletes.toArray(new EntityDelete[0]));
 			if (OgreLog.isDebugEnabled()) {
 				OgreLog.debug("PojoDataSource: broadcasting new update message:\n"
 						+ EDRDescriber.describeUpdateMessage(typeDomain, message));
@@ -237,9 +235,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	
 
 	// sorts EntityValueMessages first by entityTypeId, then by entityId
-	private final class EntityValueMessageComparator implements Comparator<EntityValueMessage> {
+	private final class EntityComparator implements Comparator<Entity> {
 		@Override
-		public int compare(EntityValueMessage o1, EntityValueMessage o2) {
+		public int compare(Entity o1, Entity o2) {
 			if (o1.getEntityTypeIndex() != o2.getEntityTypeIndex()) {
 				return compareNumbers(o1.getEntityTypeIndex(), o2.getEntityTypeIndex());
 			} else {

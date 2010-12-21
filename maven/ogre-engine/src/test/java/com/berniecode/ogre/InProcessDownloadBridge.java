@@ -4,7 +4,7 @@ import com.berniecode.ogre.enginelib.client.DownloadClientAdapter;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.server.ServerEngine;
 import com.berniecode.ogre.enginelib.server.ServerEngineTest;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -28,7 +28,7 @@ public class InProcessDownloadBridge implements DownloadClientAdapter {
 	}
 
 	@Override
-	public ObjectGraphValueMessage loadObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException {
+	public ObjectGraphUpdate loadObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException {
 		return server.getObjectGraph(typeDomainId, objectGraphId);
 	}
 
