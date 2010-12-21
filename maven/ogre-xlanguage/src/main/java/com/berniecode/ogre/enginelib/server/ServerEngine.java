@@ -4,9 +4,8 @@ import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.StringMap;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
+import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
@@ -109,7 +108,7 @@ public class ServerEngine implements UpdateMessageListener {
 	 * @throws NoSuchThingException if this {@link ServerEngineTest} does not manage the specified type
 	 *             domain or object graph
 	 */
-	public ObjectGraphValueMessage getObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException {
+	public ObjectGraphUpdate getObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException {
 		requireInitialised(true, "getObjectGraph()");
 		for (int i = 0; i < dataSources.length; i++) {
 			String tdId = dataSources[i].getTypeDomain().getTypeDomainId();

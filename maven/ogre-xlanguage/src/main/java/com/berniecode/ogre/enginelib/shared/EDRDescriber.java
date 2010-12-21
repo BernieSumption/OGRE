@@ -52,26 +52,26 @@ public class EDRDescriber {
 	// DESCRIBE OBJECT GRAPH
 	//
 
-	public static String describeObjectGraph(TypeDomain typeDomain, ObjectGraphValueMessage objectGraph) {
+	public static String describeObjectGraph(TypeDomain typeDomain, ObjectGraphUpdate objectGraph) {
 		StringConcatenator sc = new StringConcatenator();
 		doDescribeObjectGraph(typeDomain, objectGraph, sc, 0);
 		return sc.buildString();
 	}
 
-	private static void doDescribeObjectGraph(TypeDomain typeDomain, ObjectGraphValueMessage objectGraph, StringConcatenator sc, int indent) {
+	private static void doDescribeObjectGraph(TypeDomain typeDomain, ObjectGraphUpdate objectGraph, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("ObjectGraph ")
 		  .add(objectGraph.getTypeDomainId())
 		  .add("/")
 		  .add(objectGraph.getObjectGraphId());
-		EntityValueMessage[] entities = objectGraph.getEntityValues();
+		Entity[] entities = objectGraph.getEntities();
 		for (int i=0; i<entities.length; i++) {
 			sc.add("\n");
 			doDescribeEntity(typeDomain, entities[i], sc, indent+1);
 		}
 	}
 
-	private static void doDescribeEntity(TypeDomain typeDomain, EntityValueMessage entityValue, StringConcatenator sc, int indent) {
+	private static void doDescribeEntity(TypeDomain typeDomain, Entity entityValue, StringConcatenator sc, int indent) {
 		EntityType entityType = typeDomain.getEntityType(entityValue.getEntityTypeIndex());
 		doIndent(sc, indent);
 		sc.add("Entity ")
@@ -81,7 +81,7 @@ public class EDRDescriber {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
 			sc.add("\n");
-			doDescribeValue(entityValue.getValue(property.getPropertyIndex()), property, sc, indent+1);
+			doDescribeValue(entityValue.getPropertyValue(property), property, sc, indent+1);
 		}
 	}
 
@@ -131,9 +131,9 @@ public class EDRDescriber {
 		  .add(updateMessage.getTypeDomainId())
 		  .add("/")
 		  .add(updateMessage.getObjectGraphId());
-		if (updateMessage.getEntityValues().length > 0) {
+		if (updateMessage.getEntities().length > 0) {
 			sc.add("\ncomplete values:");
-			doDescribeEntityUpdates(typeDomain, updateMessage.getEntityValues(), sc, indent + 1);
+			doDescribeEntityUpdates(typeDomain, updateMessage.getEntities(), sc, indent + 1);
 		}
 		if (updateMessage.getEntityDiffs().length > 0) {
 			sc.add("\npartial values:");
@@ -154,29 +154,30 @@ public class EDRDescriber {
 
 	private static void doDescribeEntityUpdate(TypeDomain typeDomain, EntityUpdate update, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
-		EntityType entityType = typeDomain.getEntityType(update.getEntityTypeIndex());
+		EntityType entityType = update.getEntityType();
 		sc.add("EntityUpdate for ")
 		  .add(entityType)
 		  .add("#")
 		  .addNumber(update.getEntityId());
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
-			if (update.hasUpdatedValue(i)) {
+			Property property = entityType.getProperty(i);
+			if (update.hasUpdatedValue(property)) {
 				sc.add("\n");
-				doDescribeValue(update.getValue(i), entityType.getProperty(i), sc, indent + 1);
+				doDescribeValue(update.getPropertyValue(property), property, sc, indent + 1);
 			}
 		}
 	}
 
-	private static void doDescribeEntityDeletes(TypeDomain typeDomain, EntityDeleteMessage[] entityDeletes, StringConcatenator sc, int indent) {
+	private static void doDescribeEntityDeletes(TypeDomain typeDomain, EntityDelete[] entityDeletes, StringConcatenator sc, int indent) {
 		for (int i=0; i<entityDeletes.length; i++) {
 			sc.add("\n");
 			doDescribeEntityDelete(typeDomain, entityDeletes[i], sc, indent + 1);
 		}
 	}
 
-	private static void doDescribeEntityDelete(TypeDomain typeDomain, EntityDeleteMessage delete, StringConcatenator sc, int indent) {
+	private static void doDescribeEntityDelete(TypeDomain typeDomain, EntityDelete delete, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
-		EntityType entityType = typeDomain.getEntityType(delete.getEntityTypeIndex());
+		EntityType entityType = delete.getEntityType();
 		sc.add("EntityDelete for ")
 		  .add(entityType)
 		  .add("#")

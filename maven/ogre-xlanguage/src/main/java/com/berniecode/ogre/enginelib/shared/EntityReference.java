@@ -7,7 +7,7 @@ package com.berniecode.ogre.enginelib.shared;
  */
 public interface EntityReference {
 
-	public abstract int getEntityTypeIndex();
+	public abstract EntityType getEntityType();
 
 	public abstract long getEntityId();
 

@@ -9,7 +9,7 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  * 
  * @author Bernie Sumption
  */
-public class Entity implements EntityReference {
+public class Entity implements EntityReference, EntityUpdate {
 
 	private final EntityType entityType;
 	private final long id;
@@ -56,9 +56,14 @@ public class Entity implements EntityReference {
 
 	public void update(EntityUpdate update) {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
-			if (update.hasUpdatedValue(i)) {
-				values[i] = update.getValue(i);
+			Property property = entityType.getProperty(i);
+			if (update.hasUpdatedValue(property)) {
+				values[i] = update.getPropertyValue(property);
 			}
 		}
+	}
+
+	public boolean hasUpdatedValue(Property property) {
+		return true;
 	}
 }

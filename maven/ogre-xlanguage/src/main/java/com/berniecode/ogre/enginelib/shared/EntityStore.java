@@ -29,15 +29,15 @@ public class EntityStore {
 	/**
 	 * Check whether this store contains an entity with a specified type and ID
 	 */
-	public boolean contains(int entityTypeIndex, long id) {
-		return entityMaps[entityTypeIndex].contains(id);
+	public boolean contains(EntityType entityType, long id) {
+		return entityMaps[entityType.getEntityTypeIndex()].contains(id);
 	}
 
 	/**
 	 * Check whether this store contains an entity with the same type and id as the specified entity
 	 */
 	public boolean containsSimilar(EntityReference reference) {
-		return contains(reference.getEntityTypeIndex(), reference.getEntityId());
+		return contains(reference.getEntityType(), reference.getEntityId());
 	}
 
 	/**
@@ -53,20 +53,22 @@ public class EntityStore {
 	 *         entity, or null if there is no such {@link Entity} in the store
 	 */
 	public Entity getSimilar(EntityReference reference) {
-		return get(typeDomain.getEntityType(reference.getEntityTypeIndex()), reference.getEntityId());
+		return get(reference.getEntityType(), reference.getEntityId());
 	}
 
 	/**
 	 * Remove an entity from this store
 	 */
 	public void removeSimilar(EntityReference reference) {
-		entityMaps[reference.getEntityTypeIndex()].remove(reference.getEntityId());
+		int entityTypeIndex = reference.getEntityType().getEntityTypeIndex();
+		entityMaps[entityTypeIndex].remove(reference.getEntityId());
 	}
 
 	/**
-	 * Add an {@link Entity} that does not already exist in this store.
+	 * Add an {@link Entity} to the store.
 	 * 
-	 * @throws OgreException if this store already contains an entity with the same name and ID
+	 * @throws OgreException if this store already contains an entity with the same type and ID and
+	 *             this store does not allow replacement of existing entities
 	 */
 	public void put(Entity entity) throws OgreException {
 		if (!allowReplace && containsSimilar(entity)) {
@@ -76,17 +78,16 @@ public class EntityStore {
 	}
 
 	/**
-	 * @return an {@link EntityValueMessage} for each {@link Entity} in this store
+	 * Add many entities to this store
+	 * 
+	 * @throws OgreException if this store already contains an Entity with the same type and ID as
+	 *             any of the specified entieies, and this store does not allow replacement of
+	 *             existing entities
 	 */
-	public EntityValueMessage[] createEntityValueMessages() {
-		ArrayBuilder resultList = new ArrayBuilder(EntityValueMessage.class);
-		for (int i=0; i<entityMaps.length; i++) {
-			Entity[] entities = entityMaps[i].getEntities();
-			for (int j=0; j<entities.length; j++) {
-				resultList.add(EntityValueMessage.build(entities[j]));
-			}
+	public void putAll(Entity[] entities) throws OgreException {
+		for (int i = 0; i < entities.length; i++) {
+			put(entities[i]);
 		}
-		return (EntityValueMessage[]) resultList.buildArray();
 	}
 
 
@@ -117,7 +118,7 @@ public class EntityStore {
 					ReferencePropertyType rpt = (ReferencePropertyType) property.getPropertyType();
 					EntityType refType = typeDomain.getEntityTypeByName(rpt.getEntityName());
 					long refId = ((Long) entity.getPropertyValue(property)).longValue();
-					if (!contains(refType.getEntityTypeIndex(), refId)) {
+					if (!contains(refType, refId)) {
 						OgreLog.error("ClientEngine in inconsistent state: entity " + entity
 								+ " references non-existant entity " + refType + "#" + refId);
 					}

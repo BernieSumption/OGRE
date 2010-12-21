@@ -11,12 +11,12 @@ public interface EntityUpdate extends EntityReference {
 	/**
 	 * @return A single value.
 	 */
-	public Object getValue(int propertyIndex);
+	public Object getPropertyValue(Property property);
 
 	/**
 	 * Check whether this {@link EntityUpdate} has a new value for the property at the specified
 	 * index.
 	 */
-	public boolean hasUpdatedValue(int propertyIndex);
+	public boolean hasUpdatedValue(Property property);
 
 }

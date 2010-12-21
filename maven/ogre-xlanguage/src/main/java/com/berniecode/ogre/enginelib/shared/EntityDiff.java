@@ -8,28 +8,28 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  *
  * @author Bernie Sumption
  */
-public class EntityDiffMessage implements EntityReference, EntityUpdate {
+public class EntityDiff implements EntityReference, EntityUpdate {
 
-	private final int entityTypeIndex;
+	private final EntityType entityType;
 	private final long entityId;
 	private final Object[] values;
 	private final boolean[] isChanged;
 
-	public EntityDiffMessage(int entityTypeIndex, long id, Object[] values, boolean[] isChanged) {
-		this.entityTypeIndex = entityTypeIndex;
+	public EntityDiff(EntityType entityType, long id, Object[] values, boolean[] isChanged) {
+		this.entityType = entityType;
 		this.entityId = id;
 		this.values = values;
 		this.isChanged = isChanged;
 	}
 
 	/**
-	 * @return An {@link EntityDiffMessage} object that if applied to the entity <code>from</code> will
+	 * @return An {@link EntityDiff} object that if applied to the entity <code>from</code> will
 	 *         change its values to be equal to those of <code>to</code>
 	 */
-	public static EntityDiffMessage build(Entity from, Entity to) {
+	public static EntityDiff build(Entity from, Entity to) {
 		EntityType entityType = from.getEntityType();
 		if (entityType != to.getEntityType()) {
-			throw new OgreException("Can't build an EntityDiffMessage from " + from + " to " + to + " because their entityTypes are different");
+			throw new OgreException("Can't build an EntityDiff from " + from + " to " + to + " because their entityTypes are different");
 		}
 		int propertyCount = entityType.getPropertyCount();
 		Object[] changedValues = new Object[propertyCount];
@@ -48,14 +48,14 @@ public class EntityDiffMessage implements EntityReference, EntityUpdate {
 		if (!anyChanged) {
 			return null;
 		}
-		return new EntityDiffMessage(entityType.getEntityTypeIndex(), from.getEntityId(), changedValues, changed);
+		return new EntityDiff(entityType, from.getEntityId(), changedValues, changed);
 	}
 
 	/**
 	 * @return The type of this Entity
 	 */
-	public int getEntityTypeIndex() {
-		return entityTypeIndex;
+	public EntityType getEntityType() {
+		return entityType;
 	}
 
 	/**
@@ -66,24 +66,24 @@ public class EntityDiffMessage implements EntityReference, EntityUpdate {
 	}
 
 	/**
-	 * @see EntityUpdate#getValue(int)
+	 * @see EntityUpdate#getPropertyValue(Property)
 	 */
-	public Object getValue(int propertyIndex) {
-		if (!hasUpdatedValue(propertyIndex)) {
-			throw new OgreException(this + " has no value for property " + propertyIndex);
+	public Object getPropertyValue(Property property) {
+		if (!hasUpdatedValue(property)) {
+			throw new OgreException(this + " has no value for " + property);
 		}
-		return values[propertyIndex];
+		return values[property.getPropertyIndex()];
 	}
 
 	/**
-	 * @see EntityUpdate#hasUpdatedValue(int)
+	 * @see EntityUpdate#hasUpdatedValue(Property)
 	 */
-	public boolean hasUpdatedValue(int propertyIndex) {
-		return isChanged[propertyIndex];
+	public boolean hasUpdatedValue(Property property) {
+		return isChanged[property.getPropertyIndex()];
 	}
 
 	public String toString() {
-		return "EntityDiffMessage for entity " + entityTypeIndex + "#" + entityId;
+		return "EntityDiff for entity " + entityType + "#" + entityId;
 	}
 
 }

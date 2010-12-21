@@ -1,7 +1,7 @@
 package com.berniecode.ogre.enginelib.client;
 
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphValueMessage;
+import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -19,5 +19,5 @@ public interface DownloadClientAdapter {
 	/**
 	 * Load a snapshot of the state of an object graph 
 	 */
-	ObjectGraphValueMessage loadObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException;
+	ObjectGraphUpdate loadObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException;
 }

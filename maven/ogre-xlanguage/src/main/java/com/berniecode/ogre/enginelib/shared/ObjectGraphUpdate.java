@@ -10,16 +10,16 @@ public class ObjectGraphUpdate {
 
 	private final String typeDomainId;
 	private final String objectGraphId;
-	private final EntityValueMessage[] entities; //TODO make these Entity objects
-	private final EntityDiffMessage[] entityDiffs; //TODO make these EntityDiff objects, and wire up EntityType correctly
-	private final EntityDeleteMessage[] entityDeletes; //TODO make these EntityDelete, and wire up EntityType correctly
+	private final Entity[] entities;
+	private final EntityDiff[] entityDiffs;
+	private final EntityDelete[] entityDeletes;
 
-	public ObjectGraphUpdate(String typeDomainId, String objectGraphId, EntityValueMessage[] entities, EntityDiffMessage[] entityDiffs, EntityDeleteMessage[] entityDeletes) {
+	public ObjectGraphUpdate(String typeDomainId, String objectGraphId, Entity[] entities, EntityDiff[] entityDiffs, EntityDelete[] entityDeletes) {
 		this.typeDomainId = typeDomainId;
 		this.objectGraphId = objectGraphId;
-		this.entities = entities;
-		this.entityDiffs = entityDiffs;
-		this.entityDeletes = entityDeletes;
+		this.entities = entities == null ? new Entity[0] : entities;
+		this.entityDiffs = entityDiffs == null ? new EntityDiff[0] : entityDiffs;
+		this.entityDeletes = entityDeletes == null ? new EntityDelete[0] : entityDeletes;
 	}
 
 	/**
@@ -41,21 +41,21 @@ public class ObjectGraphUpdate {
 	/**
 	 * @return {@link Entity}s that have been created or updated.
 	 */
-	public EntityValueMessage[] getEntityValues() {
+	public Entity[] getEntities() {
 		return entities;
 	}
 
 	/**
-	 * @return {@link EntityDiffMessage}s for entities that have been updated
+	 * @return {@link EntityDiff}s for entities that have been updated
 	 */
-	public EntityDiffMessage[] getEntityDiffs() {
+	public EntityDiff[] getEntityDiffs() {
 		return entityDiffs;
 	}
 
 	/**
-	 * @return {@link EntityDeleteMessage}s for entities that have been removed
+	 * @return {@link EntityDelete}s for entities that have been removed
 	 */
-	public EntityDeleteMessage[] getEntityDeletes() {
+	public EntityDelete[] getEntityDeletes() {
 		return entityDeletes;
 	}
 
