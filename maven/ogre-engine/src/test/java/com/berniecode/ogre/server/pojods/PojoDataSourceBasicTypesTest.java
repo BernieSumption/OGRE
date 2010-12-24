@@ -208,12 +208,14 @@ interface InterfaceWithNoMethods {
 }
 
 class EntityClassMatchingTwoInterfaces implements InterfaceWithNoMethods, SimpleInterface {
+	@Override
 	public int getPublicIntProperty() {
 		return 0;
 	}	
 }
 
 class SimpleEntityClassOne implements SimpleInterface {
+	@Override
 	public int getPublicIntProperty() {
 		return 10;
 	}

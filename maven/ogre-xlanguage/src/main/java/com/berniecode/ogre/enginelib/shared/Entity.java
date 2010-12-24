@@ -84,25 +84,24 @@ public class Entity implements EntityReference, EntityUpdate {
 	 * @private
 	 */
 	public void connectEntityReferences(EntityStore store, Entity[] array) {
-		for (int i = 0; i < entityType.getPropertyCount(); i++) {
-			Property property = entityType.getProperty(i);
-			PropertyType propertyType = property.getPropertyType();
-			if (propertyType instanceof ReferencePropertyType) {
-				EntityType refType = ((ReferencePropertyType) propertyType).getEntityType();
-				long refId = ValueUtils.unboxLong((Long) values[i]);
-				Entity entity = store.get(refType, refId);
-				if (entity == null) {
-					for (int j = 0; j < array.length; j++) {
-						if (array[i].getEntityType() == refType && array[i].getEntityId() == refId) {
-							entity = array[i];
-						}
+		Property[] properties = entityType.getReferenceProperties();
+		for (int i = 0; i < properties.length; i++) {
+			Property property = properties[i];
+			ReferencePropertyType propertyType = (ReferencePropertyType) property.getPropertyType();
+			EntityType refType = propertyType.getEntityType();
+			long refId = ValueUtils.unboxLong((Long) values[i]);
+			Entity entity = store.get(refType, refId);
+			if (entity == null) {
+				for (int j = 0; j < array.length; j++) {
+					if (array[i].getEntityType() == refType && array[i].getEntityId() == refId) {
+						entity = array[i];
 					}
 				}
-				if (entity == null) {
-					throw new OgreException("Property " + property + " of entity type " + refType + " references non-existant entity " + refType + "#" + refId);
-				}
-				values[i] = entity;
 			}
+			if (entity == null) {
+				throw new OgreException("Property " + property + " of entity type " + refType + " references non-existant entity " + refType + "#" + refId);
+			}
+			values[i] = entity;
 		}
 	}
 }

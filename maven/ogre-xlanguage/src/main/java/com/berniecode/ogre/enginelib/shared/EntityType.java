@@ -68,11 +68,9 @@ public class EntityType {
 		return referenceProperties;
 	}
 
-	public void setTypeDomain(TypeDomain typeDomain) {
-		for (int i = 0; i < properties.length; i++) {
-			if (properties[i].getPropertyType() instanceof ReferencePropertyType) {
-				((ReferencePropertyType) properties[i].getPropertyType()).setTypeDomain(typeDomain);
-			}
+	void setTypeDomain(TypeDomain typeDomain) {
+		for (int i = 0; i < referenceProperties.length; i++) {
+			((ReferencePropertyType) referenceProperties[i].getPropertyType()).setTypeDomain(typeDomain);
 		}
 	}
 }

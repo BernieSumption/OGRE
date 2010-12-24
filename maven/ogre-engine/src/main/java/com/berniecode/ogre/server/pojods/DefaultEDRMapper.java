@@ -157,6 +157,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	/**
 	 * Get the {@link TypeDomain} mapped by this {@link DefaultEDRMapper}
 	 */
+	@Override
 	public TypeDomain getTypeDomain() {
 		requireInitialised(true, "getTypeDomain()");
 		return typeDomain;
@@ -317,6 +318,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	/**
 	 * Get the {@link EntityType} for an object
 	 */
+	@Override
 	public EntityType getEntityTypeForObject(Object entityObject) {
 		requireInitialised(true, "getEntityTypeForObject()");
 		
@@ -353,12 +355,11 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 
 		List<Object> relatedObjects = new ArrayList<Object>();
 		
-		for (int i=0; i<entityType.getPropertyCount(); i++) {
-			Property property = entityType.getProperty(i);
-			if (property.getPropertyType() instanceof ReferencePropertyType) {
-				relatedObjects.add(getRawValueForProperty(entityObject, property));
-			}
+		Property[] referenceProperties = entityType.getReferenceProperties();
+		for (int i = 0; i < referenceProperties.length; i++) {
+			relatedObjects.add(getRawValueForProperty(entityObject, referenceProperties[i]));
 		}
+
 		return relatedObjects;
 	}
 
