@@ -144,7 +144,8 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		Set<Object> entityObjects = new LinkedHashSet<Object>(Arrays.asList(objectGraphRoots));
 		
 		// iteratively grow the set of entity objects to include any objects referenced by any other objects
-		// in the set. This algorithm depends heavily on the behaviour of LinkedHashMap.addAll()
+		// in the set. This algorithm depends heavily on the behaviour of LinkedHashSet.addAll(), that is that
+		// objects already in the set are ignored, and new objects are added at the end of the list
 		{
 			int processedUpTo = -1;
 			while (entityObjects.size() - 1 > processedUpTo) {
@@ -175,7 +176,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 				EntityDiff diff = EntityDiff.build(similar, newEntity);
 				if (diff != null) {
 					if (OgreLog.isInfoEnabled()) {
-						OgreLog.info("PojDataSource: detected change on " + similar);
+						OgreLog.info("PojoDataSource: detected change on " + similar);
 					}
 					entityDiffs.add(diff);
 				}

@@ -5,6 +5,7 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
+//TODO merge Property and PropertyType, all I do is endless property.getPropertyType().something
 public interface PropertyType {
 
 	/**

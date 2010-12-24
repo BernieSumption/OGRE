@@ -1,6 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
 
+
 /**
  * Represents a change to an object graph.
  * 

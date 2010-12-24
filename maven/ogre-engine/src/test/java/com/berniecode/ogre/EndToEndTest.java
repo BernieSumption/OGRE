@@ -95,7 +95,7 @@ public class EndToEndTest extends OgreTestCase {
 			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity EntityClassWithAllFields#1" +
 			"    bytes=1,2,3" +
-			"    entity_element=#1" +
+			"    entity_element=EntityElement#1" +
 			"    non_nullable_byte=1" +
 			"    non_nullable_double=11.0" +
 			"    non_nullable_float=9.0" +
@@ -180,7 +180,7 @@ public class EndToEndTest extends OgreTestCase {
 				"  complete values:" +
 				"    EntityUpdate for EntityClassWithAllFields#2" +
 				"      bytes=4,5,6" +
-				"      entity_element=#2" +
+				"      entity_element=EntityElement#2" +
 				"      non_nullable_byte=11" +
 				"      non_nullable_double=21.0" +
 				"      non_nullable_float=19.0" +
@@ -194,7 +194,7 @@ public class EndToEndTest extends OgreTestCase {
 				"      nullable_long=18" +
 				"      nullable_short=14" +
 				"      string=my bizzle" +
-				"    EntityUpdate for com.berniecode.ogre.EntityElement#2" +
+				"    EntityUpdate for EntityElement#2" +
 				"      name=Bye!",
 				msgBridge.getLastUpdateMessage(), dataSource.getTypeDomain());
 		 

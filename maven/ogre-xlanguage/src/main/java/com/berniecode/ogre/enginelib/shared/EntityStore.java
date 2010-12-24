@@ -1,6 +1,5 @@
 package com.berniecode.ogre.enginelib.shared;
 
-import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.ArrayBuilder;
 import com.berniecode.ogre.enginelib.platformhooks.EntityMap;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
@@ -100,31 +99,6 @@ public class EntityStore {
 			resultList.addAll(entityMaps[i].getEntities());
 		}
 		return (Entity[]) resultList.buildArray();
-	}
-
-	/**
-	 * Check the referential integrity of this {@link EntityStore}. If any entities have reference properties
-	 * that refer to non-existant entities, log an error.
-	 */
-	public void checkIntegrity() {
-		for (int i=0; i<entityMaps.length; i++) {
-			EntityMap entityMap = entityMaps[i];
-			Entity[] entities = entityMap.getEntities();
-			Property[] referenceProperties = typeDomain.getEntityType(i).getReferenceProperties();
-			for (int j = 0; j < entities.length; j++) {
-				Entity entity = entities[j];
-				for (int k=0; k<referenceProperties.length; k++) {
-					Property property = referenceProperties[k];
-					ReferencePropertyType rpt = (ReferencePropertyType) property.getPropertyType();
-					EntityType refType = typeDomain.getEntityTypeByName(rpt.getEntityName());
-					long refId = ((Long) entity.getPropertyValue(property)).longValue();
-					if (!contains(refType, refId)) {
-						OgreLog.error("ClientEngine in inconsistent state: entity " + entity
-								+ " references non-existant entity " + refType + "#" + refId);
-					}
-				}
-			}
-		}
 	}
 
 

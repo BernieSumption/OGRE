@@ -97,4 +97,8 @@ public class ValueUtils {
 		return Array.getLength(array);
 	}
 
+	public static long unboxLong(Long id) {
+		return id.longValue();
+	}
+
 }

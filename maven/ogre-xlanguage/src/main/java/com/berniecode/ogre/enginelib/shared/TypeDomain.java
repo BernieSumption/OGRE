@@ -20,6 +20,9 @@ public class TypeDomain {
 		for (int i = 0; i < entityTypes.length; i++) {
 			entityTypesByName.put(entityTypes[i].getName(), entityTypes[i]);
 		}
+		for (int i = 0; i < entityTypes.length; i++) {
+			entityTypes[i].setTypeDomain(this);
+		}
 	}
 
 	/**

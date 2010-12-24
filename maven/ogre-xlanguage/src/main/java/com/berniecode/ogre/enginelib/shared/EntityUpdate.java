@@ -1,6 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
 
+
 /**
  * Contains new values for some or all of an {@link Entity}'s properties
  *

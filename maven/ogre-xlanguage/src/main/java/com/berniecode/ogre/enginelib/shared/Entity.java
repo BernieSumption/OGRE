@@ -1,5 +1,6 @@
 package com.berniecode.ogre.enginelib.shared;
 
+import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
 
 
@@ -14,7 +15,7 @@ public class Entity implements EntityReference, EntityUpdate {
 	private final EntityType entityType;
 	private final long id;
 	private final Object[] values;
-
+	
 	public Entity(EntityType entityType, long id, Object[] values) {
 		this.entityType = entityType;
 		this.id = id;
@@ -65,5 +66,43 @@ public class Entity implements EntityReference, EntityUpdate {
 
 	public boolean hasUpdatedValue(Property property) {
 		return true;
+	}
+
+	/**
+	 * The values array passed to the constructor of this class contains integers instead of Entity
+	 * references, so if property #0 is a "reference to Foo" property referencing Foo#7,
+	 * getPropertyValue(property0) would return the number "7".
+	 * 
+	 * <p>
+	 * This method is used to provide a set of Entities to resolve references in, so that
+	 * getPropertyValue(property0) returns the actual Entity Foo#7
+	 * 
+	 * <p>
+	 * Entities are resolved first in the EntityStore, then in the array of entities if they are not
+	 * found in the store
+	 * 
+	 * @private
+	 */
+	public void connectEntityReferences(EntityStore store, Entity[] array) {
+		for (int i = 0; i < entityType.getPropertyCount(); i++) {
+			Property property = entityType.getProperty(i);
+			PropertyType propertyType = property.getPropertyType();
+			if (propertyType instanceof ReferencePropertyType) {
+				EntityType refType = ((ReferencePropertyType) propertyType).getEntityType();
+				long refId = ValueUtils.unboxLong((Long) values[i]);
+				Entity entity = store.get(refType, refId);
+				if (entity == null) {
+					for (int j = 0; j < array.length; j++) {
+						if (array[i].getEntityType() == refType && array[i].getEntityId() == refId) {
+							entity = array[i];
+						}
+					}
+				}
+				if (entity == null) {
+					throw new OgreException("Property " + property + " of entity type " + refType + " references non-existant entity " + refType + "#" + refId);
+				}
+				values[i] = entity;
+			}
+		}
 	}
 }

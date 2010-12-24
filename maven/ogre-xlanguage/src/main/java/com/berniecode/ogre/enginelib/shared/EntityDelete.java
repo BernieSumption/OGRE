@@ -1,6 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
 
+
 /**
  * Represents the removal of an {@link Entity} from an object graph
  *

@@ -95,15 +95,9 @@ public class EDRDescriber {
 				if (i > 0) {
 					sc.add(",");
 				}
-				if (property.getPropertyType() instanceof ReferencePropertyType) {
-					sc.add("#");
-				}
 				sc.add(ValueUtils.getArrayValue(value, i));
 			}
 		} else {
-			if (property.getPropertyType() instanceof ReferencePropertyType) {
-				sc.add("#");
-			}
 			sc.add(value);
 		}
 	}

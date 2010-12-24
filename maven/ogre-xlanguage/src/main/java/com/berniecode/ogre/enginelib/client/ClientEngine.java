@@ -84,19 +84,21 @@ public class ClientEngine implements UpdateMessageListener {
 		requireNotNull(messageAdapter, "messageAdapter");
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(objectGraphId, "objectGraphId");
+		
 		typeDomain = downloadAdapter.loadTypeDomain(typeDomainId);
-		
 		entities = new EntityStore(typeDomain, false);
+		initialised = true;
 		
-		ObjectGraphUpdate objectGraph = downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId);
-		Entity[] initialValues = objectGraph.getEntities();
-		for (int i=0; i<initialValues.length; i++) {
-			entities.put(initialValues[i]);
-		}
+		acceptUpdateMessage(downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId));
+		
+//		ObjectGraphUpdate objectGraph = downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId);
+//		Entity[] initialValues = objectGraph.getEntities();
+//		for (int i=0; i<initialValues.length; i++) {
+//			entities.put(initialValues[i]);
+//		}
 		
 		messageAdapter.subscribeToUpdateMessages(typeDomainId, objectGraphId, this);
 		
-		initialised = true;
 	}
 
 	/**
@@ -130,23 +132,25 @@ public class ClientEngine implements UpdateMessageListener {
 	 * @private
 	 */
 	public void acceptUpdateMessage(ObjectGraphUpdate message) {
+		requireInitialised(true, "acceptUpdateMessage()");
+		
+		// validate the update message
+		Entity[] completeEntities = message.getEntities();
+		for (int i = 0; i < completeEntities.length; i++) {
+			completeEntities[i].connectEntityReferences(entities, completeEntities);
+		}
 		
 		//TODO perform validation on the update message:
 		// 1. check that the untyped Object[] values array is of the correct type
 		// 2. check that the typeDomain is the same as our typeDomain
 		
-		requireInitialised(true, "acceptUpdateMessage()");
 		OgreLog.info("ClientEngine: accepted update message " + message);
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug(EDRDescriber.describeUpdateMessage(typeDomain, message));
 		}
-		mergeCompleteEntities(message.getEntities());
+		mergeCompleteEntities(completeEntities);
 		mergeEntityDiffs(message.getEntityDiffs());
 		mergeEntityDeletes(message.getEntityDeletes());
-		
-
-		//TODO  move this to before ClientEngine state is compromised! refuse to accept messages that will leave it in a bad state
-		entities.checkIntegrity();
 	}
 
 	/**
