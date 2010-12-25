@@ -13,15 +13,11 @@ import java.util.WeakHashMap;
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.shared.BytesPropertyType;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityType;
-import com.berniecode.ogre.enginelib.shared.FloatPropertyType;
-import com.berniecode.ogre.enginelib.shared.IntegerPropertyType;
+import com.berniecode.ogre.enginelib.shared.IntegerProperty;
 import com.berniecode.ogre.enginelib.shared.Property;
-import com.berniecode.ogre.enginelib.shared.PropertyType;
-import com.berniecode.ogre.enginelib.shared.ReferencePropertyType;
-import com.berniecode.ogre.enginelib.shared.StringPropertyType;
+import com.berniecode.ogre.enginelib.shared.ReferenceProperty;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -104,10 +100,6 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	protected final void doInitialise() {
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(classes, "classes");
-
-		for (Class<?> klass : classes) {
-			registerClassMapping(klass, new ReferencePropertyType(getEntityTypeNameForClass(klass)));
-		}
 		
 		List<EntityType> entityTypes = new ArrayList<EntityType>();
 		int index = 0;
@@ -131,8 +123,6 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		if (idMapper == null) {
 			idMapper = new DefaultIdMapper();
 			for (Class<?> klass : classes) {
-				registerClassMapping(klass, new ReferencePropertyType(getEntityTypeNameForClass(klass)));
-				
 				try {
 					if (klass.getMethod("equals", Object.class).getDeclaringClass() != Object.class) {
 						OgreLog.warn(
@@ -187,11 +177,9 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		int propertyIndex = 0;
 		for (Method method : methods) {
 			if (Utils.isGetterMethod(method)) {
-				if (isMappableMethod(method)) {
-					if (!method.isAccessible()) {
-						method.setAccessible(true);
-					}
-					properties.add(createProperty(method, propertyIndex++));
+				Property property = createProperty(method, propertyIndex++);
+				if (property != null) {
+					properties.add(property);
 				} else {
 					OgreLog.warn("Ignoring non-mappable getter method " + method);
 				}
@@ -199,16 +187,6 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		}
 		
 		return new EntityType(entityTypeIndex, name, properties.toArray(new Property[0]));
-	}
-
-	/**
-	 * Override this method to control whether individual getter methods are mapped to OGRE properties. If
-	 * this method returns true for a property, it will be mapped to a property.
-	 * 
-	 * <p>The default behaviour is to map any getter methods that have mappable return types.
-	 */
-	protected boolean isMappableMethod(Method method) {
-		return classToPropertyType.containsKey(method.getReturnType());
 	}
 
 	/**
@@ -223,54 +201,82 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	/**
 	 * Convert a {@link Method} to a {@link Property}. This method can be overridden by subclasses that
 	 * want to alter the default mapping behaviour.
+	 * 
+	 * <p>If this method returns null, the property will be ignored
 	 */
 	protected Property createProperty(Method method, int propertyIndex) {
-		PropertyType propertyType = createPropertyType(method.getReturnType());
-		Property property = new Property(propertyIndex, getPropertyNameForMethod(method), propertyType);
+		if (!method.isAccessible()) {
+			method.setAccessible(true);
+		}
+		String name = getPropertyNameForMethod(method);
+		Class<?> type = method.getReturnType();
+		boolean nullable = !type.isPrimitive();
+		Property property;
+		
+		if (integerTypes.containsKey(type)) {
+			property = new IntegerProperty(propertyIndex, name, integerTypes.get(type), nullable);
+		}
+		else if (classes.contains(type)) {
+			property = new ReferenceProperty(propertyIndex, name, getEntityTypeNameForClass(type));
+		}
+		else if (type == float.class || type == Float.class) {
+			property = new Property(propertyIndex, name, Property.TYPECODE_FLOAT, nullable);
+		}
+		else if (type == double.class || type == Double.class) {
+			property = new Property(propertyIndex, name, Property.TYPECODE_DOUBLE, nullable);
+		}
+		else if (type == String.class) {
+			property = new Property(propertyIndex, name, Property.TYPECODE_STRING, true);
+		}
+		else if (type == byte[].class) {
+			property = new Property(propertyIndex, name, Property.TYPECODE_BYTES, true);
+		} else {
+			return null;
+		}
+		
 		propertyToMethod.put(property, method);
 		return property;
 	}
-	
-	private final Map<Class<?>, PropertyType> classToPropertyType;
-	
+
+	// map of Java's integer types to their bitlength
+	private final Map<Class<?>, Integer> integerTypes;
 	{
-		classToPropertyType = new HashMap<Class<?>, PropertyType>();
-		registerClassMapping(long.class,    new IntegerPropertyType(64, false));
-		registerClassMapping(Long.class,    new IntegerPropertyType(64, true));
-		registerClassMapping(int.class,     new IntegerPropertyType(32, false));
-		registerClassMapping(Integer.class, new IntegerPropertyType(32, true));
-		registerClassMapping(short.class,   new IntegerPropertyType(16, false));
-		registerClassMapping(Short.class,   new IntegerPropertyType(16, true));
-		registerClassMapping(byte.class,    new IntegerPropertyType(8, false));
-		registerClassMapping(Byte.class,    new IntegerPropertyType(8, true));
-		registerClassMapping(String.class,  new StringPropertyType());
-		registerClassMapping(float.class,   new FloatPropertyType(32, false));
-		registerClassMapping(Float.class,   new FloatPropertyType(32, true));
-		registerClassMapping(double.class,  new FloatPropertyType(64, false));
-		registerClassMapping(Double.class,  new FloatPropertyType(64, true));
-		registerClassMapping(byte[].class,  new BytesPropertyType());
+		integerTypes = new HashMap<Class<?>, Integer>();
+		integerTypes.put(long.class, 64);
+		integerTypes.put(Long.class, 64);
+		integerTypes.put(int.class, 32);
+		integerTypes.put(Integer.class, 32);
+		integerTypes.put(short.class, 16);
+		integerTypes.put(Short.class, 16);
+		integerTypes.put(byte.class, 8);
+		integerTypes.put(Byte.class, 8);
 	}
+//	private final Map<Class<?>, PropertyType> classToPropertyType;
+//	
+//	{
+//		classToPropertyType = new HashMap<Class<?>, PropertyType>();
+//		registerClassMapping(long.class,    new IntegerPropertyType(64, false));
+//		registerClassMapping(Long.class,    new IntegerPropertyType(64, true));
+//		registerClassMapping(int.class,     new IntegerPropertyType(32, false));
+//		registerClassMapping(Integer.class, new IntegerPropertyType(32, true));
+//		registerClassMapping(short.class,   new IntegerPropertyType(16, false));
+//		registerClassMapping(Short.class,   new IntegerPropertyType(16, true));
+//		registerClassMapping(byte.class,    new IntegerPropertyType(8, false));
+//		registerClassMapping(Byte.class,    new IntegerPropertyType(8, true));
+//		registerClassMapping(String.class,  new StringPropertyType());
+//		registerClassMapping(float.class,   new FloatPropertyType(32, false));
+//		registerClassMapping(Float.class,   new FloatPropertyType(32, true));
+//		registerClassMapping(double.class,  new FloatPropertyType(64, false));
+//		registerClassMapping(Double.class,  new FloatPropertyType(64, true));
+//		registerClassMapping(byte[].class,  new BytesPropertyType());
+//	}
 
-	/**
-	 * Register a mapping from a Java method return type to an OGRE {@link PropertyType}
-	 */
-	protected void registerClassMapping(Class<?> klass, PropertyType propertyType) {
-		classToPropertyType.put(klass, propertyType);
-	}
-
-	/**
-	 * Convert the return type of a {@link Method} to a {@link PropertyType} for the associated
-	 * {@link Property}. This method can be overridden by subclasses that want to alter the default
-	 * mapping behaviour.
-	 */
-	protected PropertyType createPropertyType(Class<?> javaType) throws TypeMappingException {
-		requireInitialised(true, "createPropertyType()");
-		PropertyType propertyType = classToPropertyType.get(javaType);
-		if (propertyType != null) {
-			return propertyType;
-		}
-		throw new TypeMappingException("No PropertyType mapping defined for class " + javaType);
-	}
+//	/**
+//	 * Register a mapping from a Java method return type to an OGRE {@link PropertyType}
+//	 */
+//	protected void registerClassMapping(Class<?> klass, PropertyType propertyType) {
+//		classToPropertyType.put(klass, propertyType);
+//	}
 	
 	//
 	// OBJECT GRAPH MAPPING
@@ -365,7 +371,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 
 	protected Object getValueForProperty(Object object, Property property) {
 		Object o = getRawValueForProperty(object, property);
-		if (property.getPropertyType() instanceof ReferencePropertyType) {
+		if (property instanceof ReferenceProperty) {
 			return getIdForObject(o);
 		}
 		return o;

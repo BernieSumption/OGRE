@@ -14,6 +14,7 @@ public class EntityType {
 	private final String name;
 	private final Property[] properties;
 	private Property[] referenceProperties;
+	private TypeDomain typeDomain;
 
 	public EntityType(int index, String name, Property[] properties) {
 		this.index = index;
@@ -22,7 +23,7 @@ public class EntityType {
 		
 		ArrayBuilder builder = new ArrayBuilder(Property.class);
 		for (int i=0; i<properties.length; i++) {
-			if (properties[i].getPropertyType() instanceof ReferencePropertyType) {
+			if (properties[i] instanceof ReferenceProperty) {
 				builder.add(properties[i]);
 			}
 		}
@@ -67,10 +68,18 @@ public class EntityType {
 	public Property[] getReferenceProperties() {
 		return referenceProperties;
 	}
+	
+	/**
+	 * The {@link TypeDomain} that this {@link EntityType} belongs to.
+	 */
+	public TypeDomain getTypeDomain() {
+		return typeDomain;
+	}
 
 	void setTypeDomain(TypeDomain typeDomain) {
+		this.typeDomain = typeDomain;
 		for (int i = 0; i < referenceProperties.length; i++) {
-			((ReferencePropertyType) referenceProperties[i].getPropertyType()).setTypeDomain(typeDomain);
+			((ReferenceProperty) referenceProperties[i]).setTypeDomain(typeDomain);
 		}
 	}
 }

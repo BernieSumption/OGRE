@@ -52,13 +52,13 @@ public class EDRDescriber {
 	// DESCRIBE OBJECT GRAPH
 	//
 
-	public static String describeObjectGraph(TypeDomain typeDomain, ObjectGraphUpdate objectGraph) {
+	public static String describeObjectGraph(TypeDomain typeDomain, GraphUpdate objectGraph) {
 		StringConcatenator sc = new StringConcatenator();
 		doDescribeObjectGraph(typeDomain, objectGraph, sc, 0);
 		return sc.buildString();
 	}
 
-	private static void doDescribeObjectGraph(TypeDomain typeDomain, ObjectGraphUpdate objectGraph, StringConcatenator sc, int indent) {
+	private static void doDescribeObjectGraph(TypeDomain typeDomain, GraphUpdate objectGraph, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("ObjectGraph ")
 		  .add(objectGraph.getTypeDomainId())
@@ -113,15 +113,15 @@ public class EDRDescriber {
 		return sc.buildString();
 	}
 	
-	public static String describeUpdateMessage(TypeDomain typeDomain, ObjectGraphUpdate updateMessage) {
+	public static String describeUpdateMessage(TypeDomain typeDomain, GraphUpdate updateMessage) {
 		StringConcatenator sc = new StringConcatenator();
 		doDescribeUpdateMessage(typeDomain, updateMessage, sc, 0);
 		return sc.buildString();
 	}
 	
-	private static void doDescribeUpdateMessage(TypeDomain typeDomain, ObjectGraphUpdate updateMessage, StringConcatenator sc, int indent) {
+	private static void doDescribeUpdateMessage(TypeDomain typeDomain, GraphUpdate updateMessage, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
-		sc.add("ObjectGraphUpdate for object graph ")
+		sc.add("GraphUpdate for object graph ")
 		  .add(updateMessage.getTypeDomainId())
 		  .add("/")
 		  .add(updateMessage.getObjectGraphId());

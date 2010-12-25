@@ -7,7 +7,7 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-public class ObjectGraphUpdate {
+public class GraphUpdate {
 
 	private final String typeDomainId;
 	private final String objectGraphId;
@@ -15,7 +15,7 @@ public class ObjectGraphUpdate {
 	private final EntityDiff[] entityDiffs;
 	private final EntityDelete[] entityDeletes;
 
-	public ObjectGraphUpdate(String typeDomainId, String objectGraphId, Entity[] entities, EntityDiff[] entityDiffs, EntityDelete[] entityDeletes) {
+	public GraphUpdate(String typeDomainId, String objectGraphId, Entity[] entities, EntityDiff[] entityDiffs, EntityDelete[] entityDeletes) {
 		this.typeDomainId = typeDomainId;
 		this.objectGraphId = objectGraphId;
 		this.entities = entities == null ? new Entity[0] : entities;

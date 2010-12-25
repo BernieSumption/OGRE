@@ -15,7 +15,7 @@ import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityDelete;
 import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
+import com.berniecode.ogre.enginelib.shared.GraphUpdate;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
@@ -99,10 +99,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	@Override
-	public ObjectGraphUpdate createSnapshot() {
+	public GraphUpdate createSnapshot() {
 		Entity[] messages = entities.getEntities();
 		Arrays.sort(messages, new EntityComparator());
-		return new ObjectGraphUpdate(typeDomain.getTypeDomainId(), objectGraphId, messages, null, null);
+		return new GraphUpdate(typeDomain.getTypeDomainId(), objectGraphId, messages, null, null);
 	}
 
 	@Override
@@ -205,7 +205,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		}
 		
 		if (updateMessageListener != null) {
-			ObjectGraphUpdate message = new ObjectGraphUpdate(
+			GraphUpdate message = new GraphUpdate(
 					typeDomain.getTypeDomainId(),
 					objectGraphId,
 					newEntities.toArray(new Entity[0]),

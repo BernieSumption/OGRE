@@ -12,7 +12,7 @@ import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 import com.berniecode.ogre.enginelib.shared.EntityUpdate;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
+import com.berniecode.ogre.enginelib.shared.GraphUpdate;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.IdMapper;
@@ -64,11 +64,11 @@ public abstract class OgreTestCase extends TestCase {
 		assertState(expected, EDRDescriber.describeTypeDomain(typeDomain));
 	}
 	
-	protected void assertObjectGraphState(String expected, ObjectGraphUpdate objectGraph, TypeDomain typeDomain) {
+	protected void assertObjectGraphState(String expected, GraphUpdate objectGraph, TypeDomain typeDomain) {
 		assertState(expected, EDRDescriber.describeObjectGraph(typeDomain, objectGraph));
 	}
 	
-	protected void assertUpdateMessageState(String expected, ObjectGraphUpdate updateMessage, TypeDomain typeDomain) {
+	protected void assertUpdateMessageState(String expected, GraphUpdate updateMessage, TypeDomain typeDomain) {
 		assertState(expected, EDRDescriber.describeUpdateMessage(typeDomain, updateMessage));
 	}
 	

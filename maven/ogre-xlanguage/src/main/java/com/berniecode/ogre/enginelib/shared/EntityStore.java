@@ -11,12 +11,10 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
  */
 public class EntityStore {
 	
-	private final TypeDomain typeDomain;
 	private final EntityMap[] entityMaps;
 	private final boolean allowReplace;
 	
 	public EntityStore(TypeDomain typeDomain, boolean allowReplace) {
-		this.typeDomain = typeDomain;
 		this.allowReplace = allowReplace;
 		entityMaps = new EntityMap[typeDomain.getEntityTypes().length];
 		for (int i=0; i<entityMaps.length; i++) {

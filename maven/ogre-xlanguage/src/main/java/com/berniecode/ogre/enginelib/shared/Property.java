@@ -7,15 +7,29 @@ package com.berniecode.ogre.enginelib.shared;
  * @author Bernie Sumption
  */
 public class Property {
+	
+	private static final String[] TYPECODE_NAMES = {"int", "float", "double", "string", "byte-array", "reference"};
+	
+	// INT Property objects can be cast to IntegerProperty to access more information
+    public static final int TYPECODE_INT       = 0;
+    public static final int TYPECODE_FLOAT     = 1;
+    public static final int TYPECODE_DOUBLE    = 2;
+    public static final int TYPECODE_STRING    = 3;
+    public static final int TYPECODE_BYTES     = 4;
+	// REFERENCE Property objects can be cast to ReferenceProperty to access more information
+    public static final int TYPECODE_REFERENCE = 5;
+    
 
 	private final int propertyIndex;
 	private final String name;
-	private final PropertyType propertyType;
+	private final int typeCode;
+	private final boolean isNullable;
 
-	public Property(int propertyIndex, String name, PropertyType propertyType) {
+	public Property(int propertyIndex, String name, int typeCode, boolean isNullable) {
+		this.typeCode = typeCode;
 		this.propertyIndex = propertyIndex;
 		this.name = name;
-		this.propertyType = propertyType;
+		this.isNullable = isNullable;
 	}
 
 	/**
@@ -29,20 +43,25 @@ public class Property {
 	}
 
 	/**
-	 * @return The type of this property.
-	 */
-	public PropertyType getPropertyType() {
-		return propertyType;
-	}
-
-	/**
-	 * The position of this property in the parent {@link EntityType}'s properties array.
+	 * The position of this property in the parent {@link EntityType}'s properties list.
 	 */
 	public int getPropertyIndex() {
 		return propertyIndex;
 	}
 	
 	public String toString() {
-		return propertyType.getDescription() + " property " + name;
+		return TYPECODE_NAMES[typeCode] + " property " + name;
+	}
+
+	/**
+	 * @return The typeCode code of this property - one of the numbers defined in the TYPECODE_*
+	 *         public constants of this class
+	 */
+	public int getTypeCode() {
+		return typeCode;
+	}
+
+	public boolean isNullable() {
+		return isNullable;
 	}
 }

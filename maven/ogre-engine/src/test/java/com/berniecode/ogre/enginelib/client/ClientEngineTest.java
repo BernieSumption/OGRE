@@ -9,15 +9,16 @@ import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
+import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityDelete;
 import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityReference;
 import com.berniecode.ogre.enginelib.shared.EntityType;
-import com.berniecode.ogre.enginelib.shared.IntegerPropertyType;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
+import com.berniecode.ogre.enginelib.shared.GraphUpdate;
+import com.berniecode.ogre.enginelib.shared.IntegerProperty;
 import com.berniecode.ogre.enginelib.shared.Property;
-import com.berniecode.ogre.enginelib.shared.ReferencePropertyType;
+import com.berniecode.ogre.enginelib.shared.ReferenceProperty;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -33,7 +34,7 @@ public class ClientEngineTest extends OgreTestCase {
 	private EntityType entityType1;
 	private TypeDomain typeDomain;
 	
-	private ObjectGraphUpdate initialValueUpdate;
+	private GraphUpdate initialValueUpdate;
 
 	private DownloadClientAdapter downloadClientAdapter;
 	private MessageClientAdapter messageClientAdapter;
@@ -45,13 +46,13 @@ public class ClientEngineTest extends OgreTestCase {
 		messageClientAdapter = context.mock(MessageClientAdapter.class); 
 
 		entityType0 = new EntityType(0, "entityType0", new Property[] {
-				new Property(0, "property0", new IntegerPropertyType(32, false)),
-				new Property(1, "property1", new IntegerPropertyType(64, false))
+				new IntegerProperty(0, "property0", 32, false),
+				new IntegerProperty(1, "property1", 64, false)
 		});
 		entityType1 = new EntityType(0, "entityType1", new Property[] {});
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0, entityType1 });
 		
-		initialValueUpdate = new ObjectGraphUpdate(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID, null, null, null);
+		initialValueUpdate = new GraphUpdate(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID, null, null, null);
 	}
 
 	public void testInitialiseWithoutDependencies() throws NoSuchThingException {
@@ -145,7 +146,7 @@ public class ClientEngineTest extends OgreTestCase {
 	public void testEntityMergingError() throws Exception {
 
 		entityType0 = new EntityType(0, "entityType0", new Property[] {
-				new Property(0, "reference", new ReferencePropertyType("entityType0"))
+				new ReferenceProperty(0, "reference", "entityType0")
 		});
 		
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0 });
@@ -153,21 +154,19 @@ public class ClientEngineTest extends OgreTestCase {
 
 		ClientEngine ce = createClientEngine();
 		ce.initialise();
-
-		requireOneLogError(OgreLog.LEVEL_ERROR);
 		
-		// test new entity created with complete value
-		ce.acceptUpdateMessage(createUpdateMessage(new Entity(entityType0, 200, new Object[] {10L})));
-
+		try {
+			ce.acceptUpdateMessage(createUpdateMessage(new Entity(entityType0, 200, new Object[] {10L})));
+			fail("acceptUpdateMessage() should fail when given an entity that references a non-existant entity");
+		} catch (OgreException e) {}
+		
 		assertClientEngineState(
-			"ObjectGraph TypeDomain/TestObjectGraph" +
-			"  Entity entityType0#200" +
-			"    reference=#10",
+			"ObjectGraph TypeDomain/TestObjectGraph",
 			ce);
 		
 	}
 
-	private ObjectGraphUpdate createUpdateMessage(EntityReference... updates) {
+	private GraphUpdate createUpdateMessage(EntityReference... updates) {
 		List<Entity> valueMessages = new ArrayList<Entity>();
 		List<EntityDiff> diffMessages = new ArrayList<EntityDiff>();
 		List<EntityDelete> deleteMessages = new ArrayList<EntityDelete>();
@@ -179,7 +178,7 @@ public class ClientEngineTest extends OgreTestCase {
 				diffMessages.add((EntityDiff) update);
 			}
 		}
-		return new ObjectGraphUpdate(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID,
+		return new GraphUpdate(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID,
 				valueMessages.toArray(new Entity[0]),
 				diffMessages.toArray(new EntityDiff[0]),
 				deleteMessages.toArray(new EntityDelete[0]));

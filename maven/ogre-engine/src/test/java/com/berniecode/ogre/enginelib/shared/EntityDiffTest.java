@@ -20,8 +20,8 @@ public class EntityDiffTest extends OgreTestCase {
 	public void doAdditionalSetup() {
 
 		entityType0 = new EntityType(0, "entityType0", new Property[] {
-				property0 = new Property(0, "property0", new IntegerPropertyType(32, false)),
-				property1 = new Property(1, "property1", new IntegerPropertyType(64, false))
+				property0 = new IntegerProperty(0, "property0", 32, false),
+				property1 = new IntegerProperty(1, "property1", 64, false)
 		});
 		entityType1 = new EntityType(0, "entityType1", new Property[] {});
 		typeDomain = new TypeDomain("typeDomain", new EntityType[] { entityType0, entityType1 });

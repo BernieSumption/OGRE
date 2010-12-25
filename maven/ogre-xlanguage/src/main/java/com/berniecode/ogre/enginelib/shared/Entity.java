@@ -86,9 +86,8 @@ public class Entity implements EntityReference, EntityUpdate {
 	public void connectEntityReferences(EntityStore store, Entity[] array) {
 		Property[] properties = entityType.getReferenceProperties();
 		for (int i = 0; i < properties.length; i++) {
-			Property property = properties[i];
-			ReferencePropertyType propertyType = (ReferencePropertyType) property.getPropertyType();
-			EntityType refType = propertyType.getEntityType();
+			ReferenceProperty property = (ReferenceProperty) properties[i];
+			EntityType refType = property.getReferenceType();
 			long refId = ValueUtils.unboxLong((Long) values[i]);
 			Entity entity = store.get(refType, refId);
 			if (entity == null) {
@@ -99,7 +98,7 @@ public class Entity implements EntityReference, EntityUpdate {
 				}
 			}
 			if (entity == null) {
-				throw new OgreException("Property " + property + " of entity type " + refType + " references non-existant entity " + refType + "#" + refId);
+				throw new OgreException("Property '" + property + "' of entity type " + refType + " references non-existant entity " + refType + "#" + refId);
 			}
 			values[i] = entity;
 		}

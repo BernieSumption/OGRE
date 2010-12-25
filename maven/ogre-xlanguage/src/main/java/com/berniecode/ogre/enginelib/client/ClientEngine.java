@@ -9,7 +9,7 @@ import com.berniecode.ogre.enginelib.shared.Entity;
 import com.berniecode.ogre.enginelib.shared.EntityDelete;
 import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.ObjectGraphUpdate;
+import com.berniecode.ogre.enginelib.shared.GraphUpdate;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
@@ -91,7 +91,7 @@ public class ClientEngine implements UpdateMessageListener {
 		
 		acceptUpdateMessage(downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId));
 		
-//		ObjectGraphUpdate objectGraph = downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId);
+//		GraphUpdate objectGraph = downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId);
 //		Entity[] initialValues = objectGraph.getEntities();
 //		for (int i=0; i<initialValues.length; i++) {
 //			entities.put(initialValues[i]);
@@ -131,7 +131,7 @@ public class ClientEngine implements UpdateMessageListener {
 	/**
 	 * @private
 	 */
-	public void acceptUpdateMessage(ObjectGraphUpdate message) {
+	public void acceptUpdateMessage(GraphUpdate message) {
 		requireInitialised(true, "acceptUpdateMessage()");
 		
 		// validate the update message
@@ -213,8 +213,8 @@ public class ClientEngine implements UpdateMessageListener {
 	/**
 	 * @return a snapshot of the state of this object graph, useful for debugging
 	 */
-	public ObjectGraphUpdate createSnapshot() {
+	public GraphUpdate createSnapshot() {
 		requireInitialised(true, "createSnapshot()");
-		return new ObjectGraphUpdate(typeDomain.getTypeDomainId(), objectGraphId, entities.getEntities(), null, null);
+		return new GraphUpdate(typeDomain.getTypeDomainId(), objectGraphId, entities.getEntities(), null, null);
 	}
 }
