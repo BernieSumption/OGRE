@@ -71,7 +71,7 @@ public class EntityStore {
 		if (!allowReplace && containsSimilar(entity)) {
 			throw new OgreException("The entity " + getSimilar(entity) + " already exists in this store");
 		}
-		entityMaps[entity.getEntityTypeIndex()].put(entity);
+		entityMaps[entity.getEntityType().getEntityTypeIndex()].put(entity);
 	}
 
 	/**

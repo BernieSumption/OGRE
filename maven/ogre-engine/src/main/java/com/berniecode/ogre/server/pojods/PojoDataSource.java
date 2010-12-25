@@ -121,12 +121,12 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * considered part of the object graph.
 	 * 
 	 * <ul>
-	 * <li>Any objects that are not part of this graph will be added, and a
-	 * {@link EntityValueMessage} will be broadcast to clients
+	 * <li>Any objects that are not part of this graph will be added, and a complete {@link Entity}
+	 * value will be broadcast to clients
 	 * <li>Any objects that are already part of this graph will be checked for modifications, and a
 	 * {@link EntityDiff} will be broadcast to clients
 	 * <li>Any objects in the graph that are not in the array passed to this method will be removed
-	 * from the graph.
+	 * from the graph and an {@link EntityDelete} broadcast to clients.
 	 * </ul>
 	 * 
 	 * <p>
@@ -235,12 +235,12 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 	
 
-	// sorts EntityValueMessages first by entityTypeId, then by entityId
+	// sorts entities first by entityTypeId, then by entityId
 	private final class EntityComparator implements Comparator<Entity> {
 		@Override
 		public int compare(Entity o1, Entity o2) {
-			if (o1.getEntityTypeIndex() != o2.getEntityTypeIndex()) {
-				return compareNumbers(o1.getEntityTypeIndex(), o2.getEntityTypeIndex());
+			if (o1.getEntityType().getEntityTypeIndex() != o2.getEntityType().getEntityTypeIndex()) {
+				return compareNumbers(o1.getEntityType().getEntityTypeIndex(), o2.getEntityType().getEntityTypeIndex());
 			} else {
 				return compareNumbers(o1.getEntityId(), o2.getEntityId());
 			}

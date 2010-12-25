@@ -72,7 +72,7 @@ public class EDRDescriber {
 	}
 
 	private static void doDescribeEntity(TypeDomain typeDomain, Entity entityValue, StringConcatenator sc, int indent) {
-		EntityType entityType = typeDomain.getEntityType(entityValue.getEntityTypeIndex());
+		EntityType entityType = entityValue.getEntityType();
 		doIndent(sc, indent);
 		sc.add("Entity ")
 		  .add(entityType.getName())

@@ -1,5 +1,6 @@
 package com.berniecode.ogre;
 
+import com.berniecode.ogre.enginelib.shared.GraphUpdate;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
@@ -14,5 +15,10 @@ public interface EDRSerialiser {
 	 * Serialise a {@link TypeDomain} into a binary message.
 	 */
 	public byte[] serialiseTypeDomain(TypeDomain typeDomain);
+	
+	/**
+	 * Serialise a {@link TypeDomain} into a binary message.
+	 */
+	public byte[] serialiseGraphUpdate(GraphUpdate graphUpdate);
 	
 }

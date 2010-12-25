@@ -34,23 +34,23 @@ message EntityValueMessage {
 
   required int32 entityTypeIndex = 1;
   required int64 entityId = 2;
-  repeated PropertyValue propertyValues = 4;
+  repeated PropertyValueMessage propertyValues = 4;
   
+}
 
-  message PropertyValue {
-    
-    optional int32 propertyIndex = 1;
-    
-    // exactly one of the following fields must be provided:
-    
-    optional bool isNull = 2;
-    optional int32 intValue = 3;
-    optional int64 bigIntValue = 4;
-    optional float floatValue = 5;
-    optional double doubleValue = 6;
-    optional string stringValue = 7;
-    optional bytes bytesValue = 8;
-  }
+message PropertyValueMessage {
+  
+  // set only for diff-stype EntityValueMessages
+  optional int32 propertyIndex = 1;
+  
+  // exactly one of the following fields must be provided:
+  optional bool isNull = 2;
+  optional int64 intValue = 3;
+  optional float floatValue = 4;
+  optional double doubleValue = 5;
+  optional string stringValue = 6;
+  optional bytes bytesValue = 7;
+  optional int64 idValue = 8;
 }
  
 // Maps onto com.berniecode.ogre.enginelib.shared.EntityDelete

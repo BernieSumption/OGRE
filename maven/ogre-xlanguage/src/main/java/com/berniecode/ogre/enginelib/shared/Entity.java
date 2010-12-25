@@ -51,10 +51,6 @@ public class Entity implements EntityReference, EntityUpdate {
 		return ValueUtils.cloneArray(values);
 	}
 
-	public int getEntityTypeIndex() {
-		return entityType.getEntityTypeIndex();
-	}
-
 	public void update(EntityUpdate update) {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
