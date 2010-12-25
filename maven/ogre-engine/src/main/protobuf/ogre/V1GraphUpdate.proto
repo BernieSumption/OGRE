@@ -1,0 +1,60 @@
+package ogre;
+
+option java_package = "com.berniecode.ogre.wireformat";
+
+
+// these messages map directly onto the classes with the same name
+// in the com.berniecode.ogre.enginelib.shared package. This file
+// only contains comments to highlight unusual behaviour or requirements
+// that aren't obvious from the JavaDoc comments in those classes
+
+
+
+// Maps onto com.berniecode.ogre.enginelib.shared.GraphUpdate
+message GraphUpdateMessage {
+  required string typeDomainId = 1;
+  required string objectGraphId = 2;
+  repeated EntityValueMessage entities = 3; // Must contain complete-style EntityValues
+  repeated EntityValueMessage entityUpdates = 4; // Must contain complete-style EntityValues
+  repeated EntityDeleteMessage entityDeletes = 5;
+}
+
+
+  
+// There are two flavours of validation for this message. "complete-style" maps onto the
+// Maps onto com.berniecode.ogre.enginelib.shared.Entity class in Java, and "diff-style"
+// maps onto the EntityDiff class in the same package.
+// complete-style validation rules:
+//     1. There must be exactly one PropertyValue per Property in the associated EntityType. The position of the
+//        PropertyValue in the propertyValues array is interpreted as the propertyIndex
+//       2. Each PropertyValue must omit the optional propertyIndex field
+// diff-style validation rules:
+//     1. Each entry in the propertyValues array must have a value for the optional propertyIndex field
+message EntityValueMessage {
+
+  required int32 entityTypeIndex = 1;
+  required int64 entityId = 2;
+  repeated PropertyValue propertyValues = 4;
+  
+
+  message PropertyValue {
+    
+    optional int32 propertyIndex = 1;
+    
+    // exactly one of the following fields must be provided:
+    
+    optional bool isNull = 2;
+    optional int32 intValue = 3;
+    optional int64 bigIntValue = 4;
+    optional float floatValue = 5;
+    optional double doubleValue = 6;
+    optional string stringValue = 7;
+    optional bytes bytesValue = 8;
+  }
+}
+ 
+// Maps onto com.berniecode.ogre.enginelib.shared.EntityDelete
+message EntityDeleteMessage {
+  required int32 entityTypeIndex = 1;
+  required int64 entityId = 2;
+}

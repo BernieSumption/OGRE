@@ -175,22 +175,3 @@ public class EntityClassWithAllFields {
 	}
 
 }
-
-class EntityElement {
-	
-	private String name;
-
-	public EntityElement(String name) {
-		this.name = name;
-		
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-	
-}

@@ -1,5 +1,7 @@
 package com.berniecode.ogre.enginelib.shared;
 
+import com.berniecode.ogre.enginelib.platformhooks.OgreException;
+
 /**
  * An individual property on an entity type. {@link Property} is to {@link EntityType} as
  * java.lang.reflect.Method is to java.lang.Class.
@@ -26,6 +28,9 @@ public class Property {
 	private final boolean isNullable;
 
 	public Property(int propertyIndex, String name, int typeCode, boolean isNullable) {
+		if (typeCode < 0 || typeCode >= TYPECODE_NAMES.length) {
+			throw new OgreException(typeCode + " is not a valid typecode.");
+		}
 		this.typeCode = typeCode;
 		this.propertyIndex = propertyIndex;
 		this.name = name;

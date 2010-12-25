@@ -1,0 +1,49 @@
+package ogre;
+
+option java_package = "com.berniecode.ogre.wireformat";
+
+// maps onto the TypeDomain class
+message TypeDomainMessage {
+  required string typeDomainId = 1;
+  // the EntityType.entityTypeIndex property is derived from
+  // the position in this array
+  repeated EntityTypeMessage entityTypes = 2;
+}
+
+// maps onto the EntityType class
+message EntityTypeMessage {
+  required string name = 1;
+  // the Property.propertyIndex property is derived from the
+  // position in this array
+  repeated PropertyMessage properties = 2;
+}
+
+// maps onto the Property class
+message PropertyMessage {
+
+  required string name = 1;
+  required Type propertyType = 2;
+  required bool isNullable = 3;
+  
+  // only required if propertyType == INT
+  optional BitLength bitLength = 4;
+  
+  // only required if propertyType == REFERENCE
+  optional uint32 referenceTypeIndex = 5;
+  
+  enum BitLength {
+    INT_8     = 8;
+    INT_16    = 16;
+    INT_32    = 32;
+    INT_64    = 64;
+  }
+  
+  enum Type {
+    INT       = 0;
+    FLOAT     = 1;
+    DOUBLE    = 2;
+    STRING    = 3;
+    BYTES     = 4;
+    REFERENCE = 5;
+  }
+}
