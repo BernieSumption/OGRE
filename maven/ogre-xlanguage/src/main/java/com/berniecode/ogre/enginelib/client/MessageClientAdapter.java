@@ -1,6 +1,6 @@
 package com.berniecode.ogre.enginelib.client;
 
-import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
+import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
 
 /**
  * Receives messages from a publish/subscribe messaging channel
@@ -10,8 +10,8 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 public interface MessageClientAdapter {
 	
 	/**
-	 * Subscribe to update messages relating to a specific object graph
+	 * Subscribe to graph updates relating to a specific object graph
 	 */
-	void subscribeToUpdateMessages(String typeDomainId, String objectGraphId, UpdateMessageListener listener);
+	void subscribeToGraphUpdates(String typeDomainId, String objectGraphId, GraphUpdateListener listener);
 
 }

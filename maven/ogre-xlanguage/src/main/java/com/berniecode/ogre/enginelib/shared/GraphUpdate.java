@@ -7,7 +7,6 @@ package com.berniecode.ogre.enginelib.shared;
  * 
  * @author Bernie Sumption
  */
-//TODO locate instances of old "update message" name and correct
 public class GraphUpdate {
 
 	private final String typeDomainId;

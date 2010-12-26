@@ -6,29 +6,29 @@ import java.util.List;
 import com.berniecode.ogre.enginelib.client.MessageClientAdapter;
 import com.berniecode.ogre.enginelib.server.MessageServerAdapter;
 import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
+import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
 
-public class MockMessageBridge implements MessageServerAdapter, MessageClientAdapter {
+public class InProcessMessageBridge implements MessageServerAdapter, MessageClientAdapter {
 	
 	private int messageCount = 0;
-	private GraphUpdate lastUpdateMessage;
+	private GraphUpdate lastGraphUpdate;
 	
 	List<ListenerHolder> holders = new ArrayList<ListenerHolder>();
 
 	@Override
-	public void publishUpdateMessage(GraphUpdate message) {
-		lastUpdateMessage = message;
+	public void publishGraphUpdate(GraphUpdate update) {
+		lastGraphUpdate = update;
 		messageCount++;
-		String key = getKey(message.getTypeDomainId(), message.getObjectGraphId());
+		String key = getKey(update.getTypeDomainId(), update.getObjectGraphId());
 		for (ListenerHolder holder: holders) {
 			if (holder.key.equals(key)) {
-				holder.listener.acceptUpdateMessage(message);
+				holder.listener.acceptGraphUpdate(update);
 			}
 		}
 	}
 
 	@Override
-	public void subscribeToUpdateMessages(String typeDomainId, String objectGraphId, UpdateMessageListener listener) {
+	public void subscribeToGraphUpdates(String typeDomainId, String objectGraphId, GraphUpdateListener listener) {
 		holders.add(new ListenerHolder(getKey(typeDomainId, objectGraphId), listener));
 	}
 
@@ -44,16 +44,16 @@ public class MockMessageBridge implements MessageServerAdapter, MessageClientAda
 		return messageCount;
 	}
 
-	public GraphUpdate getLastUpdateMessage() {
-		return lastUpdateMessage;
+	public GraphUpdate getLastGraphUpdate() {
+		return lastGraphUpdate;
 	}
 
 }
 
 class ListenerHolder {
 	public final String key;
-	public final UpdateMessageListener listener;
-	public ListenerHolder(String key, UpdateMessageListener listener) {
+	public final GraphUpdateListener listener;
+	public ListenerHolder(String key, GraphUpdateListener listener) {
 		this.key = key;
 		this.listener = listener;
 	}

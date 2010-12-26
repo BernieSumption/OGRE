@@ -3,10 +3,7 @@ package com.berniecode.ogre;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.server.ServerEngine;
 import com.berniecode.ogre.enginelib.shared.EDRDescriber;
-import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
-import com.berniecode.ogre.server.pojods.PojoDataSource;
 
 /**
  * Tests of the OGRE system in its most common configuration running from the server data source
@@ -14,31 +11,7 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
  * 
  * @author Bernie Sumption
  */
-public class EndToEndTest extends OgreTestCase {
-
-	private InProcessDownloadBridge dlBridge;
-	private MockMessageBridge msgBridge;
-	private PojoDataSource dataSource;
-	private ServerEngine serverEngine;
-	private EntityClassWithAllFields initialEntityObject;
-
-	@Override
-	protected void doAdditionalSetup() throws Exception {
-		OgreLog.info("EndToEndTest.setUp() Creating new OGRE server");
-		dataSource = new PojoDataSource();
-		dataSource.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class, EntityElement.class));
-		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
-		dataSource.initialise();
-
-		serverEngine = new ServerEngine();
-		serverEngine.setDataSource(dataSource);
-		serverEngine.setMessageAdapter(msgBridge = new MockMessageBridge());
-		serverEngine.initialise();
-
-		dlBridge = new InProcessDownloadBridge(serverEngine);
-		
-		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L, "Shizzle", 9.0F, 10.0F, 11.0, 12.0, byteArray(1, 2, 3), new EntityElement("Hi!")));
-	};
+public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 
 	public void testFetchTypeDomain() throws Exception {
 
@@ -133,7 +106,7 @@ public class EndToEndTest extends OgreTestCase {
 
 		
 		assertEquals(2, msgBridge.getMessageCount());
-		assertUpdateMessageState(
+		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
 				"    EntityUpdate for EntityClassWithAllFields#1" +
@@ -144,7 +117,7 @@ public class EndToEndTest extends OgreTestCase {
 				"      nullable_float=1144.0" +
 				"      nullable_int=null" +
 				"      string=Fizzle",
-				msgBridge.getLastUpdateMessage(), dataSource.getTypeDomain());
+				msgBridge.getLastGraphUpdate(), typeDomain);
 
 		 
 		assertClientEngineState(
@@ -175,7 +148,7 @@ public class EndToEndTest extends OgreTestCase {
 		dataSource.setEntityObjects(initialEntityObject, newEntityObject);
 
 		assertEquals(3, msgBridge.getMessageCount());
-		assertUpdateMessageState(
+		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for EntityClassWithAllFields#2" +
@@ -196,7 +169,7 @@ public class EndToEndTest extends OgreTestCase {
 				"      string=my bizzle" +
 				"    EntityUpdate for EntityElement#2" +
 				"      name=Bye!",
-				msgBridge.getLastUpdateMessage(), dataSource.getTypeDomain());
+				msgBridge.getLastGraphUpdate(), typeDomain);
 		 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -242,12 +215,12 @@ public class EndToEndTest extends OgreTestCase {
 		dataSource.setEntityObjects(newEntityObject);
 
 		assertEquals(4, msgBridge.getMessageCount());
-		assertUpdateMessageState(
+		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  deleted entities:" +
 				"    EntityDelete for EntityClassWithAllFields#1" +
 				"    EntityDelete for EntityElement#1",
-				msgBridge.getLastUpdateMessage(), dataSource.getTypeDomain());
+				msgBridge.getLastGraphUpdate(), typeDomain);
 		 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -271,7 +244,7 @@ public class EndToEndTest extends OgreTestCase {
 			"    name=Bye!",
 			clientEngine);
 		
-		// non-changes don't create extra update messages
+		// non-changes don't create extra graph updatess
 		dataSource.setEntityObjects(newEntityObject);
 		assertEquals(4, msgBridge.getMessageCount());
 		
@@ -279,12 +252,12 @@ public class EndToEndTest extends OgreTestCase {
 		dataSource.setEntityObjects();
 
 		assertEquals(5, msgBridge.getMessageCount());
-		assertUpdateMessageState(
+		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  deleted entities:" +
 				"    EntityDelete for EntityClassWithAllFields#2" +
 				"    EntityDelete for EntityElement#2",
-				msgBridge.getLastUpdateMessage(), dataSource.getTypeDomain());
+				msgBridge.getLastGraphUpdate(), typeDomain);
 		 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph",
@@ -306,31 +279,9 @@ public class EndToEndTest extends OgreTestCase {
 		initialEntityObject.setNullableDouble(new Double(12.0));
 		dataSource.setEntityObjects(initialEntityObject);
 		if (msgBridge.getMessageCount() != 1) {
-			OgreLog.error("Update message incorrectly transmitted:\n" + 
-					EDRDescriber.describeUpdateMessage(dataSource.getTypeDomain(), msgBridge.getLastUpdateMessage()));
+			OgreLog.error("Graph updates incorrectly transmitted:\n" + 
+					EDRDescriber.describeGraphUpdate(typeDomain, msgBridge.getLastGraphUpdate()));
 		}
 		assertEquals(1, msgBridge.getMessageCount());
-	}
-	
-	private ClientEngine createClientEngine() throws Exception {
-		return createClientEngine(TYPE_DOMAIN_ID);
-	}
-
-	private ClientEngine createClientEngine(String typeDomainId) throws Exception {
-		ClientEngine ce = new ClientEngine();
-		ce.setTypeDomainId(typeDomainId);
-		ce.setDownloadAdapter(dlBridge);
-		ce.setMessageAdapter(msgBridge);
-		ce.setObjectGraphId(OBJECT_GRAPH_ID);
-		ce.initialise();
-		return ce;
-	}
-
-	private byte[] byteArray(int ... ints) {
-		byte[] bytes = new byte[ints.length];
-		for (int i=0; i<ints.length; i++) {
-			bytes[i] = (byte) ints[i];
-		}
-		return bytes;
 	}
 }

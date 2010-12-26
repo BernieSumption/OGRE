@@ -49,31 +49,28 @@ public abstract class OgreTestCase extends TestCase {
 		super(name);
 	}
 
-	protected void assertState(String expected, String actual) {
+	protected void assertEqualsIgnoreWhitespace(String expected, String actual) {
 		String packagePrefix = getClass().getPackage().getName() + ".";
-		if (expected != null) {
-			expected = expected.replaceAll("\\s+", "\n").replace(packagePrefix, "");
-		}
-		if (actual != null) {
-			actual = actual.replaceAll("\\s+", "\n").replace(packagePrefix, "");
-		}
-		assertEquals(expected, actual);
+		String expectedMunged = expected == null ? null : expected.replaceAll("\\s+", "\n").replace(packagePrefix, "");
+		String actualMunged = actual == null ? null : actual.replaceAll("\\s+", "\n").replace(packagePrefix, "");
+		assertEquals(expectedMunged, actualMunged);
+		OgreLog.debug("assertEqualsIgnoreWhitespace values are equal:\n" + actual);
 	}
 	
 	protected void assertTypeDomainState(String expected, TypeDomain typeDomain) {
-		assertState(expected, EDRDescriber.describeTypeDomain(typeDomain));
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeTypeDomain(typeDomain));
 	}
 	
 	protected void assertObjectGraphState(String expected, GraphUpdate objectGraph, TypeDomain typeDomain) {
-		assertState(expected, EDRDescriber.describeObjectGraph(typeDomain, objectGraph));
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(typeDomain, objectGraph));
 	}
 	
-	protected void assertUpdateMessageState(String expected, GraphUpdate updateMessage, TypeDomain typeDomain) {
-		assertState(expected, EDRDescriber.describeUpdateMessage(typeDomain, updateMessage));
+	protected void assertGraphUpdateState(String expected, GraphUpdate graphUpdate, TypeDomain typeDomain) {
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeGraphUpdate(typeDomain, graphUpdate));
 	}
 	
 	protected void assertEntityUpdateState(String expected, EntityUpdate entityUpdate, TypeDomain typeDomain) {
-		assertState(expected, EDRDescriber.describeEntityUpdate(typeDomain, entityUpdate));
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeEntityUpdate(typeDomain, entityUpdate));
 	}
 	
 	protected void assertClientEngineState(String expected, ClientEngine actual) {

@@ -23,7 +23,7 @@ message PropertyMessage {
 
   required string name = 1;
   required Type propertyType = 2;
-  required bool isNullable = 3;
+  required bool nullable = 3;
   
   // only required if propertyType == INT
   optional BitLength bitLength = 4;

@@ -106,7 +106,7 @@ public class ClientEngineTest extends OgreTestCase {
 		
 		
 		// test new entity created with complete value
-		ce.acceptUpdateMessage(createUpdateMessage(new Entity(entityType0, 200, new Object[] {5, 6L})));
+		ce.acceptGraphUpdate(createGraphUpdate(new Entity(entityType0, 200, new Object[] {5, 6L})));
 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -116,7 +116,7 @@ public class ClientEngineTest extends OgreTestCase {
 			ce);
 		
 		// test entity updated with complete value 
-		ce.acceptUpdateMessage(createUpdateMessage(new Entity(entityType0, 200, new Object[] {7, 8L})));
+		ce.acceptGraphUpdate(createGraphUpdate(new Entity(entityType0, 200, new Object[] {7, 8L})));
 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -126,7 +126,7 @@ public class ClientEngineTest extends OgreTestCase {
 			ce);
 		
 		// test entity can be updated with partial update
-		ce.acceptUpdateMessage(createUpdateMessage(new EntityDiff(entityType0, 200, new Object[] {9, null}, new boolean[] {true, false})));
+		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(entityType0, 200, new Object[] {9, null}, new boolean[] {true, false})));
 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -139,7 +139,7 @@ public class ClientEngineTest extends OgreTestCase {
 		
 		requireOneLogError(OgreLog.LEVEL_ERROR);
 		
-		ce.acceptUpdateMessage(createUpdateMessage(new EntityDiff(entityType0, 100, new Object[] {10, null}, new boolean[] {true, false})));
+		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(entityType0, 100, new Object[] {10, null}, new boolean[] {true, false})));
 		
 	}
 
@@ -156,8 +156,8 @@ public class ClientEngineTest extends OgreTestCase {
 		ce.initialise();
 		
 		try {
-			ce.acceptUpdateMessage(createUpdateMessage(new Entity(entityType0, 200, new Object[] {10L})));
-			fail("acceptUpdateMessage() should fail when given an entity that references a non-existant entity");
+			ce.acceptGraphUpdate(createGraphUpdate(new Entity(entityType0, 200, new Object[] {10L})));
+			fail("acceptGraphUpdate() should fail when given an entity that references a non-existant entity");
 		} catch (OgreException e) {}
 		
 		assertClientEngineState(
@@ -166,7 +166,7 @@ public class ClientEngineTest extends OgreTestCase {
 		
 	}
 
-	private GraphUpdate createUpdateMessage(EntityReference... updates) {
+	private GraphUpdate createGraphUpdate(EntityReference... updates) {
 		List<Entity> valueMessages = new ArrayList<Entity>();
 		List<EntityDiff> diffMessages = new ArrayList<EntityDiff>();
 		List<EntityDelete> deleteMessages = new ArrayList<EntityDelete>();
@@ -198,7 +198,7 @@ public class ClientEngineTest extends OgreTestCase {
 		    oneOf (downloadClientAdapter).loadObjectGraph(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID);
 		    will(returnValue(initialValueUpdate));
 		    
-		    oneOf (messageClientAdapter).subscribeToUpdateMessages(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID, ce);
+		    oneOf (messageClientAdapter).subscribeToGraphUpdates(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID, ce);
 		}});
 		return ce;
 	}

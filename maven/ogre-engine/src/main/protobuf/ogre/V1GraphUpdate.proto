@@ -15,7 +15,7 @@ message GraphUpdateMessage {
   required string typeDomainId = 1;
   required string objectGraphId = 2;
   repeated EntityValueMessage entities = 3; // Must contain complete-style EntityValues
-  repeated EntityValueMessage entityUpdates = 4; // Must contain complete-style EntityValues
+  repeated EntityValueMessage entityDiffs = 4; // Must contain complete-style EntityValues
   repeated EntityDeleteMessage entityDeletes = 5;
 }
 
@@ -44,7 +44,7 @@ message PropertyValueMessage {
   optional int32 propertyIndex = 1;
   
   // exactly one of the following fields must be provided:
-  optional bool isNull = 2;
+  optional bool nullValue = 2;
   optional int64 intValue = 3;
   optional float floatValue = 4;
   optional double doubleValue = 5;

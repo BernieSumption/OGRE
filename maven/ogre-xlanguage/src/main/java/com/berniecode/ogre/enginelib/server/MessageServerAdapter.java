@@ -9,5 +9,5 @@ import com.berniecode.ogre.enginelib.shared.GraphUpdate;
  */
 public interface MessageServerAdapter {
 	
-	void publishUpdateMessage(GraphUpdate message);
+	void publishGraphUpdate(GraphUpdate update);
 }

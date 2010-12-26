@@ -8,6 +8,8 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  * A single object in an {@link ObjectGraph}, uniquely identified by a tuple of its entity type and
  * ID.
  * 
+ * TODO Document here the rules for values, including before and after entity references are connected
+ * 
  * @author Bernie Sumption
  */
 public class Entity implements EntityReference, EntityUpdate {

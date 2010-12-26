@@ -10,8 +10,8 @@ import com.berniecode.ogre.enginelib.shared.EntityDelete;
 import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.GraphUpdate;
+import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
  * A ClientEngineTest configures and executes the replication of a single object graph. It is the
@@ -20,7 +20,7 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
  * 
  * @author Bernie Sumption
  */
-public class ClientEngine implements UpdateMessageListener {
+public class ClientEngine implements GraphUpdateListener {
 
 	private DownloadClientAdapter downloadAdapter;
 	private String typeDomainId;
@@ -89,7 +89,7 @@ public class ClientEngine implements UpdateMessageListener {
 		entities = new EntityStore(typeDomain, false);
 		initialised = true;
 		
-		acceptUpdateMessage(downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId));
+		acceptGraphUpdate(downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId));
 		
 //		GraphUpdate objectGraph = downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId);
 //		Entity[] initialValues = objectGraph.getEntities();
@@ -97,7 +97,7 @@ public class ClientEngine implements UpdateMessageListener {
 //			entities.put(initialValues[i]);
 //		}
 		
-		messageAdapter.subscribeToUpdateMessages(typeDomainId, objectGraphId, this);
+		messageAdapter.subscribeToGraphUpdates(typeDomainId, objectGraphId, this);
 		
 	}
 
@@ -131,26 +131,26 @@ public class ClientEngine implements UpdateMessageListener {
 	/**
 	 * @private
 	 */
-	public void acceptUpdateMessage(GraphUpdate message) {
-		requireInitialised(true, "acceptUpdateMessage()");
+	public void acceptGraphUpdate(GraphUpdate update) {
+		requireInitialised(true, "acceptGraphUpdate()");
 		
-		// validate the update message
-		Entity[] completeEntities = message.getEntities();
+		// validate the graph update
+		Entity[] completeEntities = update.getEntities();
 		for (int i = 0; i < completeEntities.length; i++) {
 			completeEntities[i].connectEntityReferences(entities, completeEntities);
 		}
 		
-		//TODO perform validation on the update message:
+		//TODO perform validation on the graph update:
 		// 1. check that the untyped Object[] values array is of the correct type
 		// 2. check that the typeDomain is the same as our typeDomain
 		
-		OgreLog.info("ClientEngine: accepted update message " + message);
+		OgreLog.info("ClientEngine: accepted graph update " + update);
 		if (OgreLog.isDebugEnabled()) {
-			OgreLog.debug(EDRDescriber.describeUpdateMessage(typeDomain, message));
+			OgreLog.debug(EDRDescriber.describeGraphUpdate(typeDomain, update));
 		}
 		mergeCompleteEntities(completeEntities);
-		mergeEntityDiffs(message.getEntityDiffs());
-		mergeEntityDeletes(message.getEntityDeletes());
+		mergeEntityDiffs(update.getEntityDiffs());
+		mergeEntityDeletes(update.getEntityDeletes());
 	}
 
 	/**

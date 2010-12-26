@@ -103,7 +103,7 @@ public class EDRDescriber {
 	}
 	
 	//
-	// DESCRIBE UPDATE MESSAGES
+	// DESCRIBE GRAPH UPDATES
 	//
 
 	
@@ -113,29 +113,29 @@ public class EDRDescriber {
 		return sc.buildString();
 	}
 	
-	public static String describeUpdateMessage(TypeDomain typeDomain, GraphUpdate updateMessage) {
+	public static String describeGraphUpdate(TypeDomain typeDomain, GraphUpdate graphUpdate) {
 		StringConcatenator sc = new StringConcatenator();
-		doDescribeUpdateMessage(typeDomain, updateMessage, sc, 0);
+		doDescribeGraphUpdate(typeDomain, graphUpdate, sc, 0);
 		return sc.buildString();
 	}
 	
-	private static void doDescribeUpdateMessage(TypeDomain typeDomain, GraphUpdate updateMessage, StringConcatenator sc, int indent) {
+	private static void doDescribeGraphUpdate(TypeDomain typeDomain, GraphUpdate graphUpdate, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("GraphUpdate for object graph ")
-		  .add(updateMessage.getTypeDomainId())
+		  .add(graphUpdate.getTypeDomainId())
 		  .add("/")
-		  .add(updateMessage.getObjectGraphId());
-		if (updateMessage.getEntities().length > 0) {
+		  .add(graphUpdate.getObjectGraphId());
+		if (graphUpdate.getEntities().length > 0) {
 			sc.add("\ncomplete values:");
-			doDescribeEntityUpdates(typeDomain, updateMessage.getEntities(), sc, indent + 1);
+			doDescribeEntityUpdates(typeDomain, graphUpdate.getEntities(), sc, indent + 1);
 		}
-		if (updateMessage.getEntityDiffs().length > 0) {
+		if (graphUpdate.getEntityDiffs().length > 0) {
 			sc.add("\npartial values:");
-			doDescribeEntityUpdates(typeDomain, updateMessage.getEntityDiffs(), sc, indent + 1);
+			doDescribeEntityUpdates(typeDomain, graphUpdate.getEntityDiffs(), sc, indent + 1);
 		}
-		if (updateMessage.getEntityDeletes().length > 0) {
+		if (graphUpdate.getEntityDeletes().length > 0) {
 			sc.add("\ndeleted entities:");
-			doDescribeEntityDeletes(typeDomain, updateMessage.getEntityDeletes(), sc, indent + 1);
+			doDescribeEntityDeletes(typeDomain, graphUpdate.getEntityDeletes(), sc, indent + 1);
 		}
 	}
 

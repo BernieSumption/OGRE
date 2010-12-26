@@ -251,32 +251,6 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		integerTypes.put(byte.class, 8);
 		integerTypes.put(Byte.class, 8);
 	}
-//	private final Map<Class<?>, PropertyType> classToPropertyType;
-//	
-//	{
-//		classToPropertyType = new HashMap<Class<?>, PropertyType>();
-//		registerClassMapping(long.class,    new IntegerPropertyType(64, false));
-//		registerClassMapping(Long.class,    new IntegerPropertyType(64, true));
-//		registerClassMapping(int.class,     new IntegerPropertyType(32, false));
-//		registerClassMapping(Integer.class, new IntegerPropertyType(32, true));
-//		registerClassMapping(short.class,   new IntegerPropertyType(16, false));
-//		registerClassMapping(Short.class,   new IntegerPropertyType(16, true));
-//		registerClassMapping(byte.class,    new IntegerPropertyType(8, false));
-//		registerClassMapping(Byte.class,    new IntegerPropertyType(8, true));
-//		registerClassMapping(String.class,  new StringPropertyType());
-//		registerClassMapping(float.class,   new FloatPropertyType(32, false));
-//		registerClassMapping(Float.class,   new FloatPropertyType(32, true));
-//		registerClassMapping(double.class,  new FloatPropertyType(64, false));
-//		registerClassMapping(Double.class,  new FloatPropertyType(64, true));
-//		registerClassMapping(byte[].class,  new BytesPropertyType());
-//	}
-
-//	/**
-//	 * Register a mapping from a Java method return type to an OGRE {@link PropertyType}
-//	 */
-//	protected void registerClassMapping(Class<?> klass, PropertyType propertyType) {
-//		classToPropertyType.put(klass, propertyType);
-//	}
 	
 	//
 	// OBJECT GRAPH MAPPING

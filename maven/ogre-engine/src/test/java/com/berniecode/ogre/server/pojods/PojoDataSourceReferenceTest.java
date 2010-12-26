@@ -5,20 +5,20 @@ import com.berniecode.ogre.HasIdMapper;
 import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
+import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
 
 public class PojoDataSourceReferenceTest extends OgreTestCase {
 	
-	private GraphUpdate lastUpdateMessage;
+	private GraphUpdate lastGraphUpdate;
 
 	public void testCircularReferences() throws Exception {
 		
 		PojoDataSource dataSource = createInitialisedDataSource(new HasIdMapper(), A.class, B.class);
 		
-		dataSource.setUpdateMessageListener(new UpdateMessageListener() {
+		dataSource.setGraphUpdateListener(new GraphUpdateListener() {
 			@Override
-			public void acceptUpdateMessage(GraphUpdate message) {
-				lastUpdateMessage = message;
+			public void acceptGraphUpdate(GraphUpdate update) {
+				lastGraphUpdate = update;
 			}
 		});
 		
@@ -65,7 +65,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		a2.setB(b3);
 		dataSource.setEntityObjects(a1);
 		
-		assertUpdateMessageState(
+		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for B#3" +
@@ -75,7 +75,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 				"      b=3" +
 				"  deleted entities:" +
 				"    EntityDelete for B#1",
-				lastUpdateMessage, dataSource.getTypeDomain());
+				lastGraphUpdate, dataSource.getTypeDomain());
 		
 		
 		// change back again - expect thrashing
@@ -83,7 +83,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		a2.setB(b1);
 		dataSource.setEntityObjects(a1);
 		
-		assertUpdateMessageState(
+		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for B#1" +
@@ -93,40 +93,40 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 				"      b=1" +
 				"  deleted entities:" +
 				"    EntityDelete for B#3",
-				lastUpdateMessage, dataSource.getTypeDomain());
+				lastGraphUpdate, dataSource.getTypeDomain());
 
 		// add all b's as root nodes - expect no thrashing
 
 		dataSource.setEntityObjects(a1, b1, b2, b3);
 		
 		
-		assertUpdateMessageState(
+		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for B#3" +
 				"      a=2",
-				lastUpdateMessage, dataSource.getTypeDomain());
+				lastGraphUpdate, dataSource.getTypeDomain());
 		
 		
 		a2.setB(b3);
 		dataSource.setEntityObjects(a1, b1, b2, b3);
 		
-		assertUpdateMessageState(
+		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
 				"    EntityUpdate for A#2" +
 				"      b=3",
-				lastUpdateMessage, dataSource.getTypeDomain());
+				lastGraphUpdate, dataSource.getTypeDomain());
 		
 		a2.setB(b1);
 		dataSource.setEntityObjects(a1, b1, b2, b3);
 		
-		assertUpdateMessageState(
+		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
 				"    EntityUpdate for A#2" +
 				"      b=1",
-				lastUpdateMessage, dataSource.getTypeDomain());
+				lastGraphUpdate, dataSource.getTypeDomain());
 	}
 	
 	public void testMethodsReturningSubtypesAreNotMappedAsSupertype() {

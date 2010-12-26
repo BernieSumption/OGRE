@@ -16,8 +16,8 @@ import com.berniecode.ogre.enginelib.shared.EntityDelete;
 import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityStore;
 import com.berniecode.ogre.enginelib.shared.GraphUpdate;
+import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
  * A {@link DataSource} that extracts a {@link TypeDomain} from a set of java classes and an
@@ -43,7 +43,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	private EDRMapper edrMapper;
 	private String objectGraphId;
-	private UpdateMessageListener updateMessageListener;
+	private GraphUpdateListener graphUpdateListener;
 
 
 	private TypeDomain typeDomain;
@@ -106,8 +106,8 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	@Override
-	public void setUpdateMessageListener(UpdateMessageListener listener) {
-		updateMessageListener = listener;
+	public void setGraphUpdateListener(GraphUpdateListener listener) {
+		graphUpdateListener = listener;
 	}
 	
 	//
@@ -192,10 +192,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 			}
 		}
 		
-		sendUpdateMessage(completeEntities, entityDiffs, entityDeletes);
+		sendGraphUpdate(completeEntities, entityDiffs, entityDeletes);
 	}
 
-	private void sendUpdateMessage(
+	private void sendGraphUpdate(
 			List<Entity> newEntities,
 			List<EntityDiff> entityDiffs,
 			List<EntityDelete> entityDeletes) {
@@ -204,18 +204,18 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 			return;
 		}
 		
-		if (updateMessageListener != null) {
-			GraphUpdate message = new GraphUpdate(
+		if (graphUpdateListener != null) {
+			GraphUpdate update = new GraphUpdate(
 					typeDomain.getTypeDomainId(),
 					objectGraphId,
 					newEntities.toArray(new Entity[0]),
 					entityDiffs.toArray(new EntityDiff[0]),
 					entityDeletes.toArray(new EntityDelete[0]));
 			if (OgreLog.isDebugEnabled()) {
-				OgreLog.debug("PojoDataSource: broadcasting new update message:\n"
-						+ EDRDescriber.describeUpdateMessage(typeDomain, message));
+				OgreLog.debug("PojoDataSource: broadcasting new graph update:\n"
+						+ EDRDescriber.describeGraphUpdate(typeDomain, update));
 			}
-			updateMessageListener.acceptUpdateMessage(message);
+			graphUpdateListener.acceptGraphUpdate(update);
 		}
 	}
 

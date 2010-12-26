@@ -950,12 +950,12 @@ final class V1TypeDomain {
     public boolean hasPropertyType() { return hasPropertyType; }
     public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type getPropertyType() { return propertyType_; }
     
-    // required bool isNullable = 3;
-    public static final int ISNULLABLE_FIELD_NUMBER = 3;
-    private boolean hasIsNullable;
-    private boolean isNullable_ = false;
-    public boolean hasIsNullable() { return hasIsNullable; }
-    public boolean getIsNullable() { return isNullable_; }
+    // required bool nullable = 3;
+    public static final int NULLABLE_FIELD_NUMBER = 3;
+    private boolean hasNullable;
+    private boolean nullable_ = false;
+    public boolean hasNullable() { return hasNullable; }
+    public boolean getNullable() { return nullable_; }
     
     // optional .ogre.PropertyMessage.BitLength bitLength = 4;
     public static final int BITLENGTH_FIELD_NUMBER = 4;
@@ -978,7 +978,7 @@ final class V1TypeDomain {
     public final boolean isInitialized() {
       if (!hasName) return false;
       if (!hasPropertyType) return false;
-      if (!hasIsNullable) return false;
+      if (!hasNullable) return false;
       return true;
     }
     
@@ -991,8 +991,8 @@ final class V1TypeDomain {
       if (hasPropertyType()) {
         output.writeEnum(2, getPropertyType().getNumber());
       }
-      if (hasIsNullable()) {
-        output.writeBool(3, getIsNullable());
+      if (hasNullable()) {
+        output.writeBool(3, getNullable());
       }
       if (hasBitLength()) {
         output.writeEnum(4, getBitLength().getNumber());
@@ -1017,9 +1017,9 @@ final class V1TypeDomain {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, getPropertyType().getNumber());
       }
-      if (hasIsNullable()) {
+      if (hasNullable()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, getIsNullable());
+          .computeBoolSize(3, getNullable());
       }
       if (hasBitLength()) {
         size += com.google.protobuf.CodedOutputStream
@@ -1193,8 +1193,8 @@ final class V1TypeDomain {
         if (other.hasPropertyType()) {
           setPropertyType(other.getPropertyType());
         }
-        if (other.hasIsNullable()) {
-          setIsNullable(other.getIsNullable());
+        if (other.hasNullable()) {
+          setNullable(other.getNullable());
         }
         if (other.hasBitLength()) {
           setBitLength(other.getBitLength());
@@ -1242,7 +1242,7 @@ final class V1TypeDomain {
               break;
             }
             case 24: {
-              setIsNullable(input.readBool());
+              setNullable(input.readBool());
               break;
             }
             case 32: {
@@ -1306,21 +1306,21 @@ final class V1TypeDomain {
         return this;
       }
       
-      // required bool isNullable = 3;
-      public boolean hasIsNullable() {
-        return result.hasIsNullable();
+      // required bool nullable = 3;
+      public boolean hasNullable() {
+        return result.hasNullable();
       }
-      public boolean getIsNullable() {
-        return result.getIsNullable();
+      public boolean getNullable() {
+        return result.getNullable();
       }
-      public Builder setIsNullable(boolean value) {
-        result.hasIsNullable = true;
-        result.isNullable_ = value;
+      public Builder setNullable(boolean value) {
+        result.hasNullable = true;
+        result.nullable_ = value;
         return this;
       }
-      public Builder clearIsNullable() {
-        result.hasIsNullable = false;
-        result.isNullable_ = false;
+      public Builder clearNullable() {
+        result.hasNullable = false;
+        result.nullable_ = false;
         return this;
       }
       
@@ -1403,16 +1403,16 @@ final class V1TypeDomain {
       "omainMessage\022\024\n\014typeDomainId\030\001 \002(\t\022,\n\013en" +
       "tityTypes\030\002 \003(\0132\027.ogre.EntityTypeMessage" +
       "\"L\n\021EntityTypeMessage\022\014\n\004name\030\001 \002(\t\022)\n\np" +
-      "roperties\030\002 \003(\0132\025.ogre.PropertyMessage\"\277" +
+      "roperties\030\002 \003(\0132\025.ogre.PropertyMessage\"\275" +
       "\002\n\017PropertyMessage\022\014\n\004name\030\001 \002(\t\0220\n\014prop" +
       "ertyType\030\002 \002(\0162\032.ogre.PropertyMessage.Ty" +
-      "pe\022\022\n\nisNullable\030\003 \002(\010\0222\n\tbitLength\030\004 \001(" +
-      "\0162\037.ogre.PropertyMessage.BitLength\022\032\n\022re" +
-      "ferenceTypeIndex\030\005 \001(\r\":\n\tBitLength\022\t\n\005I",
-      "NT_8\020\010\022\n\n\006INT_16\020\020\022\n\n\006INT_32\020 \022\n\n\006INT_64" +
-      "\020@\"L\n\004Type\022\007\n\003INT\020\000\022\t\n\005FLOAT\020\001\022\n\n\006DOUBLE" +
-      "\020\002\022\n\n\006STRING\020\003\022\t\n\005BYTES\020\004\022\r\n\tREFERENCE\020\005" +
-      "B \n\036com.berniecode.ogre.wireformat"
+      "pe\022\020\n\010nullable\030\003 \002(\010\0222\n\tbitLength\030\004 \001(\0162" +
+      "\037.ogre.PropertyMessage.BitLength\022\032\n\022refe" +
+      "renceTypeIndex\030\005 \001(\r\":\n\tBitLength\022\t\n\005INT",
+      "_8\020\010\022\n\n\006INT_16\020\020\022\n\n\006INT_32\020 \022\n\n\006INT_64\020@" +
+      "\"L\n\004Type\022\007\n\003INT\020\000\022\t\n\005FLOAT\020\001\022\n\n\006DOUBLE\020\002" +
+      "\022\n\n\006STRING\020\003\022\t\n\005BYTES\020\004\022\r\n\tREFERENCE\020\005B " +
+      "\n\036com.berniecode.ogre.wireformat"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1440,7 +1440,7 @@ final class V1TypeDomain {
           internal_static_ogre_PropertyMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogre_PropertyMessage_descriptor,
-              new java.lang.String[] { "Name", "PropertyType", "IsNullable", "BitLength", "ReferenceTypeIndex", },
+              new java.lang.String[] { "Name", "PropertyType", "Nullable", "BitLength", "ReferenceTypeIndex", },
               com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.class,
               com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder.class);
           return null;

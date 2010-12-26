@@ -1,9 +1,15 @@
 package com.berniecode.ogre.wireformat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.berniecode.ogre.EDRDeserialiser;
 import com.berniecode.ogre.EDRSerialiser;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
+import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.shared.EntityDelete;
+import com.berniecode.ogre.enginelib.shared.EntityDiff;
 import com.berniecode.ogre.enginelib.shared.EntityType;
 import com.berniecode.ogre.enginelib.shared.EntityUpdate;
 import com.berniecode.ogre.enginelib.shared.GraphUpdate;
@@ -11,6 +17,7 @@ import com.berniecode.ogre.enginelib.shared.IntegerProperty;
 import com.berniecode.ogre.enginelib.shared.Property;
 import com.berniecode.ogre.enginelib.shared.ReferenceProperty;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.GraphUpdateMessage;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage;
@@ -49,7 +56,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 				OgreLog.debug("Deserialised TypeDomainMessage: " + tdm);
 			}
 		} catch (InvalidProtocolBufferException e) {
-			throw new OgreException("The byte array is not a valid Protocol Buffers message", e);
+			throw new OgreException("The supplied byte array is not a valid Protocol Buffers message", e);
 		}
 		return new TypeDomain(tdm.getTypeDomainId(), convertEntityTypes(tdm));
 	}
@@ -83,7 +90,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		Type propertyType = pm.getPropertyType();
 		String name = pm.getName();
 		if (propertyType == Type.INT) {
-			return new IntegerProperty(index, name, pm.getBitLength().getNumber(), pm.getIsNullable());
+			return new IntegerProperty(index, name, pm.getBitLength().getNumber(), pm.getNullable());
 		}
 		if (propertyType == Type.REFERENCE) {
 			if (!pm.hasReferenceTypeIndex()) {
@@ -91,7 +98,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 			}
 			return new ReferenceProperty(index, name, entityTypeNames[pm.getReferenceTypeIndex()]);
 		}
-		return new Property(index, name, propertyType.getNumber(), pm.getIsNullable());
+		return new Property(index, name, propertyType.getNumber(), pm.getNullable());
 	}
 
 	/**
@@ -109,7 +116,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 				PropertyMessage.Builder pBuilder = PropertyMessage.newBuilder()
 					.setName(property.getName())
 					.setPropertyType(Type.valueOf(property.getTypeCode()))
-					.setIsNullable(property.isNullable());
+					.setNullable(property.isNullable());
 				if (property instanceof IntegerProperty) {
 					pBuilder.setBitLength(BitLength.valueOf(((IntegerProperty) property).getBitLength()));
 				}
@@ -135,9 +142,13 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 			guBuilder.addEntities(getEntityValueMessage(entity, false));
 		}
 		for (EntityUpdate entity : graphUpdate.getEntityDiffs()) {
-			guBuilder.addEntities(getEntityValueMessage(entity, true));
+			guBuilder.addEntityDiffs(getEntityValueMessage(entity, true));
 		}
-		//TODO: do entity deletes here
+		for (EntityDelete delete : graphUpdate.getEntityDeletes()) {
+			guBuilder.addEntityDeletes(EntityDeleteMessage.newBuilder()
+					.setEntityTypeIndex(delete.getEntityType().getEntityTypeIndex())
+					.setEntityId(delete.getEntityId()));
+		}
 		return guBuilder.build().toByteArray();
 	}
 
@@ -159,8 +170,9 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 					pvBuilder.setPropertyIndex(property.getPropertyIndex());
 				}
 				if (value == null) {
-					pvBuilder.setIsNull(true);
+					pvBuilder.setNullValue(true);
 				} else {
+					//TODO move this into DefaultEDRMapper - all ints should be longs
 					switch(property.getTypeCode()) {
 					case Property.TYPECODE_INT:
 						pvBuilder.setIntValue(numberToLong(value));
@@ -203,20 +215,134 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		return (Long) number;
 	}
 
-
-
-//	// INT Property objects can be cast to IntegerProperty to access more information
-//    public static final int TYPECODE_INT       = 0;
-//    public static final int TYPECODE_FLOAT     = 1;
-//    public static final int TYPECODE_DOUBLE    = 2;
-//    public static final int TYPECODE_STRING    = 3;
-//    public static final int TYPECODE_BYTES     = 4;
-//	// REFERENCE Property objects can be cast to ReferenceProperty to access more information
-//    public static final int TYPECODE_REFERENCE = 5;
 	@Override
-	public GraphUpdate deserialiseGraphUpdate(byte[] message) {
-		// TODO validate rules specified in V1GraphUpdate.proto
-		return null;
+	public GraphUpdate deserialiseGraphUpdate(byte[] message, TypeDomain typeDomain) {
+		GraphUpdateMessage gum;
+		try {
+			gum = GraphUpdateMessage.parseFrom(message);
+			if (OgreLog.isDebugEnabled()) {
+				OgreLog.debug("Deserialised GraphUpdateMessage: " + gum);
+			}
+		} catch (InvalidProtocolBufferException e) {
+			throw new OgreException("The supplied byte array is not a valid Protocol Buffers message", e);
+		}
+		return new GraphUpdate(
+				gum.getTypeDomainId(),
+				gum.getObjectGraphId(),
+				getEntities(gum, typeDomain),
+				getEntityDiffs(gum, typeDomain),
+				getEntityDeletes(gum, typeDomain));
+	}
+
+	private Entity[] getEntities(GraphUpdateMessage gum, TypeDomain typeDomain) {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (EntityValueMessage evm: gum.getEntitiesList()) {
+			EntityType entityType = typeDomain.getEntityType(evm.getEntityTypeIndex());
+			entities.add(new Entity(
+					entityType,
+					evm.getEntityId(),
+					getEntityValues(evm, entityType, false)));
+		}
+		return entities.toArray(new Entity[0]);
+	}
+
+	private Object[] getEntityValues(EntityValueMessage evm, EntityType entityType, boolean diffStyle) {
+		if (!diffStyle && evm.getPropertyValuesCount() != entityType.getPropertyCount()) {
+			throw new OgreException("Invalid graph update: complete-style EntityValueMessages must " +
+					"have the same number of properties as the corresponding EntityType. " + entityType +
+					" has " + entityType.getPropertyCount() + ", the message has " + evm.getPropertyValuesCount());
+		}
+		Object[] values = new Object[entityType.getPropertyCount()];
+		for (int i = 0; i < evm.getPropertyValuesCount(); i++) {
+			PropertyValueMessage pvm = evm.getPropertyValues(i);
+
+			int propertyIndex;			
+			if (diffStyle) {
+				if (!pvm.hasPropertyIndex()) {
+					throw new OgreException("Invalid graph update: diff-style PropertyValueMessage has no propertyIndex");
+				}
+				propertyIndex = pvm.getPropertyIndex();
+			} else {
+				if (pvm.hasPropertyIndex()) {
+					throw new OgreException("Invalid graph update: complete-style PropertyValueMessage should not have a propertyIndex");
+				}
+				propertyIndex = i;
+			}
+			Property property = entityType.getProperty(propertyIndex);
+
+			
+			int expectedFieldCount = diffStyle ? 2 : 1; // diff-style EntityValueMessages have both propertyIndex and value
+			if (pvm.getAllFields().size() != expectedFieldCount) {
+				throw new OgreException("Invalid graph update: PropertyValueMessage must have exactly one value. " +
+						"This message for " + entityType.getName() + "." + property.getName() + " has " + 
+						pvm.getAllFields().size() + " fields");
+			}
+			
+			Object value;
+			if (pvm.hasNullValue()) {
+				value = null;
+				if (!property.isNullable()) {
+					throw new OgreException("Invalid graph update: the property " + entityType.getName() + "." + property.getName() + " doesn't allow null values.");
+				}
+			} else {
+				switch (property.getTypeCode()) {
+				case Property.TYPECODE_INT:
+					value = pvm.getIntValue();
+					break;
+				case Property.TYPECODE_FLOAT:
+					value = pvm.getFloatValue();
+					break;
+				case Property.TYPECODE_DOUBLE:
+					value = pvm.getDoubleValue();
+					break;
+				case Property.TYPECODE_STRING:
+					value = pvm.getStringValue();
+					break;
+				case Property.TYPECODE_BYTES:
+					value = pvm.getBytesValue().toByteArray();
+					break;
+				case Property.TYPECODE_REFERENCE:
+					value = pvm.getIdValue();
+					break;
+				default:
+					value = null;
+				}
+				if (value == null) {
+					throw new OgreException("Invalid graph update: the property " + entityType.getName() + "." + property.getName() + " doesn't have the right type of value.");
+				}
+			}
+			values[propertyIndex] = value;
+		}
+		return values;
+	}
+
+	private EntityDiff[] getEntityDiffs(GraphUpdateMessage gum, TypeDomain typeDomain) {
+		List<EntityDiff> diffs = new ArrayList<EntityDiff>();
+		for (EntityValueMessage evm: gum.getEntityDiffsList()) {
+			EntityType entityType = typeDomain.getEntityType(evm.getEntityTypeIndex());
+			Object[] entityValues = getEntityValues(evm, entityType, true);
+			boolean[] changed = new boolean[entityType.getPropertyCount()];
+			for (PropertyValueMessage pvm: evm.getPropertyValuesList()) {
+				changed[pvm.getPropertyIndex()] = true;
+			}
+			diffs.add(new EntityDiff(
+					entityType,
+					evm.getEntityId(),
+					entityValues,
+					changed));
+		}
+		return diffs.toArray(new EntityDiff[0]);
+	}
+
+	private EntityDelete[] getEntityDeletes(GraphUpdateMessage gum, TypeDomain typeDomain) {
+		EntityDelete[] deletes = new EntityDelete[gum.getEntityDeletesCount()];
+		for (int i = 0; i < deletes.length; i++) {
+			EntityDeleteMessage entityDelete = gum.getEntityDeletes(i);
+			deletes[i] = new EntityDelete(
+					typeDomain.getEntityType(entityDelete.getEntityTypeIndex()),
+					entityDelete.getEntityId());
+		}
+		return deletes;
 	}
 
 }

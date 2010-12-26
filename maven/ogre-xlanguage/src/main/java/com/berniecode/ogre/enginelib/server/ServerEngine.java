@@ -5,8 +5,8 @@ import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.StringMap;
 import com.berniecode.ogre.enginelib.shared.GraphUpdate;
+import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
-import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
 
 /**
  * A {@link ServerEngine} contains a number of object graphs
@@ -16,7 +16,7 @@ import com.berniecode.ogre.enginelib.shared.UpdateMessageListener;
  * 
  * @author Bernie Sumption
  */
-public class ServerEngine implements UpdateMessageListener {
+public class ServerEngine implements GraphUpdateListener {
 
 	private DataSource[] dataSources;
 	private MessageServerAdapter messageAdapter;
@@ -51,7 +51,7 @@ public class ServerEngine implements UpdateMessageListener {
 	}
 
 	/**
-	 * Provide a {@link MessageServerAdapter} to send update messages to clients
+	 * Provide a {@link MessageServerAdapter} to send graph updates to clients
 	 * 
 	 * <p>Must be called before {@link #initialise()}
 	 */
@@ -80,7 +80,7 @@ public class ServerEngine implements UpdateMessageListener {
 						"') but the TypeDomain objects returned from DataSource.getTypeDomain() are different.");
 			}
 			typeDomains.put(tdId, typeDomain);
-			dataSource.setUpdateMessageListener(this);
+			dataSource.setGraphUpdateListener(this);
 		}
 	}
 	
@@ -141,8 +141,8 @@ public class ServerEngine implements UpdateMessageListener {
 	/**
 	 * @private
 	 */
-	public void acceptUpdateMessage(GraphUpdate message) {
-		messageAdapter.publishUpdateMessage(message);
+	public void acceptGraphUpdate(GraphUpdate update) {
+		messageAdapter.publishGraphUpdate(update);
 	}
 
 }
