@@ -11,10 +11,12 @@ public class ReferenceProperty extends Property {
 
 	private EntityType referenceType;
 	private final String referenceTypeName;
+	private final String toStringCache;
 
 	public ReferenceProperty(int propertyIndex, String name, String referenceTypeName) {
 		super(propertyIndex, name, TYPECODE_REFERENCE, true);
 		this.referenceTypeName = referenceTypeName;
+		toStringCache = "reference to " + referenceTypeName + " property " + getName();
 	}
 
 	public EntityType getReferenceType() {
@@ -22,7 +24,7 @@ public class ReferenceProperty extends Property {
 	}
 	
 	public String toString() {
-		return "reference to " + referenceTypeName + " property " + getName();
+		return toStringCache;
 	}
 
 

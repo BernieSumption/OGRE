@@ -9,14 +9,14 @@ package com.berniecode.ogre.enginelib.shared;
  */
 public class GraphUpdate {
 
-	private final String typeDomainId;
+	private final TypeDomain typeDomain;
 	private final String objectGraphId;
 	private final Entity[] entities;
 	private final EntityDiff[] entityDiffs;
 	private final EntityDelete[] entityDeletes;
 
-	public GraphUpdate(String typeDomainId, String objectGraphId, Entity[] entities, EntityDiff[] entityDiffs, EntityDelete[] entityDeletes) {
-		this.typeDomainId = typeDomainId;
+	public GraphUpdate(TypeDomain typeDomain, String objectGraphId, Entity[] entities, EntityDiff[] entityDiffs, EntityDelete[] entityDeletes) {
+		this.typeDomain = typeDomain;
 		this.objectGraphId = objectGraphId;
 		this.entities = entities == null ? new Entity[0] : entities;
 		this.entityDiffs = entityDiffs == null ? new EntityDiff[0] : entityDiffs;
@@ -27,8 +27,8 @@ public class GraphUpdate {
 	 * Together with {@link #getObjectGraphId()}, identifies the object graph that this message
 	 * should be applied to
 	 */
-	public String getTypeDomainId() {
-		return typeDomainId;
+	public TypeDomain getTypeDomain() {
+		return typeDomain;
 	}
 
 	/**

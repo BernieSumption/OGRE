@@ -139,7 +139,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 			"TypeDomain TypeDomain" +
 			"  0. EntityType I1" +
 			"  1. EntityType I2" +
-			"       string property property",
+			"       nullable string property property",
 			dataSource.getTypeDomain());
 		
 

@@ -40,23 +40,23 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		assertTypeDomainState(
 				"TypeDomain TypeDomain" +
 				"  0. EntityType EntityClassWithAllFields" +
-				"       byte-array property bytes" +
+				"       nullable byte-array property bytes" +
 				"       reference to EntityElement property entity_element" +
 				"       8 bit integer property non_nullable_byte" +
-				"       64 bit float property non_nullable_double" +
-				"       32 bit float property non_nullable_float" +
+				"       double property non_nullable_double" +
+				"       float property non_nullable_float" +
 				"       32 bit integer property non_nullable_int" +
 				"       64 bit integer property non_nullable_long" +
 				"       16 bit integer property non_nullable_short" +
 				"       nullable 8 bit integer property nullable_byte" +
-				"       nullable 64 bit float property nullable_double" +
-				"       nullable 32 bit float property nullable_float" +
+				"       nullable double property nullable_double" +
+				"       nullable float property nullable_float" +
 				"       nullable 32 bit integer property nullable_int" +
 				"       nullable 64 bit integer property nullable_long" +
 				"       nullable 16 bit integer property nullable_short" +
-				"       string property string" +
+				"       nullable string property string" +
 				"  1. EntityType EntityElement" +
-				"       string property name",
+				"       nullable string property name",
 				clientEngine.getTypeDomain());
 
 	}
@@ -124,7 +124,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity EntityClassWithAllFields#1" +
 			"    bytes=11,12,13" +
-			"    entity_element=#1" +
+			"    entity_element=EntityElement#1" +
 			"    non_nullable_byte=1" +
 			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
@@ -153,7 +153,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"  complete values:" +
 				"    EntityUpdate for EntityClassWithAllFields#2" +
 				"      bytes=4,5,6" +
-				"      entity_element=EntityElement#2" +
+				"      entity_element=2" + // raw ID value as Entities are unwired in GraphUpdates
 				"      non_nullable_byte=11" +
 				"      non_nullable_double=21.0" +
 				"      non_nullable_float=19.0" +
@@ -175,7 +175,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity EntityClassWithAllFields#1" +
 			"    bytes=11,12,13" +
-			"    entity_element=#1" +
+			"    entity_element=EntityElement#1" +
 			"    non_nullable_byte=1" +
 			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
@@ -191,7 +191,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"    string=Fizzle" +
 			"  Entity EntityClassWithAllFields#2" +
 			"    bytes=4,5,6" +
-			"    entity_element=#2" +
+			"    entity_element=EntityElement#2" +
 			"    non_nullable_byte=11" +
 			"    non_nullable_double=21.0" +
 			"    non_nullable_float=19.0" +
@@ -226,7 +226,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity EntityClassWithAllFields#2" +
 			"    bytes=4,5,6" +
-			"    entity_element=#2" +
+			"    entity_element=EntityElement#2" +
 			"    non_nullable_byte=11" +
 			"    non_nullable_double=21.0" +
 			"    non_nullable_float=19.0" +

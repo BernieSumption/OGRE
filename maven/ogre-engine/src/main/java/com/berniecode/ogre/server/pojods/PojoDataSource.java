@@ -102,7 +102,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	public GraphUpdate createSnapshot() {
 		Entity[] messages = entities.getEntities();
 		Arrays.sort(messages, new EntityComparator());
-		return new GraphUpdate(typeDomain.getTypeDomainId(), objectGraphId, messages, null, null);
+		return new GraphUpdate(typeDomain, objectGraphId, messages, null, null);
 	}
 
 	@Override
@@ -206,7 +206,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		
 		if (graphUpdateListener != null) {
 			GraphUpdate update = new GraphUpdate(
-					typeDomain.getTypeDomainId(),
+					typeDomain,
 					objectGraphId,
 					newEntities.toArray(new Entity[0]),
 					entityDiffs.toArray(new EntityDiff[0]),

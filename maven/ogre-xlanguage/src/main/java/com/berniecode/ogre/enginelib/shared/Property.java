@@ -25,16 +25,19 @@ public class Property {
 	private final int propertyIndex;
 	private final String name;
 	private final int typeCode;
-	private final boolean isNullable;
+	private final boolean nullable;
 
-	public Property(int propertyIndex, String name, int typeCode, boolean isNullable) {
+	private final String toStringCache;
+
+	public Property(int propertyIndex, String name, int typeCode, boolean nullable) {
 		if (typeCode < 0 || typeCode >= TYPECODE_NAMES.length) {
 			throw new OgreException(typeCode + " is not a valid typecode.");
 		}
 		this.typeCode = typeCode;
 		this.propertyIndex = propertyIndex;
 		this.name = name;
-		this.isNullable = isNullable;
+		this.nullable = nullable;
+		toStringCache = (nullable ? "nullable " : "") + TYPECODE_NAMES[typeCode] + " property " + name;
 	}
 
 	/**
@@ -55,7 +58,7 @@ public class Property {
 	}
 	
 	public String toString() {
-		return TYPECODE_NAMES[typeCode] + " property " + name;
+		return toStringCache;
 	}
 
 	/**
@@ -67,6 +70,6 @@ public class Property {
 	}
 
 	public boolean isNullable() {
-		return isNullable;
+		return nullable;
 	}
 }

@@ -86,19 +86,19 @@ public class Entity implements EntityReference, EntityUpdate {
 		for (int i = 0; i < properties.length; i++) {
 			ReferenceProperty property = (ReferenceProperty) properties[i];
 			EntityType refType = property.getReferenceType();
-			long refId = ValueUtils.unboxLong((Long) values[i]);
+			long refId = ValueUtils.unboxLong((Long) values[property.getPropertyIndex()]);
 			Entity entity = store.get(refType, refId);
 			if (entity == null) {
 				for (int j = 0; j < array.length; j++) {
-					if (array[i].getEntityType() == refType && array[i].getEntityId() == refId) {
-						entity = array[i];
+					if (array[j].getEntityType() == refType && array[j].getEntityId() == refId) {
+						entity = array[j];
 					}
 				}
 			}
 			if (entity == null) {
 				throw new OgreException("Property '" + property + "' of entity type " + refType + " references non-existant entity " + refType + "#" + refId);
 			}
-			values[i] = entity;
+			values[property.getPropertyIndex()] = entity;
 		}
 	}
 }

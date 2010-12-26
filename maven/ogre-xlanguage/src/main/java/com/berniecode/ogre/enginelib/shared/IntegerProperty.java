@@ -8,12 +8,12 @@ package com.berniecode.ogre.enginelib.shared;
 public class IntegerProperty extends Property {
 
 	private final int bitLength;
-	private final boolean nullable;
+	private final String toStringCache;
 
 	public IntegerProperty(int propertyIndex, String name, int bitLength, boolean nullable) {
 		super(propertyIndex, name, TYPECODE_INT, nullable);
 		this.bitLength = bitLength;
-		this.nullable = nullable;
+		toStringCache = (nullable ? "nullable " : "") + bitLength + " bit integer property " + getName();
 	}
 
 	public int getBitLength() {
@@ -21,7 +21,7 @@ public class IntegerProperty extends Property {
 	}
 	
 	public String toString() {
-		return (nullable ? "nullable " : "") + bitLength + " bit integer property " + getName();
+		return toStringCache;
 	}
 
 }

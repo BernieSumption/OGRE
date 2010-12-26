@@ -60,7 +60,7 @@ public class PojoDataSourceBasicTypesTest extends OgreTestCase {
 		assertTypeDomainState(
 				"TypeDomain TypeDomain" +
 				"  0. EntityType EntityClassWithDateProperty" +
-				"       string property dummy",
+				"       nullable string property dummy",
 				dataSource.getTypeDomain());
 	}
 	

@@ -136,7 +136,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 	@Override
 	public byte[] serialiseGraphUpdate(GraphUpdate graphUpdate) {
 		GraphUpdateMessage.Builder guBuilder = GraphUpdateMessage.newBuilder()
-			.setTypeDomainId(graphUpdate.getTypeDomainId())
+			.setTypeDomainId(graphUpdate.getTypeDomain().getTypeDomainId())
 			.setObjectGraphId(graphUpdate.getObjectGraphId());
 		for (EntityUpdate entity : graphUpdate.getEntities()) {
 			guBuilder.addEntities(getEntityValueMessage(entity, false));
@@ -227,7 +227,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 			throw new OgreException("The supplied byte array is not a valid Protocol Buffers message", e);
 		}
 		return new GraphUpdate(
-				gum.getTypeDomainId(),
+				typeDomain,
 				gum.getObjectGraphId(),
 				getEntities(gum, typeDomain),
 				getEntityDiffs(gum, typeDomain),

@@ -6,6 +6,7 @@ import com.berniecode.ogre.enginelib.server.ServerEngine;
 import com.berniecode.ogre.enginelib.server.ServerEngineTest;
 import com.berniecode.ogre.enginelib.shared.GraphUpdate;
 import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
 /**
  * A {@link DownloadClientAdapter} that wraps a {@link ServerEngineTest}, directly transferring any
@@ -15,6 +16,8 @@ import com.berniecode.ogre.enginelib.shared.TypeDomain;
  * @author Bernie Sumption
  */
 public class InProcessDownloadBridge implements DownloadClientAdapter {
+	
+	OgreWireFormatV1Serialiser ser = new OgreWireFormatV1Serialiser();
 
 	private final ServerEngine server;
 
@@ -24,12 +27,15 @@ public class InProcessDownloadBridge implements DownloadClientAdapter {
 
 	@Override
 	public TypeDomain loadTypeDomain(String typeDomainId) throws NoSuchThingException {
-		return server.getTypeDomain(typeDomainId);
+		//TODO factor the byte[] stage out into RawDownloadClientAdapter
+		return ser.deserialiseTypeDomain(ser.serialiseTypeDomain(server.getTypeDomain(typeDomainId)));
 	}
 
 	@Override
-	public GraphUpdate loadObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException {
-		return server.getObjectGraph(typeDomainId, objectGraphId);
+	public GraphUpdate loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException {
+		GraphUpdate objectGraph = server.getObjectGraph(typeDomain.getTypeDomainId(), objectGraphId);
+		//TODO factor the byte[] stage out into RawDownloadClientAdapter
+		return ser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(objectGraph), typeDomain);
 	}
 
 }

@@ -52,7 +52,7 @@ public class ClientEngineTest extends OgreTestCase {
 		entityType1 = new EntityType(0, "entityType1", new Property[] {});
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0, entityType1 });
 		
-		initialValueUpdate = new GraphUpdate(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID, null, null, null);
+		initialValueUpdate = new GraphUpdate(typeDomain, OBJECT_GRAPH_ID, null, null, null);
 	}
 
 	public void testInitialiseWithoutDependencies() throws NoSuchThingException {
@@ -178,7 +178,7 @@ public class ClientEngineTest extends OgreTestCase {
 				diffMessages.add((EntityDiff) update);
 			}
 		}
-		return new GraphUpdate(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID,
+		return new GraphUpdate(typeDomain, OBJECT_GRAPH_ID,
 				valueMessages.toArray(new Entity[0]),
 				diffMessages.toArray(new EntityDiff[0]),
 				deleteMessages.toArray(new EntityDelete[0]));
@@ -195,10 +195,10 @@ public class ClientEngineTest extends OgreTestCase {
 		    oneOf (downloadClientAdapter).loadTypeDomain(TYPE_DOMAIN_ID);
 		    will(returnValue(typeDomain));
 		    
-		    oneOf (downloadClientAdapter).loadObjectGraph(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID);
+		    oneOf (downloadClientAdapter).loadObjectGraph(typeDomain, OBJECT_GRAPH_ID);
 		    will(returnValue(initialValueUpdate));
 		    
-		    oneOf (messageClientAdapter).subscribeToGraphUpdates(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID, ce);
+		    oneOf (messageClientAdapter).subscribeToGraphUpdates(typeDomain, OBJECT_GRAPH_ID, ce);
 		}});
 		return ce;
 	}

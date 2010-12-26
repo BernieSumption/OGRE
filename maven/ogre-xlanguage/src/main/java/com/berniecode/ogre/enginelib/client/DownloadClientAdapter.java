@@ -19,5 +19,5 @@ public interface DownloadClientAdapter {
 	/**
 	 * Load a snapshot of the state of an object graph 
 	 */
-	GraphUpdate loadObjectGraph(String typeDomainId, String objectGraphId) throws NoSuchThingException;
+	GraphUpdate loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException;
 }

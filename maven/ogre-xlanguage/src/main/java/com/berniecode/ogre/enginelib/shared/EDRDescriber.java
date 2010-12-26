@@ -61,7 +61,7 @@ public class EDRDescriber {
 	private static void doDescribeObjectGraph(TypeDomain typeDomain, GraphUpdate objectGraph, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("ObjectGraph ")
-		  .add(objectGraph.getTypeDomainId())
+		  .add(objectGraph.getTypeDomain().getTypeDomainId())
 		  .add("/")
 		  .add(objectGraph.getObjectGraphId());
 		Entity[] entities = objectGraph.getEntities();
@@ -122,7 +122,7 @@ public class EDRDescriber {
 	private static void doDescribeGraphUpdate(TypeDomain typeDomain, GraphUpdate graphUpdate, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("GraphUpdate for object graph ")
-		  .add(graphUpdate.getTypeDomainId())
+		  .add(graphUpdate.getTypeDomain().getTypeDomainId())
 		  .add("/")
 		  .add(graphUpdate.getObjectGraphId());
 		if (graphUpdate.getEntities().length > 0) {

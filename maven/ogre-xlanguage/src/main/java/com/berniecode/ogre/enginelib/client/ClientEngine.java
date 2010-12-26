@@ -89,15 +89,9 @@ public class ClientEngine implements GraphUpdateListener {
 		entities = new EntityStore(typeDomain, false);
 		initialised = true;
 		
-		acceptGraphUpdate(downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId));
+		acceptGraphUpdate(downloadAdapter.loadObjectGraph(typeDomain, objectGraphId));
 		
-//		GraphUpdate objectGraph = downloadAdapter.loadObjectGraph(typeDomainId, objectGraphId);
-//		Entity[] initialValues = objectGraph.getEntities();
-//		for (int i=0; i<initialValues.length; i++) {
-//			entities.put(initialValues[i]);
-//		}
-		
-		messageAdapter.subscribeToGraphUpdates(typeDomainId, objectGraphId, this);
+		messageAdapter.subscribeToGraphUpdates(typeDomain, objectGraphId, this);
 		
 	}
 
@@ -215,6 +209,6 @@ public class ClientEngine implements GraphUpdateListener {
 	 */
 	public GraphUpdate createSnapshot() {
 		requireInitialised(true, "createSnapshot()");
-		return new GraphUpdate(typeDomain.getTypeDomainId(), objectGraphId, entities.getEntities(), null, null);
+		return new GraphUpdate(typeDomain, objectGraphId, entities.getEntities(), null, null);
 	}
 }
