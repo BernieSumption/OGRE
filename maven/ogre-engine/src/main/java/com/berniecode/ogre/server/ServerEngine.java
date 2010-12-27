@@ -1,12 +1,14 @@
 package com.berniecode.ogre.server;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
-import com.berniecode.ogre.enginelib.platformhooks.StringMap;
 import com.berniecode.ogre.enginelib.server.ServerEngineTest;
 
 /**
@@ -25,7 +27,7 @@ public class ServerEngine implements GraphUpdateListener {
 	private boolean initialised = false;
 	
 	// A map of type domain id to TypeDomain object
-	private StringMap typeDomains = new StringMap();
+	private Map<String, TypeDomain> typeDomains = new HashMap<String, TypeDomain>();
 	
 	//
 	// INITIALISATION
@@ -76,7 +78,7 @@ public class ServerEngine implements GraphUpdateListener {
 			DataSource dataSource = dataSources[i];
 			TypeDomain typeDomain = dataSource.getTypeDomain();
 			String tdId = typeDomain.getTypeDomainId();
-			if (typeDomains.contains(tdId) && typeDomains.get(tdId) != typeDomain) {
+			if (typeDomains.containsKey(tdId) && typeDomains.get(tdId) != typeDomain) {
 				throw new OgreException("Two DataSource objects provide the same type domain id ('"+ tdId +
 						"') but the TypeDomain objects returned from DataSource.getTypeDomain() are different.");
 			}
@@ -97,8 +99,8 @@ public class ServerEngine implements GraphUpdateListener {
 	 */
 	public TypeDomain getTypeDomain(String typeDomainId) throws NoSuchThingException {
 		requireInitialised(true, "getTypeDomainById()");
-		if (typeDomains.contains(typeDomainId)) {
-			return (TypeDomain) typeDomains.get(typeDomainId);
+		if (typeDomains.containsKey(typeDomainId)) {
+			return typeDomains.get(typeDomainId);
 		}
 		throw new NoSuchThingException("This ServerEngineTest has no type domain with ID '" + typeDomainId + "'");
 	}
@@ -142,6 +144,7 @@ public class ServerEngine implements GraphUpdateListener {
 	/**
 	 * @private
 	 */
+	@Override
 	public void acceptGraphUpdate(GraphUpdate update) {
 		messageAdapter.publishGraphUpdate(update);
 	}

@@ -3,17 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.berniecode.ogre</groupId>
-  <artifactId>ogre</artifactId>
+  <artifactId>ogre-testsuitegen</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
-  <name>Object Graph Replication Engine master project</name>
-  
-  <modules>
-    <module>ogre-xlanguage</module>
-    <module>ogre-engine</module>
-    <module>ogre-testsuitegen</module>
-  </modules>
+  <name>OGRE test suite generation application</name>
   
   <build>
     <pluginManagement>
@@ -30,4 +24,11 @@
     </pluginManagement>
   </build>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.berniecode.ogre</groupId>
+      <artifactId>ogre-engine</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 </project>
