@@ -1,9 +1,9 @@
 package com.berniecode.ogre;
 
+import com.berniecode.ogre.enginelib.ClientEngine;
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.client.ClientEngine;
-import com.berniecode.ogre.enginelib.server.ServerEngine;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.TypeDomain;
+import com.berniecode.ogre.server.ServerEngine;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
 

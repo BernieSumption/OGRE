@@ -1,7 +1,5 @@
-package com.berniecode.ogre.enginelib.client;
+package com.berniecode.ogre.enginelib;
 
-import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
  * Receives messages from a publish/subscribe messaging channel

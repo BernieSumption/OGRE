@@ -5,18 +5,18 @@ import java.util.List;
 
 import com.berniecode.ogre.EDRDeserialiser;
 import com.berniecode.ogre.EDRSerialiser;
+import com.berniecode.ogre.enginelib.Entity;
+import com.berniecode.ogre.enginelib.EntityDelete;
+import com.berniecode.ogre.enginelib.EntityDiff;
+import com.berniecode.ogre.enginelib.EntityType;
+import com.berniecode.ogre.enginelib.EntityUpdate;
+import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.IntegerProperty;
 import com.berniecode.ogre.enginelib.OgreLog;
+import com.berniecode.ogre.enginelib.Property;
+import com.berniecode.ogre.enginelib.ReferenceProperty;
+import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
-import com.berniecode.ogre.enginelib.shared.Entity;
-import com.berniecode.ogre.enginelib.shared.EntityDelete;
-import com.berniecode.ogre.enginelib.shared.EntityDiff;
-import com.berniecode.ogre.enginelib.shared.EntityType;
-import com.berniecode.ogre.enginelib.shared.EntityUpdate;
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.IntegerProperty;
-import com.berniecode.ogre.enginelib.shared.Property;
-import com.berniecode.ogre.enginelib.shared.ReferenceProperty;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.GraphUpdateMessage;
@@ -172,7 +172,6 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 				if (value == null) {
 					pvBuilder.setNullValue(true);
 				} else {
-					//TODO move this into DefaultEDRMapper - all ints should be longs
 					switch(property.getTypeCode()) {
 					case Property.TYPECODE_INT:
 						pvBuilder.setIntValue(numberToLong(value));

@@ -1,6 +1,6 @@
-package com.berniecode.ogre.enginelib.server;
+package com.berniecode.ogre.server;
 
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
+import com.berniecode.ogre.enginelib.GraphUpdate;
 
 /**
  * Publishes {@link GraphUpdate}s onto a publish/subscribe messaging channel

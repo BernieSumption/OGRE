@@ -1,9 +1,9 @@
 package com.berniecode.ogre;
 
+import com.berniecode.ogre.enginelib.ClientEngine;
+import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.client.ClientEngine;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.shared.EDRDescriber;
 
 /**
  * Tests of the OGRE system in its most common configuration running from the server data source

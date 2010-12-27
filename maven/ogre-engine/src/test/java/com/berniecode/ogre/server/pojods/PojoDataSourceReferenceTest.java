@@ -3,9 +3,9 @@ package com.berniecode.ogre.server.pojods;
 import com.berniecode.ogre.AbstractHasId;
 import com.berniecode.ogre.HasIdMapper;
 import com.berniecode.ogre.OgreTestCase;
+import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
 
 public class PojoDataSourceReferenceTest extends OgreTestCase {
 	

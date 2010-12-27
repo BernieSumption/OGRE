@@ -1,17 +1,8 @@
-package com.berniecode.ogre.enginelib.client;
+package com.berniecode.ogre.enginelib;
 
-import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
-import com.berniecode.ogre.enginelib.shared.EDRDescriber;
-import com.berniecode.ogre.enginelib.shared.Entity;
-import com.berniecode.ogre.enginelib.shared.EntityDelete;
-import com.berniecode.ogre.enginelib.shared.EntityDiff;
-import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
  * A ClientEngineTest configures and executes the replication of a single object graph. It is the
@@ -131,12 +122,8 @@ public class ClientEngine implements GraphUpdateListener {
 		// validate the graph update
 		Entity[] completeEntities = update.getEntities();
 		for (int i = 0; i < completeEntities.length; i++) {
-			completeEntities[i].connectEntityReferences(entities, completeEntities);
+			completeEntities[i].wireEntityReferences(entities, completeEntities);
 		}
-		
-		//TODO perform validation on the graph update:
-		// 1. check that the untyped Object[] values array is of the correct type
-		// 2. check that the typeDomain is the same as our typeDomain
 		
 		OgreLog.info("ClientEngine: accepted graph update " + update);
 		if (OgreLog.isDebugEnabled()) {

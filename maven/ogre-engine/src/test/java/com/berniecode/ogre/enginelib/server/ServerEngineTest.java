@@ -3,6 +3,9 @@ package com.berniecode.ogre.enginelib.server;
 import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
+import com.berniecode.ogre.server.DataSource;
+import com.berniecode.ogre.server.MessageServerAdapter;
+import com.berniecode.ogre.server.ServerEngine;
 
 /**
  * A ServerEngineTest provides access to any number of object graphs belonging to any number of type

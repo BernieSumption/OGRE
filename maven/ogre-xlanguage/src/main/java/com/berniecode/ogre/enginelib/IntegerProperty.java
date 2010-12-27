@@ -1,4 +1,4 @@
-package com.berniecode.ogre.enginelib.shared;
+package com.berniecode.ogre.enginelib;
 
 /**
  * An integer {@link Property}, containing metadata on the size of the integer and whether it is nullable

@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
+import com.berniecode.ogre.enginelib.EDRDescriber;
+import com.berniecode.ogre.enginelib.Entity;
+import com.berniecode.ogre.enginelib.EntityDelete;
+import com.berniecode.ogre.enginelib.EntityDiff;
+import com.berniecode.ogre.enginelib.EntityStore;
+import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.server.DataSource;
-import com.berniecode.ogre.enginelib.shared.EDRDescriber;
-import com.berniecode.ogre.enginelib.shared.Entity;
-import com.berniecode.ogre.enginelib.shared.EntityDelete;
-import com.berniecode.ogre.enginelib.shared.EntityDiff;
-import com.berniecode.ogre.enginelib.shared.EntityStore;
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.TypeDomain;
+import com.berniecode.ogre.server.DataSource;
 
 /**
  * A {@link DataSource} that extracts a {@link TypeDomain} from a set of java classes and an

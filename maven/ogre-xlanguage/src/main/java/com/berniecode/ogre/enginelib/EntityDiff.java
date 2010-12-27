@@ -1,4 +1,4 @@
-package com.berniecode.ogre.enginelib.shared;
+package com.berniecode.ogre.enginelib;
 
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;

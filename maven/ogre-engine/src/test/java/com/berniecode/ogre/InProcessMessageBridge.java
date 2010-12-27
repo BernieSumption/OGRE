@@ -3,11 +3,11 @@ package com.berniecode.ogre;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.berniecode.ogre.enginelib.client.MessageClientAdapter;
-import com.berniecode.ogre.enginelib.server.MessageServerAdapter;
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.GraphUpdateListener;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.GraphUpdateListener;
+import com.berniecode.ogre.enginelib.MessageClientAdapter;
+import com.berniecode.ogre.enginelib.TypeDomain;
+import com.berniecode.ogre.server.MessageServerAdapter;
 import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
 public class InProcessMessageBridge implements MessageServerAdapter, MessageClientAdapter {
@@ -26,7 +26,6 @@ public class InProcessMessageBridge implements MessageServerAdapter, MessageClie
 		String key = getKey(update.getTypeDomain(), update.getObjectGraphId());
 		for (ListenerHolder holder: holders) {
 			if (holder.key.equals(key)) {
-				//TODO factor the byte[] stage out into RawMessage*Adapter
 				holder.listener.acceptGraphUpdate(ser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(update), holder.typeDomain));
 			}
 		}

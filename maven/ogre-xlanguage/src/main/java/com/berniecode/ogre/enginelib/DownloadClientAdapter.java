@@ -1,8 +1,6 @@
-package com.berniecode.ogre.enginelib.client;
+package com.berniecode.ogre.enginelib;
 
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
  * A blocking request/response mechanism to fetch snapshots and type domains from an OGRE server.

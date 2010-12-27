@@ -1,23 +1,36 @@
-package com.berniecode.ogre.enginelib.shared;
+package com.berniecode.ogre.enginelib;
 
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
-
 
 /**
  * A single object in an {@link ObjectGraph}, uniquely identified by a tuple of its entity type and
  * ID.
  * 
- * TODO Document here the rules for values, including before and after entity references are connected
+ * <p>
+ * Entities can exist in two states: <em>wired</em> and <em>unwired</em>. When the Entity is first
+ * created it is constructed, it has numerical values for its reference properties, so calling
+ * <code>entity.getPropertyValue(someReferenceProperty)</code> will return the ID of the entity
+ * referenced by the property value.
+ * 
+ * <p>
+ * When the Entity is imported into ClientEngine, it is converted into a wired entity by calling
+ * {@link #wireEntityReferences(EntityStore, Entity[])}. This replaces the integer ids with actual
+ * references to Entities.
  * 
  * @author Bernie Sumption
  */
 public class Entity implements EntityReference, EntityUpdate {
+	
+	private boolean isWired = false;
 
 	private final EntityType entityType;
 	private final long id;
 	private final Object[] values;
 	
+	/**
+	 * Create an unwired Entity
+	 */
 	public Entity(EntityType entityType, long id, Object[] values) {
 		this.entityType = entityType;
 		this.id = id;
@@ -81,7 +94,11 @@ public class Entity implements EntityReference, EntityUpdate {
 	 * 
 	 * @private
 	 */
-	public void connectEntityReferences(EntityStore store, Entity[] array) {
+	void wireEntityReferences(EntityStore store, Entity[] array) {
+		if (isWired) {
+			throw new OgreException("wireEntityReferences() has already been called on " + this);
+		}
+		isWired = true;
 		Property[] properties = entityType.getReferenceProperties();
 		for (int i = 0; i < properties.length; i++) {
 			ReferenceProperty property = (ReferenceProperty) properties[i];

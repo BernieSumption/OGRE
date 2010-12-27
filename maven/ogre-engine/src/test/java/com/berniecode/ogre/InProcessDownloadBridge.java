@@ -1,11 +1,11 @@
 package com.berniecode.ogre;
 
-import com.berniecode.ogre.enginelib.client.DownloadClientAdapter;
+import com.berniecode.ogre.enginelib.DownloadClientAdapter;
+import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.server.ServerEngine;
 import com.berniecode.ogre.enginelib.server.ServerEngineTest;
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.server.ServerEngine;
 import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
 /**
@@ -27,14 +27,12 @@ public class InProcessDownloadBridge implements DownloadClientAdapter {
 
 	@Override
 	public TypeDomain loadTypeDomain(String typeDomainId) throws NoSuchThingException {
-		//TODO factor the byte[] stage out into RawDownloadClientAdapter
 		return ser.deserialiseTypeDomain(ser.serialiseTypeDomain(server.getTypeDomain(typeDomainId)));
 	}
 
 	@Override
 	public GraphUpdate loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException {
 		GraphUpdate objectGraph = server.getObjectGraph(typeDomain.getTypeDomainId(), objectGraphId);
-		//TODO factor the byte[] stage out into RawDownloadClientAdapter
 		return ser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(objectGraph), typeDomain);
 	}
 

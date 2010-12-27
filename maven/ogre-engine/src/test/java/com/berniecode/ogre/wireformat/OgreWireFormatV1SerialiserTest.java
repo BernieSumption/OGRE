@@ -3,9 +3,9 @@ package com.berniecode.ogre.wireformat;
 import com.berniecode.ogre.EntityClassWithAllFields;
 import com.berniecode.ogre.EntityClassWithAllFieldsTestCase;
 import com.berniecode.ogre.EntityElement;
-import com.berniecode.ogre.enginelib.shared.EDRDescriber;
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.EDRDescriber;
+import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.TypeDomain;
 
 public class OgreWireFormatV1SerialiserTest extends EntityClassWithAllFieldsTestCase {
 

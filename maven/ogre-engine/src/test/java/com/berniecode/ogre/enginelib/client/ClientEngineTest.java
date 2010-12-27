@@ -6,20 +6,23 @@ import java.util.List;
 import org.jmock.Expectations;
 
 import com.berniecode.ogre.OgreTestCase;
+import com.berniecode.ogre.enginelib.ClientEngine;
+import com.berniecode.ogre.enginelib.DownloadClientAdapter;
+import com.berniecode.ogre.enginelib.Entity;
+import com.berniecode.ogre.enginelib.EntityDelete;
+import com.berniecode.ogre.enginelib.EntityDiff;
+import com.berniecode.ogre.enginelib.EntityReference;
+import com.berniecode.ogre.enginelib.EntityType;
+import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.IntegerProperty;
+import com.berniecode.ogre.enginelib.MessageClientAdapter;
 import com.berniecode.ogre.enginelib.OgreLog;
+import com.berniecode.ogre.enginelib.Property;
+import com.berniecode.ogre.enginelib.ReferenceProperty;
+import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
-import com.berniecode.ogre.enginelib.shared.Entity;
-import com.berniecode.ogre.enginelib.shared.EntityDelete;
-import com.berniecode.ogre.enginelib.shared.EntityDiff;
-import com.berniecode.ogre.enginelib.shared.EntityReference;
-import com.berniecode.ogre.enginelib.shared.EntityType;
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.IntegerProperty;
-import com.berniecode.ogre.enginelib.shared.Property;
-import com.berniecode.ogre.enginelib.shared.ReferenceProperty;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
 
 /**
  * A ClientEngineTest configures and executes the replication of a single object graph. It is the

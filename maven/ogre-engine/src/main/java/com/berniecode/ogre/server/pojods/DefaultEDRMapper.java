@@ -12,13 +12,13 @@ import java.util.WeakHashMap;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
+import com.berniecode.ogre.enginelib.Entity;
+import com.berniecode.ogre.enginelib.EntityType;
+import com.berniecode.ogre.enginelib.IntegerProperty;
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.shared.Entity;
-import com.berniecode.ogre.enginelib.shared.EntityType;
-import com.berniecode.ogre.enginelib.shared.IntegerProperty;
-import com.berniecode.ogre.enginelib.shared.Property;
-import com.berniecode.ogre.enginelib.shared.ReferenceProperty;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.Property;
+import com.berniecode.ogre.enginelib.ReferenceProperty;
+import com.berniecode.ogre.enginelib.TypeDomain;
 
 /**
  * A {@link EDRMapper} that automatically converts from classes and objects to OGRE's Entity
@@ -53,6 +53,9 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	// INITIALISATION
 	//
 	
+	/**
+	 * Construct a uninitialised {@link DefaultEDRMapper}.
+	 */
 	public DefaultEDRMapper() {}
 	
 	/**
@@ -60,7 +63,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 * of classes
 	 */
 	public DefaultEDRMapper(String typeDomainId, Class<?> ... classes) {
-		this.typeDomainId = typeDomainId;
+		setTypeDomainId(typeDomainId);
 		setClasses(classes);
 		initialise();
 	}

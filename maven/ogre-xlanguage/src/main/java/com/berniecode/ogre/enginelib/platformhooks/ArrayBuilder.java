@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.Entity;
 
 /**
  * A utility for building typed arrays

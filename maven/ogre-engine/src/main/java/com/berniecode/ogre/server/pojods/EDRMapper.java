@@ -3,9 +3,9 @@ package com.berniecode.ogre.server.pojods;
 
 import java.util.List;
 
-import com.berniecode.ogre.enginelib.shared.Entity;
-import com.berniecode.ogre.enginelib.shared.EntityType;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.Entity;
+import com.berniecode.ogre.enginelib.EntityType;
+import com.berniecode.ogre.enginelib.TypeDomain;
 
 /**
  * Maps a set of classes to a TypeDomain

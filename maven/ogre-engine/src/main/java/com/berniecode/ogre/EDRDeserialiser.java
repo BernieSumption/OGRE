@@ -1,7 +1,7 @@
 package com.berniecode.ogre;
 
-import com.berniecode.ogre.enginelib.shared.GraphUpdate;
-import com.berniecode.ogre.enginelib.shared.TypeDomain;
+import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.TypeDomain;
 
 public interface EDRDeserialiser {
 

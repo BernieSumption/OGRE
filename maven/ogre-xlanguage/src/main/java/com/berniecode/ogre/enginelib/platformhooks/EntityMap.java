@@ -3,7 +3,7 @@ package com.berniecode.ogre.enginelib.platformhooks;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.berniecode.ogre.enginelib.shared.Entity;
+import com.berniecode.ogre.enginelib.Entity;
 
 /**
  * A collection of {@link Entity}s of a single entity type, indexed by ID for quick access

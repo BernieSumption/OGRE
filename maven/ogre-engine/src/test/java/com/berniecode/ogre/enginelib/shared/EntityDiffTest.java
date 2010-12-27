@@ -1,6 +1,12 @@
 package com.berniecode.ogre.enginelib.shared;
 
 import com.berniecode.ogre.OgreTestCase;
+import com.berniecode.ogre.enginelib.Entity;
+import com.berniecode.ogre.enginelib.EntityDiff;
+import com.berniecode.ogre.enginelib.EntityType;
+import com.berniecode.ogre.enginelib.IntegerProperty;
+import com.berniecode.ogre.enginelib.Property;
+import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
 /**
