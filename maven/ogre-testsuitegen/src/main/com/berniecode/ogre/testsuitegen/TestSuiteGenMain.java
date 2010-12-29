@@ -1,10 +1,11 @@
 package com.berniecode.ogre.testsuitegen;
 
 import java.io.File;
+import java.io.IOException;
 
 public class TestSuiteGenMain {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		if (args.length == 1 && "--help".equals(args[0])) {
 			System.err.println("Generates a number of test suites in a specified directory.");
 			printHelpAndExit();
@@ -13,17 +14,24 @@ public class TestSuiteGenMain {
 			System.err.println("Incorrect number of arguments - 3 expected, " + args.length + " received");
 			printHelpAndExit();
 		}
+		int from = 0, to = 0;
 		try {
-			int from = Integer.parseInt(args[0]), to = Integer.parseInt(args[1]);
-			File outputFolder = new File(args[2]);
-			if (!outputFolder.isDirectory()) {
-				System.err.println(args[2] + " is not a folder");
+			from = Integer.parseInt(args[0]);
+			to = Integer.parseInt(args[1]);
+		} catch (NumberFormatException e) {
+			System.err.println("Error: " + e);
+			printHelpAndExit();
+		}
+		
+		File outputFolder = new File(args[2]);
+		if (!outputFolder.isDirectory()) {
+			if (!outputFolder.mkdirs()) {
+				System.err.println("Attempt to create folder " + args[2] + " failed.");
 				printHelpAndExit();
 			}
-			new TestSuiteGenerator().generateTestSuites(from, to, outputFolder);
-		} catch (Exception e) {
-			System.err.println("Error: " + e.getMessage());
-			printHelpAndExit();
+		}
+		for (int i = from; i <= to; i++) {
+			new TestSuiteGenerator(i, new File(outputFolder, String.valueOf(i))).generateTestSuite();
 		}
 	}
 
