@@ -72,4 +72,8 @@ public class Property {
 	public boolean isNullable() {
 		return nullable;
 	}
+	
+	public static String getNameForTypecode(int typeCode) {
+		return TYPECODE_NAMES[typeCode];
+	}
 }

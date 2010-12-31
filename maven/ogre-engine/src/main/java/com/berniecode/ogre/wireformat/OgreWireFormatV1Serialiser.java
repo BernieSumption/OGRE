@@ -172,27 +172,31 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 				if (value == null) {
 					pvBuilder.setNullValue(true);
 				} else {
-					switch(property.getTypeCode()) {
-					case Property.TYPECODE_INT:
-						pvBuilder.setIntValue(numberToLong(value));
-						break;
-					case Property.TYPECODE_FLOAT:
-						pvBuilder.setFloatValue((Float) value);
-						break;
-					case Property.TYPECODE_DOUBLE:
-						pvBuilder.setDoubleValue((Double) value);
-						break;
-					case Property.TYPECODE_STRING:
-						pvBuilder.setStringValue((String) value);
-						break;
-					case Property.TYPECODE_BYTES:
-						pvBuilder.setBytesValue(ByteString.copyFrom((byte[]) value));
-						break;
-					case Property.TYPECODE_REFERENCE:
-						pvBuilder.setIdValue((Long) value);
-						break;
-					default:
-						throw new OgreException(property + " has invalid invalid typeCode: " + property.getTypeCode());
+					try {
+						switch(property.getTypeCode()) {
+						case Property.TYPECODE_INT:
+							pvBuilder.setIntValue(numberToLong(value));
+							break;
+						case Property.TYPECODE_FLOAT:
+							pvBuilder.setFloatValue((Float) value);
+							break;
+						case Property.TYPECODE_DOUBLE:
+							pvBuilder.setDoubleValue((Double) value);
+							break;
+						case Property.TYPECODE_STRING:
+							pvBuilder.setStringValue((String) value);
+							break;
+						case Property.TYPECODE_BYTES:
+							pvBuilder.setBytesValue(ByteString.copyFrom((byte[]) value));
+							break;
+						case Property.TYPECODE_REFERENCE:
+							pvBuilder.setIdValue((Long) value);
+							break;
+						default:
+							throw new OgreException(property + " has invalid invalid typeCode: " + property.getTypeCode());
+						}
+					} catch (ClassCastException e) {
+						throw new OgreException("Incorrect value for " + entityType + "/" + property, e);
 					}
 				}
 				evBuilder.addPropertyValues(pvBuilder);
