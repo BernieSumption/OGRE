@@ -62,11 +62,26 @@ public class Entity implements EntityReference, EntityUpdate {
 		return entityType + "#" + id;
 	}
 
-	public Object[] copyValues() {
+	public boolean hasUpdatedValue(Property property) {
+		return true;
+	}
+	
+	//
+	// OGRE INTERNAL API
+	//
+
+
+	/**
+	 * @return an array of values for this {@link Entity}. The returned array is safe to modify.
+	 */
+	Object[] copyValues() {
 		return ValueUtils.cloneArray(values);
 	}
 
-	public void update(EntityUpdate update) {
+	/**
+	 * Modify this {@link Entity} with data from an {@link EntityUpdate} instance
+	 */
+	void update(EntityUpdate update) {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
 			if (update.hasUpdatedValue(property)) {
@@ -75,8 +90,14 @@ public class Entity implements EntityReference, EntityUpdate {
 		}
 	}
 
-	public boolean hasUpdatedValue(Property property) {
-		return true;
+	/**
+	 * Modify this {@link Entity} with data from an array. Each position in the array will be
+	 * interpreted as a propertyIndex
+	 */
+	void updateFromArray(Object[] update) {
+		for (int i = 0; i < update.length; i++) {
+			values[i] = update[i];
+		}
 	}
 
 	/**

@@ -76,10 +76,13 @@ public class EntityType {
 		return typeDomain;
 	}
 
+	/**
+	 * @private
+	 */
 	void setTypeDomain(TypeDomain typeDomain) {
 		this.typeDomain = typeDomain;
-		for (int i = 0; i < referenceProperties.length; i++) {
-			((ReferenceProperty) referenceProperties[i]).setTypeDomain(typeDomain);
+		for (int i = 0; i < properties.length; i++) {
+			properties[i].setEntityType(this);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.berniecode.ogre.testsuitegen;
+package com.berniecode.ogre.enginelib;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,8 +30,10 @@ public class TestSuiteGenMain {
 				printHelpAndExit();
 			}
 		}
+		System.err.println("Generating suites " + from + " to " + to);
 		for (int i = from; i <= to; i++) {
 			new TestSuiteGenerator(i, new File(outputFolder, String.valueOf(i))).generateTestSuite();
+			System.err.println("Generating suite " + i);
 		}
 	}
 

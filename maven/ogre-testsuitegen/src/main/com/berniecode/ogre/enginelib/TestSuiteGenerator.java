@@ -1,4 +1,4 @@
-package com.berniecode.ogre.testsuitegen;
+package com.berniecode.ogre.enginelib;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,21 +8,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import com.berniecode.ogre.EDRSerialiser;
-import com.berniecode.ogre.enginelib.EDRDescriber;
-import com.berniecode.ogre.enginelib.Entity;
-import com.berniecode.ogre.enginelib.EntityStore;
-import com.berniecode.ogre.enginelib.EntityType;
-import com.berniecode.ogre.enginelib.GraphUpdate;
-import com.berniecode.ogre.enginelib.IntegerProperty;
-import com.berniecode.ogre.enginelib.Property;
-import com.berniecode.ogre.enginelib.ReferenceProperty;
-import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
@@ -35,10 +28,17 @@ public class TestSuiteGenerator {
 	private static final Integer[] ALL_INTEGER_BITLENGTHS = new Integer[] {8, 16, 32, 64};
 	private static final Boolean[] TRUE_OR_FALSE = new Boolean[] {true, false};
 
+
+	private static final int MIN_CHANGE_ITERATIONS = 0;
+	private static final int MAX_CHANGE_ITERATIONS = 500;
+
+	private static final int MIN_ENTITIES_TO_CHANGE_PER_ITERATION = 0;
+	private static final int MAX_ENTITIES_TO_CHANGE_PER_ITERATION = 500;
+
+	private static final int MAX_ENTITIES_TO_DELETE_PER_ITERATION = 20;
 	
-	private static final int MIN_RANDOM_STRING_LENGTH = 1;
+	private static final int MIN_RANDOM_STRING_LENGTH = 0;
 	private static final int MAX_RANDOM_STRING_LENGTH = 500;
-	private static final String RANDOM_STRING_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_1234567890";
 
 	private static final int MIN_ENTITY_TYPES_PER_TYPE_DOMAIN = 0;
 	private static final int MAX_ENTITY_TYPES_PER_TYPE_DOMAIN = 50;
@@ -52,14 +52,15 @@ public class TestSuiteGenerator {
 	private static boolean OVERWRITE_TEST_SUITES = true;
 	
 	
-	EDRSerialiser serialiser = new OgreWireFormatV1Serialiser();
 
 	private final File outputFolder;
 	private final int suiteNumber;
+	private final EDRSerialiser serialiser = new OgreWireFormatV1Serialiser();
+
+	private Random random;
 	private BufferedWriter traceFileWriter;
 	private TypeDomain typeDomain;
 	private EntityStore entityStore;
-	private Random random;
 	private EntityType[] entityTypes;
 
 	public TestSuiteGenerator(int suiteNumber, File outputFolder) {
@@ -76,39 +77,94 @@ public class TestSuiteGenerator {
 			System.err.println("Failed to create folder " + outputFolder.getAbsolutePath());
 			return;
 		}
-
-		setFile(TRACE_FILE_NAME, "");
 		
-
 		try {
+		
+			random = new Random(suiteNumber);
+			setFile(TRACE_FILE_NAME, "");
 			traceFileWriter = new BufferedWriter(new FileWriter(new File(outputFolder, TRACE_FILE_NAME)));
 			
-			random = new Random(suiteNumber);
 			typeDomain = makeRandomTypeDomain(suiteNumber);
-			
 			setFile(TYPE_DOMAIN_MESSAGE_FILE_NAME, serialiser.serialiseTypeDomain(typeDomain));
 			traceLine("type domain", EDRDescriber.describeTypeDomain(typeDomain));
 			
-
 			
 			entityStore = createObjectGraph();
 			GraphUpdate initialData = new GraphUpdate(typeDomain, "object-graph-" + suiteNumber, entityStore.getEntities(), null, null);
 			setFile(INITIAL_DATA_MESSAGE_FILE_NAME, serialiser.serialiseGraphUpdate(initialData));
 			traceLine("initial data set", EDRDescriber.describeObjectGraph(typeDomain, initialData));
+			
+			int changeIterations = makeRandomNumberInclusive(MIN_CHANGE_ITERATIONS, MAX_CHANGE_ITERATIONS);
+			for (int i = 0; i < changeIterations; i++) {
+				doChangeIteration(i);
+			}
+		
 		}
 		finally {
 			if (traceFileWriter != null) {
 				traceFileWriter.close();
+				traceFileWriter = null;
 			}
 		}
 	}
 	
+	private void doChangeIteration(int iteration) {
+		Entity[] entities = entityStore.getEntities();
+		
+		// delete some entities (ensure we null references to them)
+		
+		for (int i: makeRandomIndices(entities.length, MAX_ENTITIES_TO_DELETE_PER_ITERATION)) {
+			
+		}
+			
+		
+		// decide what entities we're going to add
+		
+		// build a Map<EntityType, List<Integer>> of available references
+		
+		// add some new entities
+		
+		// odify existing entities
+		
+		int qtyToChange = makeRandomNumberInclusive(MIN_ENTITIES_TO_CHANGE_PER_ITERATION, Math.min(MAX_ENTITIES_TO_CHANGE_PER_ITERATION, entities.length));
+		List<Entity> entitiesToChange = Arrays.asList(entities);
+		Collections.shuffle(entitiesToChange, random);
+		entitiesToChange = entitiesToChange.subList(0, qtyToChange);
+		for (Entity entity : entitiesToChange) {
+			EntityType entityType = entity.getEntityType();
+			Object[] values = entity.copyValues();
+			for(int index: makeRandomIndices(entityType.getPropertyCount())) {
+				Map<EntityType, List<Long>> idMap = null;
+				values[index] = makeRandomPropertyValue(entityType.getProperty(index), idMap);
+			}
+		}
+	}
+
 	//
 	// TYPE DOMAIN GENERATION
 	//
 
+	/**
+	 * Pick a random set of indices from a list of the specified size 
+	 */
+	private List<Integer> makeRandomIndices(int size, int count) {
+		List<Integer> indices = new ArrayList<Integer>();
+		for (int i = 0; i < size; i++) {
+			indices.add(i);
+		}
+		Collections.shuffle(indices, random);
+		return indices.subList(0, makeRandomNumberInclusive(0, count));
+	}
+
+	/**
+	 * Pick a random set of indices from a list of the specified size 
+	 */
+	private List<Integer> makeRandomIndices(int size) {
+		return makeRandomIndices(size, size);
+	}
+
 	private TypeDomain makeRandomTypeDomain(int suiteNumber) {
-		return new TypeDomain("com.berniecode.ogre.testsuitegen." + suiteNumber, entityTypes = makeRandomEntityTypes());
+		return new TypeDomain("com.berniecode.ogre.enginelib." + suiteNumber, entityTypes = makeRandomEntityTypes());
 	}
 	
 	private EntityType[] makeRandomEntityTypes() {
@@ -149,30 +205,34 @@ public class TestSuiteGenerator {
 	//
 	
 	private EntityStore createObjectGraph() {
-		
-		int numEntities = makeRandomNumberInclusive(MIN_INITIAL_ENTITIES, MAX_INITIAL_ENTITIES);
-
-		// pre-calculate the types and IDs of all entities, because makeRandomEntity() needs to know them in advance
-		// in order to create random references to them
-		EntityType[] graphEntityTypes = new EntityType[numEntities];
-		long[] graphEntityIds = new long[numEntities];
-		Map<EntityType, List<Long>> idMap = new HashMap<EntityType, List<Long>>();
-		
-		for (int i = 0; i < graphEntityTypes.length; i++) {
-			EntityType entityType = makeRandomChoice(entityTypes);
-			long id = random.nextLong();
-			graphEntityTypes[i] = entityType;
-			graphEntityIds[i] = id;
-			if (!idMap.containsKey(entityType)) {
-				idMap.put(entityType, new ArrayList<Long>());
-			}
-			idMap.get(entityType).add(id);
-			
-		}
 
 		EntityStore store = new EntityStore(typeDomain, true);
-		for (int i = 0; i < graphEntityTypes.length; i++) {
-			store.put(makeRandomEntity(graphEntityTypes[i], graphEntityIds[i], idMap));
+		
+		if (entityTypes.length > 0) {
+		
+			int numEntities = makeRandomNumberInclusive(MIN_INITIAL_ENTITIES, MAX_INITIAL_ENTITIES);
+	
+			// pre-calculate the types and IDs of all entities, because makeRandomEntity() needs to know them in advance
+			// in order to create random references to them
+			EntityType[] graphEntityTypes = new EntityType[numEntities];
+			long[] graphEntityIds = new long[numEntities];
+			Map<EntityType, List<Long>> idMap = new HashMap<EntityType, List<Long>>();
+			
+			for (int i = 0; i < graphEntityTypes.length; i++) {
+				EntityType entityType = makeRandomChoice(entityTypes);
+				long id = random.nextLong();
+				graphEntityTypes[i] = entityType;
+				graphEntityIds[i] = id;
+				if (!idMap.containsKey(entityType)) {
+					idMap.put(entityType, new ArrayList<Long>());
+				}
+				idMap.get(entityType).add(id);
+				
+			}
+	
+			for (int i = 0; i < graphEntityTypes.length; i++) {
+				store.put(makeRandomEntity(graphEntityTypes[i], graphEntityIds[i], idMap));
+			}
 		}
 		
 		return store;

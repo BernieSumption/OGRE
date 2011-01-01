@@ -29,6 +29,8 @@ public class Property {
 
 	private final String toStringCache;
 
+	private EntityType entityType;
+
 	public Property(int propertyIndex, String name, int typeCode, boolean nullable) {
 		if (typeCode < 0 || typeCode >= TYPECODE_NAMES.length) {
 			throw new OgreException(typeCode + " is not a valid typecode.");
@@ -73,7 +75,22 @@ public class Property {
 		return nullable;
 	}
 	
+	/**
+	 * @return The {@link EntityType} that this {@link Property} belongs to
+	 */
+	public EntityType getEntityType() {
+		return entityType;
+	}
+	
+	/**
+	 * @private
+	 */
+	void setEntityType(EntityType entityType) {
+		this.entityType = entityType;
+	}
+	
 	public static String getNameForTypecode(int typeCode) {
 		return TYPECODE_NAMES[typeCode];
 	}
+	
 }

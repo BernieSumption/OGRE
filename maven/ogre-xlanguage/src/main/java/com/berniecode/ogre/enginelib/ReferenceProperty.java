@@ -27,9 +27,11 @@ public class ReferenceProperty extends Property {
 		return toStringCache;
 	}
 
-
-	void setTypeDomain(TypeDomain typeDomain) {
-		referenceType = typeDomain.getEntityTypeByName(referenceTypeName);
+	/**
+	 * @private
+	 */
+	void setEntityType(EntityType entityType) {
+		referenceType = entityType.getTypeDomain().getEntityTypeByName(referenceTypeName);
 		if (referenceType == null) {
 			throw new OgreException("Can't initialise property '" + this + "' because the type domain does not contain a type '" + referenceTypeName + "'");
 		}

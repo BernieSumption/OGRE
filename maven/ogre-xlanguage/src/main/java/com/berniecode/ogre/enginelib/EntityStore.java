@@ -47,14 +47,22 @@ public class EntityStore {
 
 	/**
 	 * @return a single {@link Entity} from this store with the same type and id as the specified
-	 *         entity, or null if there is no such {@link Entity} in the store
+	 *         {@link EntityReference}, or null if there is no such {@link Entity} in the store
 	 */
 	public Entity getSimilar(EntityReference reference) {
 		return get(reference.getEntityType(), reference.getEntityId());
 	}
 
 	/**
-	 * Remove an entity from this store
+	 * Remove an entity from this store. This method has no effect if no such entity exists.
+	 */
+	public void remove(EntityType entityType, long id) {
+		entityMaps[entityType.getEntityTypeIndex()].remove(id);
+	}
+
+	/**
+	 * Remove an entity from this store with the same type and id as the specified
+	 * {@link EntityReference}. This method has no effect if no such entity exists.
 	 */
 	public void removeSimilar(EntityReference reference) {
 		int entityTypeIndex = reference.getEntityType().getEntityTypeIndex();
