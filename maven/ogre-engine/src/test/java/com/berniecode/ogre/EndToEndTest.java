@@ -153,7 +153,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"  complete values:" +
 				"    EntityUpdate for EntityClassWithAllFields#2" +
 				"      bytes=4,5,6" +
-				"      entity_element=2" + // raw ID value as Entities are unwired in GraphUpdates
+				"      entity_element=EntityElement#2" +
 				"      non_nullable_byte=11" +
 				"      non_nullable_double=21.0" +
 				"      non_nullable_float=19.0" +
@@ -280,7 +280,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		dataSource.setEntityObjects(initialEntityObject);
 		if (msgBridge.getMessageCount() != 1) {
 			OgreLog.error("Graph updates incorrectly transmitted:\n" + 
-					EDRDescriber.describeGraphUpdate(typeDomain, msgBridge.getLastGraphUpdate()));
+					EDRDescriber.describeGraphUpdate(msgBridge.getLastGraphUpdate()));
 		}
 		assertEquals(1, msgBridge.getMessageCount());
 	}

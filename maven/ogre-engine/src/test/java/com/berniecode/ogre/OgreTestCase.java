@@ -67,7 +67,7 @@ public abstract class OgreTestCase extends TestCase {
 	protected void assertObjectGraphState(String expected, GraphUpdate objectGraph, TypeDomain typeDomain) {
 		EntityReferenceComparator comparator = new EntityReferenceComparator();
 		Arrays.sort(objectGraph.getEntities(), comparator);
-		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(typeDomain, objectGraph));
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(objectGraph));
 	}
 	
 	protected void assertGraphUpdateState(String expected, GraphUpdate graphUpdate, TypeDomain typeDomain) {
@@ -75,11 +75,11 @@ public abstract class OgreTestCase extends TestCase {
 		Arrays.sort(graphUpdate.getEntities(), comparator);
 		Arrays.sort(graphUpdate.getEntityDeletes(), comparator);
 		Arrays.sort(graphUpdate.getEntityDiffs(), comparator);
-		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeGraphUpdate(typeDomain, graphUpdate));
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeGraphUpdate(graphUpdate));
 	}
 	
 	protected void assertEntityUpdateState(String expected, EntityUpdate entityUpdate, TypeDomain typeDomain) {
-		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeEntityUpdate(typeDomain, entityUpdate));
+		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeEntityUpdate(entityUpdate));
 	}
 	
 	protected void assertClientEngineState(String expected, ClientEngine actual) {

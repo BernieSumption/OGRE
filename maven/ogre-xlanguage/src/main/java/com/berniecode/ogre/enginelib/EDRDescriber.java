@@ -52,13 +52,13 @@ public class EDRDescriber {
 	// DESCRIBE OBJECT GRAPH
 	//
 
-	public static String describeObjectGraph(TypeDomain typeDomain, GraphUpdate objectGraph) {
+	public static String describeObjectGraph(GraphUpdate objectGraph) {
 		StringConcatenator sc = new StringConcatenator();
-		doDescribeObjectGraph(typeDomain, objectGraph, sc, 0);
+		doDescribeObjectGraph(objectGraph, sc, 0);
 		return sc.buildString();
 	}
 
-	private static void doDescribeObjectGraph(TypeDomain typeDomain, GraphUpdate objectGraph, StringConcatenator sc, int indent) {
+	private static void doDescribeObjectGraph(GraphUpdate objectGraph, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("ObjectGraph ")
 		  .add(objectGraph.getTypeDomain().getTypeDomainId())
@@ -67,11 +67,11 @@ public class EDRDescriber {
 		Entity[] entities = objectGraph.getEntities();
 		for (int i=0; i<entities.length; i++) {
 			sc.add("\n");
-			doDescribeEntity(typeDomain, entities[i], sc, indent+1);
+			doDescribeEntity(entities[i], sc, indent+1);
 		}
 	}
 
-	private static void doDescribeEntity(TypeDomain typeDomain, Entity entityValue, StringConcatenator sc, int indent) {
+	private static void doDescribeEntity(Entity entityValue, StringConcatenator sc, int indent) {
 		EntityType entityType = entityValue.getEntityType();
 		doIndent(sc, indent);
 		sc.add("Entity ")
@@ -81,14 +81,15 @@ public class EDRDescriber {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
 			sc.add("\n");
-			doDescribeValue(entityValue.getPropertyValue(property), property, sc, indent+1);
+			doDescribeValue(entityValue.getPropertyValue(property), property, sc, indent+1, entityValue.isWired());
 		}
 	}
 
-	private static void doDescribeValue(Object value, Property property, StringConcatenator sc, int indent) {
+	private static void doDescribeValue(Object value, Property property, StringConcatenator sc, int indent, boolean isWiredEntity) {
 		doIndent(sc, indent);
 		sc.add(property.getName())
 		  .add("=");
+		//TODO all values should be plain objects, ogrelib should have a ByteArray type that overrides equals for the benefit of ValueUtils.valuesAreEquivilent
 		if (ValueUtils.isArray(value)) {
 			int length = ValueUtils.getArrayLength(value);
 			for (int i=0; i<length; i++) {
@@ -98,6 +99,11 @@ public class EDRDescriber {
 				sc.add(ValueUtils.getArrayValue(value, i));
 			}
 		} else {
+			// for unwired entities, 
+			if (property instanceof ReferenceProperty && !isWiredEntity) {
+				sc.add(((ReferenceProperty) property).getReferenceType());
+				sc.add("#");
+			}
 			sc.add(value);
 		}
 	}
@@ -107,19 +113,19 @@ public class EDRDescriber {
 	//
 
 	
-	public static String describeEntityUpdate(TypeDomain typeDomain, EntityUpdate entityUpdate) {
+	public static String describeEntityUpdate(EntityUpdate entityUpdate) {
 		StringConcatenator sc = new StringConcatenator();
-		doDescribeEntityUpdate(typeDomain, entityUpdate, sc, 0);
+		doDescribeEntityUpdate(entityUpdate, sc, 0);
 		return sc.buildString();
 	}
 	
-	public static String describeGraphUpdate(TypeDomain typeDomain, GraphUpdate graphUpdate) {
+	public static String describeGraphUpdate(GraphUpdate graphUpdate) {
 		StringConcatenator sc = new StringConcatenator();
-		doDescribeGraphUpdate(typeDomain, graphUpdate, sc, 0);
+		doDescribeGraphUpdate(graphUpdate, sc, 0);
 		return sc.buildString();
 	}
 	
-	private static void doDescribeGraphUpdate(TypeDomain typeDomain, GraphUpdate graphUpdate, StringConcatenator sc, int indent) {
+	private static void doDescribeGraphUpdate(GraphUpdate graphUpdate, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add("GraphUpdate for object graph ")
 		  .add(graphUpdate.getTypeDomain().getTypeDomainId())
@@ -127,26 +133,26 @@ public class EDRDescriber {
 		  .add(graphUpdate.getObjectGraphId());
 		if (graphUpdate.getEntities().length > 0) {
 			sc.add("\ncomplete values:");
-			doDescribeEntityUpdates(typeDomain, graphUpdate.getEntities(), sc, indent + 1);
+			doDescribeEntityUpdates(graphUpdate.getEntities(), sc, indent + 1);
 		}
 		if (graphUpdate.getEntityDiffs().length > 0) {
 			sc.add("\npartial values:");
-			doDescribeEntityUpdates(typeDomain, graphUpdate.getEntityDiffs(), sc, indent + 1);
+			doDescribeEntityUpdates(graphUpdate.getEntityDiffs(), sc, indent + 1);
 		}
 		if (graphUpdate.getEntityDeletes().length > 0) {
 			sc.add("\ndeleted entities:");
-			doDescribeEntityDeletes(typeDomain, graphUpdate.getEntityDeletes(), sc, indent + 1);
+			doDescribeEntityDeletes(graphUpdate.getEntityDeletes(), sc, indent + 1);
 		}
 	}
 
-	private static void doDescribeEntityUpdates(TypeDomain typeDomain, EntityUpdate[] entityValues, StringConcatenator sc, int indent) {
+	private static void doDescribeEntityUpdates(EntityUpdate[] entityValues, StringConcatenator sc, int indent) {
 		for (int i=0; i<entityValues.length; i++) {
 			sc.add("\n");
-			doDescribeEntityUpdate(typeDomain, entityValues[i], sc, indent + 1);
+			doDescribeEntityUpdate(entityValues[i], sc, indent + 1);
 		}
 	}
 
-	private static void doDescribeEntityUpdate(TypeDomain typeDomain, EntityUpdate update, StringConcatenator sc, int indent) {
+	private static void doDescribeEntityUpdate(EntityUpdate update, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		EntityType entityType = update.getEntityType();
 		sc.add("EntityUpdate for ")
@@ -157,19 +163,19 @@ public class EDRDescriber {
 			Property property = entityType.getProperty(i);
 			if (update.hasUpdatedValue(property)) {
 				sc.add("\n");
-				doDescribeValue(update.getPropertyValue(property), property, sc, indent + 1);
+				doDescribeValue(update.getPropertyValue(property), property, sc, indent + 1, false);
 			}
 		}
 	}
 
-	private static void doDescribeEntityDeletes(TypeDomain typeDomain, EntityDelete[] entityDeletes, StringConcatenator sc, int indent) {
+	private static void doDescribeEntityDeletes(EntityDelete[] entityDeletes, StringConcatenator sc, int indent) {
 		for (int i=0; i<entityDeletes.length; i++) {
 			sc.add("\n");
-			doDescribeEntityDelete(typeDomain, entityDeletes[i], sc, indent + 1);
+			doDescribeEntityDelete(entityDeletes[i], sc, indent + 1);
 		}
 	}
 
-	private static void doDescribeEntityDelete(TypeDomain typeDomain, EntityDelete delete, StringConcatenator sc, int indent) {
+	private static void doDescribeEntityDelete(EntityDelete delete, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		EntityType entityType = delete.getEntityType();
 		sc.add("EntityDelete for ")

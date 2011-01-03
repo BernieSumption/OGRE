@@ -127,7 +127,7 @@ public class ClientEngine implements GraphUpdateListener {
 		
 		OgreLog.info("ClientEngine: accepted graph update " + update);
 		if (OgreLog.isDebugEnabled()) {
-			OgreLog.debug(EDRDescriber.describeGraphUpdate(typeDomain, update));
+			OgreLog.debug(EDRDescriber.describeGraphUpdate(update));
 		}
 		mergeCompleteEntities(completeEntities);
 		mergeEntityDiffs(update.getEntityDiffs());

@@ -216,7 +216,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 					entityDeletes.toArray(new EntityDelete[0]));
 			if (OgreLog.isDebugEnabled()) {
 				OgreLog.debug("PojoDataSource: broadcasting new graph update:\n"
-						+ EDRDescriber.describeGraphUpdate(typeDomain, update));
+						+ EDRDescriber.describeGraphUpdate(update));
 			}
 			graphUpdateListener.acceptGraphUpdate(update);
 		}

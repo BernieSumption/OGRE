@@ -110,7 +110,8 @@ public class EntityStore {
 
 
 	/**
-	 * @return every {@link Entity} in this store
+	 * @return every {@link Entity} in this store. The returned list is a copy of the internal list,
+	 *         and is safe to modify.
 	 */
 	public Entity[] getEntities() {
 		ArrayBuilder resultList = new ArrayBuilder(Entity.class);

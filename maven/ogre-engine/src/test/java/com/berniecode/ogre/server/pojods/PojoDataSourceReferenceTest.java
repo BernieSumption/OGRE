@@ -51,13 +51,13 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertObjectGraphState(
 				"ObjectGraph TypeDomain/TestObjectGraph" +
 				"  Entity A#1" +
-				"    b=2" +
+				"    b=B#2" +
 				"  Entity A#2" +
-				"    b=1" +
+				"    b=B#1" +
 				"  Entity B#1" +
-				"    a=2" +
+				"    a=A#2" +
 				"  Entity B#2" +
-				"    a=2",
+				"    a=A#2",
 				dataSource.createSnapshot(), dataSource.getTypeDomain());
 		
 		// change tree indirectly, expect annd and deletes
@@ -69,10 +69,10 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for B#3" +
-				"      a=2" +
+				"      a=A#2" +
 				"  partial values:" +
 				"    EntityUpdate for A#2" +
-				"      b=3" +
+				"      b=B#3" +
 				"  deleted entities:" +
 				"    EntityDelete for B#1",
 				lastGraphUpdate, dataSource.getTypeDomain());
@@ -87,10 +87,10 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for B#1" +
-				"      a=2" +
+				"      a=A#2" +
 				"  partial values:" +
 				"    EntityUpdate for A#2" +
-				"      b=1" +
+				"      b=B#1" +
 				"  deleted entities:" +
 				"    EntityDelete for B#3",
 				lastGraphUpdate, dataSource.getTypeDomain());
@@ -104,7 +104,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
 				"    EntityUpdate for B#3" +
-				"      a=2",
+				"      a=A#2",
 				lastGraphUpdate, dataSource.getTypeDomain());
 		
 		
@@ -115,7 +115,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
 				"    EntityUpdate for A#2" +
-				"      b=3",
+				"      b=B#3",
 				lastGraphUpdate, dataSource.getTypeDomain());
 		
 		a2.setB(b1);
@@ -125,7 +125,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
 				"    EntityUpdate for A#2" +
-				"      b=1",
+				"      b=B#1",
 				lastGraphUpdate, dataSource.getTypeDomain());
 	}
 	

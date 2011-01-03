@@ -97,6 +97,9 @@ public class ValueUtils {
 		return Array.getLength(array);
 	}
 
+	/**
+	 * Coerce a {@code Long} object into a native long value
+	 */
 	public static long unboxLong(Long id) {
 		return id.longValue();
 	}
