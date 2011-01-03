@@ -29,24 +29,18 @@ public class TestSuiteGenerator {
 	private static final Boolean[] TRUE_OR_FALSE = new Boolean[] {true, false};
 
 
-	private static final int MIN_CHANGE_ITERATIONS = 0;
 	private static final int MAX_CHANGE_ITERATIONS = 500;
 
-	private static final int MIN_ENTITIES_TO_CHANGE_PER_ITERATION = 0;
-	private static final int MAX_ENTITIES_TO_CHANGE_PER_ITERATION = 500;
+	private static final int MAX_ENTITIES_TO_CHANGE_PER_ITERATION = 20;
 
-	private static final int MAX_ENTITIES_TO_DELETE_PER_ITERATION = 20;
+	private static final int MAX_ENTITIES_TO_DELETE_PER_ITERATION = 10;
 	
-	private static final int MIN_RANDOM_STRING_LENGTH = 0;
 	private static final int MAX_RANDOM_STRING_LENGTH = 500;
 
-	private static final int MIN_ENTITY_TYPES_PER_TYPE_DOMAIN = 0;
 	private static final int MAX_ENTITY_TYPES_PER_TYPE_DOMAIN = 50;
 
-	private static final int MIN_PROPERTIES_PER_ENTITY_TYPE = 0;
 	private static final int MAX_PROPERTIES_PER_ENTITY_TYPE = 50;
 
-	private static final int MIN_INITIAL_ENTITIES = 0;
 	private static final int MAX_INITIAL_ENTITIES = 100;
 	
 	private static boolean OVERWRITE_TEST_SUITES = true;
@@ -94,7 +88,7 @@ public class TestSuiteGenerator {
 			setFile(INITIAL_DATA_MESSAGE_FILE_NAME, serialiser.serialiseGraphUpdate(initialData));
 			traceLine("initial data set", EDRDescriber.describeObjectGraph(typeDomain, initialData));
 			
-			int changeIterations = makeRandomNumberInclusive(MIN_CHANGE_ITERATIONS, MAX_CHANGE_ITERATIONS);
+			int changeIterations = makeRandomNumberInclusive(0, MAX_CHANGE_ITERATIONS);
 			for (int i = 0; i < changeIterations; i++) {
 				doChangeIteration(i);
 			}
@@ -114,7 +108,7 @@ public class TestSuiteGenerator {
 		// delete some entities (ensure we null references to them)
 		
 		for (int i: makeRandomIndices(entities.length, MAX_ENTITIES_TO_DELETE_PER_ITERATION)) {
-			
+//			entityStore.removeSimilar(reference);
 		}
 			
 		
@@ -126,7 +120,7 @@ public class TestSuiteGenerator {
 		
 		// odify existing entities
 		
-		int qtyToChange = makeRandomNumberInclusive(MIN_ENTITIES_TO_CHANGE_PER_ITERATION, Math.min(MAX_ENTITIES_TO_CHANGE_PER_ITERATION, entities.length));
+		int qtyToChange = makeRandomNumberInclusive(0, Math.min(MAX_ENTITIES_TO_CHANGE_PER_ITERATION, entities.length));
 		List<Entity> entitiesToChange = Arrays.asList(entities);
 		Collections.shuffle(entitiesToChange, random);
 		entitiesToChange = entitiesToChange.subList(0, qtyToChange);
@@ -145,7 +139,7 @@ public class TestSuiteGenerator {
 	//
 
 	/**
-	 * Pick a random set of indices from a list of the specified size 
+	 * Pick {@code count} random indices from a list of size {@code size} 
 	 */
 	private List<Integer> makeRandomIndices(int size, int count) {
 		List<Integer> indices = new ArrayList<Integer>();
@@ -157,7 +151,7 @@ public class TestSuiteGenerator {
 	}
 
 	/**
-	 * Pick a random set of indices from a list of the specified size 
+	 * Pick a random number of random indices from a list of size {@size} 
 	 */
 	private List<Integer> makeRandomIndices(int size) {
 		return makeRandomIndices(size, size);
@@ -168,7 +162,7 @@ public class TestSuiteGenerator {
 	}
 	
 	private EntityType[] makeRandomEntityTypes() {
-		int length = makeRandomNumberInclusive(MIN_ENTITY_TYPES_PER_TYPE_DOMAIN, MAX_ENTITY_TYPES_PER_TYPE_DOMAIN);
+		int length = makeRandomNumberInclusive(0, MAX_ENTITY_TYPES_PER_TYPE_DOMAIN);
 		String[] names = new String[length];
 		for (int i = 0; i < names.length; i++) {
 			names[i] = "entityType" + i;
@@ -181,7 +175,7 @@ public class TestSuiteGenerator {
 	}
 
 	private Property[] makeRandomProperties(String entityTypeName, String[] entityTypeNames) {
-		int length = makeRandomNumberInclusive(MIN_PROPERTIES_PER_ENTITY_TYPE, MAX_PROPERTIES_PER_ENTITY_TYPE);
+		int length = makeRandomNumberInclusive(0, MAX_PROPERTIES_PER_ENTITY_TYPE);
 		Property[] properties = new Property[length];
 		for (int i = 0; i < properties.length; i++) {
 			int typeCode = makeRandomNumberInclusive(0, Property.TYPECODE_REFERENCE);
@@ -206,11 +200,12 @@ public class TestSuiteGenerator {
 	
 	private EntityStore createObjectGraph() {
 
-		EntityStore store = new EntityStore(typeDomain, true);
+		// allow replace
+		EntityStore store = new EntityStore(typeDomain);
 		
 		if (entityTypes.length > 0) {
 		
-			int numEntities = makeRandomNumberInclusive(MIN_INITIAL_ENTITIES, MAX_INITIAL_ENTITIES);
+			int numEntities = makeRandomNumberInclusive(0, MAX_INITIAL_ENTITIES);
 	
 			// pre-calculate the types and IDs of all entities, because makeRandomEntity() needs to know them in advance
 			// in order to create random references to them
@@ -231,7 +226,7 @@ public class TestSuiteGenerator {
 			}
 	
 			for (int i = 0; i < graphEntityTypes.length; i++) {
-				store.put(makeRandomEntity(graphEntityTypes[i], graphEntityIds[i], idMap));
+				store.add(makeRandomEntity(graphEntityTypes[i], graphEntityIds[i], idMap));
 			}
 		}
 		
@@ -299,7 +294,7 @@ public class TestSuiteGenerator {
 	}
 
 	private String makeRandomString() {
-		int length = makeRandomNumberInclusive(MIN_RANDOM_STRING_LENGTH, MAX_RANDOM_STRING_LENGTH);
+		int length = makeRandomNumberInclusive(0, MAX_RANDOM_STRING_LENGTH);
 		char[] buffer = new char[length];
 		for (int i = 0; i < buffer.length; i++) {
 			buffer[i] = (char) makeRandomNumberInclusive(28, 128); // TODO check printable ASCII range
@@ -308,7 +303,7 @@ public class TestSuiteGenerator {
 	}
 
 	private byte[] makeRandomBytes() {
-		int length = makeRandomNumberInclusive(MIN_RANDOM_STRING_LENGTH, MAX_RANDOM_STRING_LENGTH);
+		int length = makeRandomNumberInclusive(0, MAX_RANDOM_STRING_LENGTH);
 		byte[] buffer = new byte[length];
 		for (int i = 0; i < buffer.length; i++) {
 			buffer[i] = (byte) random.nextInt();

@@ -13,21 +13,22 @@ public class EntityType {
 	private final int index;
 	private final String name;
 	private final Property[] properties;
-	private Property[] referenceProperties;
+	private ReferenceProperty[] referenceProperties;
 	private TypeDomain typeDomain;
 
 	public EntityType(int index, String name, Property[] properties) {
+		//TODO have parent typedomain set index
 		this.index = index;
 		this.name = name;
 		this.properties = properties;
 		
-		ArrayBuilder builder = new ArrayBuilder(Property.class);
+		ArrayBuilder builder = new ArrayBuilder(ReferenceProperty.class);
 		for (int i=0; i<properties.length; i++) {
 			if (properties[i] instanceof ReferenceProperty) {
 				builder.add(properties[i]);
 			}
 		}
-		referenceProperties = (Property[]) builder.buildArray();
+		referenceProperties = (ReferenceProperty[]) builder.buildArray();
 	}
 
 	/**
@@ -65,7 +66,7 @@ public class EntityType {
 	/**
 	 * @return an array of all the reference properties in this {@link EntityType}
 	 */
-	public Property[] getReferenceProperties() {
+	public ReferenceProperty[] getReferenceProperties() {
 		return referenceProperties;
 	}
 	
@@ -84,5 +85,18 @@ public class EntityType {
 		for (int i = 0; i < properties.length; i++) {
 			properties[i].setEntityType(this);
 		}
+	}
+
+	/**
+	 * @return true if this {@link EntityType} has a {@link ReferenceProperty} that points to the
+	 *         specified {@link EntityType}
+	 */
+	public boolean isReferenceTo(EntityType entityType) {
+		for (int i = 0; i < referenceProperties.length; i++) {
+			if (referenceProperties[i].getReferenceType() == entityType) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

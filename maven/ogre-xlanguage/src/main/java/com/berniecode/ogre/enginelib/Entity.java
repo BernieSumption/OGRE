@@ -22,7 +22,7 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  */
 public class Entity implements EntityReference, EntityUpdate {
 	
-	private boolean isWired = false;
+	private boolean wired = false;
 
 	private final EntityType entityType;
 	private final long id;
@@ -31,10 +31,11 @@ public class Entity implements EntityReference, EntityUpdate {
 	/**
 	 * Create an unwired Entity
 	 */
-	public Entity(EntityType entityType, long id, Object[] values) {
+	public Entity(EntityType entityType, long id, Object[] initialValues) {
 		this.entityType = entityType;
 		this.id = id;
-		this.values = values;
+		this.values = new Object[entityType.getPropertyCount()];
+		updateFromArray(initialValues);
 	}
 
 	/**
@@ -57,11 +58,21 @@ public class Entity implements EntityReference, EntityUpdate {
 	public Object getPropertyValue(Property property) {
 		return values[property.getPropertyIndex()];
 	}
+
+	/**
+	 * @return true if references have been wired for this {@link Entity}, false otherwise
+	 */
+	public boolean isWired() {
+		return wired;
+	}
 	
 	public String toString() {
 		return entityType + "#" + id;
 	}
 
+	/**
+	 * @private
+	 */
 	public boolean hasUpdatedValue(Property property) {
 		return true;
 	}
@@ -85,6 +96,7 @@ public class Entity implements EntityReference, EntityUpdate {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
 			if (update.hasUpdatedValue(property)) {
+				//TODO validate runtime types
 				values[i] = update.getPropertyValue(property);
 			}
 		}
@@ -96,6 +108,7 @@ public class Entity implements EntityReference, EntityUpdate {
 	 */
 	void updateFromArray(Object[] update) {
 		for (int i = 0; i < update.length; i++) {
+			//TODO validate runtime types
 			values[i] = update[i];
 		}
 	}
@@ -116,17 +129,20 @@ public class Entity implements EntityReference, EntityUpdate {
 	 * @private
 	 */
 	void wireEntityReferences(EntityStore store, Entity[] array) {
-		if (isWired) {
+		if (wired) {
 			throw new OgreException("wireEntityReferences() has already been called on " + this);
 		}
-		isWired = true;
-		Property[] properties = entityType.getReferenceProperties();
+		wired = true;
+		ReferenceProperty[] properties = entityType.getReferenceProperties();
 		for (int i = 0; i < properties.length; i++) {
-			ReferenceProperty property = (ReferenceProperty) properties[i];
+			ReferenceProperty property = properties[i];
 			EntityType refType = property.getReferenceType();
 			long refId = ValueUtils.unboxLong((Long) values[property.getPropertyIndex()]);
-			Entity entity = store.get(refType, refId);
-			if (entity == null) {
+			Entity entity = null;
+			if (store != null) {
+				entity = store.get(refType, refId);
+			}
+			if (entity == null && array != null) {
 				for (int j = 0; j < array.length; j++) {
 					if (array[j].getEntityType() == refType && array[j].getEntityId() == refId) {
 						entity = array[j];
@@ -139,4 +155,20 @@ public class Entity implements EntityReference, EntityUpdate {
 			values[property.getPropertyIndex()] = entity;
 		}
 	}
+
+	/**
+	 * Set references to a specified Entity to null. This is used to maintain referential integrity
+	 * when an entity is removed from an object graph
+	 * 
+	 * <p>The entity is located by identity, not by entityType and id
+	 */
+	void nullReferencesTo(Entity entityToRemove) {
+		// TODO move all ogre classes into com.berniecode.ogre and use package private to separate public from internal API
+		for (int i = 0; i < values.length; i++) {
+			if (values[i] == entityToRemove) {
+				values[i] = null;
+			}
+		}
+	}
+
 }

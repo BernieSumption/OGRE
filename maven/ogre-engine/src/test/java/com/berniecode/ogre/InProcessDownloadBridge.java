@@ -4,8 +4,8 @@ import com.berniecode.ogre.enginelib.DownloadClientAdapter;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
-import com.berniecode.ogre.enginelib.server.ServerEngineTest;
 import com.berniecode.ogre.server.ServerEngine;
+import com.berniecode.ogre.server.ServerEngineTest;
 import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
 /**

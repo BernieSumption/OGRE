@@ -1,11 +1,10 @@
-package com.berniecode.ogre.enginelib.client;
+package com.berniecode.ogre;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jmock.Expectations;
 
-import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.ClientEngine;
 import com.berniecode.ogre.enginelib.DownloadClientAdapter;
 import com.berniecode.ogre.enginelib.Entity;

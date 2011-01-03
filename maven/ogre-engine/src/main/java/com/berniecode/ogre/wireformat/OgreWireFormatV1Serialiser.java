@@ -16,6 +16,7 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.Property;
 import com.berniecode.ogre.enginelib.ReferenceProperty;
 import com.berniecode.ogre.enginelib.TypeDomain;
+import com.berniecode.ogre.enginelib.UnsafeAccess;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage;
@@ -108,7 +109,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 	public byte[] serialiseTypeDomain(TypeDomain typeDomain) {
 		TypeDomainMessage.Builder tdBuilder = TypeDomainMessage.newBuilder();
 		tdBuilder.setTypeDomainId(typeDomain.getTypeDomainId());
-		for (EntityType entityType: typeDomain.getEntityTypes()) {
+		for (EntityType entityType: UnsafeAccess.getEntityTypes(typeDomain)) {
 			EntityTypeMessage.Builder etBuilder = EntityTypeMessage.newBuilder();
 			etBuilder.setName(entityType.getName());
 			for (int i = 0; i < entityType.getPropertyCount(); i++) {

@@ -12,10 +12,8 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 public class EntityStore {
 	
 	private final EntityMap[] entityMaps;
-	private final boolean allowReplace;
 	
-	public EntityStore(TypeDomain typeDomain, boolean allowReplace) {
-		this.allowReplace = allowReplace;
+	public EntityStore(TypeDomain typeDomain) {
 		entityMaps = new EntityMap[typeDomain.getEntityTypes().length];
 		for (int i=0; i<entityMaps.length; i++) {
 			entityMaps[i] = new EntityMap();
@@ -57,7 +55,20 @@ public class EntityStore {
 	 * Remove an entity from this store. This method has no effect if no such entity exists.
 	 */
 	public void remove(EntityType entityType, long id) {
-		entityMaps[entityType.getEntityTypeIndex()].remove(id);
+		Entity entityToRemove = get(entityType, id);
+		if (entityToRemove != null) {
+			entityMaps[entityType.getEntityTypeIndex()].remove(id);
+			
+			// null all references to the removed entity
+			for (int i = 0; i < entityMaps.length; i++) {
+				Entity[] entities = entityMaps[i].getEntities();
+				if (entities.length > 0 && entities[0].getEntityType().isReferenceTo(entityToRemove.getEntityType())) {
+					for (int j = 0; j < entities.length; j++) {
+						entities[i].nullReferencesTo(entityToRemove);
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -65,8 +76,7 @@ public class EntityStore {
 	 * {@link EntityReference}. This method has no effect if no such entity exists.
 	 */
 	public void removeSimilar(EntityReference reference) {
-		int entityTypeIndex = reference.getEntityType().getEntityTypeIndex();
-		entityMaps[entityTypeIndex].remove(reference.getEntityId());
+		remove(reference.getEntityType(), reference.getEntityId());
 	}
 
 	/**
@@ -75,9 +85,12 @@ public class EntityStore {
 	 * @throws OgreException if this store already contains an entity with the same type and ID and
 	 *             this store does not allow replacement of existing entities
 	 */
-	public void put(Entity entity) throws OgreException {
-		if (!allowReplace && containsSimilar(entity)) {
+	public void add(Entity entity) throws OgreException {
+		if (containsSimilar(entity)) {
 			throw new OgreException("The entity " + getSimilar(entity) + " already exists in this store");
+		}
+		if (!entity.isWired()) {
+			throw new OgreException("The entity " + entity + " can't be added to EntityStore because it is not wired.");
 		}
 		entityMaps[entity.getEntityType().getEntityTypeIndex()].put(entity);
 	}
@@ -91,7 +104,7 @@ public class EntityStore {
 	 */
 	public void putAll(Entity[] entities) throws OgreException {
 		for (int i = 0; i < entities.length; i++) {
-			put(entities[i]);
+			add(entities[i]);
 		}
 	}
 

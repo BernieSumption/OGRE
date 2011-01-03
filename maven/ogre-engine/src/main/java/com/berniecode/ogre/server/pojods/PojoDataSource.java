@@ -2,9 +2,10 @@ package com.berniecode.ogre.server.pojods;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
@@ -12,11 +13,12 @@ import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.Entity;
 import com.berniecode.ogre.enginelib.EntityDelete;
 import com.berniecode.ogre.enginelib.EntityDiff;
-import com.berniecode.ogre.enginelib.EntityStore;
+import com.berniecode.ogre.enginelib.EntityType;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
+import com.berniecode.ogre.enginelib.UnsafeAccess;
 import com.berniecode.ogre.server.DataSource;
 
 /**
@@ -47,7 +49,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 
 	private TypeDomain typeDomain;
-	private EntityStore entities;
+	private Map<EntityType, Map<Long, Entity>> entities;
 	
 	//
 	// INITIALISATION
@@ -60,7 +62,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		requireNotNull(objectGraphId, "objectGraphId");
 		
 		typeDomain = edrMapper.getTypeDomain();
-		entities = new EntityStore(typeDomain, true);
+		entities = new HashMap<EntityType, Map<Long,Entity>>();
+		for (EntityType entityType: UnsafeAccess.getEntityTypes(typeDomain)) {
+			entities.put(entityType, new HashMap<Long, Entity>());
+		}
 		
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug("PojoDataSource created new type domain:\n" + EDRDescriber.describeTypeDomain(typeDomain));
@@ -100,9 +105,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	@Override
 	public GraphUpdate createSnapshot() {
-		Entity[] messages = entities.getEntities();
-		Arrays.sort(messages, new EntityComparator());
-		return new GraphUpdate(typeDomain, objectGraphId, messages, null, null);
+		return new GraphUpdate(typeDomain, objectGraphId, getAllEntities().toArray(new Entity[0]), null, null);
 	}
 
 	@Override
@@ -169,25 +172,25 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		List<Entity> newEntities = new ArrayList<Entity>();
 		for (Object entityObject: entityObjects) {
 			Entity newEntity = edrMapper.createEntity(entityObject);
-			Entity similar = entities.getSimilar(newEntity);
-			if (similar == null) {
+			Entity existingEntity = entities.get(newEntity.getEntityType()).get(newEntity.getEntityId());
+			if (existingEntity == null) {
 				completeEntities.add(newEntity);
 			} else {
-				EntityDiff diff = EntityDiff.build(similar, newEntity);
+				EntityDiff diff = EntityDiff.build(existingEntity, newEntity);
 				if (diff != null) {
 					if (OgreLog.isInfoEnabled()) {
-						OgreLog.info("PojoDataSource: detected change on " + similar);
+						OgreLog.info("PojoDataSource: detected change on " + existingEntity);
 					}
 					entityDiffs.add(diff);
 				}
 			}
-			entities.put(newEntity);
+			entities.get(newEntity.getEntityType()).put(newEntity.getEntityId(), newEntity);
 			newEntities.add(newEntity);
 		}
 		
-		for (Entity oldEntity: entities.getEntities()) {
+		for (Entity oldEntity: getAllEntities()) {
 			if (!newEntities.contains(oldEntity)) {
-				entities.removeSimilar(oldEntity);
+				entities.get(oldEntity.getEntityType()).remove(oldEntity.getEntityId());
 				entityDeletes.add(EntityDelete.build(oldEntity));
 			}
 		}
@@ -235,20 +238,13 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 	
 
-	// sorts entities first by entityTypeId, then by entityId
-	private final class EntityComparator implements Comparator<Entity> {
-		@Override
-		public int compare(Entity o1, Entity o2) {
-			if (o1.getEntityType().getEntityTypeIndex() != o2.getEntityType().getEntityTypeIndex()) {
-				return compareNumbers(o1.getEntityType().getEntityTypeIndex(), o2.getEntityType().getEntityTypeIndex());
-			} else {
-				return compareNumbers(o1.getEntityId(), o2.getEntityId());
-			}
-		}
 
-		private int compareNumbers(long o1Id, long o2Id) {
-			return (o1Id < o2Id ? -1 : (o1Id == o2Id ? 0 : 1));
+	private List<Entity> getAllEntities() {
+		List<Entity> entityList = new ArrayList<Entity>();
+		for (Map<Long, Entity> map: entities.values()) {
+			entityList.addAll(map.values());
 		}
+		return entityList;
 	}
 
 }

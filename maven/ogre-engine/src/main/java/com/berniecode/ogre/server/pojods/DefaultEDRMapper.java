@@ -19,6 +19,7 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.Property;
 import com.berniecode.ogre.enginelib.ReferenceProperty;
 import com.berniecode.ogre.enginelib.TypeDomain;
+import com.berniecode.ogre.enginelib.UnsafeAccess;
 
 /**
  * A {@link EDRMapper} that automatically converts from classes and objects to OGRE's Entity
@@ -338,7 +339,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 
 		List<Object> relatedObjects = new ArrayList<Object>();
 		
-		Property[] referenceProperties = entityType.getReferenceProperties();
+		ReferenceProperty[] referenceProperties = entityType.getReferenceProperties();
 		for (int i = 0; i < referenceProperties.length; i++) {
 			relatedObjects.add(getRawValueForProperty(entityObject, referenceProperties[i]));
 		}
@@ -392,7 +393,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		Map<EntityType, Long> nextFreeId = new HashMap<EntityType, Long>();
 		
 		public DefaultIdMapper() {
-			for (EntityType entityType: typeDomain.getEntityTypes()) {
+			for (EntityType entityType: UnsafeAccess.getEntityTypes(typeDomain)) {
 				idMap.put(entityType, new WeakHashMap<Object, Long>());
 				nextFreeId.put(entityType, 1L);
 			}

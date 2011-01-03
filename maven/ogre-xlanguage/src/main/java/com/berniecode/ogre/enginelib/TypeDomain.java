@@ -39,11 +39,10 @@ public class TypeDomain {
 	}
 
 	/**
-	 * @return All {@link EntityType}s in this {@link TypeDomain}. The returned array is not safe to
-	 *         modify. It must be copied before being passed outside of OGRE
+	 * @return the number of {@link EntityType}s in this {@link TypeDomain}
 	 */
-	public EntityType[] getEntityTypes() {
-		return entityTypes;
+	public int getEntityTypeCount() {
+		return entityTypes.length;
 	}
 
 	/**
@@ -58,6 +57,14 @@ public class TypeDomain {
 	 */
 	public EntityType getEntityTypeByName(String entityName) {
 		return (EntityType) entityTypesByName.get(entityName);
+	}
+	
+	
+	/**
+	 * @private
+	 */
+	EntityType[] getEntityTypes() {
+		return entityTypes;
 	}
 
 }

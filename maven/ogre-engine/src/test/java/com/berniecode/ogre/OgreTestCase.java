@@ -1,5 +1,7 @@
 package com.berniecode.ogre;
 
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 import org.hamcrest.core.IsNot;
@@ -15,6 +17,7 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
+import com.berniecode.ogre.server.pojods.EntityReferenceComparator;
 import com.berniecode.ogre.server.pojods.IdMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
 
@@ -62,10 +65,16 @@ public abstract class OgreTestCase extends TestCase {
 	}
 	
 	protected void assertObjectGraphState(String expected, GraphUpdate objectGraph, TypeDomain typeDomain) {
+		EntityReferenceComparator comparator = new EntityReferenceComparator();
+		Arrays.sort(objectGraph.getEntities(), comparator);
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(typeDomain, objectGraph));
 	}
 	
 	protected void assertGraphUpdateState(String expected, GraphUpdate graphUpdate, TypeDomain typeDomain) {
+		EntityReferenceComparator comparator = new EntityReferenceComparator();
+		Arrays.sort(graphUpdate.getEntities(), comparator);
+		Arrays.sort(graphUpdate.getEntityDeletes(), comparator);
+		Arrays.sort(graphUpdate.getEntityDiffs(), comparator);
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeGraphUpdate(typeDomain, graphUpdate));
 	}
 	

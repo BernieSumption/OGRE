@@ -1,4 +1,4 @@
-package com.berniecode.ogre.enginelib.server;
+package com.berniecode.ogre.server;
 
 import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;

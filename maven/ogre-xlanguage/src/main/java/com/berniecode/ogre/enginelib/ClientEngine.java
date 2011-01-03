@@ -77,7 +77,7 @@ public class ClientEngine implements GraphUpdateListener {
 		requireNotNull(objectGraphId, "objectGraphId");
 		
 		typeDomain = downloadAdapter.loadTypeDomain(typeDomainId);
-		entities = new EntityStore(typeDomain, false);
+		entities = new EntityStore(typeDomain);
 		initialised = true;
 		
 		acceptGraphUpdate(downloadAdapter.loadObjectGraph(typeDomain, objectGraphId));
@@ -152,7 +152,7 @@ public class ClientEngine implements GraphUpdateListener {
 				if (OgreLog.isInfoEnabled()) {
 					OgreLog.info("ClientStore: adding new entity " + entity);
 				}
-				entities.put(entity);
+				entities.add(entity);
 			}
 		}
 	}
