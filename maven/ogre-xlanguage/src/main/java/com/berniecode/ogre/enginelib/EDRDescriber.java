@@ -100,7 +100,7 @@ public class EDRDescriber {
 			}
 		} else {
 			// for unwired entities, 
-			if (property instanceof ReferenceProperty && !isWiredEntity) {
+			if (value != null && property instanceof ReferenceProperty && !isWiredEntity) {
 				sc.add(((ReferenceProperty) property).getReferenceType());
 				sc.add("#");
 			}
@@ -163,7 +163,7 @@ public class EDRDescriber {
 			Property property = entityType.getProperty(i);
 			if (update.hasUpdatedValue(property)) {
 				sc.add("\n");
-				doDescribeValue(update.getPropertyValue(property), property, sc, indent + 1, false);
+				doDescribeValue(update.getPropertyValue(property), property, sc, indent + 1, update.isWired());
 			}
 		}
 	}

@@ -21,6 +21,10 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  * @author Bernie Sumption
  */
 public class Entity implements EntityReference, EntityUpdate {
+
+	public static final long MIN_ID = 1L;
+	//TODO verify this number
+	public static final long MAX_ID = 0x000FFFFFFFFFFFFFL; // 2^52 - highest permissable id
 	
 	private boolean wired = false;
 
@@ -32,6 +36,14 @@ public class Entity implements EntityReference, EntityUpdate {
 	 * Create an unwired Entity
 	 */
 	public Entity(EntityType entityType, long id, Object[] initialValues) {
+		if (id < 1) {
+			//TODO test this
+			throw new OgreException("IDs must be positive integers between 1 and 2^52");
+		}
+		if (id > MAX_ID) {
+			//TODO test this
+			OgreLog.warn("Entity " + entityType + "#" + id + " has an ID higer than 2^52, and may cause undefined bahaviour on client languages with no long integer type");
+		}
 		this.entityType = entityType;
 		this.id = id;
 		this.values = new Object[entityType.getPropertyCount()];
@@ -137,22 +149,25 @@ public class Entity implements EntityReference, EntityUpdate {
 		for (int i = 0; i < properties.length; i++) {
 			ReferenceProperty property = properties[i];
 			EntityType refType = property.getReferenceType();
-			long refId = ValueUtils.unboxLong((Long) values[property.getPropertyIndex()]);
-			Entity entity = null;
-			if (store != null) {
-				entity = store.get(refType, refId);
-			}
-			if (entity == null && array != null) {
-				for (int j = 0; j < array.length; j++) {
-					if (array[j].getEntityType() == refType && array[j].getEntityId() == refId) {
-						entity = array[j];
+			Object value = values[property.getPropertyIndex()];
+			if (value != null) {
+				long refId = ValueUtils.unboxLong((Long) value);
+				Entity entity = null;
+				if (store != null) {
+					entity = store.get(refType, refId);
+				}
+				if (entity == null && array != null) {
+					for (int j = 0; j < array.length; j++) {
+						if (array[j].getEntityType() == refType && array[j].getEntityId() == refId) {
+							entity = array[j];
+						}
 					}
 				}
+				if (entity == null) {
+					throw new OgreException("Property '" + property + "' of entity type " + property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
+				}
+				values[property.getPropertyIndex()] = entity;
 			}
-			if (entity == null) {
-				throw new OgreException("Property '" + property + "' of entity type " + refType + " references non-existant entity " + refType + "#" + refId);
-			}
-			values[property.getPropertyIndex()] = entity;
 		}
 	}
 
@@ -162,10 +177,28 @@ public class Entity implements EntityReference, EntityUpdate {
 	 * 
 	 * <p>The entity is located by identity, not by entityType and id
 	 */
-	void nullReferencesTo(Entity entityToRemove) {
-		// TODO move all ogre classes into com.berniecode.ogre and use package private to separate public from internal API
+	void nullReferencesTo(Entity entity) {
+		ReferenceProperty[] properties = entityType.getReferenceProperties();
+		for (int i = 0; i < properties.length; i++) {
+			ReferenceProperty property = properties[i];
+			Object value = values[property.getPropertyIndex()];
+			if (value == null) {
+				continue;
+			}
+			if (property.getReferenceType() == entity.getEntityType()) {
+				if (wired) {
+					if (((Entity) value).getEntityId() == entity.getEntityId()) {
+						values[property.getPropertyIndex()] = null;
+					}
+				} else {
+					if (ValueUtils.unboxLong((Long) value) == entity.getEntityId()) {
+						values[property.getPropertyIndex()] = null;
+					}
+				}
+			}
+		}
 		for (int i = 0; i < values.length; i++) {
-			if (values[i] == entityToRemove) {
+			if (values[i] == entity) {
 				values[i] = null;
 			}
 		}

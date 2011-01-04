@@ -40,7 +40,11 @@ public class EntityDiff implements EntityReference, EntityUpdate {
 			Object fromValue = from.getPropertyValue(property);
 			Object toValue = to.getPropertyValue(property);
 			if (!ValueUtils.valuesAreEquivalent(fromValue, toValue)) {
-				changedValues[i] = toValue;
+				if (toValue instanceof Entity) {
+					changedValues[i] = ValueUtils.boxLong(((Entity) toValue).getEntityId());
+				} else {
+					changedValues[i] = toValue;
+				}
 				changed[i] = true;
 				anyChanged = true;
 			}
@@ -84,6 +88,10 @@ public class EntityDiff implements EntityReference, EntityUpdate {
 
 	public String toString() {
 		return "EntityDiff for entity " + entityType + "#" + entityId;
+	}
+
+	public boolean isWired() {
+		return false;
 	}
 
 }

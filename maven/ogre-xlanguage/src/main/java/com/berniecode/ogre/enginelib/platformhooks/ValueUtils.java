@@ -104,4 +104,11 @@ public class ValueUtils {
 		return id.longValue();
 	}
 
+	/**
+	 * Coerce a native long value into a {@code Long} object
+	 */
+	public static Long boxLong(long id) {
+		return Long.valueOf(id);
+	}
+
 }

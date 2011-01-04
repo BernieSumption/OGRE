@@ -64,7 +64,7 @@ public class EntityStore {
 				Entity[] entities = entityMaps[i].getEntities();
 				if (entities.length > 0 && entities[0].getEntityType().isReferenceTo(entityToRemove.getEntityType())) {
 					for (int j = 0; j < entities.length; j++) {
-						entities[i].nullReferencesTo(entityToRemove);
+						entities[j].nullReferencesTo(entityToRemove);
 					}
 				}
 			}

@@ -14,6 +14,7 @@ package com.berniecode.ogre.enginelib;
  * 
  * @author Bernie Sumption
  */
+//TODO go through OGRE looking for opportunities to make methods package protected and access them through this. Public should mean safe to modify return result.
 public class UnsafeAccess {
 
 	public static EntityType[] getEntityTypes(TypeDomain typeDomain) {

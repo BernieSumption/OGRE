@@ -20,4 +20,9 @@ public interface EntityUpdate extends EntityReference {
 	 */
 	public boolean hasUpdatedValue(Property property);
 
+	/**
+	 * Whether this {@link EntityUpdate}'s reference properties refer to Entities or integer ids
+	 */
+	public boolean isWired();
+
 }

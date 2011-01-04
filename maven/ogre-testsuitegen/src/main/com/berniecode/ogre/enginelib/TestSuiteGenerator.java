@@ -17,21 +17,22 @@ import java.util.Random;
 
 import com.berniecode.ogre.EDRSerialiser;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
+import com.berniecode.ogre.server.pojods.EntityReferenceComparator;
 import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
 public class TestSuiteGenerator {
 
 	private static final String TYPE_DOMAIN_MESSAGE_FILE_NAME = "type-domain.message";
 	private static final String INITIAL_DATA_MESSAGE_FILE_NAME = "initial-data.message";
-	private static final String GRAPH_UPDATE_MESSAGE_FILE_PATTERN = "update-message-%d.message";
+	private static final String GRAPH_UPDATE_MESSAGE_FILE_PATTERN = "graph-update-%d.message";
 	private static final String TRACE_FILE_NAME = "description.txt";
 	
 	private static final Integer[] ALL_INTEGER_BITLENGTHS = new Integer[] {8, 16, 32, 64};
 	private static final Boolean[] TRUE_OR_FALSE = new Boolean[] {true, false};
 
-	private static final int MAX_ENTITIES_TO_CHANGE_PER_ITERATION = 10;
-	private static final int MAX_ENTITIES_TO_DELETE_PER_ITERATION = 10;
-	private static final int MAX_ENTITIES_TO_ADD_PER_ITERATION = 10;
+	private static final int MAX_ENTITIES_TO_CHANGE_PER_ITERATION = 3;
+	private static final int MAX_ENTITIES_TO_DELETE_PER_ITERATION = 3;
+	private static final int MAX_ENTITIES_TO_ADD_PER_ITERATION = 3;
 	
 	private static final int MAX_RANDOM_STRING_LENGTH = 20;
 
@@ -40,7 +41,7 @@ public class TestSuiteGenerator {
 
 	private static final int MAX_PROPERTIES_PER_ENTITY_TYPE = 20;
 
-	private static final int MAX_INITIAL_ENTITIES = 50;
+	private static final int MAX_INITIAL_ENTITIES = 10;
 	
 	
 	private static boolean OVERWRITE_TEST_SUITES = true;
@@ -111,8 +112,12 @@ public class TestSuiteGenerator {
 		// delete some entities
 		List<EntityDelete> entityDeletes = new ArrayList<EntityDelete>();
 		for (int i: makeRandomIndices(existingEntities.length, MAX_ENTITIES_TO_DELETE_PER_ITERATION)) {
-			entityDeletes.add(EntityDelete.build(existingEntities[i]));
-			entities.remove(existingEntities[i]);
+			Entity entityToDelete = existingEntities[i];
+			entityDeletes.add(EntityDelete.build(entityToDelete));
+			entities.remove(entityToDelete);
+			for (Entity entity: existingEntities) {
+				entity.nullReferencesTo(entityToDelete);
+			}
 		}
 		existingEntities = entities.toArray(new Entity[0]);
 
@@ -131,7 +136,7 @@ public class TestSuiteGenerator {
 		long[] idsToAdd = new long[numEntitiesToAdd];
 		for (int i = 0; i < numEntitiesToAdd; i++) {
 			typesToAdd[i] = makeRandomChoice(entityTypes);
-			idsToAdd[i] = random.nextLong();
+			idsToAdd[i] = makeId();
 			availableEntities.get(typesToAdd[i]).add(idsToAdd[i]);
 		}
 		
@@ -162,17 +167,39 @@ public class TestSuiteGenerator {
 			if (entityDiff != null) {
 				entityDiffs.add(entityDiff);
 			}
+			entities.set(entities.indexOf(entity), newEntity);
 		}
 		
 		// make update message
 		GraphUpdate graphUpdate = new GraphUpdate(typeDomain, objectGraphId, newEntities, entityDiffs.toArray(new EntityDiff[0]), entityDeletes.toArray(new EntityDelete[0]));
 		
 		// trace text version of update message
-		traceLine("update " + iteration, EDRDescriber.describeGraphUpdate(graphUpdate));
-		traceLine("graph state after update " + iteration, EDRDescriber.describeObjectGraph(new GraphUpdate(typeDomain, objectGraphId, entities.toArray(new Entity[0]), null, null)));
+		traceLine("update " + iteration, describeGraphUpdate(graphUpdate));
+		traceLine("graph state after update " + iteration, describeObjectGraph());
 		
 		// trace text version of object graph state
 		setFile(GRAPH_UPDATE_MESSAGE_FILE_PATTERN.replace("%d", String.valueOf(iteration)), serialiser.serialiseGraphUpdate(graphUpdate));
+	}
+
+	private String describeObjectGraph() {
+		GraphUpdate objectGraph = new GraphUpdate(typeDomain, objectGraphId, entities.toArray(new Entity[0]), null, null);
+		Arrays.sort(objectGraph.getEntities(), new EntityReferenceComparator());
+		return EDRDescriber.describeObjectGraph(objectGraph);
+	}
+
+	private String describeGraphUpdate(GraphUpdate graphUpdate) {
+		EntityReferenceComparator comparator = new EntityReferenceComparator();
+		Arrays.sort(graphUpdate.getEntities(), comparator);
+		Arrays.sort(graphUpdate.getEntityDiffs(), comparator);
+		Arrays.sort(graphUpdate.getEntityDeletes(), comparator);
+		return EDRDescriber.describeGraphUpdate(graphUpdate);
+	}
+	
+	private long idCounter = 0;
+
+	private long makeId() {
+		return ++idCounter;
+//		return random.nextLong() & 0x000FFFFFFFFFFFFFL; // always positive, never greater than 2^52
 	}
 
 	//
@@ -259,7 +286,7 @@ public class TestSuiteGenerator {
 			
 			for (int i = 0; i < graphEntityTypes.length; i++) {
 				EntityType entityType = makeRandomChoice(entityTypes);
-				long id = random.nextLong();
+				long id = makeId();
 				graphEntityTypes[i] = entityType;
 				graphEntityIds[i] = id;
 				if (!idMap.containsKey(entityType)) {
@@ -282,7 +309,7 @@ public class TestSuiteGenerator {
 		for (int i = 0; i < values.length; i++) {
 			values[i] = makeRandomPropertyValue(entityType.getProperty(i), idMap);
 		}
-		return new Entity(entityType, random.nextLong(), values );
+		return new Entity(entityType, id, values );
 	}
 	
 	private Object makeRandomPropertyValue(Property property, Map<EntityType, List<Long>> idMap) {
