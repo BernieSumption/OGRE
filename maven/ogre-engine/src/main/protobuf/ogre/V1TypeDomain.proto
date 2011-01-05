@@ -25,25 +25,16 @@ message PropertyMessage {
   required Type propertyType = 2;
   required bool nullable = 3;
   
-  // only required if propertyType == INT
-  optional BitLength bitLength = 4;
-  
   // only required if propertyType == REFERENCE
   optional uint32 referenceTypeIndex = 5;
   
-  enum BitLength {
-    INT_8     = 8;
-    INT_16    = 16;
-    INT_32    = 32;
-    INT_64    = 64;
-  }
-  
   enum Type {
-    INT       = 0;
-    FLOAT     = 1;
-    DOUBLE    = 2;
-    STRING    = 3;
-    BYTES     = 4;
-    REFERENCE = 5;
+    INT32     = 0;
+    INT64     = 1;
+    FLOAT     = 2;
+    DOUBLE    = 3;
+    STRING    = 4;
+    BYTES     = 5;
+    REFERENCE = 6;
   }
 }

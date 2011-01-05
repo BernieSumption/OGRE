@@ -21,7 +21,7 @@ public class TypeDomain {
 			entityTypesByName.put(entityTypes[i].getName(), entityTypes[i]);
 		}
 		for (int i = 0; i < entityTypes.length; i++) {
-			entityTypes[i].setTypeDomain(this);
+			entityTypes[i].initialise(this, i);
 		}
 	}
 

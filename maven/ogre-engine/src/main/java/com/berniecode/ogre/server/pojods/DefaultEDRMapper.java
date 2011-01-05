@@ -14,7 +14,6 @@ import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
 import com.berniecode.ogre.enginelib.Entity;
 import com.berniecode.ogre.enginelib.EntityType;
-import com.berniecode.ogre.enginelib.IntegerProperty;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.Property;
 import com.berniecode.ogre.enginelib.ReferenceProperty;
@@ -190,7 +189,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			}
 		}
 		
-		return new EntityType(entityTypeIndex, name, properties.toArray(new Property[0]));
+		return new EntityType(name, properties.toArray(new Property[0]));
 	}
 
 	/**
@@ -217,43 +216,32 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		boolean nullable = !type.isPrimitive();
 		Property property;
 		
-		if (integerTypes.containsKey(type)) {
-			property = new IntegerProperty(propertyIndex, name, integerTypes.get(type), nullable);
-		}
-		else if (classes.contains(type)) {
-			property = new ReferenceProperty(propertyIndex, name, getEntityTypeNameForClass(type));
+		if (classes.contains(type)) {
+			property = new ReferenceProperty(name, getEntityTypeNameForClass(type));
 		}
 		else if (type == float.class || type == Float.class) {
-			property = new Property(propertyIndex, name, Property.TYPECODE_FLOAT, nullable);
+			property = new Property(name, Property.TYPECODE_FLOAT, nullable);
 		}
 		else if (type == double.class || type == Double.class) {
-			property = new Property(propertyIndex, name, Property.TYPECODE_DOUBLE, nullable);
+			property = new Property(name, Property.TYPECODE_DOUBLE, nullable);
+		}
+		else if (type == int.class || type == Integer.class || type == short.class || type == Short.class || type == byte.class || type == Byte.class) {
+			property = new Property(name, Property.TYPECODE_INT32, nullable);
+		}
+		else if (type == long.class || type == Long.class) {
+			property = new Property(name, Property.TYPECODE_INT64, nullable);
 		}
 		else if (type == String.class) {
-			property = new Property(propertyIndex, name, Property.TYPECODE_STRING, true);
+			property = new Property(name, Property.TYPECODE_STRING, true);
 		}
 		else if (type == byte[].class) {
-			property = new Property(propertyIndex, name, Property.TYPECODE_BYTES, true);
+			property = new Property(name, Property.TYPECODE_BYTES, true);
 		} else {
 			return null;
 		}
 		
 		propertyToMethod.put(property, method);
 		return property;
-	}
-
-	// map of Java's integer types to their bitlength
-	private final Map<Class<?>, Integer> integerTypes;
-	{
-		integerTypes = new HashMap<Class<?>, Integer>();
-		integerTypes.put(long.class, 64);
-		integerTypes.put(Long.class, 64);
-		integerTypes.put(int.class, 32);
-		integerTypes.put(Integer.class, 32);
-		integerTypes.put(short.class, 16);
-		integerTypes.put(Short.class, 16);
-		integerTypes.put(byte.class, 8);
-		integerTypes.put(Byte.class, 8);
 	}
 	
 	//

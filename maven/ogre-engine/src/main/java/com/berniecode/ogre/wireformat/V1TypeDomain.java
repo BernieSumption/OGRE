@@ -790,85 +790,15 @@ final class V1TypeDomain {
       return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_PropertyMessage_fieldAccessorTable;
     }
     
-    public enum BitLength
-        implements com.google.protobuf.ProtocolMessageEnum {
-      INT_8(0, 8),
-      INT_16(1, 16),
-      INT_32(2, 32),
-      INT_64(3, 64),
-      ;
-      
-      
-      public final int getNumber() { return value; }
-      
-      public static BitLength valueOf(int value) {
-        switch (value) {
-          case 8: return INT_8;
-          case 16: return INT_16;
-          case 32: return INT_32;
-          case 64: return INT_64;
-          default: return null;
-        }
-      }
-      
-      public static com.google.protobuf.Internal.EnumLiteMap<BitLength>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static com.google.protobuf.Internal.EnumLiteMap<BitLength>
-          internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<BitLength>() {
-              public BitLength findValueByNumber(int number) {
-                return BitLength.valueOf(number)
-      ;        }
-            };
-      
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDescriptor().getEnumTypes().get(0);
-      }
-      
-      private static final BitLength[] VALUES = {
-        INT_8, INT_16, INT_32, INT_64, 
-      };
-      public static BitLength valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        return VALUES[desc.getIndex()];
-      }
-      private final int index;
-      private final int value;
-      private BitLength(int index, int value) {
-        this.index = index;
-        this.value = value;
-      }
-      
-      static {
-        com.berniecode.ogre.wireformat.V1TypeDomain.getDescriptor();
-      }
-      
-      // @@protoc_insertion_point(enum_scope:ogre.PropertyMessage.BitLength)
-    }
-    
     public enum Type
         implements com.google.protobuf.ProtocolMessageEnum {
-      INT(0, 0),
-      FLOAT(1, 1),
-      DOUBLE(2, 2),
-      STRING(3, 3),
-      BYTES(4, 4),
-      REFERENCE(5, 5),
+      INT32(0, 0),
+      INT64(1, 1),
+      FLOAT(2, 2),
+      DOUBLE(3, 3),
+      STRING(4, 4),
+      BYTES(5, 5),
+      REFERENCE(6, 6),
       ;
       
       
@@ -876,12 +806,13 @@ final class V1TypeDomain {
       
       public static Type valueOf(int value) {
         switch (value) {
-          case 0: return INT;
-          case 1: return FLOAT;
-          case 2: return DOUBLE;
-          case 3: return STRING;
-          case 4: return BYTES;
-          case 5: return REFERENCE;
+          case 0: return INT32;
+          case 1: return INT64;
+          case 2: return FLOAT;
+          case 3: return DOUBLE;
+          case 4: return STRING;
+          case 5: return BYTES;
+          case 6: return REFERENCE;
           default: return null;
         }
       }
@@ -908,11 +839,11 @@ final class V1TypeDomain {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDescriptor().getEnumTypes().get(1);
+        return com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDescriptor().getEnumTypes().get(0);
       }
       
       private static final Type[] VALUES = {
-        INT, FLOAT, DOUBLE, STRING, BYTES, REFERENCE, 
+        INT32, INT64, FLOAT, DOUBLE, STRING, BYTES, REFERENCE, 
       };
       public static Type valueOf(
           com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
@@ -957,13 +888,6 @@ final class V1TypeDomain {
     public boolean hasNullable() { return hasNullable; }
     public boolean getNullable() { return nullable_; }
     
-    // optional .ogre.PropertyMessage.BitLength bitLength = 4;
-    public static final int BITLENGTH_FIELD_NUMBER = 4;
-    private boolean hasBitLength;
-    private com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.BitLength bitLength_;
-    public boolean hasBitLength() { return hasBitLength; }
-    public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.BitLength getBitLength() { return bitLength_; }
-    
     // optional uint32 referenceTypeIndex = 5;
     public static final int REFERENCETYPEINDEX_FIELD_NUMBER = 5;
     private boolean hasReferenceTypeIndex;
@@ -972,8 +896,7 @@ final class V1TypeDomain {
     public int getReferenceTypeIndex() { return referenceTypeIndex_; }
     
     private void initFields() {
-      propertyType_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type.INT;
-      bitLength_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.BitLength.INT_8;
+      propertyType_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type.INT32;
     }
     public final boolean isInitialized() {
       if (!hasName) return false;
@@ -993,9 +916,6 @@ final class V1TypeDomain {
       }
       if (hasNullable()) {
         output.writeBool(3, getNullable());
-      }
-      if (hasBitLength()) {
-        output.writeEnum(4, getBitLength().getNumber());
       }
       if (hasReferenceTypeIndex()) {
         output.writeUInt32(5, getReferenceTypeIndex());
@@ -1020,10 +940,6 @@ final class V1TypeDomain {
       if (hasNullable()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(3, getNullable());
-      }
-      if (hasBitLength()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(4, getBitLength().getNumber());
       }
       if (hasReferenceTypeIndex()) {
         size += com.google.protobuf.CodedOutputStream
@@ -1196,9 +1112,6 @@ final class V1TypeDomain {
         if (other.hasNullable()) {
           setNullable(other.getNullable());
         }
-        if (other.hasBitLength()) {
-          setBitLength(other.getBitLength());
-        }
         if (other.hasReferenceTypeIndex()) {
           setReferenceTypeIndex(other.getReferenceTypeIndex());
         }
@@ -1243,16 +1156,6 @@ final class V1TypeDomain {
             }
             case 24: {
               setNullable(input.readBool());
-              break;
-            }
-            case 32: {
-              int rawValue = input.readEnum();
-              com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.BitLength value = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.BitLength.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(4, rawValue);
-              } else {
-                setBitLength(value);
-              }
               break;
             }
             case 40: {
@@ -1302,7 +1205,7 @@ final class V1TypeDomain {
       }
       public Builder clearPropertyType() {
         result.hasPropertyType = false;
-        result.propertyType_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type.INT;
+        result.propertyType_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type.INT32;
         return this;
       }
       
@@ -1321,27 +1224,6 @@ final class V1TypeDomain {
       public Builder clearNullable() {
         result.hasNullable = false;
         result.nullable_ = false;
-        return this;
-      }
-      
-      // optional .ogre.PropertyMessage.BitLength bitLength = 4;
-      public boolean hasBitLength() {
-        return result.hasBitLength();
-      }
-      public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.BitLength getBitLength() {
-        return result.getBitLength();
-      }
-      public Builder setBitLength(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.BitLength value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        result.hasBitLength = true;
-        result.bitLength_ = value;
-        return this;
-      }
-      public Builder clearBitLength() {
-        result.hasBitLength = false;
-        result.bitLength_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.BitLength.INT_8;
         return this;
       }
       
@@ -1403,16 +1285,14 @@ final class V1TypeDomain {
       "omainMessage\022\024\n\014typeDomainId\030\001 \002(\t\022,\n\013en" +
       "tityTypes\030\002 \003(\0132\027.ogre.EntityTypeMessage" +
       "\"L\n\021EntityTypeMessage\022\014\n\004name\030\001 \002(\t\022)\n\np" +
-      "roperties\030\002 \003(\0132\025.ogre.PropertyMessage\"\275" +
-      "\002\n\017PropertyMessage\022\014\n\004name\030\001 \002(\t\0220\n\014prop" +
+      "roperties\030\002 \003(\0132\025.ogre.PropertyMessage\"\332" +
+      "\001\n\017PropertyMessage\022\014\n\004name\030\001 \002(\t\0220\n\014prop" +
       "ertyType\030\002 \002(\0162\032.ogre.PropertyMessage.Ty" +
-      "pe\022\020\n\010nullable\030\003 \002(\010\0222\n\tbitLength\030\004 \001(\0162" +
-      "\037.ogre.PropertyMessage.BitLength\022\032\n\022refe" +
-      "renceTypeIndex\030\005 \001(\r\":\n\tBitLength\022\t\n\005INT",
-      "_8\020\010\022\n\n\006INT_16\020\020\022\n\n\006INT_32\020 \022\n\n\006INT_64\020@" +
-      "\"L\n\004Type\022\007\n\003INT\020\000\022\t\n\005FLOAT\020\001\022\n\n\006DOUBLE\020\002" +
-      "\022\n\n\006STRING\020\003\022\t\n\005BYTES\020\004\022\r\n\tREFERENCE\020\005B " +
-      "\n\036com.berniecode.ogre.wireformat"
+      "pe\022\020\n\010nullable\030\003 \002(\010\022\032\n\022referenceTypeInd" +
+      "ex\030\005 \001(\r\"Y\n\004Type\022\t\n\005INT32\020\000\022\t\n\005INT64\020\001\022\t" +
+      "\n\005FLOAT\020\002\022\n\n\006DOUBLE\020\003\022\n\n\006STRING\020\004\022\t\n\005BYT",
+      "ES\020\005\022\r\n\tREFERENCE\020\006B \n\036com.berniecode.og" +
+      "re.wireformat"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1440,7 +1320,7 @@ final class V1TypeDomain {
           internal_static_ogre_PropertyMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogre_PropertyMessage_descriptor,
-              new java.lang.String[] { "Name", "PropertyType", "Nullable", "BitLength", "ReferenceTypeIndex", },
+              new java.lang.String[] { "Name", "PropertyType", "Nullable", "ReferenceTypeIndex", },
               com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.class,
               com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder.class);
           return null;

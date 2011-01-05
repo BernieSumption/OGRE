@@ -11,7 +11,6 @@ import com.berniecode.ogre.enginelib.EntityDiff;
 import com.berniecode.ogre.enginelib.EntityType;
 import com.berniecode.ogre.enginelib.EntityUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdate;
-import com.berniecode.ogre.enginelib.IntegerProperty;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.Property;
 import com.berniecode.ogre.enginelib.ReferenceProperty;
@@ -24,7 +23,6 @@ import com.berniecode.ogre.wireformat.V1GraphUpdate.GraphUpdateMessage;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage;
 import com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage;
 import com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage;
-import com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.BitLength;
 import com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type;
 import com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage;
 import com.google.protobuf.ByteString;
@@ -70,36 +68,33 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		
 		EntityType[] entityTypes = new EntityType[tdm.getEntityTypesCount()];
 		for (int i = 0; i < entityTypes.length; i++) {
-			entityTypes[i] = convertEntityType(i, tdm.getEntityTypes(i), entityTypeNames);
+			entityTypes[i] = convertEntityType(tdm.getEntityTypes(i), entityTypeNames);
 		} 
 		return entityTypes;
 	}
 
-	private EntityType convertEntityType(int index, EntityTypeMessage etm, String[] entityTypeNames) {
-		return new EntityType(index, etm.getName(), convertProperties(etm, entityTypeNames));
+	private EntityType convertEntityType(EntityTypeMessage etm, String[] entityTypeNames) {
+		return new EntityType(etm.getName(), convertProperties(etm, entityTypeNames));
 	}
 
 	private Property[] convertProperties(EntityTypeMessage etm, String[] entityTypeNames) {
 		Property[] properties = new Property[etm.getPropertiesCount()];
 		for (int i = 0; i < properties.length; i++) {
-			properties[i] = convertProperty(i, etm.getProperties(i), entityTypeNames);
+			properties[i] = convertProperty(etm.getProperties(i), entityTypeNames);
 		}
 		return properties;
 	}
 
-	private Property convertProperty(int index, PropertyMessage pm, String[] entityTypeNames) {
+	private Property convertProperty(PropertyMessage pm, String[] entityTypeNames) {
 		Type propertyType = pm.getPropertyType();
 		String name = pm.getName();
-		if (propertyType == Type.INT) {
-			return new IntegerProperty(index, name, pm.getBitLength().getNumber(), pm.getNullable());
-		}
 		if (propertyType == Type.REFERENCE) {
 			if (!pm.hasReferenceTypeIndex()) {
 				throw new OgreException("PropertyMessage " + name + " is of type Type.REFERENCE but has no referenceTypeIndex");
 			}
-			return new ReferenceProperty(index, name, entityTypeNames[pm.getReferenceTypeIndex()]);
+			return new ReferenceProperty(name, entityTypeNames[pm.getReferenceTypeIndex()]);
 		}
-		return new Property(index, name, propertyType.getNumber(), pm.getNullable());
+		return new Property(name, propertyType.getNumber(), pm.getNullable());
 	}
 
 	/**
@@ -118,9 +113,6 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 					.setName(property.getName())
 					.setPropertyType(Type.valueOf(property.getTypeCode()))
 					.setNullable(property.isNullable());
-				if (property instanceof IntegerProperty) {
-					pBuilder.setBitLength(BitLength.valueOf(((IntegerProperty) property).getBitLength()));
-				}
 				if (property instanceof ReferenceProperty) {
 					pBuilder.setReferenceTypeIndex(((ReferenceProperty) property).getReferenceType().getEntityTypeIndex());
 				}
@@ -175,7 +167,8 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 				} else {
 					try {
 						switch(property.getTypeCode()) {
-						case Property.TYPECODE_INT:
+						case Property.TYPECODE_INT32:
+						case Property.TYPECODE_INT64:
 							pvBuilder.setIntValue(numberToLong(value));
 							break;
 						case Property.TYPECODE_FLOAT:
@@ -290,7 +283,10 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 				}
 			} else {
 				switch (property.getTypeCode()) {
-				case Property.TYPECODE_INT:
+				case Property.TYPECODE_INT32:
+					value = (int) pvm.getIntValue();
+					break;
+				case Property.TYPECODE_INT64:
 					value = pvm.getIntValue();
 					break;
 				case Property.TYPECODE_FLOAT:

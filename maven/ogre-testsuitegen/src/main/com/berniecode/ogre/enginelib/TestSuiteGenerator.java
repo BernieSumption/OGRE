@@ -27,7 +27,6 @@ public class TestSuiteGenerator {
 	private static final String GRAPH_UPDATE_MESSAGE_FILE_PATTERN = "graph-update-%d.message";
 	private static final String TRACE_FILE_NAME = "description.txt";
 	
-	private static final Integer[] ALL_INTEGER_BITLENGTHS = new Integer[] {8, 16, 32, 64};
 	private static final Boolean[] TRUE_OR_FALSE = new Boolean[] {true, false};
 
 	private static final int MAX_ENTITIES_TO_CHANGE_PER_ITERATION = 3;
@@ -240,7 +239,7 @@ public class TestSuiteGenerator {
 		}
 		EntityType[] entityTypes = new EntityType[length];
 		for (int i = 0; i < entityTypes.length; i++) {
-			entityTypes[i] = new EntityType(i, names[i], makeRandomProperties(names[i], names));
+			entityTypes[i] = new EntityType(names[i], makeRandomProperties(names[i], names));
 		}
 		return entityTypes;
 	}
@@ -254,11 +253,9 @@ public class TestSuiteGenerator {
 			String name = entityTypeName + Property.getNameForTypecode(typeCode) + "Property" + i;
 			if (typeCode == Property.TYPECODE_REFERENCE) {
 				String referenceTypeName = makeRandomChoice(entityTypeNames);
-				property = new ReferenceProperty(i, name, referenceTypeName);
-			} else if (typeCode == Property.TYPECODE_INT) {
-				property = new IntegerProperty(i, name, makeRandomChoice(ALL_INTEGER_BITLENGTHS), makeRandomChoice(TRUE_OR_FALSE));
+				property = new ReferenceProperty(name, referenceTypeName);
 			} else {
-				property = new Property(i, name, typeCode, makeRandomChoice(TRUE_OR_FALSE));
+				property = new Property(name, typeCode, makeRandomChoice(TRUE_OR_FALSE));
 			}
 			properties[i] = property;
 		}
@@ -314,7 +311,7 @@ public class TestSuiteGenerator {
 	
 	private Object makeRandomPropertyValue(Property property, Map<EntityType, List<Long>> idMap) {
 		switch(property.getTypeCode()) {
-		case Property.TYPECODE_INT:
+		case Property.TYPECODE_INT32:
 			return random.nextLong();
 		case Property.TYPECODE_FLOAT:
 			return random.nextFloat();

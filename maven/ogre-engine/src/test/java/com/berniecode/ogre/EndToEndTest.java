@@ -42,18 +42,18 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"  0. EntityType EntityClassWithAllFields" +
 				"       nullable byte-array property bytes" +
 				"       reference to EntityElement property entity_element" +
-				"       8 bit integer property non_nullable_byte" +
+				"       int32 property non_nullable_byte" +
 				"       double property non_nullable_double" +
 				"       float property non_nullable_float" +
-				"       32 bit integer property non_nullable_int" +
-				"       64 bit integer property non_nullable_long" +
-				"       16 bit integer property non_nullable_short" +
-				"       nullable 8 bit integer property nullable_byte" +
+				"       int32 property non_nullable_int" +
+				"       int64 property non_nullable_long" +
+				"       int32 property non_nullable_short" +
+				"       nullable int32 property nullable_byte" +
 				"       nullable double property nullable_double" +
 				"       nullable float property nullable_float" +
-				"       nullable 32 bit integer property nullable_int" +
-				"       nullable 64 bit integer property nullable_long" +
-				"       nullable 16 bit integer property nullable_short" +
+				"       nullable int32 property nullable_int" +
+				"       nullable int64 property nullable_long" +
+				"       nullable int32 property nullable_short" +
 				"       nullable string property string" +
 				"  1. EntityType EntityElement" +
 				"       nullable string property name",

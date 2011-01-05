@@ -13,7 +13,6 @@ import com.berniecode.ogre.enginelib.EntityDiff;
 import com.berniecode.ogre.enginelib.EntityReference;
 import com.berniecode.ogre.enginelib.EntityType;
 import com.berniecode.ogre.enginelib.GraphUpdate;
-import com.berniecode.ogre.enginelib.IntegerProperty;
 import com.berniecode.ogre.enginelib.MessageClientAdapter;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.Property;
@@ -47,11 +46,11 @@ public class ClientEngineTest extends OgreTestCase {
 		downloadClientAdapter = context.mock(DownloadClientAdapter.class); 
 		messageClientAdapter = context.mock(MessageClientAdapter.class); 
 
-		entityType0 = new EntityType(0, "entityType0", new Property[] {
-				new IntegerProperty(0, "property0", 32, false),
-				new IntegerProperty(1, "property1", 64, false)
+		entityType0 = new EntityType("entityType0", new Property[] {
+				new Property("property0", Property.TYPECODE_INT32, false),
+				new Property("property1", Property.TYPECODE_INT32, false)
 		});
-		entityType1 = new EntityType(0, "entityType1", new Property[] {});
+		entityType1 = new EntityType("entityType1", new Property[] {});
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0, entityType1 });
 		
 		initialValueUpdate = new GraphUpdate(typeDomain, OBJECT_GRAPH_ID, null, null, null);
@@ -147,8 +146,8 @@ public class ClientEngineTest extends OgreTestCase {
 
 	public void testEntityMergingError() throws Exception {
 
-		entityType0 = new EntityType(0, "entityType0", new Property[] {
-				new ReferenceProperty(0, "reference", "entityType0")
+		entityType0 = new EntityType("entityType0", new Property[] {
+				new ReferenceProperty("reference", "entityType0")
 		});
 		
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0 });

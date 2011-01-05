@@ -13,8 +13,8 @@ public class ReferenceProperty extends Property {
 	private final String referenceTypeName;
 	private final String toStringCache;
 
-	public ReferenceProperty(int propertyIndex, String name, String referenceTypeName) {
-		super(propertyIndex, name, TYPECODE_REFERENCE, true);
+	public ReferenceProperty(String name, String referenceTypeName) {
+		super(name, TYPECODE_REFERENCE, true);
 		this.referenceTypeName = referenceTypeName;
 		toStringCache = "reference to " + referenceTypeName + " property " + getName();
 	}
@@ -30,11 +30,12 @@ public class ReferenceProperty extends Property {
 	/**
 	 * @private
 	 */
-	void setEntityType(EntityType entityType) {
+	void initialise(EntityType entityType, int propertyIndex) {
 		referenceType = entityType.getTypeDomain().getEntityTypeByName(referenceTypeName);
 		if (referenceType == null) {
 			throw new OgreException("Can't initialise property '" + this + "' because the type domain does not contain a type '" + referenceTypeName + "'");
 		}
+		super.initialise(entityType, propertyIndex);
 	}
 
 }

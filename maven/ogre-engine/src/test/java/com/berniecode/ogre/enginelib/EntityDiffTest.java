@@ -1,12 +1,6 @@
 package com.berniecode.ogre.enginelib;
 
 import com.berniecode.ogre.OgreTestCase;
-import com.berniecode.ogre.enginelib.Entity;
-import com.berniecode.ogre.enginelib.EntityDiff;
-import com.berniecode.ogre.enginelib.EntityType;
-import com.berniecode.ogre.enginelib.IntegerProperty;
-import com.berniecode.ogre.enginelib.Property;
-import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
 /**
@@ -25,11 +19,11 @@ public class EntityDiffTest extends OgreTestCase {
 	@Override
 	public void doAdditionalSetup() {
 
-		entityType0 = new EntityType(0, "entityType0", new Property[] {
-				property0 = new IntegerProperty(0, "property0", 32, false),
-				property1 = new IntegerProperty(1, "property1", 64, false)
+		entityType0 = new EntityType("entityType0", new Property[] {
+				property0 = new Property("property0", Property.TYPECODE_INT32, false),
+				property1 = new Property("property1", Property.TYPECODE_INT64, false)
 		});
-		entityType1 = new EntityType(0, "entityType1", new Property[] {});
+		entityType1 = new EntityType("entityType1", new Property[] {});
 		typeDomain = new TypeDomain("typeDomain", new EntityType[] { entityType0, entityType1 });
 	}
 

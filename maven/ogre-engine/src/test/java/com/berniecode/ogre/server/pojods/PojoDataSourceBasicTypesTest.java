@@ -17,7 +17,7 @@ public class PojoDataSourceBasicTypesTest extends OgreTestCase {
 			"TypeDomain TypeDomain" +
 			"  0. EntityType SimpleEntityClassNoFields" +
 			"  1. EntityType SimpleEntityClassOne" +
-			"       32 bit integer property public_int_property",
+			"       int32 property public_int_property",
 			dataSource.getTypeDomain());
 	}
 	
@@ -107,7 +107,7 @@ public class PojoDataSourceBasicTypesTest extends OgreTestCase {
 		assertTypeDomainState(
 			"TypeDomain TypeDomain" +
 			"  0. EntityType SimpleInterface" +
-			"       32 bit integer property public_int_property",
+			"       int32 property public_int_property",
 			dataSource.getTypeDomain());
 		
 		dataSource.setEntityObjects(new SimpleEntityClassOne());
@@ -151,7 +151,7 @@ public class PojoDataSourceBasicTypesTest extends OgreTestCase {
 		assertTypeDomainState(
 				"TypeDomain custom-typedomain-name" +
 				"  0. EntityType custom-entity-name" +
-				"       32 bit integer property public_int_property",
+				"       int32 property public_int_property",
 				dataSource.getTypeDomain());
 		
 		dataSource.setEntityObjects(new SimpleEntityClassOne());

@@ -13,10 +13,10 @@ public class EntityStoreTest extends OgreTestCase {
 	@Override
 	public void doAdditionalSetup() throws Exception {
 
-		parentType = new EntityType(0, "parentType", new Property[] {
-				refProperty = new ReferenceProperty(0, "refProperty", "childType")
+		parentType = new EntityType("parentType", new Property[] {
+				refProperty = new ReferenceProperty("refProperty", "childType")
 		});
-		childType = new EntityType(1, "childType", new Property[] {});
+		childType = new EntityType("childType", new Property[] {});
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { parentType, childType });
 	}
 	

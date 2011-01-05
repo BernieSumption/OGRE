@@ -22,9 +22,18 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  */
 public class Entity implements EntityReference, EntityUpdate {
 
+	/**
+	 * The minimum permitted ID
+	 */
 	public static final long MIN_ID = 1L;
+	
 	//TODO verify this number
-	public static final long MAX_ID = 0x000FFFFFFFFFFFFFL; // 2^52 - highest permissable id
+	/**
+	 * The maximum permitted ID is 2^52. Higher IDs can't be unambiguously represented as double
+	 * precision floating point numbers, and some clients must use that representation as the host
+	 * language has no native long integer
+	 */
+	public static final long MAX_ID = 0x000FFFFFFFFFFFFFL; 
 	
 	private boolean wired = false;
 
@@ -37,11 +46,9 @@ public class Entity implements EntityReference, EntityUpdate {
 	 */
 	public Entity(EntityType entityType, long id, Object[] initialValues) {
 		if (id < 1) {
-			//TODO test this
 			throw new OgreException("IDs must be positive integers between 1 and 2^52");
 		}
 		if (id > MAX_ID) {
-			//TODO test this
 			OgreLog.warn("Entity " + entityType + "#" + id + " has an ID higer than 2^52, and may cause undefined bahaviour on client languages with no long integer type");
 		}
 		this.entityType = entityType;

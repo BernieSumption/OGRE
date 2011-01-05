@@ -10,15 +10,14 @@ import com.berniecode.ogre.enginelib.platformhooks.ArrayBuilder;
  */
 public class EntityType {
 
-	private final int index;
 	private final String name;
 	private final Property[] properties;
 	private ReferenceProperty[] referenceProperties;
+
+	private int entityTypeIndex;
 	private TypeDomain typeDomain;
 
-	public EntityType(int index, String name, Property[] properties) {
-		//TODO have parent typedomain set index
-		this.index = index;
+	public EntityType(String name, Property[] properties) {
 		this.name = name;
 		this.properties = properties;
 		
@@ -35,7 +34,7 @@ public class EntityType {
 	 * @return The index of this {@link EntityType} in its parent {@link TypeDomain}
 	 */
 	public int getEntityTypeIndex() {
-		return index;
+		return entityTypeIndex;
 	}
 
 	/**
@@ -80,10 +79,11 @@ public class EntityType {
 	/**
 	 * @private
 	 */
-	void setTypeDomain(TypeDomain typeDomain) {
+	void initialise(TypeDomain typeDomain, int entityTypeIndex) {
 		this.typeDomain = typeDomain;
+		this.entityTypeIndex = entityTypeIndex;
 		for (int i = 0; i < properties.length; i++) {
-			properties[i].setEntityType(this);
+			properties[i].initialise(this, i);
 		}
 	}
 

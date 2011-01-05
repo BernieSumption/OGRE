@@ -10,19 +10,19 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
  */
 public class Property {
 	
-	private static final String[] TYPECODE_NAMES = {"int", "float", "double", "string", "byte-array", "reference"};
+	private static final String[] TYPECODE_NAMES = {"int32", "int64", "float", "double", "string", "byte-array", "reference"};
 	
-	// INT Property objects can be cast to IntegerProperty to access more information
-    public static final int TYPECODE_INT       = 0;
-    public static final int TYPECODE_FLOAT     = 1;
-    public static final int TYPECODE_DOUBLE    = 2;
-    public static final int TYPECODE_STRING    = 3;
-    public static final int TYPECODE_BYTES     = 4;
+    public static final int TYPECODE_INT32     = 0;
+	public static final int TYPECODE_INT64     = 1;
+    public static final int TYPECODE_FLOAT     = 2;
+    public static final int TYPECODE_DOUBLE    = 3;
+    public static final int TYPECODE_STRING    = 4;
+    public static final int TYPECODE_BYTES     = 5;
 	// REFERENCE Property objects can be cast to ReferenceProperty to access more information
-    public static final int TYPECODE_REFERENCE = 5;
+    public static final int TYPECODE_REFERENCE = 6;
+
     
 
-	private final int propertyIndex;
 	private final String name;
 	private final int typeCode;
 	private final boolean nullable;
@@ -30,13 +30,13 @@ public class Property {
 	private final String toStringCache;
 
 	private EntityType entityType;
+	private int propertyIndex;
 
-	public Property(int propertyIndex, String name, int typeCode, boolean nullable) {
+	public Property(String name, int typeCode, boolean nullable) {
 		if (typeCode < 0 || typeCode >= TYPECODE_NAMES.length) {
 			throw new OgreException(typeCode + " is not a valid typecode.");
 		}
 		this.typeCode = typeCode;
-		this.propertyIndex = propertyIndex;
 		this.name = name;
 		this.nullable = nullable;
 		toStringCache = (nullable ? "nullable " : "") + TYPECODE_NAMES[typeCode] + " property " + name;
@@ -85,8 +85,10 @@ public class Property {
 	/**
 	 * @private
 	 */
-	void setEntityType(EntityType entityType) {
+	//TODO rename to initialise()
+	void initialise(EntityType entityType, int propertyIndex) {
 		this.entityType = entityType;
+		this.propertyIndex = propertyIndex;
 	}
 	
 	public static String getNameForTypecode(int typeCode) {
