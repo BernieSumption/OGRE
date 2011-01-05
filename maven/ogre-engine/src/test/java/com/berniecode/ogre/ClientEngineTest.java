@@ -48,7 +48,7 @@ public class ClientEngineTest extends OgreTestCase {
 
 		entityType0 = new EntityType("entityType0", new Property[] {
 				new Property("property0", Property.TYPECODE_INT32, false),
-				new Property("property1", Property.TYPECODE_INT32, false)
+				new Property("property1", Property.TYPECODE_INT64, false)
 		});
 		entityType1 = new EntityType("entityType1", new Property[] {});
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0, entityType1 });

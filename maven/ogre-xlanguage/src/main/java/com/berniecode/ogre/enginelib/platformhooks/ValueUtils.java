@@ -3,6 +3,9 @@ package com.berniecode.ogre.enginelib.platformhooks;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import com.berniecode.ogre.enginelib.Entity;
+import com.berniecode.ogre.enginelib.Property;
+
 /**
  * Cross-language operations for working with values
  *
@@ -109,6 +112,49 @@ public class ValueUtils {
 	 */
 	public static Long boxLong(long id) {
 		return Long.valueOf(id);
+	}
+
+	/**
+	 * Check whether an arbitrary value is a suitable runtime type for a specific property
+	 * 
+	 * @throws OgreException if the value is not of the correct type
+	 */
+	public static void validatePropertyValue(Property property, Object object, boolean wired) {
+		if (object == null) {
+			if (!property.isNullable()) {
+				throw new OgreException("Invalid value for " + property + ": null values are not permitted");
+			}
+			return;
+		}
+		Class requiredClass;
+		switch(property.getTypeCode()) {
+		case Property.TYPECODE_INT32:
+			requiredClass = Integer.class;
+			break;
+		case Property.TYPECODE_INT64:
+			requiredClass = Long.class;
+			break;
+		case Property.TYPECODE_FLOAT:
+			requiredClass = Float.class;
+			break;
+		case Property.TYPECODE_DOUBLE:
+			requiredClass = Double.class;
+			break;
+		case Property.TYPECODE_STRING:
+			requiredClass = String.class;
+			break;
+		case Property.TYPECODE_BYTES:
+			requiredClass = byte[].class;
+			break;
+		case Property.TYPECODE_REFERENCE:
+			requiredClass = wired ? Entity.class : Long.class;
+			break;
+		default:
+			throw new OgreException(property + " has invalid invalid typeCode: " + property.getTypeCode());
+		}
+		if (!requiredClass.isAssignableFrom(object.getClass())) {
+			throw new OgreException("Invalid value for " + property + ": expected " + requiredClass + ", found " + object.getClass());
+		}
 	}
 
 }

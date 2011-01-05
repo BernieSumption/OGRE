@@ -340,6 +340,12 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		if (property instanceof ReferenceProperty) {
 			return getIdForObject(o);
 		}
+		if (o instanceof Byte) {
+			return ((Byte) o).intValue();
+		}
+		if (o instanceof Short) {
+			return ((Short) o).intValue();
+		}
 		return o;
 	}
 

@@ -27,12 +27,12 @@ public class Entity implements EntityReference, EntityUpdate {
 	 */
 	public static final long MIN_ID = 1L;
 	
-	//TODO verify this number
 	/**
 	 * The maximum permitted ID is 2^52. Higher IDs can't be unambiguously represented as double
 	 * precision floating point numbers, and some clients must use that representation as the host
 	 * language has no native long integer
 	 */
+	//TODO verify this number
 	public static final long MAX_ID = 0x000FFFFFFFFFFFFFL; 
 	
 	private boolean wired = false;
@@ -115,8 +115,9 @@ public class Entity implements EntityReference, EntityUpdate {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
 			if (update.hasUpdatedValue(property)) {
-				//TODO validate runtime types
-				values[i] = update.getPropertyValue(property);
+				Object value = update.getPropertyValue(property);
+				ValueUtils.validatePropertyValue(property, value, wired);
+				values[i] = value;
 			}
 		}
 	}
@@ -127,7 +128,7 @@ public class Entity implements EntityReference, EntityUpdate {
 	 */
 	void updateFromArray(Object[] update) {
 		for (int i = 0; i < update.length; i++) {
-			//TODO validate runtime types
+			ValueUtils.validatePropertyValue(entityType.getProperty(i), update[i], wired);
 			values[i] = update[i];
 		}
 	}
