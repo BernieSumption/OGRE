@@ -77,7 +77,7 @@ public class EntityValue implements EntityReference, PartialRawPropertyValueSet 
 				continue;
 			}
 			if (property.getReferenceType() == entity.getEntityType()) {
-				if (ValueUtils.unboxLong(value) == entity.getEntityId()) {
+				if (ValueUtils.objectToId(value) == entity.getEntityId()) {
 					values[propertyIndex] = null;
 				}
 			}

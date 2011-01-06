@@ -110,7 +110,7 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 				// resolve Entity references
 				if (value != null && property instanceof ReferenceProperty) {
 					EntityType refType = ((ReferenceProperty) property).getReferenceType();
-					long refId = ValueUtils.unboxLong(value);
+					long refId = ValueUtils.objectToId(value);
 					value = getEntity(refType, refId, store, array);
 					if (value == null) {
 						throw new OgreException("Property '" + property + "' of entity type " + property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
@@ -170,8 +170,8 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 
 	public Object getRawPropertyValue(Property property) {
 		Object value = getPropertyValue(property);
-		if (property instanceof ReferenceProperty) {
-			return ValueUtils.boxLong(((Entity) value).getEntityId());
+		if (value != null && property instanceof ReferenceProperty) {
+			return ValueUtils.idToObject(((Entity) value).getEntityId());
 		}
 		return value;
 	}

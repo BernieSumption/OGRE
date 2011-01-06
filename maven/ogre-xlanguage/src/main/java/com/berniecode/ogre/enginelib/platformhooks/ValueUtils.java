@@ -103,15 +103,14 @@ public class ValueUtils {
 	/**
 	 * Coerce a {@code Long} object into a native long value
 	 */
-	//TODO rename objectToId
-	public static long unboxLong(Object id) {
+	public static long objectToId(Object id) {
 		return ((Long) id).longValue();
 	}
 
 	/**
 	 * Coerce a native long value into a {@code Long} object
 	 */
-	public static Long boxLong(long id) {
+	public static Long idToObject(long id) {
 		return Long.valueOf(id);
 	}
 

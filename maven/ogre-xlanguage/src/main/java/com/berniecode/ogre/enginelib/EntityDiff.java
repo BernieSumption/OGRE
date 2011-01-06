@@ -36,7 +36,7 @@ public class EntityDiff extends EntityValue {
 			Object toValue = to.getRawPropertyValue(property);
 			if (!ValueUtils.valuesAreEquivalent(fromValue, toValue)) {
 				if (toValue instanceof Entity) {
-					changedValues[i] = ValueUtils.boxLong(((Entity) toValue).getEntityId());
+					changedValues[i] = ValueUtils.idToObject(((Entity) toValue).getEntityId());
 				} else {
 					changedValues[i] = toValue;
 				}

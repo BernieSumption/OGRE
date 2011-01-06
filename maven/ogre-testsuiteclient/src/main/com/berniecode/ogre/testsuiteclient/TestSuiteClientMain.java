@@ -3,6 +3,8 @@ package com.berniecode.ogre.testsuiteclient;
 import java.io.File;
 import java.io.IOException;
 
+import com.berniecode.ogre.enginelib.OgreLog;
+
 public class TestSuiteClientMain {
 
 	/**
@@ -19,18 +21,14 @@ public class TestSuiteClientMain {
 			System.err.println("The path " + suiteFolder.getPath() + " is not a directory");
 			System.exit(1);
 		}
-		File typeDomainMessage = new File(suiteFolder, TestSuiteClient.TYPE_DOMAIN_MESSAGE_FILE_NAME);
-		File initialDataMessage = new File(suiteFolder, TestSuiteClient.INITIAL_DATA_MESSAGE_FILE_NAME);
-		if (!typeDomainMessage.isFile()) {
-			System.err.println("There is no type domain message at " + typeDomainMessage.getPath());
-			System.exit(1);
-		}
-		if (!typeDomainMessage.isFile()) {
-			System.err.println("There is no initial data message at " + initialDataMessage.getPath());
-			System.exit(1);
+		OgreLog.setLevel(OgreLog.LEVEL_WARN);
+		for (File childFolder: suiteFolder.listFiles()) {
+			if (new File(childFolder, TestSuiteClient.TYPE_DOMAIN_MESSAGE_FILE_NAME).exists()) {
+				System.err.println("Running test suite " + childFolder);
+				new TestSuiteClient(childFolder).runTestSuite();
+			}
 		}
 		
-		new TestSuiteClient(suiteFolder).runTestSuite();
 		
 	}
 

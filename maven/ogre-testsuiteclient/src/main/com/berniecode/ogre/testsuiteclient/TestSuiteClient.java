@@ -14,6 +14,7 @@ import com.berniecode.ogre.enginelib.ClientEngine;
 import com.berniecode.ogre.enginelib.DownloadClientAdapter;
 import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.server.pojods.EntityReferenceComparator;
@@ -25,6 +26,7 @@ public class TestSuiteClient {
 	public static final String INITIAL_DATA_MESSAGE_FILE_NAME = "initial-data.message";
 	public static final String GRAPH_UPDATE_MESSAGE_FILE_PATTERN = "graph-update-%d.message";
 	public static final String TRACE_FILE_NAME = "java-client-trace.txt";
+	public static final String REFERENCE_TRACE_FILE_NAME = "trace.txt";
 
 	private BufferedWriter traceFileWriter;
 	private final File suiteFolder;
@@ -86,6 +88,10 @@ public class TestSuiteClient {
 		
 		} finally {
 			traceFileWriter.close();
+		}
+		
+		if (!Arrays.equals(readFile(traceFile), readFile(new File(suiteFolder, REFERENCE_TRACE_FILE_NAME)))) {
+			OgreLog.error("Differences detected in test suite " + suiteFolder.getName());
 		}
 	}
 

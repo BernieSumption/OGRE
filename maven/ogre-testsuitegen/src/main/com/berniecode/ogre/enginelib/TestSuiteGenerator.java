@@ -25,12 +25,12 @@ public class TestSuiteGenerator {
 	private static final String TYPE_DOMAIN_MESSAGE_FILE_NAME = "type-domain.message";
 	private static final String INITIAL_DATA_MESSAGE_FILE_NAME = "initial-data.message";
 	private static final String GRAPH_UPDATE_MESSAGE_FILE_PATTERN = "graph-update-%d.message";
-	private static final String TRACE_FILE_NAME = "description.txt";
+	private static final String TRACE_FILE_NAME = "trace.txt";
 	
 	private static final Boolean[] TRUE_OR_FALSE = new Boolean[] {true, false};
 
-	private static final int MAX_ENTITIES_TO_CHANGE_PER_ITERATION = 3;
-	private static final int MAX_ENTITIES_TO_DELETE_PER_ITERATION = 3;
+	private static final int MAX_ENTITIES_TO_CHANGE_PER_ITERATION = 10;
+	private static final int MAX_ENTITIES_TO_DELETE_PER_ITERATION = 10;
 	private static final int MAX_ENTITIES_TO_ADD_PER_ITERATION = 3;
 	
 	private static final int MAX_RANDOM_STRING_LENGTH = 20;
@@ -40,7 +40,7 @@ public class TestSuiteGenerator {
 
 	private static final int MAX_PROPERTIES_PER_ENTITY_TYPE = 20;
 
-	private static final int MAX_INITIAL_ENTITIES = 10;
+	private static final int MAX_INITIAL_ENTITIES = 100;
 	
 	
 	private static boolean OVERWRITE_TEST_SUITES = true;
