@@ -91,14 +91,14 @@ public class TestSuiteClient {
 
 	private String describeObjectGraph(ClientEngine engine) {
 		GraphUpdate objectGraph = engine.createSnapshot();
-		Arrays.sort(objectGraph.getEntityValues(), new EntityReferenceComparator());
+		Arrays.sort(objectGraph.getEntityCreates(), new EntityReferenceComparator());
 		return EDRDescriber.describeObjectGraph(objectGraph);
 	}
 
 	private String describeGraphUpdate(GraphUpdate graphUpdate) {
 		EntityReferenceComparator comparator = new EntityReferenceComparator();
-		Arrays.sort(graphUpdate.getEntityValues(), comparator);
-		Arrays.sort(graphUpdate.getEntityDiffs(), comparator);
+		Arrays.sort(graphUpdate.getEntityCreates(), comparator);
+		Arrays.sort(graphUpdate.getEntityUpdates(), comparator);
 		Arrays.sort(graphUpdate.getEntityDeletes(), comparator);
 		return EDRDescriber.describeGraphUpdate(graphUpdate);
 	}

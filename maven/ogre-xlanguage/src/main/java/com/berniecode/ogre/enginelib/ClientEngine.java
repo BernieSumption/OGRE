@@ -1,6 +1,7 @@
 package com.berniecode.ogre.enginelib;
 
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
+import com.berniecode.ogre.enginelib.platformhooks.InvalidGraphUpdateException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
@@ -116,77 +117,54 @@ public class ClientEngine implements GraphUpdateListener {
 	/**
 	 * @private
 	 */
-	public void acceptGraphUpdate(GraphUpdate update) {
-//		requireInitialised(true, "acceptGraphUpdate()");
-//		
-//		// decide what Entities we're going to add
-//		ArrayBuilder builder = new ArrayBuilder(Entity.class);
-//		RawPropertyValueSet[] completeValues = update.getEntityValues();
-//		for (int i = 0; i < completeValues.length; i++) {
-//			if (!entities.containsSimilar(completeValues[i])) {
-//				
-//			}
-//		}
-//		
-//		// wire up the entity references
-//		Entity[] completeEntities = update.getEntityValues();
-//		for (int i = 0; i < completeEntities.length; i++) {
-//			completeEntities[i].wireEntityReferences(entities, completeEntities);
-//		}
-//		
-//		OgreLog.info("ClientEngine: accepted graph update " + update);
-//		if (OgreLog.isDebugEnabled()) {
-//			OgreLog.debug(EDRDescriber.describeGraphUpdate(update));
-//		}
-//		mergeCompleteEntities(completeEntities);
-//		mergeEntityDiffs(update.getEntityDiffs());
-//		mergeEntityDeletes(update.getEntityDeletes());
-	}
+	//TODO expose through UnsaeAccess
+	public void acceptGraphUpdate(GraphUpdate update) throws InvalidGraphUpdateException {
+		requireInitialised(true, "acceptGraphUpdate()");
 
-	/**
-	 * Merge a number of entities into this engine. For each entity, if the engine already contains
-	 * an entity with the same type and id, the existing entity will be updated with values from the
-	 * new entity. Otherwise, the new entity will be added to this engine.
-	 */
-	private void mergeEntityValues(Entity[] completeEntities) {
-		for (int i=0; i<completeEntities.length; i++) {
-			Entity entity = completeEntities[i];
-			Entity existingEntity = entities.getSimilar(entity);
-			if (existingEntity != null) {
-				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: replacing entity " + existingEntity + " with new complete entity value " + entity);
-				}
-				existingEntity.update(entity);
+		
+		OgreLog.info("ClientEngine: applying graph update " + update);
+		if (OgreLog.isDebugEnabled()) {
+			OgreLog.debug(EDRDescriber.describeGraphUpdate(update));
+		}
+		
+		// pre-build the Entities that we're going to add
+		RawPropertyValueSet[] completeValues = update.getEntityCreates();
+		Entity[] newEntities = new Entity[completeValues.length];
+		for (int i = 0; i < completeValues.length; i++) {
+			RawPropertyValueSet value = completeValues[i];
+			if (entities.containsSimilar(value)) {
+				throw new InvalidGraphUpdateException("Ignoring " + value + " value because a similar entity already exists in this engine.");
 			} else {
-				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: adding new entity " + entity);
-				}
-				entities.add(entity);
+				newEntities[i] = new Entity(value.getEntityType(), value.getEntityId(), null); // these entities have no initial values
 			}
 		}
-	}
-
-	/**
-	 * Merge a number of {@link EntityDiff} objects
-	 */
-	private void mergeEntityDiffs(EntityDiff[] entityDiffs) {
-		for (int i=0; i<entityDiffs.length; i++) {
-			EntityDiff diff = entityDiffs[i];
-			Entity target = entities.getSimilar(diff);
+		for (int i = 0; i < newEntities.length; i++) {
+			newEntities[i].update(completeValues[i], entities, newEntities); // wire up values
+		}
+		for (int i = 0; i < newEntities.length; i++) {
+			entities.add(newEntities[i]); // add to this object graph
+		}
+		
+		// apply entity updates
+		PartialRawPropertyValueSet[] entityUpdates = update.getEntityUpdates();
+		for (int i=0; i<entityUpdates.length; i++) {
+			PartialRawPropertyValueSet entityUpdate = entityUpdates[i];
+			Entity target = entities.getSimilar(entityUpdate);
 			if (target == null) {
-				OgreLog.error("ClientEngine: received diff '" + diff + "' but there is no local entity of the same ID and type to apply it to");
+				OgreLog.error("ClientEngine: received diff '" + entityUpdate + "' but there is no local entity of the same ID and type to apply it to");
 			} else {
 				if (OgreLog.isInfoEnabled()) {
-					OgreLog.info("ClientStore: updating values of " + target + " due to " + diff);
+					OgreLog.info("ClientStore: updating values of " + target + " due to " + entityUpdate);
 				}
-				target.update(diff);
+				target.update(entityUpdate, entities, newEntities);
 			}
 		}
-	}
-
-	private void mergeEntityDeletes(EntityDelete[] entityDeletes) {
+		
+		
+		// apply entity deletes
+		EntityReference[] entityDeletes = update.getEntityDeletes();
 		for (int i=0; i<entityDeletes.length; i++) {
-			EntityDelete entityDelete = entityDeletes[i];
+			EntityReference entityDelete = entityDeletes[i];
 			Entity target = entities.getSimilar(entityDelete);
 			if (target == null) {
 				OgreLog.error("ClientEngine: received delete '" + entityDelete + "' but there is no local entity of the same ID and type to apply it to");
@@ -221,7 +199,7 @@ public class ClientEngine implements GraphUpdateListener {
 //			EntityType refType = property.getReferenceType();
 //			Object value = values[property.getPropertyIndex()];
 //			if (value != null) {
-//				long refId = ValueUtils.unboxLong((Long) value);
+//				long refId = ValueUtils.unboxLong(value);
 //				Entity entity = null;
 //				if (store != null) {
 //					entity = store.get(refType, refId);

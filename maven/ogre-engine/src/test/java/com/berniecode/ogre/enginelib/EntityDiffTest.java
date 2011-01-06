@@ -35,7 +35,7 @@ public class EntityDiffTest extends OgreTestCase {
 		EntityDiff message = EntityDiff.build(from, to);
 		
 		assertEntityUpdateState(
-				"PartialRawPropertyValueSet for entityType0#303" +
+				"partial value for entityType0#303" +
 				"  property1=300888",
 				message, typeDomain);
 

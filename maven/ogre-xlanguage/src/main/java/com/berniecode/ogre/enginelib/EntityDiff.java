@@ -21,7 +21,7 @@ public class EntityDiff extends EntityValue {
 	 * @return An {@link EntityDiff} object that if applied to the entity <code>from</code> will
 	 *         change its values to be equal to those of <code>to</code>
 	 */
-	public static EntityDiff build(PartialRawPropertyValueSet from, PartialRawPropertyValueSet to) {
+	public static EntityDiff build(RawPropertyValueSet from, RawPropertyValueSet to) {
 		EntityType entityType = from.getEntityType();
 		if (entityType != to.getEntityType()) {
 			throw new OgreException("Can't build an EntityDiff from " + from + " to " + to + " because their entityTypes are different");
@@ -68,7 +68,7 @@ public class EntityDiff extends EntityValue {
 	}
 
 	public String toString() {
-		return "EntityDiff for entity " + getEntityType() + "#" + getEntityId();
+		return "partial " + super.toString();
 	}
 
 }

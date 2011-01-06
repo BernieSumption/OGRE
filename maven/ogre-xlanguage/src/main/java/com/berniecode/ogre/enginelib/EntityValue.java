@@ -50,12 +50,38 @@ public class EntityValue implements EntityReference, PartialRawPropertyValueSet 
 	public Object getRawPropertyValue(Property property) {
 		return values[property.getPropertyIndex()];
 	}
+	
+	public String toString() {
+		return "value for " + getEntityType() + "#" + getEntityId();
+	}
 
 	/**
 	 * @return an array of values for this {@link Entity}. The returned array is safe to modify.
 	 */
 	Object[] copyValues() {
 		return ValueUtils.cloneArray(values);
+	}
+
+	/**
+	 * Set references to a specified Entity to null.
+	 * 
+	 * <p>The entity is located by identity, not by entityType and id
+	 */
+	void nullReferencesTo(EntityReference entity) {
+		ReferenceProperty[] properties = entityType.getReferenceProperties();
+		for (int i = 0; i < properties.length; i++) {
+			ReferenceProperty property = properties[i];
+			int propertyIndex = property.getPropertyIndex();
+			Object value = values[propertyIndex];
+			if (value == null) {
+				continue;
+			}
+			if (property.getReferenceType() == entity.getEntityType()) {
+				if (ValueUtils.unboxLong(value) == entity.getEntityId()) {
+					values[propertyIndex] = null;
+				}
+			}
+		}
 	}
 
 }

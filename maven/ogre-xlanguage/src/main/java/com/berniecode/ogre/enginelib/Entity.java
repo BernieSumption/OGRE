@@ -21,7 +21,7 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  * @author Bernie Sumption
  */
 //TODO update these docs
-public class Entity implements EntityReference, PartialRawPropertyValueSet {
+public class Entity implements EntityReference, RawPropertyValueSet {
 
 	/**
 	 * The minimum permitted ID
@@ -39,9 +39,12 @@ public class Entity implements EntityReference, PartialRawPropertyValueSet {
 	private final EntityType entityType;
 	private final long id;
 	private final Object[] values;
-	
+
 	/**
-	 * Create an unwired Entity
+	 * Constructor
+	 * 
+	 * This constructor permits the creation of Entities without values, which is necessary in order
+	 * to allow circular references.
 	 */
 	public Entity(EntityType entityType, long id, Object[] initialValues) {
 		if (id < 1) {
@@ -53,7 +56,9 @@ public class Entity implements EntityReference, PartialRawPropertyValueSet {
 		this.entityType = entityType;
 		this.id = id;
 		this.values = new Object[entityType.getPropertyCount()];
-		updateFromArray(initialValues);
+		if (initialValues != null) {
+			updateFromArray(initialValues);
+		}
 	}
 
 	/**
@@ -80,31 +85,54 @@ public class Entity implements EntityReference, PartialRawPropertyValueSet {
 	public String toString() {
 		return entityType + "#" + id;
 	}
-
-	/**
-	 * @private
-	 */
-	public boolean hasUpdatedValue(Property property) {
-		return true;
-	}
 	
 	//
 	// OGRE INTERNAL API
 	//
 
-
 	/**
-	 * Modify this {@link Entity} with data from an {@link PartialRawPropertyValueSet} instance
+	 * Modify this {@link Entity} with data from an {@link RawPropertyValueSet} instance
+	 * 
+	 * <p>
+	 * {@link Entity} references will be resolved first from the supplied {@link EntityStore}, then
+	 * from the array of entities
 	 */
-	void update(PartialRawPropertyValueSet update) {
+	void update(RawPropertyValueSet update, EntityStore store, Entity[] array) {
+		boolean isPartial = update instanceof PartialRawPropertyValueSet;
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
-			if (update.hasUpdatedValue(property)) {
+			boolean hasUpdatedValue = true;
+			if (isPartial) {
+				hasUpdatedValue = ((PartialRawPropertyValueSet) update).hasUpdatedValue(property);
+			}
+			if (hasUpdatedValue) {
 				Object value = update.getRawPropertyValue(property);
+				// resolve Entity references
+				if (value != null && property instanceof ReferenceProperty) {
+					EntityType refType = ((ReferenceProperty) property).getReferenceType();
+					long refId = ValueUtils.unboxLong(value);
+					value = getEntity(refType, refId, store, array);
+					if (value == null) {
+						throw new OgreException("Property '" + property + "' of entity type " + property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
+					}
+				}
 				ValueUtils.validatePropertyValue(property, value, true);
 				values[i] = value;
 			}
 		}
+	}
+
+	private Object getEntity(EntityType refType, long refId, EntityStore store, Entity[] array) {
+		Entity entity = null;
+		entity = store.get(refType, refId);
+		if (entity == null) {
+			for (int i = 0; i < array.length; i++) {
+				if (array[i].getEntityType() == refType && array[i].getEntityId() == refId) {
+					entity = array[i];
+				}
+			}
+		}
+		return entity;
 	}
 
 	/**

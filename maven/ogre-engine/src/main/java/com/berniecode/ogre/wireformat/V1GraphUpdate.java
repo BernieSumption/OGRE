@@ -50,28 +50,28 @@ final class V1GraphUpdate {
     public boolean hasObjectGraphId() { return hasObjectGraphId; }
     public java.lang.String getObjectGraphId() { return objectGraphId_; }
     
-    // repeated .ogre.EntityValueMessage entities = 3;
-    public static final int ENTITIES_FIELD_NUMBER = 3;
-    private java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> entities_ =
+    // repeated .ogre.EntityValueMessage entityCreates = 3;
+    public static final int ENTITYCREATES_FIELD_NUMBER = 3;
+    private java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> entityCreates_ =
       java.util.Collections.emptyList();
-    public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntitiesList() {
-      return entities_;
+    public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityCreatesList() {
+      return entityCreates_;
     }
-    public int getEntitiesCount() { return entities_.size(); }
-    public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage getEntities(int index) {
-      return entities_.get(index);
+    public int getEntityCreatesCount() { return entityCreates_.size(); }
+    public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage getEntityCreates(int index) {
+      return entityCreates_.get(index);
     }
     
-    // repeated .ogre.EntityValueMessage entityDiffs = 4;
-    public static final int ENTITYDIFFS_FIELD_NUMBER = 4;
-    private java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> entityDiffs_ =
+    // repeated .ogre.EntityValueMessage entityUpdates = 4;
+    public static final int ENTITYUPDATES_FIELD_NUMBER = 4;
+    private java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> entityUpdates_ =
       java.util.Collections.emptyList();
-    public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityDiffsList() {
-      return entityDiffs_;
+    public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityUpdatesList() {
+      return entityUpdates_;
     }
-    public int getEntityDiffsCount() { return entityDiffs_.size(); }
-    public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage getEntityDiffs(int index) {
-      return entityDiffs_.get(index);
+    public int getEntityUpdatesCount() { return entityUpdates_.size(); }
+    public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage getEntityUpdates(int index) {
+      return entityUpdates_.get(index);
     }
     
     // repeated .ogre.EntityDeleteMessage entityDeletes = 5;
@@ -91,10 +91,10 @@ final class V1GraphUpdate {
     public final boolean isInitialized() {
       if (!hasTypeDomainId) return false;
       if (!hasObjectGraphId) return false;
-      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntitiesList()) {
+      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityCreatesList()) {
         if (!element.isInitialized()) return false;
       }
-      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityDiffsList()) {
+      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityUpdatesList()) {
         if (!element.isInitialized()) return false;
       }
       for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage element : getEntityDeletesList()) {
@@ -112,10 +112,10 @@ final class V1GraphUpdate {
       if (hasObjectGraphId()) {
         output.writeString(2, getObjectGraphId());
       }
-      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntitiesList()) {
+      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityCreatesList()) {
         output.writeMessage(3, element);
       }
-      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityDiffsList()) {
+      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityUpdatesList()) {
         output.writeMessage(4, element);
       }
       for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage element : getEntityDeletesList()) {
@@ -138,11 +138,11 @@ final class V1GraphUpdate {
         size += com.google.protobuf.CodedOutputStream
           .computeStringSize(2, getObjectGraphId());
       }
-      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntitiesList()) {
+      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityCreatesList()) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, element);
       }
-      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityDiffsList()) {
+      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityUpdatesList()) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, element);
       }
@@ -292,13 +292,13 @@ final class V1GraphUpdate {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
         }
-        if (result.entities_ != java.util.Collections.EMPTY_LIST) {
-          result.entities_ =
-            java.util.Collections.unmodifiableList(result.entities_);
+        if (result.entityCreates_ != java.util.Collections.EMPTY_LIST) {
+          result.entityCreates_ =
+            java.util.Collections.unmodifiableList(result.entityCreates_);
         }
-        if (result.entityDiffs_ != java.util.Collections.EMPTY_LIST) {
-          result.entityDiffs_ =
-            java.util.Collections.unmodifiableList(result.entityDiffs_);
+        if (result.entityUpdates_ != java.util.Collections.EMPTY_LIST) {
+          result.entityUpdates_ =
+            java.util.Collections.unmodifiableList(result.entityUpdates_);
         }
         if (result.entityDeletes_ != java.util.Collections.EMPTY_LIST) {
           result.entityDeletes_ =
@@ -326,17 +326,17 @@ final class V1GraphUpdate {
         if (other.hasObjectGraphId()) {
           setObjectGraphId(other.getObjectGraphId());
         }
-        if (!other.entities_.isEmpty()) {
-          if (result.entities_.isEmpty()) {
-            result.entities_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
+        if (!other.entityCreates_.isEmpty()) {
+          if (result.entityCreates_.isEmpty()) {
+            result.entityCreates_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
           }
-          result.entities_.addAll(other.entities_);
+          result.entityCreates_.addAll(other.entityCreates_);
         }
-        if (!other.entityDiffs_.isEmpty()) {
-          if (result.entityDiffs_.isEmpty()) {
-            result.entityDiffs_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
+        if (!other.entityUpdates_.isEmpty()) {
+          if (result.entityUpdates_.isEmpty()) {
+            result.entityUpdates_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
           }
-          result.entityDiffs_.addAll(other.entityDiffs_);
+          result.entityUpdates_.addAll(other.entityUpdates_);
         }
         if (!other.entityDeletes_.isEmpty()) {
           if (result.entityDeletes_.isEmpty()) {
@@ -380,13 +380,13 @@ final class V1GraphUpdate {
             case 26: {
               com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
-              addEntities(subBuilder.buildPartial());
+              addEntityCreates(subBuilder.buildPartial());
               break;
             }
             case 34: {
               com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
-              addEntityDiffs(subBuilder.buildPartial());
+              addEntityUpdates(subBuilder.buildPartial());
               break;
             }
             case 42: {
@@ -442,105 +442,105 @@ final class V1GraphUpdate {
         return this;
       }
       
-      // repeated .ogre.EntityValueMessage entities = 3;
-      public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntitiesList() {
-        return java.util.Collections.unmodifiableList(result.entities_);
+      // repeated .ogre.EntityValueMessage entityCreates = 3;
+      public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityCreatesList() {
+        return java.util.Collections.unmodifiableList(result.entityCreates_);
       }
-      public int getEntitiesCount() {
-        return result.getEntitiesCount();
+      public int getEntityCreatesCount() {
+        return result.getEntityCreatesCount();
       }
-      public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage getEntities(int index) {
-        return result.getEntities(index);
+      public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage getEntityCreates(int index) {
+        return result.getEntityCreates(index);
       }
-      public Builder setEntities(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage value) {
+      public Builder setEntityCreates(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.entities_.set(index, value);
+        result.entityCreates_.set(index, value);
         return this;
       }
-      public Builder setEntities(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder builderForValue) {
-        result.entities_.set(index, builderForValue.build());
+      public Builder setEntityCreates(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder builderForValue) {
+        result.entityCreates_.set(index, builderForValue.build());
         return this;
       }
-      public Builder addEntities(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage value) {
+      public Builder addEntityCreates(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        if (result.entities_.isEmpty()) {
-          result.entities_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
+        if (result.entityCreates_.isEmpty()) {
+          result.entityCreates_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
         }
-        result.entities_.add(value);
+        result.entityCreates_.add(value);
         return this;
       }
-      public Builder addEntities(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder builderForValue) {
-        if (result.entities_.isEmpty()) {
-          result.entities_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
+      public Builder addEntityCreates(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder builderForValue) {
+        if (result.entityCreates_.isEmpty()) {
+          result.entityCreates_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
         }
-        result.entities_.add(builderForValue.build());
+        result.entityCreates_.add(builderForValue.build());
         return this;
       }
-      public Builder addAllEntities(
+      public Builder addAllEntityCreates(
           java.lang.Iterable<? extends com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> values) {
-        if (result.entities_.isEmpty()) {
-          result.entities_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
+        if (result.entityCreates_.isEmpty()) {
+          result.entityCreates_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
         }
-        super.addAll(values, result.entities_);
+        super.addAll(values, result.entityCreates_);
         return this;
       }
-      public Builder clearEntities() {
-        result.entities_ = java.util.Collections.emptyList();
+      public Builder clearEntityCreates() {
+        result.entityCreates_ = java.util.Collections.emptyList();
         return this;
       }
       
-      // repeated .ogre.EntityValueMessage entityDiffs = 4;
-      public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityDiffsList() {
-        return java.util.Collections.unmodifiableList(result.entityDiffs_);
+      // repeated .ogre.EntityValueMessage entityUpdates = 4;
+      public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityUpdatesList() {
+        return java.util.Collections.unmodifiableList(result.entityUpdates_);
       }
-      public int getEntityDiffsCount() {
-        return result.getEntityDiffsCount();
+      public int getEntityUpdatesCount() {
+        return result.getEntityUpdatesCount();
       }
-      public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage getEntityDiffs(int index) {
-        return result.getEntityDiffs(index);
+      public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage getEntityUpdates(int index) {
+        return result.getEntityUpdates(index);
       }
-      public Builder setEntityDiffs(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage value) {
+      public Builder setEntityUpdates(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.entityDiffs_.set(index, value);
+        result.entityUpdates_.set(index, value);
         return this;
       }
-      public Builder setEntityDiffs(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder builderForValue) {
-        result.entityDiffs_.set(index, builderForValue.build());
+      public Builder setEntityUpdates(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder builderForValue) {
+        result.entityUpdates_.set(index, builderForValue.build());
         return this;
       }
-      public Builder addEntityDiffs(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage value) {
+      public Builder addEntityUpdates(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        if (result.entityDiffs_.isEmpty()) {
-          result.entityDiffs_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
+        if (result.entityUpdates_.isEmpty()) {
+          result.entityUpdates_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
         }
-        result.entityDiffs_.add(value);
+        result.entityUpdates_.add(value);
         return this;
       }
-      public Builder addEntityDiffs(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder builderForValue) {
-        if (result.entityDiffs_.isEmpty()) {
-          result.entityDiffs_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
+      public Builder addEntityUpdates(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder builderForValue) {
+        if (result.entityUpdates_.isEmpty()) {
+          result.entityUpdates_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
         }
-        result.entityDiffs_.add(builderForValue.build());
+        result.entityUpdates_.add(builderForValue.build());
         return this;
       }
-      public Builder addAllEntityDiffs(
+      public Builder addAllEntityUpdates(
           java.lang.Iterable<? extends com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> values) {
-        if (result.entityDiffs_.isEmpty()) {
-          result.entityDiffs_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
+        if (result.entityUpdates_.isEmpty()) {
+          result.entityUpdates_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
         }
-        super.addAll(values, result.entityDiffs_);
+        super.addAll(values, result.entityUpdates_);
         return this;
       }
-      public Builder clearEntityDiffs() {
-        result.entityDiffs_ = java.util.Collections.emptyList();
+      public Builder clearEntityUpdates() {
+        result.entityUpdates_ = java.util.Collections.emptyList();
         return this;
       }
       
@@ -1935,23 +1935,23 @@ final class V1GraphUpdate {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\030ogre/V1GraphUpdate.proto\022\004ogre\"\316\001\n\022Gra" +
+      "\n\030ogre/V1GraphUpdate.proto\022\004ogre\"\325\001\n\022Gra" +
       "phUpdateMessage\022\024\n\014typeDomainId\030\001 \002(\t\022\025\n" +
-      "\robjectGraphId\030\002 \002(\t\022*\n\010entities\030\003 \003(\0132\030" +
-      ".ogre.EntityValueMessage\022-\n\013entityDiffs\030" +
-      "\004 \003(\0132\030.ogre.EntityValueMessage\0220\n\rentit" +
-      "yDeletes\030\005 \003(\0132\031.ogre.EntityDeleteMessag" +
-      "e\"s\n\022EntityValueMessage\022\027\n\017entityTypeInd" +
-      "ex\030\001 \002(\005\022\020\n\010entityId\030\002 \002(\003\0222\n\016propertyVa" +
-      "lues\030\004 \003(\0132\032.ogre.PropertyValueMessage\"\265" +
-      "\001\n\024PropertyValueMessage\022\025\n\rpropertyIndex",
-      "\030\001 \001(\005\022\021\n\tnullValue\030\002 \001(\010\022\020\n\010intValue\030\003 " +
-      "\001(\003\022\022\n\nfloatValue\030\004 \001(\002\022\023\n\013doubleValue\030\005" +
-      " \001(\001\022\023\n\013stringValue\030\006 \001(\t\022\022\n\nbytesValue\030" +
-      "\007 \001(\014\022\017\n\007idValue\030\010 \001(\003\"@\n\023EntityDeleteMe" +
-      "ssage\022\027\n\017entityTypeIndex\030\001 \002(\005\022\020\n\010entity" +
-      "Id\030\002 \002(\003B \n\036com.berniecode.ogre.wireform" +
-      "at"
+      "\robjectGraphId\030\002 \002(\t\022/\n\rentityCreates\030\003 " +
+      "\003(\0132\030.ogre.EntityValueMessage\022/\n\rentityU" +
+      "pdates\030\004 \003(\0132\030.ogre.EntityValueMessage\0220" +
+      "\n\rentityDeletes\030\005 \003(\0132\031.ogre.EntityDelet" +
+      "eMessage\"s\n\022EntityValueMessage\022\027\n\017entity" +
+      "TypeIndex\030\001 \002(\005\022\020\n\010entityId\030\002 \002(\003\0222\n\016pro" +
+      "pertyValues\030\004 \003(\0132\032.ogre.PropertyValueMe" +
+      "ssage\"\265\001\n\024PropertyValueMessage\022\025\n\rproper",
+      "tyIndex\030\001 \001(\005\022\021\n\tnullValue\030\002 \001(\010\022\020\n\010intV" +
+      "alue\030\003 \001(\003\022\022\n\nfloatValue\030\004 \001(\002\022\023\n\013double" +
+      "Value\030\005 \001(\001\022\023\n\013stringValue\030\006 \001(\t\022\022\n\nbyte" +
+      "sValue\030\007 \001(\014\022\017\n\007idValue\030\010 \001(\003\"@\n\023EntityD" +
+      "eleteMessage\022\027\n\017entityTypeIndex\030\001 \002(\005\022\020\n" +
+      "\010entityId\030\002 \002(\003B \n\036com.berniecode.ogre.w" +
+      "ireformat"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1963,7 +1963,7 @@ final class V1GraphUpdate {
           internal_static_ogre_GraphUpdateMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogre_GraphUpdateMessage_descriptor,
-              new java.lang.String[] { "TypeDomainId", "ObjectGraphId", "Entities", "EntityDiffs", "EntityDeletes", },
+              new java.lang.String[] { "TypeDomainId", "ObjectGraphId", "EntityCreates", "EntityUpdates", "EntityDeletes", },
               com.berniecode.ogre.wireformat.V1GraphUpdate.GraphUpdateMessage.class,
               com.berniecode.ogre.wireformat.V1GraphUpdate.GraphUpdateMessage.Builder.class);
           internal_static_ogre_EntityValueMessage_descriptor =

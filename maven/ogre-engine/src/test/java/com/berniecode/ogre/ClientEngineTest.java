@@ -8,18 +8,19 @@ import org.jmock.Expectations;
 import com.berniecode.ogre.enginelib.ClientEngine;
 import com.berniecode.ogre.enginelib.DownloadClientAdapter;
 import com.berniecode.ogre.enginelib.Entity;
-import com.berniecode.ogre.enginelib.EntityDelete;
 import com.berniecode.ogre.enginelib.EntityDiff;
 import com.berniecode.ogre.enginelib.EntityReference;
 import com.berniecode.ogre.enginelib.EntityType;
-import com.berniecode.ogre.enginelib.EntityValue;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.MessageClientAdapter;
 import com.berniecode.ogre.enginelib.OgreLog;
+import com.berniecode.ogre.enginelib.PartialRawPropertyValueSet;
 import com.berniecode.ogre.enginelib.Property;
+import com.berniecode.ogre.enginelib.RawPropertyValueSet;
 import com.berniecode.ogre.enginelib.ReferenceProperty;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
+import com.berniecode.ogre.enginelib.platformhooks.InvalidGraphUpdateException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
@@ -117,15 +118,11 @@ public class ClientEngineTest extends OgreTestCase {
 			"    property1=6",
 			ce);
 		
-		// test entity updated with complete value 
-		ce.acceptGraphUpdate(createGraphUpdate(new Entity(entityType0, 200, new Object[] {7, 8L})));
-
-		assertClientEngineState(
-			"ObjectGraph TypeDomain/TestObjectGraph" +
-			"  Entity entityType0#200" +
-			"    property0=7" +
-			"    property1=8",
-			ce);
+		// test creating a new entity with same type and id fails
+		try {
+			ce.acceptGraphUpdate(createGraphUpdate(new Entity(entityType0, 200, new Object[] {7, 8L})));
+			fail("acceptGraphUpdate() should fail with an entity that already exists in the cient engine");
+		} catch (InvalidGraphUpdateException e) {}
 		
 		// test entity can be updated with partial update
 		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(entityType0, 200, new Object[] {9, null}, new boolean[] {true, false})));
@@ -134,7 +131,7 @@ public class ClientEngineTest extends OgreTestCase {
 			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity entityType0#200" +
 			"    property0=9" +
-			"    property1=8",
+			"    property1=6",
 			ce);
 		
 		// test partial value without existing entity causes log error but no exception failure
@@ -169,26 +166,22 @@ public class ClientEngineTest extends OgreTestCase {
 	}
 
 	private GraphUpdate createGraphUpdate(EntityReference... updates) {
-		List<EntityValue> valueMessages = new ArrayList<EntityValue>();
-		List<EntityDiff> diffMessages = new ArrayList<EntityDiff>();
-		List<EntityDelete> deleteMessages = new ArrayList<EntityDelete>();
+		List<RawPropertyValueSet> valueMessages = new ArrayList<RawPropertyValueSet>();
+		List<PartialRawPropertyValueSet> diffMessages = new ArrayList<PartialRawPropertyValueSet>();
 		for (EntityReference update: updates) {
-			if (update instanceof EntityValue) {
-				valueMessages.add((EntityValue) update);
+			if (update instanceof PartialRawPropertyValueSet) {
+				diffMessages.add((PartialRawPropertyValueSet) update);
 			}
-			else if (update instanceof EntityDiff) {
-				diffMessages.add((EntityDiff) update);
-			}
-			else if (update instanceof EntityDelete) {
-				deleteMessages.add((EntityDelete) update);
+			else if (update instanceof RawPropertyValueSet) {
+				valueMessages.add((RawPropertyValueSet) update);
 			} else {
-				throw new IllegalArgumentException("Bad argument to createCraphUpdate(): " + update.getClass());
+				throw new OgreException("Invalid argument to createGraphUpdate() of type " + update.getClass());
 			}
 		}
 		return new GraphUpdate(typeDomain, OBJECT_GRAPH_ID,
-				valueMessages.toArray(new EntityValue[0]),
-				diffMessages.toArray(new EntityDiff[0]),
-				deleteMessages.toArray(new EntityDelete[0]));
+				valueMessages.toArray(new RawPropertyValueSet[0]),
+				diffMessages.toArray(new PartialRawPropertyValueSet[0]),
+				null);
 	}
 
 	private ClientEngine createClientEngine() throws NoSuchThingException {

@@ -47,20 +47,5 @@ public class EntityStoreTest extends OgreTestCase {
 		entityStore.removeSimilar(child);
 		assertNull(parent.getPropertyValue(refProperty));
 	}
-	
-	public void testShouldOnlyAcceptWiredEntities() {
-
-		EntityStore entityStore = new EntityStore(typeDomain);
-
-		Entity child = new Entity(childType, 1, new Object[0]);
-		Entity parent = new Entity(parentType, 1, new Object[0]);
-
-		
-		try {
-			entityStore.add(child);
-			entityStore.add(parent);
-			fail("EntityStore.add(Entity) should fail for unwired entities");
-		} catch (OgreException e) {}
-	}
 
 }

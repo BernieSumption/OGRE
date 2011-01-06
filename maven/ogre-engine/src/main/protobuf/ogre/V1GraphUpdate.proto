@@ -14,19 +14,18 @@ option java_package = "com.berniecode.ogre.wireformat";
 message GraphUpdateMessage {
   required string typeDomainId = 1;
   required string objectGraphId = 2;
-  repeated EntityValueMessage entities = 3; // Must contain complete-style EntityValues
-  repeated EntityValueMessage entityDiffs = 4; // Must contain complete-style EntityValues
+  repeated EntityValueMessage entityCreates = 3; // complete-style EntityValues creating new entities
+  repeated EntityValueMessage entityUpdates = 4; // diff-style EntityValues updating existing entities
   repeated EntityDeleteMessage entityDeletes = 5;
 }
 
 
   
-// There are two flavours of validation for this message. "complete-style" maps onto the
-// Maps onto com.berniecode.ogre.enginelib.shared.Entity class in Java, and "diff-style"
-// maps onto the EntityDiff class in the same package.
+// There are two flavours of validation for this message. "complete-style", and "diff-style"
 // complete-style validation rules:
-//     1. There must be exactly one PropertyValue per Property in the associated EntityType. The position of the
-//        PropertyValue in the propertyValues array is interpreted as the propertyIndex
+//     1. There must be exactly one PropertyValue per Property in the associated EntityType. The
+//        position of the PropertyValue in the propertyValues array is interpreted as the
+//        propertyIndex
 //       2. Each PropertyValue must omit the optional propertyIndex field
 // diff-style validation rules:
 //     1. Each entry in the propertyValues array must have a value for the optional propertyIndex field

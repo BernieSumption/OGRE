@@ -64,7 +64,7 @@ public class EDRDescriber {
 		  .add(objectGraph.getTypeDomain().getTypeDomainId())
 		  .add("/")
 		  .add(objectGraph.getObjectGraphId());
-		RawPropertyValueSet[] entities = objectGraph.getEntityValues();
+		RawPropertyValueSet[] entities = objectGraph.getEntityCreates();
 		for (int i=0; i<entities.length; i++) {
 			sc.add("\n");
 			doDescribeEntity(entities[i], sc, indent+1);
@@ -131,17 +131,17 @@ public class EDRDescriber {
 		  .add(graphUpdate.getTypeDomain().getTypeDomainId())
 		  .add("/")
 		  .add(graphUpdate.getObjectGraphId());
-		if (graphUpdate.getEntityValues().length > 0) {
+		if (graphUpdate.getEntityCreates().length > 0) {
 			sc.add("\ncomplete values:");
-			RawPropertyValueSet[] entityValues = graphUpdate.getEntityValues();
+			RawPropertyValueSet[] entityValues = graphUpdate.getEntityCreates();
 			for (int i=0; i<entityValues.length; i++) {
 				sc.add("\n");
 				doDescribeRawPropertyValueSet(entityValues[i], sc, indent + 1);
 			}
 		}
-		if (graphUpdate.getEntityDiffs().length > 0) {
+		if (graphUpdate.getEntityUpdates().length > 0) {
 			sc.add("\npartial values:");
-			PartialRawPropertyValueSet[] entityDiffs = graphUpdate.getEntityDiffs();
+			PartialRawPropertyValueSet[] entityDiffs = graphUpdate.getEntityUpdates();
 			for (int i=0; i<entityDiffs.length; i++) {
 				sc.add("\n");
 				doDescribePartialRawPropertyValueSet(entityDiffs[i], sc, indent + 1);
@@ -183,17 +183,17 @@ public class EDRDescriber {
 		}
 	}
 
-	private static void doDescribeEntityDeletes(EntityDelete[] entityDeletes, StringConcatenator sc, int indent) {
+	private static void doDescribeEntityDeletes(EntityReference[] entityDeletes, StringConcatenator sc, int indent) {
 		for (int i=0; i<entityDeletes.length; i++) {
 			sc.add("\n");
 			doDescribeEntityDelete(entityDeletes[i], sc, indent + 1);
 		}
 	}
 
-	private static void doDescribeEntityDelete(EntityDelete delete, StringConcatenator sc, int indent) {
+	private static void doDescribeEntityDelete(EntityReference delete, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		EntityType entityType = delete.getEntityType();
-		sc.add("EntityDelete for ")
+		sc.add("delete ")
 		  .add(entityType)
 		  .add("#")
 		  .addNumber(delete.getEntityId());

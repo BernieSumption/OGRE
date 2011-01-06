@@ -109,14 +109,13 @@ public class TestSuiteGenerator {
 		EntityValue[] existingEntities = entities.toArray(new EntityValue[0]);
 		
 		// delete some entities
-		List<EntityDelete> entityDeletes = new ArrayList<EntityDelete>();
+		List<EntityReference> entityDeletes = new ArrayList<EntityReference>();
 		for (int i: makeRandomIndices(existingEntities.length, MAX_ENTITIES_TO_DELETE_PER_ITERATION)) {
 			EntityValue entityToDelete = existingEntities[i];
-			entityDeletes.add(EntityDelete.build(entityToDelete));
+			entityDeletes.add(entityToDelete);
 			entities.remove(entityToDelete);
 			for (EntityValue entity: existingEntities) {
-				//TODO reproduce nullReferencesTo for EntityValue
-				//entity.nullReferencesTo(entityToDelete);
+				entity.nullReferencesTo(entityToDelete);
 			}
 		}
 		existingEntities = entities.toArray(new EntityValue[0]);
@@ -171,7 +170,7 @@ public class TestSuiteGenerator {
 		}
 		
 		// make update message
-		GraphUpdate graphUpdate = new GraphUpdate(typeDomain, objectGraphId, newEntities, entityDiffs.toArray(new EntityDiff[0]), entityDeletes.toArray(new EntityDelete[0]));
+		GraphUpdate graphUpdate = new GraphUpdate(typeDomain, objectGraphId, newEntities, entityDiffs.toArray(new EntityDiff[0]), entityDeletes.toArray(new EntityReference[0]));
 		
 		// trace text version of update message
 		traceLine("update " + iteration, describeGraphUpdate(graphUpdate));
@@ -183,14 +182,14 @@ public class TestSuiteGenerator {
 
 	private String describeObjectGraph() {
 		GraphUpdate objectGraph = new GraphUpdate(typeDomain, objectGraphId, entities.toArray(new EntityValue[0]), null, null);
-		Arrays.sort(objectGraph.getEntityValues(), new EntityReferenceComparator());
+		Arrays.sort(objectGraph.getEntityCreates(), new EntityReferenceComparator());
 		return EDRDescriber.describeObjectGraph(objectGraph);
 	}
 
 	private String describeGraphUpdate(GraphUpdate graphUpdate) {
 		EntityReferenceComparator comparator = new EntityReferenceComparator();
-		Arrays.sort(graphUpdate.getEntityValues(), comparator);
-		Arrays.sort(graphUpdate.getEntityDiffs(), comparator);
+		Arrays.sort(graphUpdate.getEntityCreates(), comparator);
+		Arrays.sort(graphUpdate.getEntityUpdates(), comparator);
 		Arrays.sort(graphUpdate.getEntityDeletes(), comparator);
 		return EDRDescriber.describeGraphUpdate(graphUpdate);
 	}

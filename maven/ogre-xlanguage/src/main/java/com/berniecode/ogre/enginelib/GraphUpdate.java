@@ -11,16 +11,16 @@ public class GraphUpdate {
 
 	private final TypeDomain typeDomain;
 	private final String objectGraphId;
-	private final RawPropertyValueSet[] entityValues;
-	private final PartialRawPropertyValueSet[] entityDiffs;
-	private final EntityDelete[] entityDeletes;
+	private final RawPropertyValueSet[] entityCreates;
+	private final PartialRawPropertyValueSet[] entityUpdates;
+	private final EntityReference[] entityDeletes;
 
-	public GraphUpdate(TypeDomain typeDomain, String objectGraphId, RawPropertyValueSet[] entityValues, EntityDiff[] entityDiffs, EntityDelete[] entityDeletes) {
+	public GraphUpdate(TypeDomain typeDomain, String objectGraphId, RawPropertyValueSet[] entityValues, PartialRawPropertyValueSet[] entityDiffs, EntityReference[] entityDeletes) {
 		this.typeDomain = typeDomain;
 		this.objectGraphId = objectGraphId;
-		this.entityValues = entityValues == null ? new RawPropertyValueSet[0] : entityValues;
-		this.entityDiffs = entityDiffs == null ? new EntityDiff[0] : entityDiffs;
-		this.entityDeletes = entityDeletes == null ? new EntityDelete[0] : entityDeletes;
+		this.entityCreates = entityValues == null ? new RawPropertyValueSet[0] : entityValues;
+		this.entityUpdates = entityDiffs == null ? new EntityDiff[0] : entityDiffs;
+		this.entityDeletes = entityDeletes == null ? new EntityReference[0] : entityDeletes;
 	}
 
 	/**
@@ -40,25 +40,23 @@ public class GraphUpdate {
 	}
 
 	/**
-	 * @return {@link EntityValue}s for Entities that have been been created or updated.
+	 * @return {@link RawPropertyValueSet}s for Entities that have been been created
 	 */
-	//TODO change to getCompleteEntityValues
-	public RawPropertyValueSet[] getEntityValues() {
-		return entityValues;
+	public RawPropertyValueSet[] getEntityCreates() {
+		return entityCreates;
 	}
 
 	/**
-	 * @return {@link EntityDiff}s for entityValues that have been updated
+	 * @return {@link PartialRawPropertyValueSet}s for entities that have been updated
 	 */
-	//TODO change to getPartialEntityValues
-	public PartialRawPropertyValueSet[] getEntityDiffs() {
-		return entityDiffs;
+	public PartialRawPropertyValueSet[] getEntityUpdates() {
+		return entityUpdates;
 	}
 
 	/**
-	 * @return {@link EntityDelete}s for entityValues that have been removed
+	 * @return {@link EntityDelete}s for entities that have been removed
 	 */
-	public EntityDelete[] getEntityDeletes() {
+	public EntityReference[] getEntityDeletes() {
 		return entityDeletes;
 	}
 

@@ -11,8 +11,8 @@ import java.util.Set;
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.Entity;
-import com.berniecode.ogre.enginelib.EntityDelete;
 import com.berniecode.ogre.enginelib.EntityDiff;
+import com.berniecode.ogre.enginelib.EntityReference;
 import com.berniecode.ogre.enginelib.EntityType;
 import com.berniecode.ogre.enginelib.EntityValue;
 import com.berniecode.ogre.enginelib.GraphUpdate;
@@ -169,7 +169,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		//for each 
 		List<EntityValue> completeEntities = new ArrayList<EntityValue>();
 		List<EntityDiff> entityDiffs = new ArrayList<EntityDiff>();
-		List<EntityDelete> entityDeletes = new ArrayList<EntityDelete>();
+		List<EntityReference> entityDeletes = new ArrayList<EntityReference>();
 		List<EntityValue> newEntities = new ArrayList<EntityValue>();
 		for (Object entityObject: entityObjects) {
 			EntityValue newEntity = edrMapper.createEntityValue(entityObject);
@@ -192,7 +192,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		for (EntityValue oldEntity: getAllEntities()) {
 			if (!newEntities.contains(oldEntity)) {
 				entities.get(oldEntity.getEntityType()).remove(oldEntity.getEntityId());
-				entityDeletes.add(EntityDelete.build(oldEntity));
+				entityDeletes.add(oldEntity);
 			}
 		}
 		
@@ -202,7 +202,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	private void sendGraphUpdate(
 			List<EntityValue> newEntities,
 			List<EntityDiff> entityDiffs,
-			List<EntityDelete> entityDeletes) {
+			List<EntityReference> entityDeletes) {
 		
 		if (newEntities.size() == 0 && entityDiffs.size() == 0 && entityDeletes.size() == 0) {
 			return;
@@ -214,7 +214,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 					objectGraphId,
 					newEntities.toArray(new EntityValue[0]),
 					entityDiffs.toArray(new EntityDiff[0]),
-					entityDeletes.toArray(new EntityDelete[0]));
+					entityDeletes.toArray(new EntityReference[0]));
 			if (OgreLog.isDebugEnabled()) {
 				OgreLog.debug("PojoDataSource: broadcasting new graph update:\n"
 						+ EDRDescriber.describeGraphUpdate(update));

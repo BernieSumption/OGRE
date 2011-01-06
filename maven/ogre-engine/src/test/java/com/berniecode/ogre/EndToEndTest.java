@@ -109,8 +109,11 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		assertEquals(2, msgBridge.getMessageCount());
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
+				"  complete values:" +
+				"    value for EntityElement#2" +
+				"      name=lala" +
 				"  partial values:" +
-				"    PartialRawPropertyValueSet for EntityClassWithAllFields#1" +
+				"    partial value for EntityClassWithAllFields#1" +
 				"      bytes=11,12,13" +
 				"      entity_element=EntityElement#2" +
 				"      non_nullable_double=11770.0" +
@@ -118,7 +121,9 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"      nullable_double=null" +
 				"      nullable_float=1144.0" +
 				"      nullable_int=null" +
-				"      string=Fizzle",
+				"      string=Fizzle" +
+				"  deleted entities:" +
+				"    delete EntityElement#1",
 				msgBridge.getLastGraphUpdate(), typeDomain);
 
 		 
@@ -126,7 +131,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity EntityClassWithAllFields#1" +
 			"    bytes=11,12,13" +
-			"    entity_element=EntityElement#1" +
+			"    entity_element=EntityElement#2" +
 			"    non_nullable_byte=1" +
 			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
@@ -140,8 +145,8 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"    nullable_long=8" +
 			"    nullable_short=4" +
 			"    string=Fizzle" +
-			"  Entity EntityElement#1" +
-			"    name=Hi!",
+			"  Entity EntityElement#2" +
+			"    name=lala",
 			clientEngine);
 		
 		// new objects propagated
@@ -153,9 +158,9 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
-				"    PartialRawPropertyValueSet for EntityClassWithAllFields#2" +
+				"    value for EntityClassWithAllFields#2" +
 				"      bytes=4,5,6" +
-				"      entity_element=EntityElement#2" +
+				"      entity_element=EntityElement#3" +
 				"      non_nullable_byte=11" +
 				"      non_nullable_double=21.0" +
 				"      non_nullable_float=19.0" +
@@ -169,7 +174,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"      nullable_long=18" +
 				"      nullable_short=14" +
 				"      string=my bizzle" +
-				"    PartialRawPropertyValueSet for EntityElement#2" +
+				"    value for EntityElement#3" +
 				"      name=Bye!",
 				msgBridge.getLastGraphUpdate(), typeDomain);
 		 
@@ -177,7 +182,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity EntityClassWithAllFields#1" +
 			"    bytes=11,12,13" +
-			"    entity_element=EntityElement#1" +
+			"    entity_element=EntityElement#2" +
 			"    non_nullable_byte=1" +
 			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
@@ -193,7 +198,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"    string=Fizzle" +
 			"  Entity EntityClassWithAllFields#2" +
 			"    bytes=4,5,6" +
-			"    entity_element=EntityElement#2" +
+			"    entity_element=EntityElement#3" +
 			"    non_nullable_byte=11" +
 			"    non_nullable_double=21.0" +
 			"    non_nullable_float=19.0" +
@@ -207,9 +212,9 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"    nullable_long=18" +
 			"    nullable_short=14" +
 			"    string=my bizzle" + 
-			"  Entity EntityElement#1" +
-			"    name=Hi!" + 
 			"  Entity EntityElement#2" +
+			"    name=lala" + 
+			"  Entity EntityElement#3" +
 			"    name=Bye!",
 			clientEngine);
 		
@@ -220,15 +225,15 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  deleted entities:" +
-				"    EntityDelete for EntityClassWithAllFields#1" +
-				"    EntityDelete for EntityElement#1",
+				"    delete EntityClassWithAllFields#1" +
+				"    delete EntityElement#2",
 				msgBridge.getLastGraphUpdate(), typeDomain);
 		 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
 			"  Entity EntityClassWithAllFields#2" +
 			"    bytes=4,5,6" +
-			"    entity_element=EntityElement#2" +
+			"    entity_element=EntityElement#3" +
 			"    non_nullable_byte=11" +
 			"    non_nullable_double=21.0" +
 			"    non_nullable_float=19.0" +
@@ -242,7 +247,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"    nullable_long=18" +
 			"    nullable_short=14" +
 			"    string=my bizzle" + 
-			"  Entity EntityElement#2" +
+			"  Entity EntityElement#3" +
 			"    name=Bye!",
 			clientEngine);
 		
@@ -257,8 +262,8 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  deleted entities:" +
-				"    EntityDelete for EntityClassWithAllFields#2" +
-				"    EntityDelete for EntityElement#2",
+				"    delete EntityClassWithAllFields#2" +
+				"    delete EntityElement#3",
 				msgBridge.getLastGraphUpdate(), typeDomain);
 		 
 		assertClientEngineState(

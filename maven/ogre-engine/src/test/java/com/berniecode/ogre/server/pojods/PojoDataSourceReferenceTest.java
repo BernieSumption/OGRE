@@ -68,13 +68,13 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
-				"    PartialRawPropertyValueSet for B#3" +
+				"    value for B#3" +
 				"      a=A#2" +
 				"  partial values:" +
-				"    PartialRawPropertyValueSet for A#2" +
+				"    partial value for A#2" +
 				"      b=B#3" +
 				"  deleted entities:" +
-				"    EntityDelete for B#1",
+				"    delete B#1",
 				lastGraphUpdate, dataSource.getTypeDomain());
 		
 		
@@ -86,13 +86,13 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
-				"    PartialRawPropertyValueSet for B#1" +
+				"    value for B#1" +
 				"      a=A#2" +
 				"  partial values:" +
-				"    PartialRawPropertyValueSet for A#2" +
+				"    partial value for A#2" +
 				"      b=B#1" +
 				"  deleted entities:" +
-				"    EntityDelete for B#3",
+				"    delete B#3",
 				lastGraphUpdate, dataSource.getTypeDomain());
 
 		// add all b's as root nodes - expect no thrashing
@@ -103,7 +103,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
-				"    PartialRawPropertyValueSet for B#3" +
+				"    value for B#3" +
 				"      a=A#2",
 				lastGraphUpdate, dataSource.getTypeDomain());
 		
@@ -114,7 +114,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
-				"    PartialRawPropertyValueSet for A#2" +
+				"    partial value for A#2" +
 				"      b=B#3",
 				lastGraphUpdate, dataSource.getTypeDomain());
 		
@@ -124,7 +124,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
-				"    PartialRawPropertyValueSet for A#2" +
+				"    partial value for A#2" +
 				"      b=B#1",
 				lastGraphUpdate, dataSource.getTypeDomain());
 	}

@@ -5,8 +5,9 @@ import java.util.List;
 
 import com.berniecode.ogre.EDRDeserialiser;
 import com.berniecode.ogre.EDRSerialiser;
-import com.berniecode.ogre.enginelib.EntityDelete;
 import com.berniecode.ogre.enginelib.EntityDiff;
+import com.berniecode.ogre.enginelib.EntityReference;
+import com.berniecode.ogre.enginelib.EntityReferenceImpl;
 import com.berniecode.ogre.enginelib.EntityType;
 import com.berniecode.ogre.enginelib.EntityValue;
 import com.berniecode.ogre.enginelib.GraphUpdate;
@@ -132,13 +133,13 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		GraphUpdateMessage.Builder guBuilder = GraphUpdateMessage.newBuilder()
 			.setTypeDomainId(graphUpdate.getTypeDomain().getTypeDomainId())
 			.setObjectGraphId(graphUpdate.getObjectGraphId());
-		for (RawPropertyValueSet entity : graphUpdate.getEntityValues()) {
-			guBuilder.addEntities(getEntityValueMessage(entity, false));
+		for (RawPropertyValueSet entity : graphUpdate.getEntityCreates()) {
+			guBuilder.addEntityCreates(getEntityValueMessage(entity, false));
 		}
-		for (PartialRawPropertyValueSet entity : graphUpdate.getEntityDiffs()) {
-			guBuilder.addEntityDiffs(getEntityValueMessage(entity, true));
+		for (PartialRawPropertyValueSet entity : graphUpdate.getEntityUpdates()) {
+			guBuilder.addEntityUpdates(getEntityValueMessage(entity, true));
 		}
-		for (EntityDelete delete : graphUpdate.getEntityDeletes()) {
+		for (EntityReference delete : graphUpdate.getEntityDeletes()) {
 			guBuilder.addEntityDeletes(EntityDeleteMessage.newBuilder()
 					.setEntityTypeIndex(delete.getEntityType().getEntityTypeIndex())
 					.setEntityId(delete.getEntityId()));
@@ -159,11 +160,10 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		EntityType entityType = entity.getEntityType();
 		for (int i = 0; i < entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
-			boolean hasUpdatedValue;
 			if (diffStyle) {
-				hasUpdatedValue = ((PartialRawPropertyValueSet) entity).hasUpdatedValue(property);
-			} else {
-				hasUpdatedValue = true;
+				if (!((PartialRawPropertyValueSet) entity).hasUpdatedValue(property)) {
+					continue;
+				}
 			}
 			PropertyValueMessage.Builder pvBuilder = PropertyValueMessage.newBuilder();
 			Object value = entity.getRawPropertyValue(property);
@@ -240,7 +240,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 
 	private EntityValue[] getEntityValues(GraphUpdateMessage gum, TypeDomain typeDomain) {
 		List<EntityValue> entities = new ArrayList<EntityValue>();
-		for (EntityValueMessage evm: gum.getEntitiesList()) {
+		for (EntityValueMessage evm: gum.getEntityCreatesList()) {
 			EntityType entityType = typeDomain.getEntityType(evm.getEntityTypeIndex());
 			entities.add(new EntityValue(
 					entityType,
@@ -325,7 +325,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 
 	private EntityDiff[] getEntityDiffs(GraphUpdateMessage gum, TypeDomain typeDomain) {
 		List<EntityDiff> diffs = new ArrayList<EntityDiff>();
-		for (EntityValueMessage evm: gum.getEntityDiffsList()) {
+		for (EntityValueMessage evm: gum.getEntityUpdatesList()) {
 			EntityType entityType = typeDomain.getEntityType(evm.getEntityTypeIndex());
 			Object[] entityValues = getEntityValuePropertiesArray(evm, entityType, true);
 			boolean[] changed = new boolean[entityType.getPropertyCount()];
@@ -341,11 +341,11 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		return diffs.toArray(new EntityDiff[0]);
 	}
 
-	private EntityDelete[] getEntityDeletes(GraphUpdateMessage gum, TypeDomain typeDomain) {
-		EntityDelete[] deletes = new EntityDelete[gum.getEntityDeletesCount()];
+	private EntityReference[] getEntityDeletes(GraphUpdateMessage gum, TypeDomain typeDomain) {
+		EntityReference[] deletes = new EntityReference[gum.getEntityDeletesCount()];
 		for (int i = 0; i < deletes.length; i++) {
 			EntityDeleteMessage entityDelete = gum.getEntityDeletes(i);
-			deletes[i] = new EntityDelete(
+			deletes[i] = new EntityReferenceImpl(
 					typeDomain.getEntityType(entityDelete.getEntityTypeIndex()),
 					entityDelete.getEntityId());
 		}
