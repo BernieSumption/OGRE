@@ -12,8 +12,8 @@ import java.util.WeakHashMap;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.Utils;
-import com.berniecode.ogre.enginelib.Entity;
 import com.berniecode.ogre.enginelib.EntityType;
+import com.berniecode.ogre.enginelib.EntityValue;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.Property;
 import com.berniecode.ogre.enginelib.ReferenceProperty;
@@ -267,10 +267,10 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	}
 
 	/**
-	 * Convert an {@link Object} into an {@link Entity} with the specified id.
+	 * Convert an {@link Object} into an {@link EntityValue}.
 	 */
 	@Override
-	public final Entity createEntity(Object entityObject) {
+	public final EntityValue createEntityValue(Object entityObject) {
 		requireInitialised(true, "createEntity()");
 		
 		EntityType entityType = getEntityTypeForObject(entityObject);
@@ -281,7 +281,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 			values[i] = getValueForProperty(entityObject, entityType.getProperty(i));
 		}
 		
-		return new Entity(entityType, getIdForObject(entityObject), values);
+		return new EntityValue(entityType, getIdForObject(entityObject), values);
 	}
 	
 

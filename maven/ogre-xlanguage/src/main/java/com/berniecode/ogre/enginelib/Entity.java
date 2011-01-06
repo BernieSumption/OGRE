@@ -20,7 +20,8 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  * 
  * @author Bernie Sumption
  */
-public class Entity implements EntityReference, EntityUpdate {
+//TODO update these docs
+public class Entity implements EntityReference, PartialRawPropertyValueSet {
 
 	/**
 	 * The minimum permitted ID
@@ -34,8 +35,6 @@ public class Entity implements EntityReference, EntityUpdate {
 	 */
 	//TODO verify this number
 	public static final long MAX_ID = 0x000FFFFFFFFFFFFFL; 
-	
-	private boolean wired = false;
 
 	private final EntityType entityType;
 	private final long id;
@@ -77,13 +76,6 @@ public class Entity implements EntityReference, EntityUpdate {
 	public Object getPropertyValue(Property property) {
 		return values[property.getPropertyIndex()];
 	}
-
-	/**
-	 * @return true if references have been wired for this {@link Entity}, false otherwise
-	 */
-	public boolean isWired() {
-		return wired;
-	}
 	
 	public String toString() {
 		return entityType + "#" + id;
@@ -102,21 +94,14 @@ public class Entity implements EntityReference, EntityUpdate {
 
 
 	/**
-	 * @return an array of values for this {@link Entity}. The returned array is safe to modify.
+	 * Modify this {@link Entity} with data from an {@link PartialRawPropertyValueSet} instance
 	 */
-	Object[] copyValues() {
-		return ValueUtils.cloneArray(values);
-	}
-
-	/**
-	 * Modify this {@link Entity} with data from an {@link EntityUpdate} instance
-	 */
-	void update(EntityUpdate update) {
+	void update(PartialRawPropertyValueSet update) {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
 			if (update.hasUpdatedValue(property)) {
-				Object value = update.getPropertyValue(property);
-				ValueUtils.validatePropertyValue(property, value, wired);
+				Object value = update.getRawPropertyValue(property);
+				ValueUtils.validatePropertyValue(property, value, true);
 				values[i] = value;
 			}
 		}
@@ -128,54 +113,8 @@ public class Entity implements EntityReference, EntityUpdate {
 	 */
 	void updateFromArray(Object[] update) {
 		for (int i = 0; i < update.length; i++) {
-			ValueUtils.validatePropertyValue(entityType.getProperty(i), update[i], wired);
+			ValueUtils.validatePropertyValue(entityType.getProperty(i), update[i], true);
 			values[i] = update[i];
-		}
-	}
-
-	/**
-	 * The values array passed to the constructor of this class contains integers instead of Entity
-	 * references, so if property #0 is a "reference to Foo" property referencing Foo#7,
-	 * getPropertyValue(property0) would return the number "7".
-	 * 
-	 * <p>
-	 * This method is used to provide a set of Entities to resolve references in, so that
-	 * getPropertyValue(property0) returns the actual Entity Foo#7
-	 * 
-	 * <p>
-	 * Entities are resolved first in the EntityStore, then in the array of entities if they are not
-	 * found in the store
-	 * 
-	 * @private
-	 */
-	void wireEntityReferences(EntityStore store, Entity[] array) {
-		if (wired) {
-			throw new OgreException("wireEntityReferences() has already been called on " + this);
-		}
-		wired = true;
-		ReferenceProperty[] properties = entityType.getReferenceProperties();
-		for (int i = 0; i < properties.length; i++) {
-			ReferenceProperty property = properties[i];
-			EntityType refType = property.getReferenceType();
-			Object value = values[property.getPropertyIndex()];
-			if (value != null) {
-				long refId = ValueUtils.unboxLong((Long) value);
-				Entity entity = null;
-				if (store != null) {
-					entity = store.get(refType, refId);
-				}
-				if (entity == null && array != null) {
-					for (int j = 0; j < array.length; j++) {
-						if (array[j].getEntityType() == refType && array[j].getEntityId() == refId) {
-							entity = array[j];
-						}
-					}
-				}
-				if (entity == null) {
-					throw new OgreException("Property '" + property + "' of entity type " + property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
-				}
-				values[property.getPropertyIndex()] = entity;
-			}
 		}
 	}
 
@@ -185,7 +124,7 @@ public class Entity implements EntityReference, EntityUpdate {
 	 * 
 	 * <p>The entity is located by identity, not by entityType and id
 	 */
-	void nullReferencesTo(Entity entity) {
+	void nullReferencesTo(EntityReference entity) {
 		ReferenceProperty[] properties = entityType.getReferenceProperties();
 		for (int i = 0; i < properties.length; i++) {
 			ReferenceProperty property = properties[i];
@@ -194,22 +133,19 @@ public class Entity implements EntityReference, EntityUpdate {
 				continue;
 			}
 			if (property.getReferenceType() == entity.getEntityType()) {
-				if (wired) {
-					if (((Entity) value).getEntityId() == entity.getEntityId()) {
-						values[property.getPropertyIndex()] = null;
-					}
-				} else {
-					if (ValueUtils.unboxLong((Long) value) == entity.getEntityId()) {
-						values[property.getPropertyIndex()] = null;
-					}
+				if (((Entity) value).getEntityId() == entity.getEntityId()) {
+					values[property.getPropertyIndex()] = null;
 				}
 			}
 		}
-		for (int i = 0; i < values.length; i++) {
-			if (values[i] == entity) {
-				values[i] = null;
-			}
+	}
+
+	public Object getRawPropertyValue(Property property) {
+		Object value = getPropertyValue(property);
+		if (property instanceof ReferenceProperty) {
+			return ValueUtils.boxLong(((Entity) value).getEntityId());
 		}
+		return value;
 	}
 
 }

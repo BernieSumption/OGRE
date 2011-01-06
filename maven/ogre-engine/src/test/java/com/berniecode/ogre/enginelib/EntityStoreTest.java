@@ -24,7 +24,6 @@ public class EntityStoreTest extends OgreTestCase {
 		EntityStore entityStore = new EntityStore(typeDomain);
 		
 		Entity entity = new Entity(childType, 1, new Object[0]);
-		entity.wireEntityReferences(null, null);
 		
 		entityStore.add(entity);
 		
@@ -39,11 +38,7 @@ public class EntityStoreTest extends OgreTestCase {
 		EntityStore entityStore = new EntityStore(typeDomain);
 
 		Entity child = new Entity(childType, 1, new Object[0]);
-		Entity parent = new Entity(parentType, 1, new Object[] {1L});
-		
-		Entity[] entities = new Entity[] {parent, child};
-		child.wireEntityReferences(null, entities);
-		parent.wireEntityReferences(null, entities);
+		Entity parent = new Entity(parentType, 1, new Object[] {child});
 
 		entityStore.add(child);
 		entityStore.add(parent);

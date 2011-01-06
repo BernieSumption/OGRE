@@ -98,6 +98,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		initialEntityObject.setNonNullableDouble(11770.0);
 		initialEntityObject.setNullableDouble(null);
 		initialEntityObject.setNullableFloat(1144.0F);
+		initialEntityObject.setEntityElement(new EntityElement("lala"));
 		
 		assertEquals(1, msgBridge.getMessageCount());
 
@@ -109,8 +110,9 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
-				"    EntityUpdate for EntityClassWithAllFields#1" +
+				"    PartialRawPropertyValueSet for EntityClassWithAllFields#1" +
 				"      bytes=11,12,13" +
+				"      entity_element=EntityElement#2" +
 				"      non_nullable_double=11770.0" +
 				"      non_nullable_long=42" +
 				"      nullable_double=null" +
@@ -151,7 +153,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
-				"    EntityUpdate for EntityClassWithAllFields#2" +
+				"    PartialRawPropertyValueSet for EntityClassWithAllFields#2" +
 				"      bytes=4,5,6" +
 				"      entity_element=EntityElement#2" +
 				"      non_nullable_byte=11" +
@@ -167,7 +169,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"      nullable_long=18" +
 				"      nullable_short=14" +
 				"      string=my bizzle" +
-				"    EntityUpdate for EntityElement#2" +
+				"    PartialRawPropertyValueSet for EntityElement#2" +
 				"      name=Bye!",
 				msgBridge.getLastGraphUpdate(), typeDomain);
 		 

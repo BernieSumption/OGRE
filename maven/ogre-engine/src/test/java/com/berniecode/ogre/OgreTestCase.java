@@ -10,7 +10,7 @@ import org.jmock.Mockery;
 
 import com.berniecode.ogre.enginelib.ClientEngine;
 import com.berniecode.ogre.enginelib.EDRDescriber;
-import com.berniecode.ogre.enginelib.EntityUpdate;
+import com.berniecode.ogre.enginelib.PartialRawPropertyValueSet;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.LogWriter;
 import com.berniecode.ogre.enginelib.OgreLog;
@@ -66,19 +66,19 @@ public abstract class OgreTestCase extends TestCase {
 	
 	protected void assertObjectGraphState(String expected, GraphUpdate objectGraph, TypeDomain typeDomain) {
 		EntityReferenceComparator comparator = new EntityReferenceComparator();
-		Arrays.sort(objectGraph.getEntities(), comparator);
+		Arrays.sort(objectGraph.getEntityValues(), comparator);
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(objectGraph));
 	}
 	
 	protected void assertGraphUpdateState(String expected, GraphUpdate graphUpdate, TypeDomain typeDomain) {
 		EntityReferenceComparator comparator = new EntityReferenceComparator();
-		Arrays.sort(graphUpdate.getEntities(), comparator);
+		Arrays.sort(graphUpdate.getEntityValues(), comparator);
 		Arrays.sort(graphUpdate.getEntityDeletes(), comparator);
 		Arrays.sort(graphUpdate.getEntityDiffs(), comparator);
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeGraphUpdate(graphUpdate));
 	}
 	
-	protected void assertEntityUpdateState(String expected, EntityUpdate entityUpdate, TypeDomain typeDomain) {
+	protected void assertEntityUpdateState(String expected, PartialRawPropertyValueSet entityUpdate, TypeDomain typeDomain) {
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeEntityUpdate(entityUpdate));
 	}
 	

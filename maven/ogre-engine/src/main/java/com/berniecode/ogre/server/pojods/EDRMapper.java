@@ -3,8 +3,8 @@ package com.berniecode.ogre.server.pojods;
 
 import java.util.List;
 
-import com.berniecode.ogre.enginelib.Entity;
 import com.berniecode.ogre.enginelib.EntityType;
+import com.berniecode.ogre.enginelib.EntityValue;
 import com.berniecode.ogre.enginelib.TypeDomain;
 
 /**
@@ -20,9 +20,9 @@ public interface EDRMapper extends IdMapper {
 	TypeDomain getTypeDomain();
 	
 	/**
-	 * Convert an object into an {@link Entity} with the specified id.
+	 * Convert an object into an {@link EntityValue}
 	 */
-	Entity createEntity(Object object);
+	EntityValue createEntityValue(Object object);
 
 	/**
 	 * Get the EntityType for an object. Equivalent to, but more efficient than,

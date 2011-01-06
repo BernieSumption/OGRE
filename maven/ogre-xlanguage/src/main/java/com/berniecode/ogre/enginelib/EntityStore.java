@@ -89,9 +89,6 @@ public class EntityStore {
 		if (containsSimilar(entity)) {
 			throw new OgreException("The entity " + getSimilar(entity) + " already exists in this store");
 		}
-		if (!entity.isWired()) {
-			throw new OgreException("The entity " + entity + " can't be added to EntityStore because it is not wired.");
-		}
 		entityMaps[entity.getEntityType().getEntityTypeIndex()].put(entity);
 	}
 

@@ -35,16 +35,16 @@ public class EntityDiffTest extends OgreTestCase {
 		EntityDiff message = EntityDiff.build(from, to);
 		
 		assertEntityUpdateState(
-				"EntityUpdate for entityType0#303" +
+				"PartialRawPropertyValueSet for entityType0#303" +
 				"  property1=300888",
 				message, typeDomain);
 
 		assertTrue(message.toString().contains("entityType0#303")); // contains type and id
 
-		assertEquals(message.getPropertyValue(property1), 300888L);
+		assertEquals(message.getRawPropertyValue(property1), 300888L);
 		
 		try {
-			message.getPropertyValue(property0);
+			message.getRawPropertyValue(property0);
 			fail("EntityDiff.getValue(index) should fail with an OgreException if " +
 					"the message does not contain an updated value for that index");
 		} catch (OgreException e) {}

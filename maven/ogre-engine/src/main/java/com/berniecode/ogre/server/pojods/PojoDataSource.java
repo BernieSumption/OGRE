@@ -14,6 +14,7 @@ import com.berniecode.ogre.enginelib.Entity;
 import com.berniecode.ogre.enginelib.EntityDelete;
 import com.berniecode.ogre.enginelib.EntityDiff;
 import com.berniecode.ogre.enginelib.EntityType;
+import com.berniecode.ogre.enginelib.EntityValue;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.OgreLog;
@@ -49,7 +50,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 
 	private TypeDomain typeDomain;
-	private Map<EntityType, Map<Long, Entity>> entities;
+	private Map<EntityType, Map<Long, EntityValue>> entities;
 	
 	//
 	// INITIALISATION
@@ -62,9 +63,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		requireNotNull(objectGraphId, "objectGraphId");
 		
 		typeDomain = edrMapper.getTypeDomain();
-		entities = new HashMap<EntityType, Map<Long,Entity>>();
+		entities = new HashMap<EntityType, Map<Long,EntityValue>>();
 		for (EntityType entityType: UnsafeAccess.getEntityTypes(typeDomain)) {
-			entities.put(entityType, new HashMap<Long, Entity>());
+			entities.put(entityType, new HashMap<Long, EntityValue>());
 		}
 		
 		if (OgreLog.isDebugEnabled()) {
@@ -105,7 +106,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 
 	@Override
 	public GraphUpdate createSnapshot() {
-		return new GraphUpdate(typeDomain, objectGraphId, getAllEntities().toArray(new Entity[0]), null, null);
+		return new GraphUpdate(typeDomain, objectGraphId, getAllEntities().toArray(new EntityValue[0]), null, null);
 	}
 
 	@Override
@@ -166,13 +167,13 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		}
 		
 		//for each 
-		List<Entity> completeEntities = new ArrayList<Entity>();
+		List<EntityValue> completeEntities = new ArrayList<EntityValue>();
 		List<EntityDiff> entityDiffs = new ArrayList<EntityDiff>();
 		List<EntityDelete> entityDeletes = new ArrayList<EntityDelete>();
-		List<Entity> newEntities = new ArrayList<Entity>();
+		List<EntityValue> newEntities = new ArrayList<EntityValue>();
 		for (Object entityObject: entityObjects) {
-			Entity newEntity = edrMapper.createEntity(entityObject);
-			Entity existingEntity = entities.get(newEntity.getEntityType()).get(newEntity.getEntityId());
+			EntityValue newEntity = edrMapper.createEntityValue(entityObject);
+			EntityValue existingEntity = entities.get(newEntity.getEntityType()).get(newEntity.getEntityId());
 			if (existingEntity == null) {
 				completeEntities.add(newEntity);
 			} else {
@@ -188,7 +189,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 			newEntities.add(newEntity);
 		}
 		
-		for (Entity oldEntity: getAllEntities()) {
+		for (EntityValue oldEntity: getAllEntities()) {
 			if (!newEntities.contains(oldEntity)) {
 				entities.get(oldEntity.getEntityType()).remove(oldEntity.getEntityId());
 				entityDeletes.add(EntityDelete.build(oldEntity));
@@ -199,7 +200,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	private void sendGraphUpdate(
-			List<Entity> newEntities,
+			List<EntityValue> newEntities,
 			List<EntityDiff> entityDiffs,
 			List<EntityDelete> entityDeletes) {
 		
@@ -211,7 +212,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 			GraphUpdate update = new GraphUpdate(
 					typeDomain,
 					objectGraphId,
-					newEntities.toArray(new Entity[0]),
+					newEntities.toArray(new EntityValue[0]),
 					entityDiffs.toArray(new EntityDiff[0]),
 					entityDeletes.toArray(new EntityDelete[0]));
 			if (OgreLog.isDebugEnabled()) {
@@ -239,9 +240,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	
 
 
-	private List<Entity> getAllEntities() {
-		List<Entity> entityList = new ArrayList<Entity>();
-		for (Map<Long, Entity> map: entities.values()) {
+	private List<EntityValue> getAllEntities() {
+		List<EntityValue> entityList = new ArrayList<EntityValue>();
+		for (Map<Long, EntityValue> map: entities.values()) {
 			entityList.addAll(map.values());
 		}
 		return entityList;

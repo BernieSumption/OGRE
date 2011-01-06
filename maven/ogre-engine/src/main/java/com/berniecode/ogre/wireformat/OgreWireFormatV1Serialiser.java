@@ -5,14 +5,15 @@ import java.util.List;
 
 import com.berniecode.ogre.EDRDeserialiser;
 import com.berniecode.ogre.EDRSerialiser;
-import com.berniecode.ogre.enginelib.Entity;
 import com.berniecode.ogre.enginelib.EntityDelete;
 import com.berniecode.ogre.enginelib.EntityDiff;
 import com.berniecode.ogre.enginelib.EntityType;
-import com.berniecode.ogre.enginelib.EntityUpdate;
+import com.berniecode.ogre.enginelib.EntityValue;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.OgreLog;
+import com.berniecode.ogre.enginelib.PartialRawPropertyValueSet;
 import com.berniecode.ogre.enginelib.Property;
+import com.berniecode.ogre.enginelib.RawPropertyValueSet;
 import com.berniecode.ogre.enginelib.ReferenceProperty;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.UnsafeAccess;
@@ -131,10 +132,10 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		GraphUpdateMessage.Builder guBuilder = GraphUpdateMessage.newBuilder()
 			.setTypeDomainId(graphUpdate.getTypeDomain().getTypeDomainId())
 			.setObjectGraphId(graphUpdate.getObjectGraphId());
-		for (EntityUpdate entity : graphUpdate.getEntities()) {
+		for (RawPropertyValueSet entity : graphUpdate.getEntityValues()) {
 			guBuilder.addEntities(getEntityValueMessage(entity, false));
 		}
-		for (EntityUpdate entity : graphUpdate.getEntityDiffs()) {
+		for (PartialRawPropertyValueSet entity : graphUpdate.getEntityDiffs()) {
 			guBuilder.addEntityDiffs(getEntityValueMessage(entity, true));
 		}
 		for (EntityDelete delete : graphUpdate.getEntityDeletes()) {
@@ -146,9 +147,11 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 	}
 
 	/**
-	 * @param diffStyle whether this is a "diff-style" EntityValue as defined in V1GraphUpdate.proto
+	 * @param diffStyle whether this is a "diff-style" EntityValue as defined in
+	 *            V1GraphUpdate.proto. If true, the {@code entity} parameter must
+	 *            be an instance of {@link PartialRawPropertyValueSet}
 	 */
-	private EntityValueMessage getEntityValueMessage(EntityUpdate entity, boolean diffStyle) {
+	private EntityValueMessage getEntityValueMessage(RawPropertyValueSet entity, boolean diffStyle) {
 		EntityValueMessage.Builder evBuilder = EntityValueMessage.newBuilder()
 				.setEntityTypeIndex(entity.getEntityType().getEntityTypeIndex())
 				.setEntityId(entity.getEntityId());
@@ -156,45 +159,49 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		EntityType entityType = entity.getEntityType();
 		for (int i = 0; i < entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
-			if (entity.hasUpdatedValue(property)) {
-				PropertyValueMessage.Builder pvBuilder = PropertyValueMessage.newBuilder();
-				Object value = entity.getPropertyValue(property);
-				if (diffStyle) {
-					pvBuilder.setPropertyIndex(property.getPropertyIndex());
-				}
-				if (value == null) {
-					pvBuilder.setNullValue(true);
-				} else {
-					try {
-						switch(property.getTypeCode()) {
-						case Property.TYPECODE_INT32:
-						case Property.TYPECODE_INT64:
-							pvBuilder.setIntValue(numberToLong(value));
-							break;
-						case Property.TYPECODE_FLOAT:
-							pvBuilder.setFloatValue((Float) value);
-							break;
-						case Property.TYPECODE_DOUBLE:
-							pvBuilder.setDoubleValue((Double) value);
-							break;
-						case Property.TYPECODE_STRING:
-							pvBuilder.setStringValue((String) value);
-							break;
-						case Property.TYPECODE_BYTES:
-							pvBuilder.setBytesValue(ByteString.copyFrom((byte[]) value));
-							break;
-						case Property.TYPECODE_REFERENCE:
-							pvBuilder.setIdValue((Long) value);
-							break;
-						default:
-							throw new OgreException(property + " has invalid invalid typeCode: " + property.getTypeCode());
-						}
-					} catch (ClassCastException e) {
-						throw new OgreException("Incorrect value for " + entityType + "/" + property, e);
-					}
-				}
-				evBuilder.addPropertyValues(pvBuilder);
+			boolean hasUpdatedValue;
+			if (diffStyle) {
+				hasUpdatedValue = ((PartialRawPropertyValueSet) entity).hasUpdatedValue(property);
+			} else {
+				hasUpdatedValue = true;
 			}
+			PropertyValueMessage.Builder pvBuilder = PropertyValueMessage.newBuilder();
+			Object value = entity.getRawPropertyValue(property);
+			if (diffStyle) {
+				pvBuilder.setPropertyIndex(property.getPropertyIndex());
+			}
+			if (value == null) {
+				pvBuilder.setNullValue(true);
+			} else {
+				try {
+					switch(property.getTypeCode()) {
+					case Property.TYPECODE_INT32:
+					case Property.TYPECODE_INT64:
+						pvBuilder.setIntValue(numberToLong(value));
+						break;
+					case Property.TYPECODE_FLOAT:
+						pvBuilder.setFloatValue((Float) value);
+						break;
+					case Property.TYPECODE_DOUBLE:
+						pvBuilder.setDoubleValue((Double) value);
+						break;
+					case Property.TYPECODE_STRING:
+						pvBuilder.setStringValue((String) value);
+						break;
+					case Property.TYPECODE_BYTES:
+						pvBuilder.setBytesValue(ByteString.copyFrom((byte[]) value));
+						break;
+					case Property.TYPECODE_REFERENCE:
+						pvBuilder.setIdValue((Long) value);
+						break;
+					default:
+						throw new OgreException(property + " has invalid invalid typeCode: " + property.getTypeCode());
+					}
+				} catch (ClassCastException e) {
+					throw new OgreException("Incorrect value for " + entityType + "/" + property, e);
+				}
+			}
+			evBuilder.addPropertyValues(pvBuilder);
 		}
 		return evBuilder.build();
 	}
@@ -226,24 +233,24 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		return new GraphUpdate(
 				typeDomain,
 				gum.getObjectGraphId(),
-				getEntities(gum, typeDomain),
+				getEntityValues(gum, typeDomain),
 				getEntityDiffs(gum, typeDomain),
 				getEntityDeletes(gum, typeDomain));
 	}
 
-	private Entity[] getEntities(GraphUpdateMessage gum, TypeDomain typeDomain) {
-		List<Entity> entities = new ArrayList<Entity>();
+	private EntityValue[] getEntityValues(GraphUpdateMessage gum, TypeDomain typeDomain) {
+		List<EntityValue> entities = new ArrayList<EntityValue>();
 		for (EntityValueMessage evm: gum.getEntitiesList()) {
 			EntityType entityType = typeDomain.getEntityType(evm.getEntityTypeIndex());
-			entities.add(new Entity(
+			entities.add(new EntityValue(
 					entityType,
 					evm.getEntityId(),
-					getEntityValues(evm, entityType, false)));
+					getEntityValuePropertiesArray(evm, entityType, false)));
 		}
-		return entities.toArray(new Entity[0]);
+		return entities.toArray(new EntityValue[0]);
 	}
 
-	private Object[] getEntityValues(EntityValueMessage evm, EntityType entityType, boolean diffStyle) {
+	private Object[] getEntityValuePropertiesArray(EntityValueMessage evm, EntityType entityType, boolean diffStyle) {
 		if (!diffStyle && evm.getPropertyValuesCount() != entityType.getPropertyCount()) {
 			throw new OgreException("Invalid graph update: complete-style EntityValueMessages must " +
 					"have the same number of properties as the corresponding EntityType. " + entityType +
@@ -320,7 +327,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		List<EntityDiff> diffs = new ArrayList<EntityDiff>();
 		for (EntityValueMessage evm: gum.getEntityDiffsList()) {
 			EntityType entityType = typeDomain.getEntityType(evm.getEntityTypeIndex());
-			Object[] entityValues = getEntityValues(evm, entityType, true);
+			Object[] entityValues = getEntityValuePropertiesArray(evm, entityType, true);
 			boolean[] changed = new boolean[entityType.getPropertyCount()];
 			for (PropertyValueMessage pvm: evm.getPropertyValuesList()) {
 				changed[pvm.getPropertyIndex()] = true;

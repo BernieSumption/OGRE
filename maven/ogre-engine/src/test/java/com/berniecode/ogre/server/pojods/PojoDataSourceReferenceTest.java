@@ -68,10 +68,10 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
-				"    EntityUpdate for B#3" +
+				"    PartialRawPropertyValueSet for B#3" +
 				"      a=A#2" +
 				"  partial values:" +
-				"    EntityUpdate for A#2" +
+				"    PartialRawPropertyValueSet for A#2" +
 				"      b=B#3" +
 				"  deleted entities:" +
 				"    EntityDelete for B#1",
@@ -86,10 +86,10 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
-				"    EntityUpdate for B#1" +
+				"    PartialRawPropertyValueSet for B#1" +
 				"      a=A#2" +
 				"  partial values:" +
-				"    EntityUpdate for A#2" +
+				"    PartialRawPropertyValueSet for A#2" +
 				"      b=B#1" +
 				"  deleted entities:" +
 				"    EntityDelete for B#3",
@@ -103,7 +103,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
-				"    EntityUpdate for B#3" +
+				"    PartialRawPropertyValueSet for B#3" +
 				"      a=A#2",
 				lastGraphUpdate, dataSource.getTypeDomain());
 		
@@ -114,7 +114,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
-				"    EntityUpdate for A#2" +
+				"    PartialRawPropertyValueSet for A#2" +
 				"      b=B#3",
 				lastGraphUpdate, dataSource.getTypeDomain());
 		
@@ -124,7 +124,7 @@ public class PojoDataSourceReferenceTest extends OgreTestCase {
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  partial values:" +
-				"    EntityUpdate for A#2" +
+				"    PartialRawPropertyValueSet for A#2" +
 				"      b=B#1",
 				lastGraphUpdate, dataSource.getTypeDomain());
 	}

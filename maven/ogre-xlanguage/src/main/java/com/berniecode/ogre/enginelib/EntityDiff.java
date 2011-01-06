@@ -8,17 +8,12 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  *
  * @author Bernie Sumption
  */
-public class EntityDiff implements EntityReference, EntityUpdate {
+public class EntityDiff extends EntityValue {
 
-	private final EntityType entityType;
-	private final long entityId;
-	private final Object[] values;
 	private final boolean[] isChanged;
 
 	public EntityDiff(EntityType entityType, long id, Object[] values, boolean[] isChanged) {
-		this.entityType = entityType;
-		this.entityId = id;
-		this.values = values;
+		super(entityType, id, values);
 		this.isChanged = isChanged;
 	}
 
@@ -26,7 +21,7 @@ public class EntityDiff implements EntityReference, EntityUpdate {
 	 * @return An {@link EntityDiff} object that if applied to the entity <code>from</code> will
 	 *         change its values to be equal to those of <code>to</code>
 	 */
-	public static EntityDiff build(Entity from, Entity to) {
+	public static EntityDiff build(PartialRawPropertyValueSet from, PartialRawPropertyValueSet to) {
 		EntityType entityType = from.getEntityType();
 		if (entityType != to.getEntityType()) {
 			throw new OgreException("Can't build an EntityDiff from " + from + " to " + to + " because their entityTypes are different");
@@ -37,8 +32,8 @@ public class EntityDiff implements EntityReference, EntityUpdate {
 		boolean anyChanged = false;
 		for (int i=0; i<propertyCount; i++) {
 			Property property = entityType.getProperty(i);
-			Object fromValue = from.getPropertyValue(property);
-			Object toValue = to.getPropertyValue(property);
+			Object fromValue = from.getRawPropertyValue(property);
+			Object toValue = to.getRawPropertyValue(property);
 			if (!ValueUtils.valuesAreEquivalent(fromValue, toValue)) {
 				if (toValue instanceof Entity) {
 					changedValues[i] = ValueUtils.boxLong(((Entity) toValue).getEntityId());
@@ -56,42 +51,24 @@ public class EntityDiff implements EntityReference, EntityUpdate {
 	}
 
 	/**
-	 * @return The type of this Entity
+	 * @see PartialRawPropertyValueSet#getPropertyValue(Property)
 	 */
-	public EntityType getEntityType() {
-		return entityType;
-	}
-
-	/**
-	 * @return The ID of this entity, unique within the scope of its entity type
-	 */
-	public long getEntityId() {
-		return entityId;
-	}
-
-	/**
-	 * @see EntityUpdate#getPropertyValue(Property)
-	 */
-	public Object getPropertyValue(Property property) {
+	public Object getRawPropertyValue(Property property) {
 		if (!hasUpdatedValue(property)) {
 			throw new OgreException(this + " has no value for " + property);
 		}
-		return values[property.getPropertyIndex()];
+		return super.getRawPropertyValue(property);
 	}
 
 	/**
-	 * @see EntityUpdate#hasUpdatedValue(Property)
+	 * @see EntityDiff#hasUpdatedValue(Property)
 	 */
 	public boolean hasUpdatedValue(Property property) {
 		return isChanged[property.getPropertyIndex()];
 	}
 
 	public String toString() {
-		return "EntityDiff for entity " + entityType + "#" + entityId;
-	}
-
-	public boolean isWired() {
-		return false;
+		return "EntityDiff for entity " + getEntityType() + "#" + getEntityId();
 	}
 
 }

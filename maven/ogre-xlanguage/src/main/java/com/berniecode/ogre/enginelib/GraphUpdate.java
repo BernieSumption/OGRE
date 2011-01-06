@@ -11,14 +11,14 @@ public class GraphUpdate {
 
 	private final TypeDomain typeDomain;
 	private final String objectGraphId;
-	private final Entity[] entities;
-	private final EntityDiff[] entityDiffs;
+	private final RawPropertyValueSet[] entityValues;
+	private final PartialRawPropertyValueSet[] entityDiffs;
 	private final EntityDelete[] entityDeletes;
 
-	public GraphUpdate(TypeDomain typeDomain, String objectGraphId, Entity[] entities, EntityDiff[] entityDiffs, EntityDelete[] entityDeletes) {
+	public GraphUpdate(TypeDomain typeDomain, String objectGraphId, RawPropertyValueSet[] entityValues, EntityDiff[] entityDiffs, EntityDelete[] entityDeletes) {
 		this.typeDomain = typeDomain;
 		this.objectGraphId = objectGraphId;
-		this.entities = entities == null ? new Entity[0] : entities;
+		this.entityValues = entityValues == null ? new RawPropertyValueSet[0] : entityValues;
 		this.entityDiffs = entityDiffs == null ? new EntityDiff[0] : entityDiffs;
 		this.entityDeletes = entityDeletes == null ? new EntityDelete[0] : entityDeletes;
 	}
@@ -40,21 +40,23 @@ public class GraphUpdate {
 	}
 
 	/**
-	 * @return {@link Entity}s that have been created or updated.
+	 * @return {@link EntityValue}s for Entities that have been been created or updated.
 	 */
-	public Entity[] getEntities() {
-		return entities;
+	//TODO change to getCompleteEntityValues
+	public RawPropertyValueSet[] getEntityValues() {
+		return entityValues;
 	}
 
 	/**
-	 * @return {@link EntityDiff}s for entities that have been updated
+	 * @return {@link EntityDiff}s for entityValues that have been updated
 	 */
-	public EntityDiff[] getEntityDiffs() {
+	//TODO change to getPartialEntityValues
+	public PartialRawPropertyValueSet[] getEntityDiffs() {
 		return entityDiffs;
 	}
 
 	/**
-	 * @return {@link EntityDelete}s for entities that have been removed
+	 * @return {@link EntityDelete}s for entityValues that have been removed
 	 */
 	public EntityDelete[] getEntityDeletes() {
 		return entityDeletes;

@@ -12,6 +12,7 @@ import com.berniecode.ogre.enginelib.EntityDelete;
 import com.berniecode.ogre.enginelib.EntityDiff;
 import com.berniecode.ogre.enginelib.EntityReference;
 import com.berniecode.ogre.enginelib.EntityType;
+import com.berniecode.ogre.enginelib.EntityValue;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.MessageClientAdapter;
 import com.berniecode.ogre.enginelib.OgreLog;
@@ -168,19 +169,24 @@ public class ClientEngineTest extends OgreTestCase {
 	}
 
 	private GraphUpdate createGraphUpdate(EntityReference... updates) {
-		List<Entity> valueMessages = new ArrayList<Entity>();
+		List<EntityValue> valueMessages = new ArrayList<EntityValue>();
 		List<EntityDiff> diffMessages = new ArrayList<EntityDiff>();
 		List<EntityDelete> deleteMessages = new ArrayList<EntityDelete>();
 		for (EntityReference update: updates) {
-			if (update instanceof Entity) {
-				valueMessages.add((Entity) update);
+			if (update instanceof EntityValue) {
+				valueMessages.add((EntityValue) update);
 			}
 			else if (update instanceof EntityDiff) {
 				diffMessages.add((EntityDiff) update);
 			}
+			else if (update instanceof EntityDelete) {
+				deleteMessages.add((EntityDelete) update);
+			} else {
+				throw new IllegalArgumentException("Bad argument to createCraphUpdate(): " + update.getClass());
+			}
 		}
 		return new GraphUpdate(typeDomain, OBJECT_GRAPH_ID,
-				valueMessages.toArray(new Entity[0]),
+				valueMessages.toArray(new EntityValue[0]),
 				diffMessages.toArray(new EntityDiff[0]),
 				deleteMessages.toArray(new EntityDelete[0]));
 	}

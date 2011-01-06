@@ -64,24 +64,24 @@ public class EDRDescriber {
 		  .add(objectGraph.getTypeDomain().getTypeDomainId())
 		  .add("/")
 		  .add(objectGraph.getObjectGraphId());
-		Entity[] entities = objectGraph.getEntities();
+		RawPropertyValueSet[] entities = objectGraph.getEntityValues();
 		for (int i=0; i<entities.length; i++) {
 			sc.add("\n");
 			doDescribeEntity(entities[i], sc, indent+1);
 		}
 	}
 
-	private static void doDescribeEntity(Entity entityValue, StringConcatenator sc, int indent) {
-		EntityType entityType = entityValue.getEntityType();
+	private static void doDescribeEntity(RawPropertyValueSet entity, StringConcatenator sc, int indent) {
+		EntityType entityType = entity.getEntityType();
 		doIndent(sc, indent);
 		sc.add("Entity ")
 		  .add(entityType.getName())
 		  .add("#")
-		  .addNumber(entityValue.getEntityId());
+		  .addNumber(entity.getEntityId());
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
 			sc.add("\n");
-			doDescribeValue(entityValue.getPropertyValue(property), property, sc, indent+1, entityValue.isWired());
+			doDescribeValue(entity.getRawPropertyValue(property), property, sc, indent+1, false);
 		}
 	}
 
@@ -113,9 +113,9 @@ public class EDRDescriber {
 	//
 
 	
-	public static String describeEntityUpdate(EntityUpdate entityUpdate) {
+	public static String describeEntityUpdate(PartialRawPropertyValueSet entityUpdate) {
 		StringConcatenator sc = new StringConcatenator();
-		doDescribeEntityUpdate(entityUpdate, sc, 0);
+		doDescribePartialRawPropertyValueSet(entityUpdate, sc, 0);
 		return sc.buildString();
 	}
 	
@@ -131,13 +131,21 @@ public class EDRDescriber {
 		  .add(graphUpdate.getTypeDomain().getTypeDomainId())
 		  .add("/")
 		  .add(graphUpdate.getObjectGraphId());
-		if (graphUpdate.getEntities().length > 0) {
+		if (graphUpdate.getEntityValues().length > 0) {
 			sc.add("\ncomplete values:");
-			doDescribeEntityUpdates(graphUpdate.getEntities(), sc, indent + 1);
+			RawPropertyValueSet[] entityValues = graphUpdate.getEntityValues();
+			for (int i=0; i<entityValues.length; i++) {
+				sc.add("\n");
+				doDescribeRawPropertyValueSet(entityValues[i], sc, indent + 1);
+			}
 		}
 		if (graphUpdate.getEntityDiffs().length > 0) {
 			sc.add("\npartial values:");
-			doDescribeEntityUpdates(graphUpdate.getEntityDiffs(), sc, indent + 1);
+			PartialRawPropertyValueSet[] entityDiffs = graphUpdate.getEntityDiffs();
+			for (int i=0; i<entityDiffs.length; i++) {
+				sc.add("\n");
+				doDescribePartialRawPropertyValueSet(entityDiffs[i], sc, indent + 1);
+			}
 		}
 		if (graphUpdate.getEntityDeletes().length > 0) {
 			sc.add("\ndeleted entities:");
@@ -145,17 +153,24 @@ public class EDRDescriber {
 		}
 	}
 
-	private static void doDescribeEntityUpdates(EntityUpdate[] entityValues, StringConcatenator sc, int indent) {
-		for (int i=0; i<entityValues.length; i++) {
+	private static void doDescribeRawPropertyValueSet(RawPropertyValueSet update, StringConcatenator sc, int indent) {
+		doIndent(sc, indent);
+		EntityType entityType = update.getEntityType();
+		sc.add("value for ")
+		  .add(entityType)
+		  .add("#")
+		  .addNumber(update.getEntityId());
+		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			sc.add("\n");
-			doDescribeEntityUpdate(entityValues[i], sc, indent + 1);
+			Property property = entityType.getProperty(i);
+			doDescribeValue(update.getRawPropertyValue(property), property, sc, indent + 1, false);
 		}
 	}
 
-	private static void doDescribeEntityUpdate(EntityUpdate update, StringConcatenator sc, int indent) {
+	private static void doDescribePartialRawPropertyValueSet(PartialRawPropertyValueSet update, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		EntityType entityType = update.getEntityType();
-		sc.add("EntityUpdate for ")
+		sc.add("partial value for ")
 		  .add(entityType)
 		  .add("#")
 		  .addNumber(update.getEntityId());
@@ -163,7 +178,7 @@ public class EDRDescriber {
 			Property property = entityType.getProperty(i);
 			if (update.hasUpdatedValue(property)) {
 				sc.add("\n");
-				doDescribeValue(update.getPropertyValue(property), property, sc, indent + 1, update.isWired());
+				doDescribeValue(update.getRawPropertyValue(property), property, sc, indent + 1, false);
 			}
 		}
 	}

@@ -20,7 +20,7 @@ public class EntityDelete implements EntityReference {
 	/**
 	 * @return An {@link EntityDelete} object tfr the specified entity
 	 */
-	public static EntityDelete build(Entity entity) {
+	public static EntityDelete build(EntityReference entity) {
 		return new EntityDelete(entity.getEntityType(), entity.getEntityId());
 	}
 

@@ -55,7 +55,7 @@ public class TestSuiteGenerator {
 	private Random random;
 	private BufferedWriter traceFileWriter;
 	private TypeDomain typeDomain;
-	private List<Entity> entities;
+	private List<EntityValue> entities;
 	private EntityType[] entityTypes;
 	private String objectGraphId;
 
@@ -88,7 +88,7 @@ public class TestSuiteGenerator {
 			
 			entities = createObjectGraph();
 			objectGraphId = "object-graph-" + suiteNumber;
-			GraphUpdate initialData = new GraphUpdate(typeDomain, objectGraphId, entities.toArray(new Entity[0]), null, null);
+			GraphUpdate initialData = new GraphUpdate(typeDomain, objectGraphId, entities.toArray(new EntityValue[0]), null, null);
 			setFile(INITIAL_DATA_MESSAGE_FILE_NAME, serialiser.serialiseGraphUpdate(initialData));
 			traceLine("initial data set", EDRDescriber.describeObjectGraph(initialData));
 			
@@ -106,26 +106,27 @@ public class TestSuiteGenerator {
 	}
 	
 	private void doChangeIteration(int iteration) throws IOException {
-		Entity[] existingEntities = entities.toArray(new Entity[0]);
+		EntityValue[] existingEntities = entities.toArray(new EntityValue[0]);
 		
 		// delete some entities
 		List<EntityDelete> entityDeletes = new ArrayList<EntityDelete>();
 		for (int i: makeRandomIndices(existingEntities.length, MAX_ENTITIES_TO_DELETE_PER_ITERATION)) {
-			Entity entityToDelete = existingEntities[i];
+			EntityValue entityToDelete = existingEntities[i];
 			entityDeletes.add(EntityDelete.build(entityToDelete));
 			entities.remove(entityToDelete);
-			for (Entity entity: existingEntities) {
-				entity.nullReferencesTo(entityToDelete);
+			for (EntityValue entity: existingEntities) {
+				//TODO reproduce nullReferencesTo for EntityValue
+				//entity.nullReferencesTo(entityToDelete);
 			}
 		}
-		existingEntities = entities.toArray(new Entity[0]);
+		existingEntities = entities.toArray(new EntityValue[0]);
 
 		// build a Map<EntityType, List<Long>> of available references
 		Map<EntityType, List<Long>> availableEntities = new HashMap<EntityType, List<Long>>();
 		for (EntityType entityType: entityTypes) {
 			availableEntities.put(entityType, new ArrayList<Long>());
 		}
-		for (Entity entity: existingEntities) {
+		for (EntityValue entity: existingEntities) {
 			availableEntities.get(entity.getEntityType()).add(entity.getEntityId());
 		}
 		
@@ -140,9 +141,9 @@ public class TestSuiteGenerator {
 		}
 		
 		// add the new entities
-		Entity[] newEntities = new Entity[numEntitiesToAdd];
+		EntityValue[] newEntities = new EntityValue[numEntitiesToAdd];
 		for (int i = 0; i < numEntitiesToAdd; i++) {
-			Entity newEntity = makeRandomEntity(typesToAdd[i], idsToAdd[i], availableEntities);
+			EntityValue newEntity = makeRandomEntityValue(typesToAdd[i], idsToAdd[i], availableEntities);
 			entities.add(newEntity);
 			newEntities[i] = newEntity;
 		}
@@ -151,17 +152,17 @@ public class TestSuiteGenerator {
 		// modify existing entities
 		
 		int qtyToChange = makeRandomNumberInclusive(0, Math.min(MAX_ENTITIES_TO_CHANGE_PER_ITERATION, existingEntities.length));
-		List<Entity> entitiesToChange = Arrays.asList(existingEntities);
+		List<EntityValue> entitiesToChange = Arrays.asList(existingEntities);
 		Collections.shuffle(entitiesToChange, random);
 		List<EntityDiff> entityDiffs = new ArrayList<EntityDiff>();
 		for (int i=0; i<qtyToChange; i++) {
-			Entity entity = entitiesToChange.get(i);
+			EntityValue entity = entitiesToChange.get(i);
 			EntityType entityType = entity.getEntityType();
 			Object[] values = entity.copyValues();
 			for(int index: makeRandomIndices(entityType.getPropertyCount())) {
 				values[index] = makeRandomPropertyValue(entityType.getProperty(index), availableEntities);
 			}
-			Entity newEntity = new Entity(entityType, entity.getEntityId(), values);
+			EntityValue newEntity = new EntityValue(entityType, entity.getEntityId(), values);
 			EntityDiff entityDiff = EntityDiff.build(entity, newEntity);
 			if (entityDiff != null) {
 				entityDiffs.add(entityDiff);
@@ -181,14 +182,14 @@ public class TestSuiteGenerator {
 	}
 
 	private String describeObjectGraph() {
-		GraphUpdate objectGraph = new GraphUpdate(typeDomain, objectGraphId, entities.toArray(new Entity[0]), null, null);
-		Arrays.sort(objectGraph.getEntities(), new EntityReferenceComparator());
+		GraphUpdate objectGraph = new GraphUpdate(typeDomain, objectGraphId, entities.toArray(new EntityValue[0]), null, null);
+		Arrays.sort(objectGraph.getEntityValues(), new EntityReferenceComparator());
 		return EDRDescriber.describeObjectGraph(objectGraph);
 	}
 
 	private String describeGraphUpdate(GraphUpdate graphUpdate) {
 		EntityReferenceComparator comparator = new EntityReferenceComparator();
-		Arrays.sort(graphUpdate.getEntities(), comparator);
+		Arrays.sort(graphUpdate.getEntityValues(), comparator);
 		Arrays.sort(graphUpdate.getEntityDiffs(), comparator);
 		Arrays.sort(graphUpdate.getEntityDeletes(), comparator);
 		return EDRDescriber.describeGraphUpdate(graphUpdate);
@@ -266,10 +267,10 @@ public class TestSuiteGenerator {
 	// DATA GENERATION
 	//
 	
-	private List<Entity> createObjectGraph() {
+	private List<EntityValue> createObjectGraph() {
 
 		// allow replace
-		List<Entity> store = new ArrayList<Entity>();
+		List<EntityValue> store = new ArrayList<EntityValue>();
 		
 		if (entityTypes.length > 0) {
 		
@@ -294,24 +295,26 @@ public class TestSuiteGenerator {
 			}
 	
 			for (int i = 0; i < graphEntityTypes.length; i++) {
-				store.add(makeRandomEntity(graphEntityTypes[i], graphEntityIds[i], idMap));
+				store.add(makeRandomEntityValue(graphEntityTypes[i], graphEntityIds[i], idMap));
 			}
 		}
 		
 		return store;
 	}
 
-	private Entity makeRandomEntity(EntityType entityType, long id, Map<EntityType, List<Long>> idMap) {
+	private EntityValue makeRandomEntityValue(EntityType entityType, long id, Map<EntityType, List<Long>> idMap) {
 		Object[] values = new Object[entityType.getPropertyCount()];
 		for (int i = 0; i < values.length; i++) {
 			values[i] = makeRandomPropertyValue(entityType.getProperty(i), idMap);
 		}
-		return new Entity(entityType, id, values );
+		return new EntityValue(entityType, id, values );
 	}
 	
 	private Object makeRandomPropertyValue(Property property, Map<EntityType, List<Long>> idMap) {
 		switch(property.getTypeCode()) {
 		case Property.TYPECODE_INT32:
+			return random.nextInt();
+		case Property.TYPECODE_INT64:
 			return random.nextLong();
 		case Property.TYPECODE_FLOAT:
 			return random.nextFloat();
