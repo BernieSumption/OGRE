@@ -118,5 +118,13 @@ public class EntityStore {
 		return (Entity[]) resultList.buildArray();
 	}
 
+	/**
+	 * @return every {@link Entity} of the specified {@link EntityType} in this store. The returned
+	 *         list is a copy of the internal list, and is safe to modify.
+	 */
+	public Entity[] getEntitiesByType(EntityType entityType) {
+		return entityMaps[entityType.getEntityTypeIndex()].getEntities();
+	}
+
 
 }

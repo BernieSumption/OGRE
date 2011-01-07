@@ -175,6 +175,10 @@ public class ClientEngine implements GraphUpdateListener {
 			}
 		}
 	}
+	
+	public Entity[] getEntitiesByType(EntityType entityType) {
+		return entities.getEntities();
+	}
 
 	/**
 	 * @return a snapshot of the state of this object graph, useful for debugging

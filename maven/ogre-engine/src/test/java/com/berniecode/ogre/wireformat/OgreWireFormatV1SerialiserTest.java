@@ -39,8 +39,6 @@ public class OgreWireFormatV1SerialiserTest extends EntityClassWithAllFieldsTest
 
 		GraphUpdate graphUpdate = msgBridge.getLastGraphUpdate();
 		
-		System.out.println(EDRDescriber.describeGraphUpdate(graphUpdate));
-		
 		OgreWireFormatV1Serialiser serialiser = new OgreWireFormatV1Serialiser();
 		byte[] serialisedGU = serialiser.serialiseGraphUpdate(graphUpdate);
 		GraphUpdate deserialisedGU = serialiser.deserialiseGraphUpdate(serialisedGU, typeDomain);

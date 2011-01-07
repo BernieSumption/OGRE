@@ -30,7 +30,8 @@ public class EntityMap {
 	}
 
 	/**
-	 * @return all {@link Entity}s in this map
+	 * @return all {@link Entity}s in this map. The returned list is a copy of the internal list,
+	 *         and is safe to modify.
 	 */
 	public Entity[] getEntities() {
 		return (Entity[]) entities.values().toArray(new Entity[0]);
