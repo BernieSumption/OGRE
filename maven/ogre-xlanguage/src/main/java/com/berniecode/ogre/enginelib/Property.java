@@ -82,17 +82,16 @@ public class Property {
 		return entityType;
 	}
 	
+	public static String getNameForTypecode(int typeCode) {
+		return TYPECODE_NAMES[typeCode];
+	}
+	
 	/**
 	 * @private
 	 */
-	//TODO rename to initialise()
 	void initialise(EntityType entityType, int propertyIndex) {
 		this.entityType = entityType;
 		this.propertyIndex = propertyIndex;
-	}
-	
-	public static String getNameForTypecode(int typeCode) {
-		return TYPECODE_NAMES[typeCode];
 	}
 	
 }

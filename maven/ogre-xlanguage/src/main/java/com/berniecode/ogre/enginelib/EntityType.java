@@ -29,6 +29,13 @@ public class EntityType {
 		}
 		referenceProperties = (ReferenceProperty[]) builder.buildArray();
 	}
+	
+	/**
+	 * The {@link TypeDomain} that this {@link EntityType} belongs to.
+	 */
+	public TypeDomain getTypeDomain() {
+		return typeDomain;
+	}
 
 	/**
 	 * @return The index of this {@link EntityType} in its parent {@link TypeDomain}
@@ -63,17 +70,27 @@ public class EntityType {
 	}
 
 	/**
-	 * @return an array of all the reference properties in this {@link EntityType}
+	 * @return true if this {@link EntityType} has a {@link ReferenceProperty} that points to the
+	 *         specified {@link EntityType}
 	 */
-	public ReferenceProperty[] getReferenceProperties() {
-		return referenceProperties;
+	public boolean isReferenceTo(EntityType entityType) {
+		for (int i = 0; i < referenceProperties.length; i++) {
+			if (referenceProperties[i].getReferenceType() == entityType) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
+	//
+	// OGRE INTERNAL API
+	//
+
 	/**
-	 * The {@link TypeDomain} that this {@link EntityType} belongs to.
+	 * @return an array of all the reference properties in this {@link EntityType}
 	 */
-	public TypeDomain getTypeDomain() {
-		return typeDomain;
+	ReferenceProperty[] getReferenceProperties() {
+		return referenceProperties;
 	}
 
 	/**
@@ -85,18 +102,5 @@ public class EntityType {
 		for (int i = 0; i < properties.length; i++) {
 			properties[i].initialise(this, i);
 		}
-	}
-
-	/**
-	 * @return true if this {@link EntityType} has a {@link ReferenceProperty} that points to the
-	 *         specified {@link EntityType}
-	 */
-	public boolean isReferenceTo(EntityType entityType) {
-		for (int i = 0; i < referenceProperties.length; i++) {
-			if (referenceProperties[i].getReferenceType() == entityType) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

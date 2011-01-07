@@ -56,13 +56,6 @@ public class EntityValue implements EntityReference, PartialRawPropertyValueSet 
 	}
 
 	/**
-	 * @return an array of values for this {@link Entity}. The returned array is safe to modify.
-	 */
-	Object[] copyValues() {
-		return ValueUtils.cloneArray(values);
-	}
-
-	/**
 	 * Set references to a specified Entity to null.
 	 * 
 	 * <p>The entity is located by identity, not by entityType and id

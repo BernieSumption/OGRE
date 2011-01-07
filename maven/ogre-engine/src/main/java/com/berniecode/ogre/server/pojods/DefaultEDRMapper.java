@@ -327,7 +327,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 
 		List<Object> relatedObjects = new ArrayList<Object>();
 		
-		ReferenceProperty[] referenceProperties = entityType.getReferenceProperties();
+		ReferenceProperty[] referenceProperties = UnsafeAccess.getEntityTypeReferenceProperties(entityType);
 		for (int i = 0; i < referenceProperties.length; i++) {
 			relatedObjects.add(getRawValueForProperty(entityObject, referenceProperties[i]));
 		}

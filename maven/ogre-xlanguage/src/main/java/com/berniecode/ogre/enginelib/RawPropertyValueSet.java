@@ -5,7 +5,6 @@ package com.berniecode.ogre.enginelib;
  * 
  * @author Bernie Sumption
  */
-//TODO look for opportunities to replace concrete references with this and PartialRawPropertyValueSet
 public interface RawPropertyValueSet extends EntityReference {
 
 	/**

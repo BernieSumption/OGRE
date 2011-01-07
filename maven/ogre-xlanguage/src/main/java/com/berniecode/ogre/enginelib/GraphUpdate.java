@@ -19,7 +19,7 @@ public class GraphUpdate {
 		this.typeDomain = typeDomain;
 		this.objectGraphId = objectGraphId;
 		this.entityCreates = entityValues == null ? new RawPropertyValueSet[0] : entityValues;
-		this.entityUpdates = entityDiffs == null ? new EntityDiff[0] : entityDiffs;
+		this.entityUpdates = entityDiffs == null ? new PartialRawPropertyValueSet[0] : entityDiffs;
 		this.entityDeletes = entityDeletes == null ? new EntityReference[0] : entityDeletes;
 	}
 

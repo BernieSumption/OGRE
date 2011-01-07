@@ -43,15 +43,13 @@ import com.berniecode.ogre.server.DataSource;
  */
 public class PojoDataSource extends InitialisingBean implements DataSource {
 
-
 	private EDRMapper edrMapper;
 	private String objectGraphId;
 	private GraphUpdateListener graphUpdateListener;
 
-
 	private TypeDomain typeDomain;
 	private Map<EntityType, Map<Long, EntityValue>> entities;
-	
+
 	//
 	// INITIALISATION
 	//
@@ -61,13 +59,13 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	protected void doInitialise() {
 		requireNotNull(edrMapper, "edrMapper");
 		requireNotNull(objectGraphId, "objectGraphId");
-		
+
 		typeDomain = edrMapper.getTypeDomain();
-		entities = new HashMap<EntityType, Map<Long,EntityValue>>();
-		for (EntityType entityType: UnsafeAccess.getEntityTypes(typeDomain)) {
+		entities = new HashMap<EntityType, Map<Long, EntityValue>>();
+		for (EntityType entityType : UnsafeAccess.getEntityTypes(typeDomain)) {
 			entities.put(entityType, new HashMap<Long, EntityValue>());
 		}
-		
+
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug("PojoDataSource created new type domain:\n" + EDRDescriber.describeTypeDomain(typeDomain));
 		}
@@ -88,7 +86,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		requireInitialised(false, "setObjectGraphId()");
 		this.objectGraphId = objectGraphId;
 	}
-	
+
 	//
 	// DataSource INTERFACE IMPLEMENTATION
 	//
@@ -113,7 +111,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	public void setGraphUpdateListener(GraphUpdateListener listener) {
 		graphUpdateListener = listener;
 	}
-	
+
 	//
 	// PUBLIC API
 	//
@@ -125,16 +123,15 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * considered part of the object graph.
 	 * 
 	 * <ul>
-	 * <li>Any objects that are not part of this graph will be added, and a complete {@link Entity}
-	 * value will be broadcast to clients
-	 * <li>Any objects that are already part of this graph will be checked for modifications, and a
-	 * {@link EntityDiff} will be broadcast to clients
+	 * <li>Any objects that are not part of this graph will be added
+	 * <li>Any objects that are already part of this graph will be checked for modifications
 	 * <li>Any objects in the graph that are not in the array passed to this method will be removed
-	 * from the graph and an {@link EntityDelete} broadcast to clients.
+	 * from the graph
 	 * </ul>
 	 * 
 	 * <p>
 	 * Each object must be an instance of one of the classes passed to {@link #setClasses(Class...)}
+	 * or a subtype thereof
 	 * 
 	 * <p>
 	 * {@link #initialise()} must be called before this method can be used
@@ -142,36 +139,38 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * @throws ValueMappingException if there is a problem mapping one of the entity objects to an
 	 *             {@link Entity}
 	 */
-	public void setEntityObjects(Object ... objectGraphRoots) throws ValueMappingException {
+	public void setEntityObjects(Object... objectGraphRoots) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
-		
+
 		Set<Object> entityObjects = new LinkedHashSet<Object>(Arrays.asList(objectGraphRoots));
-		
-		// iteratively grow the set of entity objects to include any objects referenced by any other objects
-		// in the set. This algorithm depends heavily on the behaviour of LinkedHashSet.addAll(), that is that
+
+		// iteratively grow the set of entity objects to include any objects referenced by any other
+		// objects
+		// in the set. This algorithm depends heavily on the behaviour of LinkedHashSet.addAll(),
+		// that is that
 		// objects already in the set are ignored, and new objects are added at the end of the list
 		{
 			int processedUpTo = -1;
 			while (entityObjects.size() - 1 > processedUpTo) {
 				int currentIndex = 0;
 				List<Object> toAdd = new ArrayList<Object>();
-				for (Object entityObject: entityObjects) {
-					if (currentIndex > processedUpTo) { 
+				for (Object entityObject : entityObjects) {
+					if (currentIndex > processedUpTo) {
 						toAdd.addAll(edrMapper.getRelatedObjects(entityObject));
 						processedUpTo = currentIndex;
 					}
-					currentIndex ++;
+					currentIndex++;
 				}
-				entityObjects.addAll(toAdd); 
+				entityObjects.addAll(toAdd);
 			}
 		}
-		
-		//for each 
+
+		// for each
 		List<EntityValue> completeEntities = new ArrayList<EntityValue>();
 		List<EntityDiff> entityDiffs = new ArrayList<EntityDiff>();
 		List<EntityReference> entityDeletes = new ArrayList<EntityReference>();
 		List<EntityValue> newEntities = new ArrayList<EntityValue>();
-		for (Object entityObject: entityObjects) {
+		for (Object entityObject : entityObjects) {
 			EntityValue newEntity = edrMapper.createEntityValue(entityObject);
 			EntityValue existingEntity = entities.get(newEntity.getEntityType()).get(newEntity.getEntityId());
 			if (existingEntity == null) {
@@ -188,33 +187,27 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 			entities.get(newEntity.getEntityType()).put(newEntity.getEntityId(), newEntity);
 			newEntities.add(newEntity);
 		}
-		
-		for (EntityValue oldEntity: getAllEntities()) {
+
+		for (EntityValue oldEntity : getAllEntities()) {
 			if (!newEntities.contains(oldEntity)) {
 				entities.get(oldEntity.getEntityType()).remove(oldEntity.getEntityId());
 				entityDeletes.add(oldEntity);
 			}
 		}
-		
+
 		sendGraphUpdate(completeEntities, entityDiffs, entityDeletes);
 	}
 
-	private void sendGraphUpdate(
-			List<EntityValue> newEntities,
-			List<EntityDiff> entityDiffs,
+	private void sendGraphUpdate(List<EntityValue> newEntities, List<EntityDiff> entityDiffs,
 			List<EntityReference> entityDeletes) {
-		
+
 		if (newEntities.size() == 0 && entityDiffs.size() == 0 && entityDeletes.size() == 0) {
 			return;
 		}
-		
+
 		if (graphUpdateListener != null) {
-			GraphUpdate update = new GraphUpdate(
-					typeDomain,
-					objectGraphId,
-					newEntities.toArray(new EntityValue[0]),
-					entityDiffs.toArray(new EntityDiff[0]),
-					entityDeletes.toArray(new EntityReference[0]));
+			GraphUpdate update = new GraphUpdate(typeDomain, objectGraphId, newEntities.toArray(new EntityValue[0]),
+					entityDiffs.toArray(new EntityDiff[0]), entityDeletes.toArray(new EntityReference[0]));
 			if (OgreLog.isDebugEnabled()) {
 				OgreLog.debug("PojoDataSource: broadcasting new graph update:\n"
 						+ EDRDescriber.describeGraphUpdate(update));
@@ -231,18 +224,16 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	/**
-	 * Return the ID for an object. Dependng on the {@link IdMapper} used, this may actually cause
-	 * a new ID to be assigned to the object.
+	 * Return the ID for an object. Dependng on the {@link IdMapper} used, this may actually cause a
+	 * new ID to be assigned to the object.
 	 */
 	public long getIdForObject(Object entityObject) {
 		return edrMapper.getIdForObject(entityObject);
 	}
-	
-
 
 	private List<EntityValue> getAllEntities() {
 		List<EntityValue> entityList = new ArrayList<EntityValue>();
-		for (Map<Long, EntityValue> map: entities.values()) {
+		for (Map<Long, EntityValue> map : entities.values()) {
 			entityList.addAll(map.values());
 		}
 		return entityList;

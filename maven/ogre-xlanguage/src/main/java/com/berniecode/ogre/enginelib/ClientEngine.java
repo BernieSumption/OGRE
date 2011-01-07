@@ -117,7 +117,6 @@ public class ClientEngine implements GraphUpdateListener {
 	/**
 	 * @private
 	 */
-	//TODO expose through UnsaeAccess
 	public void acceptGraphUpdate(GraphUpdate update) throws InvalidGraphUpdateException {
 		requireInitialised(true, "acceptGraphUpdate()");
 
@@ -176,49 +175,6 @@ public class ClientEngine implements GraphUpdateListener {
 			}
 		}
 	}
-
-	/**
-	 * The values array passed to the constructor of this class contains integers instead of Entity
-	 * references, so if property #0 is a "reference to Foo" property referencing Foo#7,
-	 * getPropertyValue(property0) would return the number "7".
-	 * 
-	 * <p>
-	 * This method is used to provide a set of Entities to resolve references in, so that
-	 * getPropertyValue(property0) returns the actual Entity Foo#7
-	 * 
-	 * <p>
-	 * Entities are resolved first in the EntityStore, then in the array of entities if they are not
-	 * found in the store
-	 * 
-	 * @private
-	 */
-	void wireEntityReferences(EntityStore store, Entity[] array) {
-//		ReferenceProperty[] properties = entityType.getReferenceProperties();
-//		for (int i = 0; i < properties.length; i++) {
-//			ReferenceProperty property = properties[i];
-//			EntityType refType = property.getReferenceType();
-//			Object value = values[property.getPropertyIndex()];
-//			if (value != null) {
-//				long refId = ValueUtils.unboxLong(value);
-//				Entity entity = null;
-//				if (store != null) {
-//					entity = store.get(refType, refId);
-//				}
-//				if (entity == null && array != null) {
-//					for (int j = 0; j < array.length; j++) {
-//						if (array[j].getEntityType() == refType && array[j].getEntityId() == refId) {
-//							entity = array[j];
-//						}
-//					}
-//				}
-//				if (entity == null) {
-//					throw new OgreException("Property '" + property + "' of entity type " + property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
-//				}
-//				values[property.getPropertyIndex()] = entity;
-//			}
-//		}
-	}
-	
 
 	/**
 	 * @return a snapshot of the state of this object graph, useful for debugging

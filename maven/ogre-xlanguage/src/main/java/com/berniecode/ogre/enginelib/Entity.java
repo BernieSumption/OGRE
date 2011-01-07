@@ -4,23 +4,10 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
 
 /**
- * A single object in an {@link ObjectGraph}, uniquely identified by a tuple of its entity type and
- * ID.
- * 
- * <p>
- * Entities can exist in two states: <em>wired</em> and <em>unwired</em>. When the Entity is first
- * created it is constructed, it has numerical values for its reference properties, so calling
- * <code>entity.getPropertyValue(someReferenceProperty)</code> will return the ID of the entity
- * referenced by the property value.
- * 
- * <p>
- * When the Entity is imported into ClientEngine, it is converted into a wired entity by calling
- * {@link #wireEntityReferences(EntityStore, Entity[])}. This replaces the integer ids with actual
- * references to Entities.
+ * A single object in an {@link ObjectGraph}, uniquely identified by a tuple of its entity type and ID.
  * 
  * @author Bernie Sumption
  */
-//TODO update these docs
 public class Entity implements EntityReference, RawPropertyValueSet {
 
 	/**
@@ -84,6 +71,14 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 	
 	public String toString() {
 		return entityType + "#" + id;
+	}
+
+	public Object getRawPropertyValue(Property property) {
+		Object value = getPropertyValue(property);
+		if (value != null && property instanceof ReferenceProperty) {
+			return ValueUtils.idToObject(((Entity) value).getEntityId());
+		}
+		return value;
 	}
 	
 	//
@@ -166,14 +161,6 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 				}
 			}
 		}
-	}
-
-	public Object getRawPropertyValue(Property property) {
-		Object value = getPropertyValue(property);
-		if (value != null && property instanceof ReferenceProperty) {
-			return ValueUtils.idToObject(((Entity) value).getEntityId());
-		}
-		return value;
 	}
 
 }

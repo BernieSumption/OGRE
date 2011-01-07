@@ -35,11 +35,7 @@ public class EntityDiff extends EntityValue {
 			Object fromValue = from.getRawPropertyValue(property);
 			Object toValue = to.getRawPropertyValue(property);
 			if (!ValueUtils.valuesAreEquivalent(fromValue, toValue)) {
-				if (toValue instanceof Entity) {
-					changedValues[i] = ValueUtils.idToObject(((Entity) toValue).getEntityId());
-				} else {
-					changedValues[i] = toValue;
-				}
+				changedValues[i] = toValue;
 				changed[i] = true;
 				anyChanged = true;
 			}
@@ -51,7 +47,7 @@ public class EntityDiff extends EntityValue {
 	}
 
 	/**
-	 * @see PartialRawPropertyValueSet#getPropertyValue(Property)
+	 * @see PartialRawPropertyValueSet#getRawPropertyValue(Property)
 	 */
 	public Object getRawPropertyValue(Property property) {
 		if (!hasUpdatedValue(property)) {
@@ -61,7 +57,7 @@ public class EntityDiff extends EntityValue {
 	}
 
 	/**
-	 * @see EntityDiff#hasUpdatedValue(Property)
+	 * @see PartialRawPropertyValueSet#hasUpdatedValue(Property)
 	 */
 	public boolean hasUpdatedValue(Property property) {
 		return isChanged[property.getPropertyIndex()];
