@@ -157,7 +157,10 @@ public class TestSuiteGenerator {
 		for (int i=0; i<qtyToChange; i++) {
 			EntityValue entity = entitiesToChange.get(i);
 			EntityType entityType = entity.getEntityType();
-			Object[] values = entity.copyValues();
+			Object[] values = new Object[entityType.getPropertyCount()];
+			for (int j = 0; j < values.length; j++) {
+				values[i] = entity.getRawPropertyValue(entityType.getProperty(i));
+			}
 			for(int index: makeRandomIndices(entityType.getPropertyCount())) {
 				values[index] = makeRandomPropertyValue(entityType.getProperty(index), availableEntities);
 			}
@@ -367,7 +370,7 @@ public class TestSuiteGenerator {
 		int length = makeRandomNumberInclusive(0, MAX_RANDOM_STRING_LENGTH);
 		char[] buffer = new char[length];
 		for (int i = 0; i < buffer.length; i++) {
-			buffer[i] = (char) makeRandomNumberInclusive(28, 128); // TODO check printable ASCII range
+			buffer[i] = (char) makeRandomNumberInclusive(28, 128);
 		}
 		return new String(buffer);
 	}

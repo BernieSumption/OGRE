@@ -81,31 +81,19 @@ public class EDRDescriber {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
 			sc.add("\n");
-			doDescribeValue(entity.getRawPropertyValue(property), property, sc, indent+1, false);
+			doDescribeValue(entity.getRawPropertyValue(property), property, sc, indent+1);
 		}
 	}
 
-	private static void doDescribeValue(Object value, Property property, StringConcatenator sc, int indent, boolean isWiredEntity) {
+	private static void doDescribeValue(Object value, Property property, StringConcatenator sc, int indent) {
 		doIndent(sc, indent);
 		sc.add(property.getName())
 		  .add("=");
-		//TODO all values should be plain objects, ogrelib should have a ByteArray type that overrides equals for the benefit of ValueUtils.valuesAreEquivilent
-		if (ValueUtils.isArray(value)) {
-			int length = ValueUtils.getArrayLength(value);
-			for (int i=0; i<length; i++) {
-				if (i > 0) {
-					sc.add(",");
-				}
-				sc.add(ValueUtils.getArrayValue(value, i));
-			}
-		} else {
-			// for unwired entities, 
-			if (value != null && property instanceof ReferenceProperty && !isWiredEntity) {
-				sc.add(((ReferenceProperty) property).getReferenceType());
-				sc.add("#");
-			}
-			sc.add(value);
+		if (value != null && property instanceof ReferenceProperty) {
+			sc.add(((ReferenceProperty) property).getReferenceType());
+			sc.add("#");
 		}
+		sc.add(ValueUtils.valueToString(value));
 	}
 	
 	//
@@ -163,7 +151,7 @@ public class EDRDescriber {
 		for (int i=0; i<entityType.getPropertyCount(); i++) {
 			sc.add("\n");
 			Property property = entityType.getProperty(i);
-			doDescribeValue(update.getRawPropertyValue(property), property, sc, indent + 1, false);
+			doDescribeValue(update.getRawPropertyValue(property), property, sc, indent + 1);
 		}
 	}
 
@@ -178,7 +166,7 @@ public class EDRDescriber {
 			Property property = entityType.getProperty(i);
 			if (update.hasUpdatedValue(property)) {
 				sc.add("\n");
-				doDescribeValue(update.getRawPropertyValue(property), property, sc, indent + 1, false);
+				doDescribeValue(update.getRawPropertyValue(property), property, sc, indent + 1);
 			}
 		}
 	}
