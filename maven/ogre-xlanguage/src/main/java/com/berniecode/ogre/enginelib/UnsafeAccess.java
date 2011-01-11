@@ -18,7 +18,7 @@ public class UnsafeAccess {
 		return typeDomain.getEntityTypes();
 	}
 
-	public static ReferenceProperty[] getEntityTypeReferenceProperties(EntityType entityType) {
+	public static ReferenceProperty[] getReferenceProperties(EntityType entityType) {
 		return entityType.getReferenceProperties();
 	}
 }

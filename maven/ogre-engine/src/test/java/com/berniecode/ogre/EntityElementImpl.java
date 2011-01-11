@@ -1,10 +1,10 @@
 package com.berniecode.ogre;
 
-public class EntityElement {
+public class EntityElementImpl implements EntityElement {
 	
 	private String name;
 
-	public EntityElement(String name) {
+	public EntityElementImpl(String name) {
 		this.name = name;
 		
 	}
@@ -13,6 +13,7 @@ public class EntityElement {
 		this.name = name;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

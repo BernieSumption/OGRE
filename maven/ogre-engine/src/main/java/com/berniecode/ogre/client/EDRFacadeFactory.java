@@ -8,7 +8,7 @@ import com.berniecode.ogre.enginelib.EntityType;
  *
  * @author Bernie Sumption
  */
-public interface EDRToJavaMapper {
+public interface EDRFacadeFactory {
 
 	/**
 	 * Return a class or interface suitable for accessing entities of the specified
@@ -17,12 +17,8 @@ public interface EDRToJavaMapper {
 	Class<?> getClassForEntityType(EntityType entityType);
 
 	/**
-	 * Return a facade for an {@link Entity}.
-	 * 
-	 * <p>
-	 * The returned object must be an instance of the class returned by
-	 * {@link #getClassForEntityType(EntityType)} when called with the specified {@link Entity}'s
-	 * {@link EntityType}
+	 * Return a facade for an {@link Entity}. The returned object will be an instance of the
+	 * type returned by {@code getClassForEntityType(entity.getEntityType())}
 	 */
-	<T> T getFacadeForEntity(Class<T> klass, Entity entity);
+	Object getFacadeForEntity(Entity entity) throws ClientFacadeException;
 }

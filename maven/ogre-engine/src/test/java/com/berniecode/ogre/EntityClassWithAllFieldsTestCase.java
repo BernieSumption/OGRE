@@ -13,7 +13,7 @@ public abstract class EntityClassWithAllFieldsTestCase extends OgreTestCase {
 	protected InProcessMessageBridge msgBridge;
 	protected PojoDataSource dataSource;
 	private ServerEngine serverEngine;
-	protected EntityClassWithAllFields initialEntityObject;
+	protected EntityClassWithAllFieldsImpl initialEntityObject;
 	protected TypeDomain typeDomain;
 
 	public EntityClassWithAllFieldsTestCase() {
@@ -41,7 +41,7 @@ public abstract class EntityClassWithAllFieldsTestCase extends OgreTestCase {
 	
 		dlBridge = new InProcessDownloadBridge(serverEngine);
 		
-		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFields((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L, "Shizzle", 9.0F, 10.0F, 11.0, 12.0, byteArray(1, 2, 3), new EntityElement("Hi!")));
+		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFieldsImpl((byte)1, (byte)2, (short)3, (short)4, 5, 6, 7L, 8L, "Shizzle", 9.0F, 10.0F, 11.0, 12.0, byteArray(1, 2, 3), new EntityElementImpl("Hi!")));
 	}
 
 	protected ClientEngine createClientEngine() throws Exception {

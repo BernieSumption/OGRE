@@ -98,7 +98,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		initialEntityObject.setNonNullableDouble(11770.0);
 		initialEntityObject.setNullableDouble(null);
 		initialEntityObject.setNullableFloat(1144.0F);
-		initialEntityObject.setEntityElement(new EntityElement("lala"));
+		initialEntityObject.setEntityElement(new EntityElementImpl("lala"));
 		
 		assertEquals(1, msgBridge.getMessageCount());
 
@@ -150,7 +150,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			clientEngine);
 		
 		// new objects propagated
-		EntityClassWithAllFields newEntityObject = new EntityClassWithAllFields((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L, "my bizzle", 19.0F, 20.0F, 21.0, 22.0, byteArray(4, 5, 6), new EntityElement("Bye!"));
+		EntityClassWithAllFieldsImpl newEntityObject = new EntityClassWithAllFieldsImpl((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L, "my bizzle", 19.0F, 20.0F, 21.0, 22.0, byteArray(4, 5, 6), new EntityElementImpl("Bye!"));
 
 		dataSource.setEntityObjects(initialEntityObject, newEntityObject);
 

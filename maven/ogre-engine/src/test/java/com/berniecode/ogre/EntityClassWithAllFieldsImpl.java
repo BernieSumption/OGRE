@@ -1,7 +1,7 @@
 package com.berniecode.ogre;
 
 
-public class EntityClassWithAllFields {
+public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 
 	private int nonNullableInt;
 	private Integer nullableInt;
@@ -27,16 +27,11 @@ public class EntityClassWithAllFields {
 	private EntityElement entityElement;
 	
 	/**
-	 * Construct with default values for all fields
-	 */
-	public EntityClassWithAllFields() {}
-	
-	/**
 	 * Construct with specific values for all fields
 	 */
-	public EntityClassWithAllFields(byte b1, Byte b2, short s1, Short s2, int i1, Integer i2, 
+	public EntityClassWithAllFieldsImpl(byte b1, Byte b2, short s1, Short s2, int i1, Integer i2, 
 			long l1, Long l2, String str, float f1, Float f2,
-			double d1, Double d2, byte[] bs, EntityElement e) {
+			double d1, Double d2, byte[] bs, EntityElementImpl e) {
 		nonNullableByte = b1;
 		nullableByte = b2;
 		nonNullableShort = s1;
@@ -54,6 +49,10 @@ public class EntityClassWithAllFields {
 		entityElement = e;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableInt()
+	 */
+	@Override
 	public Integer getNullableInt() {
 		return nullableInt;
 	}
@@ -62,6 +61,10 @@ public class EntityClassWithAllFields {
 		this.nullableInt = nullableInt;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableInt()
+	 */
+	@Override
 	public int getNonNullableInt() {
 		return nonNullableInt;
 	}
@@ -70,6 +73,10 @@ public class EntityClassWithAllFields {
 		this.nonNullableInt = nonNullableInt;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableLong()
+	 */
+	@Override
 	public long getNonNullableLong() {
 		return nonNullableLong;
 	}
@@ -78,6 +85,10 @@ public class EntityClassWithAllFields {
 		this.nonNullableLong = nonNullableLong;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableLong()
+	 */
+	@Override
 	public Long getNullableLong() {
 		return nullableLong;
 	}
@@ -86,6 +97,10 @@ public class EntityClassWithAllFields {
 		this.nullableLong = nullableLong;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableShort()
+	 */
+	@Override
 	public short getNonNullableShort() {
 		return nonNullableShort;
 	}
@@ -94,6 +109,10 @@ public class EntityClassWithAllFields {
 		this.nonNullableShort = nonNullableShort;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableShort()
+	 */
+	@Override
 	public Short getNullableShort() {
 		return nullableShort;
 	}
@@ -102,6 +121,10 @@ public class EntityClassWithAllFields {
 		this.nullableShort = nullableShort;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableByte()
+	 */
+	@Override
 	public byte getNonNullableByte() {
 		return nonNullableByte;
 	}
@@ -110,6 +133,10 @@ public class EntityClassWithAllFields {
 		this.nonNullableByte = nonNullableByte;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableByte()
+	 */
+	@Override
 	public Byte getNullableByte() {
 		return nullableByte;
 	}
@@ -122,6 +149,10 @@ public class EntityClassWithAllFields {
 		this.string = string;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getString()
+	 */
+	@Override
 	public String getString() {
 		return string;
 	}
@@ -130,6 +161,10 @@ public class EntityClassWithAllFields {
 		this.nonNullableFloat = nonNullableFloat;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableFloat()
+	 */
+	@Override
 	public float getNonNullableFloat() {
 		return nonNullableFloat;
 	}
@@ -138,6 +173,10 @@ public class EntityClassWithAllFields {
 		this.nullableFloat = nullableFloat;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableFloat()
+	 */
+	@Override
 	public Float getNullableFloat() {
 		return nullableFloat;
 	}
@@ -146,6 +185,10 @@ public class EntityClassWithAllFields {
 		this.nonNullableDouble = nonNullableDouble;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableDouble()
+	 */
+	@Override
 	public double getNonNullableDouble() {
 		return nonNullableDouble;
 	}
@@ -154,6 +197,10 @@ public class EntityClassWithAllFields {
 		this.nullableDouble = nullableDouble;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableDouble()
+	 */
+	@Override
 	public Double getNullableDouble() {
 		return nullableDouble;
 	}
@@ -162,6 +209,10 @@ public class EntityClassWithAllFields {
 		this.bytes = bytes;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getBytes()
+	 */
+	@Override
 	public byte[] getBytes() {
 		return bytes;
 	}
@@ -170,6 +221,10 @@ public class EntityClassWithAllFields {
 		this.entityElement = entityElement;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.berniecode.ogre.EntityClassWithAllFields#getEntityElement()
+	 */
+	@Override
 	public EntityElement getEntityElement() {
 		return entityElement;
 	}
