@@ -8,12 +8,6 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 
 	private long nonNullableLong;
 	private Long nullableLong;
-
-	private short nonNullableShort;
-	private Short nullableShort;
-	
-	private byte nonNullableByte;
-	private Byte nullableByte;
 	
 	private String string;
 
@@ -29,13 +23,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 	/**
 	 * Construct with specific values for all fields
 	 */
-	public EntityClassWithAllFieldsImpl(byte b1, Byte b2, short s1, Short s2, int i1, Integer i2, 
+	public EntityClassWithAllFieldsImpl(int i1, Integer i2, 
 			long l1, Long l2, String str, float f1, Float f2,
 			double d1, Double d2, byte[] bs, EntityElementImpl e) {
-		nonNullableByte = b1;
-		nullableByte = b2;
-		nonNullableShort = s1;
-		nullableShort = s2;
 		nonNullableInt = i1;
 		nullableInt = i2;
 		nonNullableLong = l1;
@@ -95,54 +85,6 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 
 	public void setNullableLong(Long nullableLong) {
 		this.nullableLong = nullableLong;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableShort()
-	 */
-	@Override
-	public short getNonNullableShort() {
-		return nonNullableShort;
-	}
-
-	public void setNonNullableShort(short nonNullableShort) {
-		this.nonNullableShort = nonNullableShort;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableShort()
-	 */
-	@Override
-	public Short getNullableShort() {
-		return nullableShort;
-	}
-
-	public void setNullableShort(Short nullableShort) {
-		this.nullableShort = nullableShort;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableByte()
-	 */
-	@Override
-	public byte getNonNullableByte() {
-		return nonNullableByte;
-	}
-
-	public void setNonNullableByte(byte nonNullableByte) {
-		this.nonNullableByte = nonNullableByte;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableByte()
-	 */
-	@Override
-	public Byte getNullableByte() {
-		return nullableByte;
-	}
-
-	public void setNullableByte(Byte nullableByte) {
-		this.nullableByte = nullableByte;
 	}
 
 	public void setString(String string) {

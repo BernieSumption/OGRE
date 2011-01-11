@@ -1,5 +1,6 @@
 package com.berniecode.ogre.client;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.berniecode.ogre.EntityClassWithAllFields;
@@ -27,17 +28,15 @@ public class ClientFacadeTest extends EntityClassWithAllFieldsTestCase {
 		assertEquals(initialEntityObject.getNonNullableInt(), entity.getNonNullableInt());
 		assertEquals(initialEntityObject.getNonNullableLong(), entity.getNonNullableLong());
 		assertEquals(initialEntityObject.getNullableLong(), entity.getNullableLong());
-		assertEquals(initialEntityObject.getNonNullableShort(), entity.getNonNullableShort());
-		assertEquals(initialEntityObject.getNullableShort(), entity.getNullableShort());
-		assertEquals(initialEntityObject.getNonNullableByte(), entity.getNonNullableByte());
-		assertEquals(initialEntityObject.getNullableByte(), entity.getNullableByte());
 		assertEquals(initialEntityObject.getString(), entity.getString());
 		assertEquals(initialEntityObject.getNonNullableFloat(), entity.getNonNullableFloat());
 		assertEquals(initialEntityObject.getNullableFloat(), entity.getNullableFloat());
 		assertEquals(initialEntityObject.getNonNullableDouble(), entity.getNonNullableDouble());
 		assertEquals(initialEntityObject.getNullableDouble(), entity.getNullableDouble());
-		assertEquals(initialEntityObject.getBytes(), entity.getBytes());
-		assertEquals(initialEntityObject.getEntityElement(), entity.getEntityElement());
+		assertTrue(Arrays.equals(initialEntityObject.getBytes(), entity.getBytes()));
+		
+		
+		assertEquals(initialEntityObject.getEntityElement().getName(), entity.getEntityElement().getName());
 
 	}
 }

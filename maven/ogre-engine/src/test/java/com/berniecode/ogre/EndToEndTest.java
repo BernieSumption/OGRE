@@ -42,18 +42,14 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"  0. EntityType EntityClassWithAllFields" +
 				"       nullable byte-array property bytes" +
 				"       reference to EntityElement property entity_element" +
-				"       int32 property non_nullable_byte" +
 				"       double property non_nullable_double" +
 				"       float property non_nullable_float" +
 				"       int32 property non_nullable_int" +
 				"       int64 property non_nullable_long" +
-				"       int32 property non_nullable_short" +
-				"       nullable int32 property nullable_byte" +
 				"       nullable double property nullable_double" +
 				"       nullable float property nullable_float" +
 				"       nullable int32 property nullable_int" +
 				"       nullable int64 property nullable_long" +
-				"       nullable int32 property nullable_short" +
 				"       nullable string property string" +
 				"  1. EntityType EntityElement" +
 				"       nullable string property name",
@@ -69,18 +65,14 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"  Entity EntityClassWithAllFields#1" +
 			"    bytes=1,2,3" +
 			"    entity_element=EntityElement#1" +
-			"    non_nullable_byte=1" +
 			"    non_nullable_double=11.0" +
 			"    non_nullable_float=9.0" +
 			"    non_nullable_int=5" +
 			"    non_nullable_long=7" +
-			"    non_nullable_short=3" +
-			"    nullable_byte=2" +
 			"    nullable_double=12.0" +
 			"    nullable_float=10.0" +
 			"    nullable_int=6" +
 			"    nullable_long=8" +
-			"    nullable_short=4" +
 			"    string=Shizzle" +
 			"  Entity EntityElement#1" +
 			"    name=Hi!",
@@ -132,25 +124,21 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"  Entity EntityClassWithAllFields#1" +
 			"    bytes=11,12,13" +
 			"    entity_element=EntityElement#2" +
-			"    non_nullable_byte=1" +
 			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
 			"    non_nullable_int=5" +
 			"    non_nullable_long=42" +
-			"    non_nullable_short=3" +
-			"    nullable_byte=2" +
 			"    nullable_double=null" +
 			"    nullable_float=1144.0" +
 			"    nullable_int=null" +
 			"    nullable_long=8" +
-			"    nullable_short=4" +
 			"    string=Fizzle" +
 			"  Entity EntityElement#2" +
 			"    name=lala",
 			clientEngine);
 		
 		// new objects propagated
-		EntityClassWithAllFieldsImpl newEntityObject = new EntityClassWithAllFieldsImpl((byte)11, (byte)12, (short)13, (short)14, 15, 16, 17L, 18L, "my bizzle", 19.0F, 20.0F, 21.0, 22.0, byteArray(4, 5, 6), new EntityElementImpl("Bye!"));
+		EntityClassWithAllFieldsImpl newEntityObject = new EntityClassWithAllFieldsImpl(15, 16, 17L, 18L, "my bizzle", 19.0F, 20.0F, 21.0, 22.0, byteArray(4, 5, 6), new EntityElementImpl("Bye!"));
 
 		dataSource.setEntityObjects(initialEntityObject, newEntityObject);
 
@@ -161,18 +149,14 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"    value for EntityClassWithAllFields#2" +
 				"      bytes=4,5,6" +
 				"      entity_element=EntityElement#3" +
-				"      non_nullable_byte=11" +
 				"      non_nullable_double=21.0" +
 				"      non_nullable_float=19.0" +
 				"      non_nullable_int=15" +
 				"      non_nullable_long=17" +
-				"      non_nullable_short=13" +
-				"      nullable_byte=12" +
 				"      nullable_double=22.0" +
 				"      nullable_float=20.0" +
 				"      nullable_int=16" +
 				"      nullable_long=18" +
-				"      nullable_short=14" +
 				"      string=my bizzle" +
 				"    value for EntityElement#3" +
 				"      name=Bye!",
@@ -183,34 +167,26 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"  Entity EntityClassWithAllFields#1" +
 			"    bytes=11,12,13" +
 			"    entity_element=EntityElement#2" +
-			"    non_nullable_byte=1" +
 			"    non_nullable_double=11770.0" +
 			"    non_nullable_float=9.0" +
 			"    non_nullable_int=5" +
 			"    non_nullable_long=42" +
-			"    non_nullable_short=3" +
-			"    nullable_byte=2" +
 			"    nullable_double=null" +
 			"    nullable_float=1144.0" +
 			"    nullable_int=null" +
 			"    nullable_long=8" +
-			"    nullable_short=4" +
 			"    string=Fizzle" +
 			"  Entity EntityClassWithAllFields#2" +
 			"    bytes=4,5,6" +
 			"    entity_element=EntityElement#3" +
-			"    non_nullable_byte=11" +
 			"    non_nullable_double=21.0" +
 			"    non_nullable_float=19.0" +
 			"    non_nullable_int=15" +
 			"    non_nullable_long=17" +
-			"    non_nullable_short=13" +
-			"    nullable_byte=12" +
 			"    nullable_double=22.0" +
 			"    nullable_float=20.0" +
 			"    nullable_int=16" +
 			"    nullable_long=18" +
-			"    nullable_short=14" +
 			"    string=my bizzle" + 
 			"  Entity EntityElement#2" +
 			"    name=lala" + 
@@ -234,18 +210,14 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 			"  Entity EntityClassWithAllFields#2" +
 			"    bytes=4,5,6" +
 			"    entity_element=EntityElement#3" +
-			"    non_nullable_byte=11" +
 			"    non_nullable_double=21.0" +
 			"    non_nullable_float=19.0" +
 			"    non_nullable_int=15" +
 			"    non_nullable_long=17" +
-			"    non_nullable_short=13" +
-			"    nullable_byte=12" +
 			"    nullable_double=22.0" +
 			"    nullable_float=20.0" +
 			"    nullable_int=16" +
 			"    nullable_long=18" +
-			"    nullable_short=14" +
 			"    string=my bizzle" + 
 			"  Entity EntityElement#3" +
 			"    name=Bye!",
@@ -277,8 +249,6 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		// set all properties to new objects with the same value but different object identities
 		assertEquals(1, msgBridge.getMessageCount());
 		initialEntityObject.setBytes(byteArray(1, 2, 3));
-		initialEntityObject.setNullableByte(new Byte((byte) 2));
-		initialEntityObject.setNullableShort(new Short((short) 4));
 		initialEntityObject.setNullableInt(new Integer(6));
 		initialEntityObject.setNullableLong(new Long(8));
 		initialEntityObject.setString(new String("Shizzle"));

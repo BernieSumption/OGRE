@@ -34,7 +34,7 @@ public class OgreWireFormatV1SerialiserTest extends EntityClassWithAllFieldsTest
 		initialEntityObject.setNullableDouble(null);
 		initialEntityObject.setNullableFloat(1144.0F);
 		elements[0].setName("X");
-		EntityClassWithAllFieldsImpl newEntity = new EntityClassWithAllFieldsImpl((byte)-1, (byte)-2, (short)-3, (short)-4, -5, -6, -7L, -8L, "Raaa", -9.0F, -10.0F, -11.0, -12.0, byteArray(-1, -2, -3), new EntityElementImpl("Y"));
+		EntityClassWithAllFieldsImpl newEntity = new EntityClassWithAllFieldsImpl(-5, -6, -7L, -8L, "Raaa", -9.0F, -10.0F, -11.0, -12.0, byteArray(-1, -2, -3), new EntityElementImpl("Y"));
 		dataSource.setEntityObjects(initialEntityObject, elements[0], newEntity);
 
 		GraphUpdate graphUpdate = msgBridge.getLastGraphUpdate();

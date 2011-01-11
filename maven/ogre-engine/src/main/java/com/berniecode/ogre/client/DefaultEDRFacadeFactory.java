@@ -13,7 +13,6 @@ import com.berniecode.ogre.enginelib.EntityType;
 import com.berniecode.ogre.enginelib.Property;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.UnsafeAccess;
-import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 
 /**
@@ -94,7 +93,7 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 				String propertyName = Utils.getPropertyNameForGetter(method);
 				Property property = entityType.getPropertyByName(propertyName);
 				if (property == null) {
-					throw new OgreException(entityType + " does not contain a property called '" + propertyName + "'");
+					throw new ClientFacadeException(entityType + " does not contain a property called '" + propertyName + "'");
 				}
 				methodMap.put(method, property);
 			}
@@ -162,12 +161,16 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			Property property = methodMap.get(method);
 			if (property != null) {
-				return entity.getPropertyValue(property);
+				Object propertyValue = entity.getPropertyValue(property);
+				if (propertyValue instanceof Entity) {
+					propertyValue = getFacadeForEntity((Entity) propertyValue);
+				}
+				return propertyValue;
 			}
 			if (method.equals(Object.class.getMethod("toString"))) {
 				return entity.toString();
 			}
-			throw new OgreException("Invocation of non getter method " + method);
+			throw new ClientFacadeException("Invocation of non getter method " + method);
 		}
 
 	}
