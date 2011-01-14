@@ -4,44 +4,23 @@
 \paperw11900\paperh16840\margl1440\margr1440\vieww18140\viewh18060\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 
-\f0\fs30 \cf0 TODO in formal spec, make sure that when an entity is deleted, it is not necessary to manually remove it from every collection\
+\f0\fs30 \cf0 TODO:\
 \
-\
-Roadmap to v0.1:\
-\
-* Strongly types facade\
-* visual graph app\
+  * Round of unit test coverage, comment checking and polish\
+  * 1-many reference lists calculated on demand by backtracking from many side\
+  * consider explicit support for many-many references. Options are:\
+  *  * encoding lists of ids as per original spec (leads to duplication in directionless relationships like friendship)\
+  *  * tracking via intermediate entity type, i.e. "Friendship" entity with person1 and person2 properties\
+  *  * adding relationships as first class constructs (effort)\
 \
 \
 Get issue tracker working, put wishlist up there:\
-  - Java client facade: JDK proxy backed view onto client engine\
   - visual graph (requires strongly typed facade: JDK proxy backed view onto client engine)\
-  - dataVersion and dataVersionScheme to cope with network outage\
-  - typeDomainScheme, similar to serialVersionUid, to handle changes to type domain (permit addition of server properties without client update)\
-  - proper test for WeakReference effectivity in DefaultIdMapper\
-\
-[step 2: more types]\
-\
-\
-[step 3: data negotiation]\
-\
-Implement reliability measures:\
-  - re-downloading snapshot in event of update that is out of dataVersion order or has a new dataVersionScheme\
-  - test that snapshot is not re-downloaded too often\
-  - consider what happens in the event of the TypeDomain changing. It should be possible to add new fields to a type domain without breaking existing clients.\
-\
-[step 4: OGRE wire format]\
-\
-After implementing the whole shebang using in-memory transfer of objects, create the wire format as a simple mapping of the entities onto a binary format. Hopefully by now I've resolved the whole protobuf v.s. home-grown format thing. Look into other binary formats - is there an agreed system for storing hierarchical data in binary blobs?\
-\
-[step 5: network transport]\
-\
-Plug this system into a real environment with an HTTP download bridge and JMS messaging channel.\
-\
+  - dataVersion and dataVersionScheme to cope with network outage. It should be possible to add new fields to a type domain without breaking existing clients.\
 \
 ===== A protocol for realtime object graph replication =====\
 \
-In this white paper I describe OGRE, the Object Graph Replication Engine. OGRE is a system for transferring complex structured data over a network and then transmitting any changes to the data structure as a stream of deltas to the original structure.\
+In this white paper I describe OGRE, the Object Graph Replication Engine. OGRE is a system for transferring complex structured data over a network and then transmitting any changes to the data structure as a stream of deltas to the client-side structure.\
 \
   * Introduction: about the problem that OGRE solves\
   * Informal specification: an overview of what OGRE does, with pretty pictures and examples\
@@ -49,7 +28,7 @@ In this white paper I describe OGRE, the Object Graph Replication Engine. OGRE i
 \
 ==== Introduction ====\
 \
-Many client-server applications have the requirement that the client must respond rapidly to changes in server-side state. Examples include chat, stock ticker, systems monitoring and football score applications.\
+Many client-server applications have the requirement that the client must respond rapidly to changes in server-side state. Examples include chat rooms, stock tickers, systems monitoring and sports results trackers.\
 \
 Imagine a stock trading application that displays the values of thousands of stocks, updating the price displayed when the stock price changes. A file containing the names and prices of thousands of stocks could easily be tens or hundreds of kilobytes compressed.\
 \
@@ -65,9 +44,9 @@ In order to do this, the application must settle three technical issues:\
   - How is the stream of changes transmitted to the client?\
   - How is each change applied to the client's data set?\
 \
-There are a number of technologies that help application with items 1 and 2. Data can be encoded as XML, which is human readable, self-documenting and universally supported by programming languages, or in a binary format such as Thrift, AMF or Protocol Buffers which are more efficient and faster to parse compared to XML. Technologies like Comet combined with message queuing systems like ZeroMQ and RabbitMQ make it easy to publish a stream of changes to multiple clients. Issues 1 and 2 are solved problems.\
+There are a number of technologies that help application with items 1 and 2. Data can be encoded as XML, which is human readable, self-documenting and universally supported by programming languages, or in a binary format such as Protocol Buffers, Thrift or AMF which are more efficient and faster to parse compared to XML. Technologies like Comet combined with message queuing systems like ZeroMQ and RabbitMQ make it easy to publish a stream of changes to multiple clients. Issues 1 and 2 are solved problems.\
 \
-Issue 3 on the other hand, has not been solved in a general-purpose way, so application developers have to create their own ad-hoc solutions. OGRE aims to change this.\
+Issue 3 on the other hand, has not been solved in a general-purpose way. Over and over again, application developers build ad hoc protocols for describing changes to their data set. OGRE aims to change this.\
 \
 ==== Informal specification ====\
 \
@@ -75,7 +54,7 @@ OGRE defines a platform-neutral way of representing complete object graphs, and 
 \
 === Representing graph data ===\
 \
-At the heart of OGRE is the Entity Data Representation: a standard representation of structured data that is flexible enough to store most data structures. In EDR, data is stored as **entities**. An entity is a unit of data, similar to an //object// in OO languages or a struct or map in procedural languages. Entities have **properties**, which are strongly typed members that can contain single values like numbers, strings and references to entities or collections of values. Each entity has an associated **entity type**, which is the equivalent of a //class// in OO languages. The set of all available entity types is called a **type domain**, and a set of entities is called a **object graph**.\
+At the heart of OGRE is the Entity Data Representation: a standard representation of structured data that is flexible enough to store most data structures. In EDR, data is stored as **entities**. An entity is a unit of data, similar to an //object// in OO languages or a struct or map in procedural languages. Entities have **properties**, which are strongly typed members that contain single values like numbers, strings and references to other entities. Each entity has an associated **entity type**, which is the equivalent of a //class// in OO languages. The set of all available entity types is called a **type domain**, and a set of entities is called a **object graph**.\
 \
 Enough theory, time for an example. To keep it simple, we'll use a graph with only one entity type: a basic social network:\
 \
@@ -136,7 +115,7 @@ After the client receives the whole graph structure, exactly three things can ha
   - an entity can be removed from the graph\
   - a property of an existing entity can be changed\
 \
-If any of the above happen, the dataVersion property of the server-side graph will be incremented, and a new **update message** will be created. After downloading the complete initial graph structure, clients receive a stream of update messages, each one of which can contain multiple changes to the object graph.\
+If any of the above happen, the dataVersion property of the server-side graph will be incremented, and a new **graph update** will be created. After downloading the complete initial graph structure, clients receive a stream of graph updates, each one of which can contain multiple changes to the object graph.\
 \
 Let's introduce "Al" of Al's Toy Barn to the graph. He likes all the toys, but none of the toys like him except for Stinky Pete. The update message representing this change looks something like this:\
 \
@@ -154,7 +133,7 @@ Let's introduce "Al" of Al's Toy Barn to the graph. He likes all the toys, but n
     removals: []\
   \}\
 \
-The first two fields are used to uniquely identify the object graph that the update should be applied to. The second two fields allow the client to decide whether this message is a valid update to apply to its local object graph. If not, then it must download another snapshot of the whole graph.\
+The first two fields are used to uniquely identify the object graph that the update should be applied to. The second two fields allow the client to decide whether this message is a valid update to apply to its local object graph. See the <error recovery> section for details on what happens if the update message is out of sequence.\
 \
 Once the client has established that the update message is valid, it applies it to the local object graph. Any new entities are added to the graph, any property updates are applied, and any old entities are removed. While this process is happening, the graph is allowed to be in an inconsistent state. For example, if two new Person entities are added and each of them is friends with the other, then when the first Person has been added to the graph it has a reference to a Person that is not yet part of the graph. Each update message must contain a set of changes that leaves the graph in a consistent state after the message has finished being processed.\
 \
@@ -162,7 +141,7 @@ Once the client has established that the update message is valid, it applies it 
 \
 So anyway, Stinky Pete leaves the scene in a toddler's backpack, in Pixar's typical "happy happy days, the bad guy is sentenced to an eternity of suffering" ending. The removal of an entity looks like this:\
 \
-  updateMessage: \{\
+  graphUpdate: \{\
     domainId: "Social Network",\
     objectGraphId: "Toy Story characters",\
     dataVersionScheme: "214A9A29-5887-4DE7-B55C-41400E1E0790",\
@@ -177,6 +156,10 @@ So anyway, Stinky Pete leaves the scene in a toddler's backpack, in Pixar's typi
 Note that the update message doesn't have to explicitly remove Pete from any friends lists - the OGRE client will do that automatically.\
 \
 That's more or less how OGRE works, and is probably more information than you need to use OGRE in a project.\
+\
+=== Error recovery ===\
+\
+\
 \
 ==== Formal specification ====\
 \
