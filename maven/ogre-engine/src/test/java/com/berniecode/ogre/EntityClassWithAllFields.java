@@ -1,5 +1,6 @@
 package com.berniecode.ogre;
 
+
 public interface EntityClassWithAllFields {
 
 	Integer getNullableInt();
@@ -23,5 +24,7 @@ public interface EntityClassWithAllFields {
 	byte[] getBytes();
 
 	EntityElement getEntityElement();
+
+	void nonGetterMethod();
 
 }

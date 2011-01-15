@@ -8,7 +8,7 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
  *
  * @author Bernie Sumption
  */
-public class EntityDiffTest extends OgreTestCase {
+public class EntityTest extends OgreTestCase {
 	
 	private EntityType entityType0;
 	private TypeDomain typeDomain;
@@ -61,6 +61,17 @@ public class EntityDiffTest extends OgreTestCase {
 					"if called with entities of two different types");
 		} catch (OgreException e) {
 		}
+	}
+	
+	public void testEntityCreationChecks() {
+		try {
+			new Entity(entityType0, 0, new Object[] { Integer.valueOf(128), Long.valueOf(300889) });
+			fail("Entity constructor should enforce positive entity ids");
+		} catch (OgreException e) {}
+		
+
+		requireOneLogError(OgreLog.LEVEL_WARN);
+		new Entity(entityType0, Long.MAX_VALUE, new Object[] { Integer.valueOf(128), Long.valueOf(300889) });
 	}
 
 }

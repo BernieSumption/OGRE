@@ -175,9 +175,20 @@ public class ClientEngine implements GraphUpdateListener {
 			}
 		}
 	}
-	
+
+	/**
+	 * @return All {@link Entity} of the specified entity type
+	 */
 	public Entity[] getEntitiesByType(EntityType entityType) {
 		return entities.getEntitiesByType(entityType);
+	}
+
+	/**
+	 * @return a single {@link Entity} specified by type and id, or null if there is no such
+	 *         {@link Entity}
+	 */
+	public Entity getEntityByTypeAndId(EntityType entityType, long id) {
+		return entities.get(entityType, id);
 	}
 
 	/**
@@ -186,5 +197,9 @@ public class ClientEngine implements GraphUpdateListener {
 	public GraphUpdate createSnapshot() {
 		requireInitialised(true, "createSnapshot()");
 		return new GraphUpdate(typeDomain, objectGraphId, entities.getEntities(), null, null);
+	}
+	
+	public String toString() {
+		return "ClientEngine " + typeDomainId + "/" + objectGraphId;
 	}
 }

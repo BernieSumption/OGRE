@@ -35,7 +35,6 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 	
 	private final Map<Class<?>, Map<Method, Property>> methodMaps = new HashMap<Class<?>, Map<Method,Property>>();
 	private final Map<EntityType, Class<?>> classMap;
-	private final ClientEngine clientEngine;
 
 	
 	/**
@@ -44,7 +43,6 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 	 * @param classMap a mapping of {@link EntityType} to {@link Class}.
 	 */
 	public DefaultEDRFacadeFactory(ClientEngine clientEngine, Map<EntityType, Class<?>> classMap) {
-		this.clientEngine = clientEngine;
 		this.classMap = classMap;
 		for (EntityType entityType: classMap.keySet()) {
 			Class<?> klass = classMap.get(entityType);
@@ -118,14 +116,15 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 	 */
 	@Override
 	public Class<?> getClassForEntityType(EntityType entityType) {
-		if (entityType.getTypeDomain() != clientEngine.getTypeDomain()) {
-			throw new ClientFacadeException("The specified EntityType does not belong to this client engine's type domain");
-		}
 		return classMap.get(entityType);
 	}
 
 	/**
 	 * This method creates a {@link Proxy} backed by an {@link Entity}.
+	 * 
+	 * <p>
+	 * The proxy will implement both the Entity's interface as specified by
+	 * {@link #getClassForEntityType(EntityType)}, and the {@link EntityProxy} interface.
 	 * 
 	 * <p>
 	 * Invocations of getter methods on the proxy will be forwarded to the entity's
@@ -137,7 +136,7 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 		Map<Method, Property> methodMap = methodMaps.get(klass);
 		return Proxy.newProxyInstance(
 				getClass().getClassLoader(),
-				new Class[] { klass },
+				new Class[] { klass, EntityProxy.class },
 				new EntityFacadeInvocationHandler(methodMap, entity));
 	}
 	
@@ -169,6 +168,9 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 			}
 			if (method.equals(Object.class.getMethod("toString"))) {
 				return entity.toString();
+			}
+			if (method.equals(EntityProxy.class.getMethod("getProxiedEntity"))) {
+				return entity;
 			}
 			throw new ClientFacadeException("Invocation of non getter method " + method);
 		}

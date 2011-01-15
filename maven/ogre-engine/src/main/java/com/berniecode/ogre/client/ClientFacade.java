@@ -62,12 +62,33 @@ public class ClientFacade {
 	 * @return all the instances of the specified type currently in the object graph
 	 */
 	public <T> List<T> getEntitiesByType(Class<T> entityClass) {
-		EntityType entityType = classToType.get(entityClass);
+		EntityType entityType = getClassForEntityType(entityClass);
 		List<T> result = new ArrayList<T>();
 		for (Entity entity : clientEngine.getEntitiesByType(entityType)) {
 			result.add(getFacadeForEntity(entityClass, entity));
 		}
 		return result;
+	}
+
+	/**
+	 * @return a specific instance by type and id
+	 */
+	public <T> T getEntity(Class<T> entityClass, long id) {
+		EntityType entityType = getClassForEntityType(entityClass);
+		Entity entity = clientEngine.getEntityByTypeAndId(entityType, id);
+		return getFacadeForEntity(entityClass, entity);
+	}
+	
+	//
+	// PRIVATE MACHINERY
+	//
+
+	private <T> EntityType getClassForEntityType(Class<T> entityClass) {
+		EntityType entityType = classToType.get(entityClass);
+		if (entityType == null) {
+			throw new ClientFacadeException(entityClass + " does not map onto an entity managed by " + clientEngine);
+		}
+		return entityType;
 	}
 
 	private <T> T getFacadeForEntity(Class<T> entityClass, Entity entity) {

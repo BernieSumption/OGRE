@@ -111,7 +111,7 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 						throw new OgreException("Property '" + property + "' of entity type " + property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
 					}
 				}
-				ValueUtils.validatePropertyValue(property, value, true);
+				ValueUtils.validatePropertyValue(property, value);
 				values[i] = value;
 			}
 		}
@@ -136,7 +136,7 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 	 */
 	void updateFromArray(Object[] update) {
 		for (int i = 0; i < update.length; i++) {
-			ValueUtils.validatePropertyValue(entityType.getProperty(i), update[i], true);
+			ValueUtils.validatePropertyValue(entityType.getProperty(i), update[i]);
 			values[i] = update[i];
 		}
 	}

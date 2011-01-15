@@ -171,4 +171,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		return entityElement;
 	}
 
+	@Override
+	public void nonGetterMethod() {
+		
+	}
+
 }

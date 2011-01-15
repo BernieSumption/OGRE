@@ -7,12 +7,12 @@ import com.berniecode.ogre.EntityClassWithAllFields;
 import com.berniecode.ogre.EntityClassWithAllFieldsTestCase;
 import com.berniecode.ogre.EntityElement;
 import com.berniecode.ogre.enginelib.ClientEngine;
+import com.berniecode.ogre.enginelib.Entity;
 
 public class ClientFacadeTest extends EntityClassWithAllFieldsTestCase {
 
 	public void testClientFacade() throws Exception {
 		ClientEngine clientEngine = createClientEngine();
-		
 		ClientFacade facade = new ClientFacade(clientEngine);
 
 		assertEquals(2, facade.getEntityClasses().size());
@@ -38,5 +38,47 @@ public class ClientFacadeTest extends EntityClassWithAllFieldsTestCase {
 		
 		assertEquals(initialEntityObject.getEntityElement().getName(), entity.getEntityElement().getName());
 
+		Object o1 = facade.getEntity(EntityClassWithAllFields.class, 1);
+		Object o2 = facade.getEntity(EntityClassWithAllFields.class, 1);
+		
+		assertNotNull(o1);
+		assertSame("subsequent calls to getEntity should return the same proxy object", o1, o2);
+		
+		
+	}
+
+	public void testProxiedEntity() throws Exception {
+		ClientEngine clientEngine = createClientEngine();
+		ClientFacade facade = new ClientFacade(clientEngine);
+		
+		Object o = facade.getEntity(EntityClassWithAllFields.class, 1);
+		Entity e = ((EntityProxy) o).getProxiedEntity();
+		
+		assertEquals(o.toString(), e.toString());
+		
+	}
+	
+	
+	public void testFailsOnIncorrectArguments() throws Exception {
+
+		ClientEngine clientEngine = createClientEngine();
+		ClientFacade facade = new ClientFacade(clientEngine);
+		
+		try {
+			facade.getEntity(Integer.class, 1);
+			fail("getEntitiesByType() should fail when called with a non-mapped class");
+		} catch (ClientFacadeException e) {}
+		
+		try {
+			facade.getEntitiesByType(Integer.class);
+			fail("getEntitiesByType() should fail when called with a non-mapped class");
+		} catch (ClientFacadeException e) {}
+		
+
+		EntityClassWithAllFields o = facade.getEntity(EntityClassWithAllFields.class, 1);
+		try {
+			o.nonGetterMethod();
+			fail("o.x() should fail if x is not a mapped getter method");
+		} catch (ClientFacadeException e) {}
 	}
 }

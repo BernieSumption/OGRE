@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.berniecode.ogre.enginelib.Entity;
 import com.berniecode.ogre.enginelib.Property;
+import com.berniecode.ogre.enginelib.ReferenceProperty;
 
 /**
  * Cross-language operations for working with values
@@ -55,13 +56,13 @@ public class ValueUtils {
 	public static Long idToObject(long id) {
 		return Long.valueOf(id);
 	}
-
+	
 	/**
-	 * Check whether an arbitrary value is a suitable runtime type for a specific property
+	 * Check whether an arbitrary value is a suitable runtime type for a specific property.
 	 * 
 	 * @throws OgreException if the value is not of the correct type
 	 */
-	public static void validatePropertyValue(Property property, Object object, boolean wired) {
+	public static void validatePropertyValue(Property property, Object object) {
 		if (object == null) {
 			if (!property.isNullable()) {
 				throw new OgreException("Invalid value for " + property + ": null values are not permitted");
@@ -89,16 +90,25 @@ public class ValueUtils {
 			requiredClass = byte[].class;
 			break;
 		case Property.TYPECODE_REFERENCE:
-			requiredClass = wired ? Entity.class : Long.class;
+			requiredClass = Entity.class;
 			break;
 		default:
 			throw new OgreException(property + " has invalid invalid typeCode: " + property.getTypeCode());
 		}
-		if (!requiredClass.isAssignableFrom(object.getClass())) {
+		if (!requiredClass.isInstance(object)) {
 			throw new OgreException("Invalid value for " + property + ": expected " + requiredClass + ", found " + object.getClass());
+		}
+		if (property.getTypeCode() == Property.TYPECODE_REFERENCE) {
+			Entity entity = (Entity) object;
+			if (entity.getEntityType() != ((ReferenceProperty) property).getReferenceType()) {
+				throw new OgreException("Invalid value for " + property + ": expected entity of type " + entity.getEntityType() + ", found entity of type " + ((ReferenceProperty) property).getReferenceType());
+			}
 		}
 	}
 
+	/**
+	 * @return A string representation of a value. This should be able to handle any of the values acceptable to {@link #validatePropertyValue(Property, Object, boolean)}
+	 */
 	public static Object valueToString(Object value) {
 		if (value == null) {
 			return "null";

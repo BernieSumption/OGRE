@@ -9,7 +9,6 @@ import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
-import com.berniecode.ogre.server.ServerEngineTest;
 
 /**
  * A {@link ServerEngine} contains a number of object graphs
