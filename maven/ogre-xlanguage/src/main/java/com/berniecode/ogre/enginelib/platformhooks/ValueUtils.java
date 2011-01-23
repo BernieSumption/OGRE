@@ -44,14 +44,14 @@ public class ValueUtils {
 	}
 
 	/**
-	 * Coerce a {@code Long} object into a native long value
+	 * Unbox an object created with {@link #idToObject(long)}
 	 */
 	public static long objectToId(Object id) {
 		return ((Long) id).longValue();
 	}
 
 	/**
-	 * Coerce a native long value into a {@code Long} object
+	 * Box a native long value into an object reference
 	 */
 	public static Long idToObject(long id) {
 		return Long.valueOf(id);

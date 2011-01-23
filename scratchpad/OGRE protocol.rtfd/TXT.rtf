@@ -4,27 +4,9 @@
 \paperw11900\paperh16840\margl1440\margr1440\vieww18140\viewh18060\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 
-\f0\fs30 \cf0 TODO:\
-\
-  * Round of unit test coverage, comment checking and polish\
-  * 1-many reference lists calculated on demand by backtracking from many side\
-  * consider explicit support for many-many references. Options are:\
-  *  * encoding lists of ids as per original spec (leads to duplication in directionless relationships like friendship)\
-  *  * tracking via intermediate entity type, i.e. "Friendship" entity with person1 and person2 properties\
-  *  * adding relationships as first class constructs (effort)\
-\
-\
-Get issue tracker working, put wishlist up there:\
-  - visual graph (requires strongly typed facade: JDK proxy backed view onto client engine)\
-  - dataVersion and dataVersionScheme to cope with network outage. It should be possible to add new fields to a type domain without breaking existing clients.\
-\
-===== A protocol for realtime object graph replication =====\
+\f0\fs30 \cf0 ===== A protocol for realtime object graph replication =====\
 \
 In this white paper I describe OGRE, the Object Graph Replication Engine. OGRE is a system for transferring complex structured data over a network and then transmitting any changes to the data structure as a stream of deltas to the client-side structure.\
-\
-  * Introduction: about the problem that OGRE solves\
-  * Informal specification: an overview of what OGRE does, with pretty pictures and examples\
-  * Formal specification: a more precise definition of the OGRE protocol that can be used when implementing a client or server\
 \
 ==== Introduction ====\
 \
@@ -44,11 +26,11 @@ In order to do this, the application must settle three technical issues:\
   - How is the stream of changes transmitted to the client?\
   - How is each change applied to the client's data set?\
 \
-There are a number of technologies that help application with items 1 and 2. Data can be encoded as XML, which is human readable, self-documenting and universally supported by programming languages, or in a binary format such as Protocol Buffers, Thrift or AMF which are more efficient and faster to parse compared to XML. Technologies like Comet combined with message queuing systems like ZeroMQ and RabbitMQ make it easy to publish a stream of changes to multiple clients. Issues 1 and 2 are solved problems.\
+There are a number of technologies that help application with items 1 and 2. Data can be encoded as XML, which is human readable, self-documenting and universally supported by programming languages, or in a binary format such as Protocol Buffers, Thrift or AMF which are more efficient and faster to parse compared to XML. Technologies like Comet combined with message queuing systems or networking libraries like ZeroMQ make it easy to publish a stream of changes to multiple clients. Issues 1 and 2 are solved problems - the hardest part is deciding which high-quality, free, open source solution to use!\
 \
 Issue 3 on the other hand, has not been solved in a general-purpose way. Over and over again, application developers build ad hoc protocols for describing changes to their data set. OGRE aims to change this.\
 \
-==== Informal specification ====\
+==== How OGRE works ====\
 \
 OGRE defines a platform-neutral way of representing complete object graphs, and updates to an object graph.\
 \
@@ -60,10 +42,9 @@ Enough theory, time for an example. To keep it simple, we'll use a graph with on
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\fs24 \cf0 {{\NeXTGraphic toy-story-typedomain.png \width5940 \height3220
-}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\fs30 \cf0 \
+\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 1.tiff \width9780 \height3580
+}¬}
+\fs30 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 \cf0 \
 Here's an object graph based on this type domain:\

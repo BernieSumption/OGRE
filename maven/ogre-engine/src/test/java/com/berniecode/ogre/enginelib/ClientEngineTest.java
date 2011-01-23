@@ -1,46 +1,29 @@
-package com.berniecode.ogre;
+package com.berniecode.ogre.enginelib;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jmock.Expectations;
 
-import com.berniecode.ogre.enginelib.ClientEngine;
-import com.berniecode.ogre.enginelib.DownloadClientAdapter;
-import com.berniecode.ogre.enginelib.Entity;
-import com.berniecode.ogre.enginelib.EntityDiff;
-import com.berniecode.ogre.enginelib.EntityReference;
-import com.berniecode.ogre.enginelib.EntityType;
-import com.berniecode.ogre.enginelib.GraphUpdate;
-import com.berniecode.ogre.enginelib.MessageClientAdapter;
-import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.PartialRawPropertyValueSet;
-import com.berniecode.ogre.enginelib.Property;
-import com.berniecode.ogre.enginelib.RawPropertyValueSet;
-import com.berniecode.ogre.enginelib.ReferenceProperty;
-import com.berniecode.ogre.enginelib.TypeDomain;
+import com.berniecode.ogre.OgreTestCase;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.InvalidGraphUpdateException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
-/**
- * A ClientEngineTest configures and executes the replication of a single object graph. It is the
- * frontend of the cross-language OGRE client, and will typically not be used directly but should be
- * wrapped in a suitable language-specific facade.
- * 
- * @author Bernie Sumption
- */
 public class ClientEngineTest extends OgreTestCase {
 	
-	private EntityType entityType0;
-	private EntityType entityType1;
+	private EntityType parentType;
+	private ReferenceProperty refProperty;
+	private EntityType childType;
 	private TypeDomain typeDomain;
 	
 	private GraphUpdate initialValueUpdate;
 
 	private DownloadClientAdapter downloadClientAdapter;
 	private MessageClientAdapter messageClientAdapter;
+	private Property parentName;
+	private Property childName;
 
 	@Override
 	public void doAdditionalSetup() throws Exception {
@@ -48,12 +31,14 @@ public class ClientEngineTest extends OgreTestCase {
 		downloadClientAdapter = context.mock(DownloadClientAdapter.class); 
 		messageClientAdapter = context.mock(MessageClientAdapter.class); 
 
-		entityType0 = new EntityType("entityType0", new Property[] {
-				new Property("property0", Property.TYPECODE_INT32, false),
-				new Property("property1", Property.TYPECODE_INT64, false)
+		parentType = new EntityType("parentType", new Property[] {
+				parentName = new Property("num", Property.TYPECODE_STRING, false),
+				refProperty = new ReferenceProperty("ref", "childType")
 		});
-		entityType1 = new EntityType("entityType1", new Property[] {});
-		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0, entityType1 });
+		childType = new EntityType("childType", new Property[] {
+				childName = new Property("name", Property.TYPECODE_STRING, true)
+		});
+		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { parentType, childType });
 		
 		initialValueUpdate = new GraphUpdate(typeDomain, OBJECT_GRAPH_ID, null, null, null);
 	}
@@ -109,54 +94,54 @@ public class ClientEngineTest extends OgreTestCase {
 		
 		
 		// test new entity created with complete value
-		ce.acceptGraphUpdate(createGraphUpdate(new Entity(entityType0, 200, new Object[] {5, 6L})));
+		ce.acceptGraphUpdate(createGraphUpdate(new Entity(parentType, 200, new Object[] {"5", null})));
 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
-			"  Entity entityType0#200" +
-			"    property0=5" +
-			"    property1=6",
+			"  Entity parentType#200" +
+			"    num=5" +
+			"    ref=null",
 			ce);
 		
 		// test creating a new entity with same type and id fails
 		try {
-			ce.acceptGraphUpdate(createGraphUpdate(new Entity(entityType0, 200, new Object[] {7, 8L})));
+			ce.acceptGraphUpdate(createGraphUpdate(new Entity(parentType, 200, new Object[] {"7", null})));
 			fail("acceptGraphUpdate() should fail with an entity that already exists in the cient engine");
 		} catch (InvalidGraphUpdateException e) {}
 		
 		// test entity can be updated with partial update
-		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(entityType0, 200, new Object[] {9, null}, new boolean[] {true, false})));
+		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(parentType, 200, new Object[] {"9", null}, new boolean[] {true, false})));
 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
-			"  Entity entityType0#200" +
-			"    property0=9" +
-			"    property1=6",
+			"  Entity parentType#200" +
+			"    num=9" +
+			"    ref=null",
 			ce);
 		
 		// test partial value without existing entity causes log error but no exception failure
 		
 		requireOneLogError(OgreLog.LEVEL_ERROR);
 		
-		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(entityType0, 100, new Object[] {10, null}, new boolean[] {true, false})));
+		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(parentType, 100, new Object[] {"10", null}, new boolean[] {true, false})));
 		
 	}
 
 	public void testEntityMergingError() throws Exception {
-
-		entityType0 = new EntityType("entityType0", new Property[] {
-				new ReferenceProperty("reference", "entityType0")
-		});
-		
-		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { entityType0 });
 		
 
 		ClientEngine ce = createClientEngine();
 		ce.initialise();
-		
+
 		try {
-			ce.acceptGraphUpdate(createGraphUpdate(new Entity(entityType0, 200, new Object[] {10L})));
-			fail("acceptGraphUpdate() should fail when given an entity that references a non-existant entity");
+			new Entity(parentType, 200, new Object[] {10});
+			fail("new Entity() should fail when given an initialValues array with too new values");
+		} catch (OgreException e) {}
+
+		try {
+			//TODO check more kinds of validation - graph updates with wrong runtime type, null values for not-null properties, dupicate ids in graph update
+			ce.acceptGraphUpdate(createGraphUpdate(new EntityValue(parentType, 20, new Object[] {"0", 10L})));
+			fail("acceptGraphUpdate() should fail when given a GraphUpdate that references a non-=existant entity");
 		} catch (OgreException e) {}
 		
 		assertClientEngineState(
@@ -164,17 +149,49 @@ public class ClientEngineTest extends OgreTestCase {
 			ce);
 		
 	}
+	
+	public void testBackReferences() throws Exception {
+		ClientEngine ce = createClientEngine();
+		ce.initialise();
+		
+		ce.acceptGraphUpdate(createGraphUpdate(
+				new EntityValue(parentType, 1, new Object[] {"to dave", 1L}),
+				new EntityValue(parentType, 2, new Object[] {"to none", null}),
+				new EntityValue(parentType, 3, new Object[] {"to sally", 2L}),
+				new EntityValue(parentType, 4, new Object[] {"to dave also", 1L}),
+				new EntityValue(parentType, 5, new Object[] {"to none also", null}),
+				new EntityValue(childType, 1, new Object[] {"dave"}),
+				new EntityValue(childType, 2, new Object[] {"sally"})));
+		
+		Entity dave = ce.getEntityByTypeAndId(childType, 1);
+		
+		try {
+			ce.getReferencesTo(dave, new ReferenceProperty("random", "foo"));
+			fail("Entity.getBackReferences() should fail with a property that does not reference the entity type in question");
+		} catch (OgreException e) {}
+		
+		Entity[] references = ce.getReferencesTo(dave, refProperty);
+		
+		assertNotNull(references);
+		assertEquals(2, references.length);
+		assertEquals(references[0].getPropertyValue(parentName), "to dave");
+		assertEquals(references[1].getPropertyValue(parentName), "to dave also");
+	}
 
 	private GraphUpdate createGraphUpdate(EntityReference... updates) {
 		List<RawPropertyValueSet> valueMessages = new ArrayList<RawPropertyValueSet>();
 		List<PartialRawPropertyValueSet> diffMessages = new ArrayList<PartialRawPropertyValueSet>();
 		for (EntityReference update: updates) {
-			if (update instanceof PartialRawPropertyValueSet) {
-				diffMessages.add((PartialRawPropertyValueSet) update);
+			if (update instanceof Entity) {
+				valueMessages.add((Entity) update);
 			}
-			else if (update instanceof RawPropertyValueSet) {
-				valueMessages.add((RawPropertyValueSet) update);
-			} else {
+			else if (update instanceof EntityDiff) {
+				diffMessages.add((EntityDiff) update);
+			}
+			else if (update instanceof EntityValue) {
+				valueMessages.add((EntityValue) update);
+			}
+			else {
 				throw new OgreException("Invalid argument to createGraphUpdate() of type " + update.getClass());
 			}
 		}

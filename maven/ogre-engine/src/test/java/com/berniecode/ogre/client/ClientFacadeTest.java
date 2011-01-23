@@ -82,3 +82,8 @@ public class ClientFacadeTest extends EntityClassWithAllFieldsTestCase {
 		} catch (ClientFacadeException e) {}
 	}
 }
+
+interface EntityAccessor extends EntityClassWithAllFields {
+	
+	public EntityElement[] getBackReferences();
+}

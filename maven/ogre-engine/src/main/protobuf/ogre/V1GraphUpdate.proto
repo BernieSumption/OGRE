@@ -2,13 +2,10 @@ package ogre;
 
 option java_package = "com.berniecode.ogre.wireformat";
 
-
 // these messages map directly onto the classes with the same name
 // in the com.berniecode.ogre.enginelib.shared package. This file
 // only contains comments to highlight unusual behaviour or requirements
 // that aren't obvious from the JavaDoc comments in those classes
-
-
 
 // Maps onto com.berniecode.ogre.enginelib.shared.GraphUpdate
 message GraphUpdateMessage {
@@ -18,8 +15,6 @@ message GraphUpdateMessage {
   repeated EntityValueMessage entityUpdates = 4; // diff-style EntityValues updating existing entities
   repeated EntityDeleteMessage entityDeletes = 5;
 }
-
-
   
 // There are two flavours of validation for this message. "complete-style", and "diff-style"
 // complete-style validation rules:

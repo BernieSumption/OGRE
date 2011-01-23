@@ -225,7 +225,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 		else if (type == double.class || type == Double.class) {
 			property = new Property(name, Property.TYPECODE_DOUBLE, nullable);
 		}
-		else if (type == int.class || type == Integer.class || type == short.class || type == Short.class || type == byte.class || type == Byte.class) {
+		else if (type == int.class || type == Integer.class) {
 			property = new Property(name, Property.TYPECODE_INT32, nullable);
 		}
 		else if (type == long.class || type == Long.class) {

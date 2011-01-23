@@ -176,8 +176,10 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 				try {
 					switch(property.getTypeCode()) {
 					case Property.TYPECODE_INT32:
+						pvBuilder.setIntValue((Integer) value);
+						break;
 					case Property.TYPECODE_INT64:
-						pvBuilder.setIntValue(numberToLong(value));
+						pvBuilder.setIntValue((Long) value);
 						break;
 					case Property.TYPECODE_FLOAT:
 						pvBuilder.setFloatValue((Float) value);
@@ -204,19 +206,6 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 			evBuilder.addPropertyValues(pvBuilder);
 		}
 		return evBuilder.build();
-	}
-	
-	private long numberToLong(Object number) {
-		if (number instanceof Integer) {
-			return ((Integer) number).longValue();
-		}
-		if (number instanceof Short) {
-			return ((Short) number).longValue();
-		}
-		if (number instanceof Byte) {
-			return ((Byte) number).longValue();
-		}
-		return (Long) number;
 	}
 
 	@Override

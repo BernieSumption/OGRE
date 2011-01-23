@@ -64,21 +64,30 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 
 	/**
 	 * @return The value for a property of this {@link Entity}
+	 * 
+	 * @throws OgreException if the supplied property does not belong this Entity's {@link EntityType} 
 	 */
 	public Object getPropertyValue(Property property) {
+		if (property.getEntityType() != entityType) {
+			throw new OgreException("property " + property + " belongs to entity type "
+					+ property.getEntityType() + ", but this Entity belongs to entity type " + entityType);
+		}
 		return values[property.getPropertyIndex()];
 	}
-	
-	public String toString() {
-		return entityType + "#" + id;
-	}
 
+	/**
+	 * @see RawPropertyValueSet#getRawPropertyValue(Property)
+	 */
 	public Object getRawPropertyValue(Property property) {
 		Object value = getPropertyValue(property);
 		if (value != null && property instanceof ReferenceProperty) {
 			return ValueUtils.idToObject(((Entity) value).getEntityId());
 		}
 		return value;
+	}
+	
+	public String toString() {
+		return entityType + "#" + id;
 	}
 	
 	//
@@ -135,6 +144,9 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 	 * interpreted as a propertyIndex
 	 */
 	void updateFromArray(Object[] update) {
+		if (update.length != entityType.getPropertyCount()) {
+			throw new OgreException("The supplied array must have exactly one entry per property in the corresponding EntityType (expected " + entityType.getPropertyCount() + ", got " + update.length + ")");
+		}
 		for (int i = 0; i < update.length; i++) {
 			ValueUtils.validatePropertyValue(entityType.getProperty(i), update[i]);
 			values[i] = update[i];

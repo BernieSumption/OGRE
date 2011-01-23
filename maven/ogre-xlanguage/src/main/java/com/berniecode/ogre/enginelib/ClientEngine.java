@@ -1,12 +1,13 @@
 package com.berniecode.ogre.enginelib;
 
+import com.berniecode.ogre.enginelib.platformhooks.ArrayBuilder;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.InvalidGraphUpdateException;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
 /**
- * A ClientEngineTest configures and executes the replication of a single object graph. It is the
+ * A ClientEngine configures and executes the replication of a single object graph. It is the
  * frontend of the cross-language OGRE client, and will typically not be used directly but should be
  * wrapped in a suitable language-specific facade.
  * 
@@ -201,5 +202,26 @@ public class ClientEngine implements GraphUpdateListener {
 	
 	public String toString() {
 		return "ClientEngine " + typeDomainId + "/" + objectGraphId;
+	}
+
+
+	/**
+	 * Return the entities that reference the specified {@link Entity} through the specified {@link ReferenceProperty}
+	 * 
+	 * @throws OgreException if {@code property.getReferenceType() != entity.getEntityType()}
+	 */
+	public Entity[] getReferencesTo(Entity entity, ReferenceProperty property) {
+		if (property.getReferenceType() != entity.getEntityType()) {
+			throw new OgreException(property + " does not reference the EntityType " + entity.getEntityType());
+		}
+		ArrayBuilder ab = new ArrayBuilder(Entity.class);
+		Entity[] candidates = entities.getEntitiesByType(property.getEntityType());
+		for (int i = 0; i < candidates.length; i++) {
+			Entity target = (Entity) candidates[i].getPropertyValue(property);
+			if (target == entity) {
+				ab.add(candidates[i]);
+			}
+		}
+		return (Entity[]) ab.buildArray();
 	}
 }

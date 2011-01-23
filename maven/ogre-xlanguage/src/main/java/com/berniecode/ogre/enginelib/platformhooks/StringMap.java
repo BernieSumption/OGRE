@@ -14,10 +14,6 @@ public class StringMap {
 
 	Map map = new HashMap();
 
-	public boolean contains(String key) {
-		return map.containsKey(key);
-	}
-
 	public Object get(String key) {
 		return map.get(key);
 	}
