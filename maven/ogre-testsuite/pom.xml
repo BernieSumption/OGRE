@@ -3,17 +3,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.berniecode.ogre</groupId>
-  <artifactId>ogre</artifactId>
+  <artifactId>ogre-testsuite</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>OGRE master project</name>
+  <name>Randomised test suite</name>
   
   <modules>
-    <module>ogre-xlanguage</module>
-    <module>ogre-engine</module>
-    <module>ogre-testsuite</module>
-    <module>ogre-demo</module>
+    <module>testsuite-client</module>
+    <module>testsuite-generator</module>
   </modules>
 
 </project>

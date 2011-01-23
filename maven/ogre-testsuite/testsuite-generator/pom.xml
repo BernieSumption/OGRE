@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.berniecode.ogre</groupId>
-  <artifactId>ogre-testsuitegen</artifactId>
+  <artifactId>testsuite-generator</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>OGRE test suite generation application</name>
+  <name>Randomised test suite client</name>
   
   <build>
     <pluginManagement>
