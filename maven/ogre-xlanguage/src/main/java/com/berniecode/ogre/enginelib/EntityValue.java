@@ -11,7 +11,7 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  * 
  * @author Bernie Sumption
  */
-public class EntityValue implements EntityReference, PartialRawPropertyValueSet {
+public class EntityValue implements EntityReference, RawPropertyValueSet {
 
 	private final EntityType entityType;
 	private final long entityId;
@@ -35,13 +35,6 @@ public class EntityValue implements EntityReference, PartialRawPropertyValueSet 
 	 */
 	public long getEntityId() {
 		return entityId;
-	}
-
-	/**
-	 * @see PartialRawPropertyValueSet#hasUpdatedValue(Property)
-	 */
-	public boolean hasUpdatedValue(Property property) {
-		return true;
 	}
 
 	/**

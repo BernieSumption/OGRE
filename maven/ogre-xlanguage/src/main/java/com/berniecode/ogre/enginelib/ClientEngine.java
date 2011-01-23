@@ -132,8 +132,14 @@ public class ClientEngine implements GraphUpdateListener {
 		Entity[] newEntities = new Entity[completeValues.length];
 		for (int i = 0; i < completeValues.length; i++) {
 			RawPropertyValueSet value = completeValues[i];
+			for (int j = 0; j < i; j++) {
+				if (value.getEntityId() == completeValues[j].getEntityId()
+						&& value.getEntityType() == completeValues[j].getEntityType()) {
+					throw new InvalidGraphUpdateException("Ignoring " + update + " message because it contains a duplicate ID: " + completeValues[j].getEntityType() + "#" + completeValues[j].getEntityId());
+				}
+			}
 			if (entities.containsSimilar(value)) {
-				throw new InvalidGraphUpdateException("Ignoring " + value + " value because a similar entity already exists in this engine.");
+				throw new InvalidGraphUpdateException("Ignoring " + update + " because it creates an entity that already exists in the client engine: " + value);
 			} else {
 				newEntities[i] = new Entity(value.getEntityType(), value.getEntityId(), null); // these entities have no initial values
 			}
@@ -142,7 +148,7 @@ public class ClientEngine implements GraphUpdateListener {
 			newEntities[i].update(completeValues[i], entities, newEntities); // wire up values
 		}
 		for (int i = 0; i < newEntities.length; i++) {
-			entities.add(newEntities[i]); // add to this object graph
+			entities.add(newEntities[i]);
 		}
 		
 		// apply entity updates

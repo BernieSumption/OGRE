@@ -8,7 +8,7 @@ package com.berniecode.ogre.enginelib.platformhooks;
  * 
  * @jtoxNative - not translated into other languages
  */
-public class InvalidGraphUpdateException extends RuntimeException {
+public class InvalidGraphUpdateException extends OgreException {
 
 	public InvalidGraphUpdateException(String message) {
 		super(message);

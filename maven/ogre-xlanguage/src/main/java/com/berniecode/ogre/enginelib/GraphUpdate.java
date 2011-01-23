@@ -59,5 +59,9 @@ public class GraphUpdate {
 	public EntityReference[] getEntityDeletes() {
 		return entityDeletes;
 	}
+	
+	public String toString() {
+		return "graph update for " + typeDomain.getTypeDomainId() + "/" + objectGraphId;
+	}
 
 }

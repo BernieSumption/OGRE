@@ -1,5 +1,6 @@
 package com.berniecode.ogre.enginelib;
 
+import com.berniecode.ogre.enginelib.platformhooks.InvalidGraphUpdateException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
 
@@ -117,7 +118,7 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 					long refId = ValueUtils.objectToId(value);
 					value = getEntity(refType, refId, store, array);
 					if (value == null) {
-						throw new OgreException("Property '" + property + "' of entity type " + property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
+						throw new InvalidGraphUpdateException("Property '" + property + "' of entity type " + property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
 					}
 				}
 				ValueUtils.validatePropertyValue(property, value);

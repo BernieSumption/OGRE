@@ -23,7 +23,6 @@ public class ClientEngineTest extends OgreTestCase {
 	private DownloadClientAdapter downloadClientAdapter;
 	private MessageClientAdapter messageClientAdapter;
 	private Property parentName;
-	private Property childName;
 
 	@Override
 	public void doAdditionalSetup() throws Exception {
@@ -36,7 +35,7 @@ public class ClientEngineTest extends OgreTestCase {
 				refProperty = new ReferenceProperty("ref", "childType")
 		});
 		childType = new EntityType("childType", new Property[] {
-				childName = new Property("name", Property.TYPECODE_STRING, true)
+				new Property("name", Property.TYPECODE_STRING, true)
 		});
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { parentType, childType });
 		
@@ -139,10 +138,21 @@ public class ClientEngineTest extends OgreTestCase {
 		} catch (OgreException e) {}
 
 		try {
-			//TODO check more kinds of validation - graph updates with wrong runtime type, null values for not-null properties, dupicate ids in graph update
 			ce.acceptGraphUpdate(createGraphUpdate(new EntityValue(parentType, 20, new Object[] {"0", 10L})));
-			fail("acceptGraphUpdate() should fail when given a GraphUpdate that references a non-=existant entity");
-		} catch (OgreException e) {}
+			fail("acceptGraphUpdate() should fail when given a GraphUpdate that references a non-existant entity");
+		} catch (InvalidGraphUpdateException e) {}
+
+		try {
+			ce.acceptGraphUpdate(createGraphUpdate(
+					new EntityValue(parentType, 20, new Object[] {"a", null}),
+					new EntityValue(parentType, 20, new Object[] {"b", null})));
+			fail("acceptGraphUpdate() should fail when given a GraphUpdate contains duplicate IDs");
+		} catch (InvalidGraphUpdateException e) {}
+
+		try {
+			ce.acceptGraphUpdate(createGraphUpdate(new EntityValue(parentType, 20, new Object[] {null, null})));
+			fail("acceptGraphUpdate() should fail when given a GraphUpdate has a null value for a non-nullable property");
+		} catch (InvalidGraphUpdateException e) {}
 		
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph",

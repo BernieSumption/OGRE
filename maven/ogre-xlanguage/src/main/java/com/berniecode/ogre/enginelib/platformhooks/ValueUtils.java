@@ -65,7 +65,7 @@ public class ValueUtils {
 	public static void validatePropertyValue(Property property, Object object) {
 		if (object == null) {
 			if (!property.isNullable()) {
-				throw new OgreException("Invalid value for " + property + ": null values are not permitted");
+				throw new InvalidGraphUpdateException("Invalid value for " + property + ": null values are not permitted");
 			}
 			return;
 		}
@@ -93,15 +93,15 @@ public class ValueUtils {
 			requiredClass = Entity.class;
 			break;
 		default:
-			throw new OgreException(property + " has invalid invalid typeCode: " + property.getTypeCode());
+			throw new InvalidGraphUpdateException(property + " has invalid invalid typeCode: " + property.getTypeCode());
 		}
 		if (!requiredClass.isInstance(object)) {
-			throw new OgreException("Invalid value for " + property + ": expected " + requiredClass + ", found " + object.getClass());
+			throw new InvalidGraphUpdateException("Invalid value for " + property + ": expected " + requiredClass + ", found " + object.getClass());
 		}
 		if (property.getTypeCode() == Property.TYPECODE_REFERENCE) {
 			Entity entity = (Entity) object;
 			if (entity.getEntityType() != ((ReferenceProperty) property).getReferenceType()) {
-				throw new OgreException("Invalid value for " + property + ": expected entity of type " + entity.getEntityType() + ", found entity of type " + ((ReferenceProperty) property).getReferenceType());
+				throw new InvalidGraphUpdateException("Invalid value for " + property + ": expected entity of type " + entity.getEntityType() + ", found entity of type " + ((ReferenceProperty) property).getReferenceType());
 			}
 		}
 	}

@@ -8,7 +8,7 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
  *
  * @author Bernie Sumption
  */
-public class EntityDiff extends EntityValue {
+public class EntityDiff extends EntityValue implements PartialRawPropertyValueSet {
 
 	private final boolean[] isChanged;
 
