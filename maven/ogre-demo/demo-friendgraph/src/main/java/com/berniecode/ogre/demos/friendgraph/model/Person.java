@@ -7,5 +7,9 @@ public interface Person {
 	public int getAge();
 	
 	public byte[] getPhotoJpeg();
+	
+	public int getXPosition();
+	
+	public int getYPosition();
 
 }
