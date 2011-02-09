@@ -9,7 +9,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		FriendGraphModel model = new FriendGraphModel();
-		model.addPerson(new PersonImpl("Bernie", 29, null, 50, 80));
+		model.addPerson(new PersonImpl("Bernie", null, 50, 80));
 		
 		FriendGraphView view = new FriendGraphView(true);
 		view.updateFromModel(model);

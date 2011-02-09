@@ -14,8 +14,10 @@ public interface EditEventListener {
 	
 	void setPersonName(Person p, String name);
 
-	Person createNewPerson(int x, int y);
+	Person createNewPerson(String name, int x, int y);
 
 	void deletePerson(Person person);
+
+	void setPersonPhotoJpeg(Person person, byte[] result);
 
 }

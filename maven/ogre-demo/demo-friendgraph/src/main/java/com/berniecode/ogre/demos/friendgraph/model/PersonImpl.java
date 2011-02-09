@@ -3,15 +3,13 @@ package com.berniecode.ogre.demos.friendgraph.model;
 public class PersonImpl implements Person {
 
 	private String name;
-	private int age;
 	private byte[] photoJpeg;
 	private int xPosition;
 	private int yPosition;
 	
-	public PersonImpl(String name, int age, byte[] photoJpeg, int xPosition, int yPosition) {
+	public PersonImpl(String name, byte[] photoJpeg, int xPosition, int yPosition) {
 		super();
 		this.name = name;
-		this.age = age;
 		this.photoJpeg = photoJpeg;
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
@@ -22,12 +20,6 @@ public class PersonImpl implements Person {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public int getAge() {
-		return age;
-	}
-	public void setAge(int age) {
-		this.age = age;
 	}
 	public byte[] getPhotoJpeg() {
 		return photoJpeg;

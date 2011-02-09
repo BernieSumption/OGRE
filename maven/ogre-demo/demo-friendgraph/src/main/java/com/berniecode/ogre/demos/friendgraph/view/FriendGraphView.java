@@ -3,10 +3,11 @@ package com.berniecode.ogre.demos.friendgraph.view;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.berniecode.ogre.demos.friendgraph.model.FriendGraphModel;
 import com.berniecode.ogre.demos.friendgraph.model.Person;
@@ -40,8 +41,11 @@ public class FriendGraphView extends JFrame {
 			setCursor(Cursors.NEW_CURSOR);
 			addMouseListener(new MouseClickListener() {
 				public void mouseClicked(MouseEvent e) {
-					Person p = editEventListener.createNewPerson(e.getX() - getInsets().left, e.getY() - getInsets().top);
-					handlePersonDragTo(p, p.getXPosition(), p.getYPosition()); // apply position validation
+					String name = JOptionPane.showInputDialog("Enter a name for the new person");
+					if (name != null && name.length() != 0) {
+						Person p = editEventListener.createNewPerson(name, e.getX() - getInsets().left, e.getY() - getInsets().top);
+						handlePersonDragTo(p, p.getXPosition(), p.getYPosition()); // apply position validation
+					}
 				}
 			});
 		}
@@ -58,12 +62,13 @@ public class FriendGraphView extends JFrame {
 				personView.updateView();
 			}
 		}
-		Set<Person> keySet = personToView.keySet();
-		for (Person person: keySet) {
+		Iterator<Person> keys = personToView.keySet().iterator();
+		while (keys.hasNext()) {
+			Person person = keys.next();
 			if (!model.getPeople().contains(person)) {
 				PersonView personView = personToView.get(person);
 				remove(personView);
-				keySet.remove(person);
+				keys.remove();
 			}
 		}
 		validate();

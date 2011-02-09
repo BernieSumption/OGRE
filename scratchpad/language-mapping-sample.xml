@@ -6,7 +6,7 @@
 		</script>
 	</validate>
 	
-	<transform defaults="java">
+	<transform>
 	
 		<template for="method-definition">
 			"def" name(argumentList):

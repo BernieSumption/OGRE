@@ -9,38 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Utils {
-
-	/**
-	 * Display a UI to choose a JPEG file and return it as a byte array.
-	 * 
-	 * @return a byte array, or null if the user cancelled the operation
-	 * @throws IOException if a file was selected that could not be loaded
-	 */
-	public static byte[] loadImageBytesFromFile() throws IOException {
-		JFileChooser chooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG Images", "jpg");
-		chooser.setFileFilter(filter);
-		int returnVal = chooser.showOpenDialog(null);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File selected = chooser.getSelectedFile();
-			byte[] result = new byte[(int) selected.length()];
-			FileInputStream is = null;
-			try {
-				is = new FileInputStream(selected);
-				is.read(result);
-			} finally {
-				if (is != null) {
-					is.close();
-				}
-			}
-			return result;
-		}
-		return null;
-	}
 
 	/**
 	 * Load a file as a byte array.

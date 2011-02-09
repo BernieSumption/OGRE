@@ -24,14 +24,20 @@ public class EditController implements EditEventListener {
 		view.updateFromModel(model);
 	}
 
-	public void setPersonName(Person p, String name) {
-		PersonImpl pi = (PersonImpl) p;
+	public void setPersonName(Person person, String name) {
+		PersonImpl pi = (PersonImpl) person;
 		pi.setName(name);
 		view.updateFromModel(model);
 	}
 
-	public Person createNewPerson(int x, int y) {
-		Person p = new PersonImpl("Enter name", 0, null, x, y);
+	public void setPersonPhotoJpeg(Person person, byte[] photoJpeg) {
+		PersonImpl pi = (PersonImpl) person;
+		pi.setPhotoJpeg(photoJpeg);
+		view.updateFromModel(model);
+	}
+
+	public Person createNewPerson(String name, int x, int y) {
+		Person p = new PersonImpl(name, null, x, y);
 		model.addPerson(p);
 		view.updateFromModel(model);
 		return p;

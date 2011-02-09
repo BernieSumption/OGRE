@@ -4,8 +4,6 @@ public interface Person {
 	
 	public String getName();
 	
-	public int getAge();
-	
 	public byte[] getPhotoJpeg();
 	
 	public int getXPosition();
