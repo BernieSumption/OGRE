@@ -5,7 +5,7 @@ package com.berniecode.ogre.demos.friendgraph.model;
  *
  * @author Bernie Sumption
  */
-public interface LikesRelationship {
+public interface Relationship {
 
 	/**
 	 * @return the person who does the liking

@@ -6,9 +6,11 @@ public class PersonImpl implements Person {
 	private byte[] photoJpeg;
 	private int xPosition;
 	private int yPosition;
+	private final SocialNetwork socialNetwork;
 	
-	public PersonImpl(String name, byte[] photoJpeg, int xPosition, int yPosition) {
+	public PersonImpl(SocialNetwork socialNetwork, String name, byte[] photoJpeg, int xPosition, int yPosition) {
 		super();
+		this.socialNetwork = socialNetwork;
 		this.name = name;
 		this.photoJpeg = photoJpeg;
 		this.xPosition = xPosition;
@@ -38,6 +40,10 @@ public class PersonImpl implements Person {
 	}
 	public void setYPosition(int yPosition) {
 		this.yPosition = yPosition;
+	}
+
+	public SocialNetwork getSocialNetwork() {
+		return socialNetwork;
 	}
 
 }

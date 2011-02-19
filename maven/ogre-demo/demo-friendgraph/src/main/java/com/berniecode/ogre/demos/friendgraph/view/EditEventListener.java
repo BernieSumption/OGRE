@@ -20,4 +20,8 @@ public interface EditEventListener {
 
 	void setPersonPhotoJpeg(Person person, byte[] result);
 
+	void addFriendship(Person person1, Person person2);
+
+	void removeFriendship(Person person1, Person person2);
+
 }

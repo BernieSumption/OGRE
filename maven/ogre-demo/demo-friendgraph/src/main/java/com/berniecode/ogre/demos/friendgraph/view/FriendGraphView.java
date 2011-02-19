@@ -9,9 +9,17 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.berniecode.ogre.demos.friendgraph.model.FriendGraphModel;
+import com.berniecode.ogre.demos.friendgraph.model.SocialNetwork;
 import com.berniecode.ogre.demos.friendgraph.model.Person;
 
+/**
+ * This is the canvas on which people are created and arranged. This class is designed more or less
+ * around the MVC pattern. The view never updates itself directly. Instead, all interactions result
+ * in calls to the {@link EditEventListener} member, which in turn updates the model, causing the
+ * view to be updated.
+ * 
+ * @author Bernie Sumption
+ */
 public class FriendGraphView extends JFrame {
 
 	private static final int INITIAL_WIDTH = 600;
@@ -51,7 +59,7 @@ public class FriendGraphView extends JFrame {
 		}
 	}
 
-	public void updateFromModel(FriendGraphModel model) {
+	public void updateFromModel(SocialNetwork model) {
 		for (Person person: model.getPeople()) {
 			PersonView personView = personToView.get(person);
 			if (personView == null) {
@@ -112,6 +120,15 @@ public class FriendGraphView extends JFrame {
 
 	public EditEventListener getEditEventListener() {
 		return editEventListener;
+	}
+
+	/**
+	 * Handle a click on the "edit friends" button
+	 */
+	public void setPersonForFriendshipEditing(Person person) {
+		for (PersonView personView: personToView.values()) {
+			personView.setPersonForFriendshipEditing(person);
+		}
 	}
 
 }
