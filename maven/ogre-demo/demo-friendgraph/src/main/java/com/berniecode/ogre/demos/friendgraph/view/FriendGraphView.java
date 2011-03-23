@@ -1,16 +1,20 @@
 package com.berniecode.ogre.demos.friendgraph.view;
 
+import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
-import com.berniecode.ogre.demos.friendgraph.model.SocialNetwork;
 import com.berniecode.ogre.demos.friendgraph.model.Person;
+import com.berniecode.ogre.demos.friendgraph.model.Relationship;
+import com.berniecode.ogre.demos.friendgraph.model.SocialNetwork;
 
 /**
  * This is the canvas on which people are created and arranged. This class is designed more or less
@@ -22,8 +26,8 @@ import com.berniecode.ogre.demos.friendgraph.model.Person;
  */
 public class FriendGraphView extends JFrame {
 
-	private static final int INITIAL_WIDTH = 600;
-	private static final int INITIAL_HEIGHT = 400;
+	public static final int INITIAL_WIDTH = 600;
+	public static final int INITIAL_HEIGHT = 400;
 	private static final int INITIAL_TOP = 100;
 	private static final int INITIAL_LEFT = 200;
 	private static final String INITIAL_TITLE = "Friend Graph Demo";
@@ -31,6 +35,7 @@ public class FriendGraphView extends JFrame {
 	private Map<Person, PersonView> personToView = new HashMap<Person, PersonView>();
 	private final boolean editable;
 	private EditEventListener editEventListener;
+	private FriendshipContainer contents;
 
 	/**
 	 * Constructor
@@ -43,7 +48,10 @@ public class FriendGraphView extends JFrame {
 		setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
 		setLocation(INITIAL_LEFT, INITIAL_TOP);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLayout(new AbsoluteLayout());
+		
+		contents = new FriendshipContainer();
+		add(contents);
+		contents.setLayout(new AbsoluteLayout());
 		
 		if (editable) {
 			setCursor(Cursors.NEW_CURSOR);
@@ -64,12 +72,13 @@ public class FriendGraphView extends JFrame {
 			PersonView personView = personToView.get(person);
 			if (personView == null) {
 				personView = new PersonView(person, this);
-				add(personView);
+				contents.add(personView);
 				personToView.put(person, personView);
 			} else {
 				personView.updateView();
 			}
 		}
+		contents.setRelationships(model.getLikesRelationships());
 		Iterator<Person> keys = personToView.keySet().iterator();
 		while (keys.hasNext()) {
 			Person person = keys.next();
@@ -131,4 +140,24 @@ public class FriendGraphView extends JFrame {
 		}
 	}
 
+}
+
+
+class FriendshipContainer extends JLayeredPane {
+	
+	private Collection<Relationship> relationships;
+
+	@Override
+	protected void paintComponent(java.awt.Graphics g) {
+		g.setColor(Color.GREEN);
+		for (Relationship relationship: relationships) {
+			Person subject = relationship.getSubject();
+			Person object = relationship.getObject();
+			g.drawLine(subject.getXPosition(), subject.getYPosition(), object.getXPosition(), object.getYPosition());
+		}
+	}
+
+	public void setRelationships(Collection<Relationship> relationships) {
+		this.relationships = relationships;
+	}
 }
