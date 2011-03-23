@@ -17,5 +17,10 @@ public class RelationshipImpl implements Relationship {
 	public Person getObject() {
 		return object;
 	}
+	
+	@Override
+	public String toString() {
+		return subject + " to " + object;
+	}
 
 }

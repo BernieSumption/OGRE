@@ -1,6 +1,9 @@
 package com.berniecode.ogre.demos.friendgraph;
 
+import javax.swing.UIManager;
+
 import com.berniecode.ogre.demos.friendgraph.controller.EditController;
+import com.berniecode.ogre.demos.friendgraph.model.Person;
 import com.berniecode.ogre.demos.friendgraph.model.PersonImpl;
 import com.berniecode.ogre.demos.friendgraph.model.SocialNetwork;
 import com.berniecode.ogre.demos.friendgraph.model.SocialNetworkImpl;
@@ -10,7 +13,17 @@ public class Main {
 
 	public static void main(String[] args) {
 		SocialNetwork model = new SocialNetworkImpl();
-		model.addPerson(new PersonImpl(model, "Bernie", null, 50, 80));
+		Person bernie;
+		model.addPerson(bernie = new PersonImpl(model, "Bernie", null, 50, 80));
+		Person jude;
+		model.addPerson(jude = new PersonImpl(model, "Jude", null, 250, 30));
+		model.setPersonLikesPerson(bernie, jude, true);
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (Exception e) {
+			System.err.println("Can't set look and feel: " + e.getMessage());
+		}
 		
 		FriendGraphView view = new FriendGraphView(true);
 		view.updateFromModel(model);

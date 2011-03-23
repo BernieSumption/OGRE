@@ -2,6 +2,7 @@ package com.berniecode.ogre.demos.friendgraph.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -28,6 +29,13 @@ public class SocialNetworkImpl implements SocialNetwork {
 
 	public void removePerson(Person person) {
 		people.remove(person);
+		Iterator<Relationship> it = likesRelationships.iterator();
+		while (it.hasNext()) {
+			Relationship relationship = it.next();
+			if (relationship.getSubject().equals(person) || relationship.getObject().equals(person)) {
+				it.remove();
+			}
+		}
 	}
 	
 	public boolean getPersonLikesPerson(Person subject, Person object) {
@@ -45,7 +53,7 @@ public class SocialNetworkImpl implements SocialNetwork {
 	
 	private Relationship findRelationship(Person subject, Person object) {
 		for (Relationship relationship: likesRelationships) {
-			if (relationship.getObject().equals(subject) && relationship.getSubject().equals(object)) {
+			if (relationship.getSubject().equals(subject) && relationship.getObject().equals(object)) {
 				return relationship;
 			}
 		}

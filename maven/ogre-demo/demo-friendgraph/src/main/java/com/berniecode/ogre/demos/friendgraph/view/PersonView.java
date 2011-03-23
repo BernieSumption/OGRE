@@ -153,7 +153,7 @@ public class PersonView extends JPanel implements MouseMotionListener, MouseList
 		getEditEventListener().setPersonName(person, result);
 	}
 
-	private static File lastPhotoDirectory = null;
+	private static File lastPhotoDirectory = new File(".");
 
 	protected void handlePhotoLabelClick() {
 		JFileChooser chooser = new JFileChooser(lastPhotoDirectory);
@@ -242,7 +242,7 @@ public class PersonView extends JPanel implements MouseMotionListener, MouseList
 				// the button was clicked on this PersonView
 				setFriendsButton.setText("cancel");
 				currentSetFriendsOperation = null;
-			} else if (getSocialNetwork().getPersonLikesPerson(this.person, editedPerson)) {
+			} else if (getSocialNetwork().getPersonLikesPerson(editedPerson, this.person)) {
 				// the button was clicked on another PersonView that already likes this person
 				setFriendsButton.setText("remove friend");
 				currentSetFriendsOperation = EditingOperation.REMOVE;

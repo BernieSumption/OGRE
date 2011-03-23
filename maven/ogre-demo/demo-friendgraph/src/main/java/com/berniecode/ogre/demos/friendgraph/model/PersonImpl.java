@@ -45,5 +45,10 @@ public class PersonImpl implements Person {
 	public SocialNetwork getSocialNetwork() {
 		return socialNetwork;
 	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 
 }

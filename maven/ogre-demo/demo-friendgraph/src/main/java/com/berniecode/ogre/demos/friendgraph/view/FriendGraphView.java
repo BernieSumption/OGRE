@@ -1,8 +1,14 @@
 package com.berniecode.ogre.demos.friendgraph.view;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
+import java.awt.geom.Path2D.Double;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,7 +37,7 @@ public class FriendGraphView extends JFrame {
 	private static final int INITIAL_TOP = 100;
 	private static final int INITIAL_LEFT = 200;
 	private static final String INITIAL_TITLE = "Friend Graph Demo";
-	
+
 	private Map<Person, PersonView> personToView = new HashMap<Person, PersonView>();
 	private final boolean editable;
 	private EditEventListener editEventListener;
@@ -40,7 +46,8 @@ public class FriendGraphView extends JFrame {
 	/**
 	 * Constructor
 	 * 
-	 * @param controller a controller to use to edit the model, or null to create a read-only view of the model
+	 * @param controller a controller to use to edit the model, or null to create a read-only view
+	 *            of the model
 	 */
 	public FriendGraphView(boolean editable) {
 		this.editable = editable;
@@ -48,19 +55,21 @@ public class FriendGraphView extends JFrame {
 		setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
 		setLocation(INITIAL_LEFT, INITIAL_TOP);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
-		contents = new FriendshipContainer();
+
+		contents = new FriendshipContainer(editable);
 		add(contents);
 		contents.setLayout(new AbsoluteLayout());
-		
+
 		if (editable) {
 			setCursor(Cursors.NEW_CURSOR);
 			addMouseListener(new MouseClickListener() {
 				public void mouseClicked(MouseEvent e) {
 					String name = JOptionPane.showInputDialog("Enter a name for the new person");
 					if (name != null && name.length() != 0) {
-						Person p = editEventListener.createNewPerson(name, e.getX() - getInsets().left, e.getY() - getInsets().top);
-						handlePersonDragTo(p, p.getXPosition(), p.getYPosition()); // apply position validation
+						Person p = editEventListener.createNewPerson(name, e.getX() - getInsets().left, e.getY()
+								- getInsets().top);
+						handlePersonDragTo(p, p.getXPosition(), p.getYPosition()); // apply position
+																					// validation
 					}
 				}
 			});
@@ -68,7 +77,7 @@ public class FriendGraphView extends JFrame {
 	}
 
 	public void updateFromModel(SocialNetwork model) {
-		for (Person person: model.getPeople()) {
+		for (Person person : model.getPeople()) {
 			PersonView personView = personToView.get(person);
 			if (personView == null) {
 				personView = new PersonView(person, this);
@@ -84,7 +93,7 @@ public class FriendGraphView extends JFrame {
 			Person person = keys.next();
 			if (!model.getPeople().contains(person)) {
 				PersonView personView = personToView.get(person);
-				remove(personView);
+				contents.remove(personView);
 				keys.remove();
 			}
 		}
@@ -135,26 +144,74 @@ public class FriendGraphView extends JFrame {
 	 * Handle a click on the "edit friends" button
 	 */
 	public void setPersonForFriendshipEditing(Person person) {
-		for (PersonView personView: personToView.values()) {
+		for (PersonView personView : personToView.values()) {
 			personView.setPersonForFriendshipEditing(person);
 		}
 	}
 
 }
 
-
 class FriendshipContainer extends JLayeredPane {
-	
+
+	private final static double ARROW_ANGLE = Math.toRadians(30); // equilateral triangle
+	private final static int ARROW_SIZE = 15; // edge length
+	private static final Color ARROW_COLOR = new Color(0x33AA33);
+
 	private Collection<Relationship> relationships;
+	private final int yOffset;
+	private final int xOffset;
+	private Double arrow;
+
+	public FriendshipContainer(boolean editable) {
+		yOffset = (editable ? PersonView.EDITING_HEIGHT : PersonView.INITIAL_HEIGHT) / 2;
+		xOffset = PersonView.INITIAL_WIDTH / 2;
+		arrow = createArrow();
+	}
 
 	@Override
 	protected void paintComponent(java.awt.Graphics g) {
-		g.setColor(Color.GREEN);
-		for (Relationship relationship: relationships) {
-			Person subject = relationship.getSubject();
-			Person object = relationship.getObject();
-			g.drawLine(subject.getXPosition(), subject.getYPosition(), object.getXPosition(), object.getYPosition());
+		Graphics2D g2 = (Graphics2D) g;
+		if (relationships == null) {
+			return;
 		}
+		g2.setColor(ARROW_COLOR);
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		for (Relationship relationship : relationships) {
+			paintRelationship(g2, relationship);
+		}
+	}
+
+	private void paintRelationship(Graphics2D g, Relationship relationship) {
+		Person subject = relationship.getSubject();
+		Person object = relationship.getObject();
+		int subjectX = subject.getXPosition() + xOffset;
+		int subjectY = subject.getYPosition() + yOffset;
+		int objectX = object.getXPosition() + xOffset;
+		int objectY = object.getYPosition() + yOffset;
+		g.drawLine(subjectX, subjectY, objectX, objectY);
+		int centerX = (subjectX + objectX) / 2;
+		int centerY = (subjectY + objectY) / 2;
+		AffineTransform at = AffineTransform.getTranslateInstance(centerX, centerY + 0.5);
+		double tan = Math.atan((1.0 * (subjectY - objectY)) / (1.0 * (subjectX - objectX)));
+		at.rotate(tan);
+		if (objectX <= subjectX) {
+			at.rotate(Math.PI);
+		}
+		Shape shape = at.createTransformedShape(arrow);
+		g.fill(shape);
+	}
+
+	private Path2D.Double createArrow() {
+		Path2D.Double path = new Path2D.Double();
+		path.moveTo(0, 0);
+		double x = -ARROW_SIZE * Math.cos(ARROW_ANGLE);
+		double y = ARROW_SIZE * Math.sin(ARROW_ANGLE);
+		path.lineTo(x, y);
+		x = -ARROW_SIZE * Math.cos(-ARROW_ANGLE);
+		y = ARROW_SIZE * Math.sin(-ARROW_ANGLE);
+		path.lineTo(0 + x, y);
+		path.lineTo(0, 0);
+		return path;
 	}
 
 	public void setRelationships(Collection<Relationship> relationships) {
