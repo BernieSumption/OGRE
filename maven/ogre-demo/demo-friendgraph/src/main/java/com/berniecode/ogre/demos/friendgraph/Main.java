@@ -12,6 +12,13 @@ import com.berniecode.ogre.demos.friendgraph.view.FriendGraphView;
 public class Main {
 
 	public static void main(String[] args) {
+		
+		if (args.length != 2) {
+			System.err.println("Usage:");
+			System.err.println("    java -jar demos-friendgraph.jar server port");
+			System.err.println("    java -jar demos-friendgraph.jar client ip-address port");
+		}
+		
 		SocialNetwork model = new SocialNetworkImpl();
 		Person bernie;
 		model.addPerson(bernie = new PersonImpl(model, "Bernie", null, 50, 80));

@@ -153,7 +153,13 @@ public class PersonView extends JPanel implements MouseMotionListener, MouseList
 		getEditEventListener().setPersonName(person, result);
 	}
 
-	private static File lastPhotoDirectory = new File(".");
+	private static File lastPhotoDirectory;
+	static {
+		lastPhotoDirectory = new File("src/main/resources/sample-photos");
+		if (!lastPhotoDirectory.exists()) {
+			lastPhotoDirectory = new File(".");
+		}
+	}
 
 	protected void handlePhotoLabelClick() {
 		JFileChooser chooser = new JFileChooser(lastPhotoDirectory);

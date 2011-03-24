@@ -20,6 +20,13 @@
             <target>1.5</target>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <configuration>
+            <mainClass>com.berniecode.ogre.demos.friendgraph.Main</mainClass>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -30,5 +37,6 @@
       <artifactId>ogre-engine</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
   </dependencies>
 </project>

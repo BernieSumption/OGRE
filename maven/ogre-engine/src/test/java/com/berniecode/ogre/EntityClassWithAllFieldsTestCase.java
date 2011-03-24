@@ -9,10 +9,10 @@ import com.berniecode.ogre.server.pojods.PojoDataSource;
 
 public abstract class EntityClassWithAllFieldsTestCase extends OgreTestCase {
 
-	private InProcessDownloadBridge dlBridge;
+	protected InProcessDownloadBridge dlBridge;
 	protected InProcessMessageBridge msgBridge;
 	protected PojoDataSource dataSource;
-	private ServerEngine serverEngine;
+	protected ServerEngine serverEngine;
 	protected EntityClassWithAllFieldsImpl initialEntityObject;
 	protected TypeDomain typeDomain;
 
