@@ -12,8 +12,10 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.berniecode.ogre.EDRSerialiser;
 import com.berniecode.ogre.InitialisingBean;
@@ -70,6 +72,8 @@ public class TcpBridgeServer extends InitialisingBean {
 
 	private ByteBuffer readBuffer = ByteBuffer.allocate(4096);
 
+	private Set<SocketChannel> writeRequests = new HashSet<SocketChannel>();
+
 	public TcpBridgeServer() {
 		try {
 			hostAddress = InetAddress.getByName("localhost");
@@ -121,11 +125,10 @@ public class TcpBridgeServer extends InitialisingBean {
 		run = false;
 		selector.wakeup();
 	}
-	
+
 	//
 	// INTERNAL MACHINERY
 	//
-
 
 	@Override
 	protected void doInitialise() {
@@ -152,9 +155,17 @@ public class TcpBridgeServer extends InitialisingBean {
 		public SelectorThread() {
 			super("SelectorThread");
 		}
+
 		@Override
 		public void run() {
 			while (run) {
+
+				for (SocketChannel writeRequest : writeRequests) {
+					SelectionKey key = writeRequest.keyFor(selector);
+					key.interestOps(SelectionKey.OP_WRITE);
+				}
+				writeRequests.clear();
+
 				try {
 					selector.select();
 				} catch (IOException e) {
@@ -174,6 +185,8 @@ public class TcpBridgeServer extends InitialisingBean {
 						acceptConnection(key);
 					} else if (key.isReadable()) {
 						readFromSocket(key);
+					} else if (key.isWritable()) {
+						writeToSocket(key);
 					}
 				}
 			}
@@ -230,18 +243,43 @@ public class TcpBridgeServer extends InitialisingBean {
 				// TODO send error response to client
 				OgreLog.error(conversation.getError());
 			} else {
+				writeRequests.add(socketChannel);
 				switch (conversation.getType()) {
 				case LOAD_TYPE_DOMAIN:
 					try {
 						TypeDomain typeDomain = serverEngine.getTypeDomain(conversation.getTypeDomainId());
 						byte[] response = serialiser.serialiseTypeDomain(typeDomain);
-						conversation.sendData("DONE, hey!\n".getBytes(), true);
+						conversation.addDataToSend("DONE, hey!\n".getBytes());
 					} catch (NoSuchThingException e) {
 						// TODO send error response to client
 						OgreLog.error(e.getMessage());
 						closeConnection(key);
 					}
 					break;
+				}
+			}
+		}
+	}
+
+	private void writeToSocket(SelectionKey key) {
+		SocketChannel socketChannel = (SocketChannel) key.channel();
+
+		Conversation conversation;
+		synchronized (conversations) {
+			conversation = conversations.get(socketChannel);
+		}
+		if (conversation != null) {
+			ByteBuffer data = conversation.getNextDataToSend();
+			if (data == null) {
+				if (conversation.isCloseOnComplete()) {
+					closeConnection(key);
+				}
+			} else {
+				try {
+					socketChannel.write(data);
+				} catch (IOException e) {
+					OgreLog.error("Exception while writing to client: " + e.getMessage());
+					closeConnection(key);
 				}
 			}
 		}

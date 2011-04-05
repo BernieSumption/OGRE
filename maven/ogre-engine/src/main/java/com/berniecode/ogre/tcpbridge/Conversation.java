@@ -26,9 +26,6 @@ class Conversation {
 	
 	private Queue<ByteBuffer> dataToSend = new LinkedList<ByteBuffer>();
 
-	// whether to close the connection after all remaining data has been sent
-	private boolean closeOnComplete;
-
 	public Conversation(SelectionKey key) {
 		this.key = key;
 	}
@@ -87,17 +84,32 @@ class Conversation {
 	 * Check whether this conversation should be closed when the remaining data has finished writing
 	 */
 	public boolean isCloseOnComplete() {
-		return closeOnComplete;
+		return type != Type.SUBSCRIBE_TO_GRAPH_UPDATES;
 	}
 
 	/**
 	 * Send some bytes to the client then close the connection
 	 */
-	public void sendData(byte[] response, boolean closeOnComplete) {
-		this.closeOnComplete = closeOnComplete;
+	public void addDataToSend(byte[] response) {
 		synchronized (dataToSend) {
 			dataToSend.add(ByteBuffer.wrap(response));
-			key.interestOps(SelectionKey.OP_WRITE);
+		}
+	}
+
+	/**
+	 * Return a {@link ByteBuffer} of data to send, or null if there is no data remaining
+	 */
+	public ByteBuffer getNextDataToSend() {
+		synchronized (dataToSend) {
+			while(true) {
+				if (dataToSend.size() == 0) {
+					return null;
+				}
+				if (dataToSend.peek().hasRemaining()) {
+					return dataToSend.peek();
+				}
+				dataToSend.poll();
+			}
 		}
 	}
 	
