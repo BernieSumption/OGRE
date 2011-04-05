@@ -10,8 +10,8 @@ import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
 /**
  * A {@link DownloadClientAdapter} that wraps a {@link ServerEngineTest}, directly transferring any
- * requests to it (normally, a DownloadClientAdapter would send the request over some kind of
- * network transport, e.g. a HTTP request).
+ * requests to it (normally, a DownloadClientAdapter would send the requestBuilder over some kind of
+ * network transport, e.g. a HTTP requestBuilder).
  * 
  * @author Bernie Sumption
  */

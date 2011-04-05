@@ -1,9 +1,11 @@
 package com.berniecode.ogre.tcpbridge;
 
 import com.berniecode.ogre.EntityClassWithAllFieldsTestCase;
+import com.berniecode.ogre.enginelib.EDRDescriber;
+import com.berniecode.ogre.enginelib.TypeDomain;
 
 public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
-	
+
 	private TcpBridgeServer bridgeServer;
 
 	@Override
@@ -13,7 +15,6 @@ public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
 		bridgeServer.setPort(12345);
 		bridgeServer.setServerEngine(serverEngine);
 		bridgeServer.initialise();
-		
 	}
 	
 	@Override
@@ -24,7 +25,11 @@ public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
 
 
 	public void testFetchTypeDomain() throws Exception {
-		System.err.println("Foo");
+		TcpBridgeClient bridgeClient = new TcpBridgeClient("localhost", 12345);
+		
+		TypeDomain td = bridgeClient.loadTypeDomain(TYPE_DOMAIN_ID);
+		
+		assertEqualsIgnoreWhitespace(EDRDescriber.describeTypeDomain(td), EDRDescriber.describeTypeDomain(typeDomain));
 	}
 
 }
