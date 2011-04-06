@@ -2,6 +2,7 @@ package com.berniecode.ogre.tcpbridge;
 
 import com.berniecode.ogre.EntityClassWithAllFieldsTestCase;
 import com.berniecode.ogre.enginelib.EDRDescriber;
+import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.TypeDomain;
 
 public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
@@ -30,6 +31,15 @@ public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
 		TypeDomain td = bridgeClient.loadTypeDomain(TYPE_DOMAIN_ID);
 		
 		assertEqualsIgnoreWhitespace(EDRDescriber.describeTypeDomain(td), EDRDescriber.describeTypeDomain(typeDomain));
+	}
+
+
+	public void testFetchObjectGraph() throws Exception {
+		TcpBridgeClient bridgeClient = new TcpBridgeClient("localhost", 12345);
+		
+		GraphUpdate objectGraph = bridgeClient.loadObjectGraph(typeDomain, OBJECT_GRAPH_ID);
+		
+		assertEqualsIgnoreWhitespace(EDRDescriber.describeObjectGraph(serverEngine.getObjectGraph(TYPE_DOMAIN_ID, OBJECT_GRAPH_ID)), EDRDescriber.describeObjectGraph(objectGraph));
 	}
 
 }

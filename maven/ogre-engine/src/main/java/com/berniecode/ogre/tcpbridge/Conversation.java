@@ -1,7 +1,6 @@
 package com.berniecode.ogre.tcpbridge;
 
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -16,25 +15,20 @@ class Conversation {
 		LOAD_TYPE_DOMAIN, LOAD_OBJECT_GRAPH, SUBSCRIBE_TO_GRAPH_UPDATES,
 	}
 
-	private final SelectionKey key;
-
 	private StringBuilder requestBuilder = new StringBuilder();
 	private boolean requestIsComplete = false;
 	private String error;
 	private Type type;
 	private String typeDomainId;
+	private String objectGraphId;
 	
 	private Queue<ByteBuffer> dataToSend = new LinkedList<ByteBuffer>();
-
-	public Conversation(SelectionKey key) {
-		this.key = key;
-	}
 
 	/**
 	 * Accept data that has been sent from the client. If the data completes the request, return
 	 * true. Thereafter, the parsed request data will be available as
 	 * 
-	 * @return true if this data has completed the requestBuilder, false otherwise
+	 * @return true if this data has completed the request, false otherwise
 	 */
 	public boolean acceptData(String data) {
 		if (requestIsComplete) {
@@ -46,7 +40,6 @@ class Conversation {
 		}
 		parseRequest();
 		requestIsComplete = true;
-		key.interestOps();
 		return true;
 	}
 
@@ -74,10 +67,17 @@ class Conversation {
 
 
 	/**
-	 * Return the type domain associated with this request
+	 * Return the type domain id associated with this request
 	 */
 	public String getTypeDomainId() {
 		return typeDomainId;
+	}
+
+	/**
+	 * Return the object graph id associated with this request
+	 */
+	public String getObjectGraphId() {
+		return objectGraphId;
 	}
 
 	/**
@@ -124,11 +124,19 @@ class Conversation {
 		String[] parts = req.split("\t");
 		if (parts[0].equals("loadTypeDomain")) {
 			if (parts.length != 2) {
-				error = "Malformed request: too many arguments to loadTypeDomain";
+				error = "Malformed request: loadTypeDomain requires exactly one argument, " + (parts.length - 1) + " supplied";
 				return;
 			}
 			type = Type.LOAD_TYPE_DOMAIN;
 			typeDomainId = parts[1];
+		} else if (parts[0].equals("loadObjectGraph")) {
+			if (parts.length != 3) {
+				error = "Malformed request: loadTypeDomain requires exactly two arguments, " + (parts.length - 1) + " supplied";
+				return;
+			}
+			type = Type.LOAD_OBJECT_GRAPH;
+			typeDomainId = parts[1];
+			objectGraphId = parts[2];
 		} else {
 			error = "Unrecognised command '" + parts[0] + "'";
 		}

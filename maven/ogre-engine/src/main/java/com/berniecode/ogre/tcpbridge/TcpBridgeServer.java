@@ -19,6 +19,7 @@ import java.util.Set;
 
 import com.berniecode.ogre.EDRSerialiser;
 import com.berniecode.ogre.InitialisingBean;
+import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
@@ -28,6 +29,13 @@ import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
 /**
  * A TCP socket serverEngine that exposes type domains and object graphs over a TCP connection.
+ * 
+ * <p>
+ * This implementation uses raw calls to the java.nio package. I wrote it as an exercise in learning
+ * the package, but since NIO is notoriously hard to get right, I expect it contains bugs. I don't
+ * consider it suitable for production without extensive testing.
+ * 
+ * TODO I should rewrite this using Netty (or QuickServer / Grizzly)
  * 
  * <p>
  * The protocol is super simple. The server listens for connections on a configurable TCP port. When
@@ -58,21 +66,14 @@ public class TcpBridgeServer extends InitialisingBean {
 	// http://rox-xmlrpc.sourceforge.net/niotut/
 	//
 
+	//
+	// CONFIGURATION
+	//
+
 	private EDRSerialiser serialiser = new OgreWireFormatV1Serialiser();
 	private ServerEngine serverEngine;
 	private InetAddress hostAddress;
 	private Integer port;
-
-	private ServerSocketChannel serverChannel;
-	private Selector selector;
-	private Map<SocketChannel, Conversation> conversations = new HashMap<SocketChannel, Conversation>();
-
-	private Thread serverThread;
-	private boolean run = true;
-
-	private ByteBuffer readBuffer = ByteBuffer.allocate(4096);
-
-	private Set<SocketChannel> writeRequests = new HashSet<SocketChannel>();
 
 	public TcpBridgeServer() {
 		try {
@@ -120,15 +121,34 @@ public class TcpBridgeServer extends InitialisingBean {
 	 * Stop the server. The server immediately stops accepting incoming connections, and stops
 	 * writing data to outgoing new connections. This may result in the transmission of truncated,
 	 * malformed responses to clients.
+	 * 
+	 * <p>
+	 * This method blocks until the server has released the incoming TCP port, or until the current
+	 * thread is interrupted, whichever comes first.
 	 */
 	public void quit() {
 		run = false;
 		selector.wakeup();
+		try {
+			serverThread.join();
+		} catch (InterruptedException e) {
+		}
 	}
 
 	//
-	// INTERNAL MACHINERY
+	// INITIALISATION
 	//
+
+	private ServerSocketChannel serverChannel;
+	private Selector selector;
+	private Map<SocketChannel, Conversation> conversations = new HashMap<SocketChannel, Conversation>();
+
+	private Thread serverThread;
+	private boolean run = true;
+
+	private ByteBuffer readBuffer = ByteBuffer.allocate(4096);
+
+	private Set<SocketChannel> writeRequests = new HashSet<SocketChannel>();
 
 	@Override
 	protected void doInitialise() {
@@ -150,6 +170,15 @@ public class TcpBridgeServer extends InitialisingBean {
 			throw new OgreException("Failed to start TcpBridgeServer", e);
 		}
 	}
+
+	/*
+	 * SELECTION LOOP
+	 * 
+	 * SelectorThread.run() and the methods called from there are the selection loop. This single
+	 * threaded server handles all accepting of connections, reading data and writing responses.
+	 * This means that everything in this loop must be super fast, avoiding any blocking calls or
+	 * CPU-intensive tasks.
+	 */
 
 	private final class SelectorThread extends Thread {
 		public SelectorThread() {
@@ -182,7 +211,8 @@ public class TcpBridgeServer extends InitialisingBean {
 					}
 
 					if (key.isAcceptable()) {
-						acceptConnection(key);
+						acceptConnection(); // no need to pass key - only the serverChannel can
+											// accept connections
 					} else if (key.isReadable()) {
 						readFromSocket(key);
 					} else if (key.isWritable()) {
@@ -196,8 +226,7 @@ public class TcpBridgeServer extends InitialisingBean {
 		}
 	}
 
-	private void acceptConnection(SelectionKey key) {
-		ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+	private void acceptConnection() {
 
 		SocketChannel socketChannel;
 		try {
@@ -205,11 +234,10 @@ public class TcpBridgeServer extends InitialisingBean {
 			socketChannel.configureBlocking(false);
 			socketChannel.register(this.selector, SelectionKey.OP_READ);
 			synchronized (conversations) {
-				conversations.put(socketChannel, new Conversation(key));
+				conversations.put(socketChannel, new Conversation());
 			}
 		} catch (IOException e) {
 			OgreLog.error("Exception while accepting a connection: " + e.getMessage());
-			key.cancel();
 			return;
 		}
 		System.err.println("accepted " + socketChannel);
@@ -237,26 +265,47 @@ public class TcpBridgeServer extends InitialisingBean {
 		synchronized (conversations) {
 			conversation = conversations.get(socketChannel);
 		}
-		if (conversation != null && conversation.acceptData(read)) {
-			// the request is complete, do something sensible with it
-			if (conversation.isError()) {
-				// TODO send error response to client
-				OgreLog.error(conversation.getError());
-			} else {
-				writeRequests.add(socketChannel);
-				switch (conversation.getType()) {
-				case LOAD_TYPE_DOMAIN:
-					try {
-						TypeDomain typeDomain = serverEngine.getTypeDomain(conversation.getTypeDomainId());
-						byte[] response = serialiser.serialiseTypeDomain(typeDomain);
-						conversation.addDataToSend("DONE, hey!\n".getBytes());
-					} catch (NoSuchThingException e) {
-						// TODO send error response to client
-						OgreLog.error(e.getMessage());
-						closeConnection(key);
-					}
-					break;
+		if (conversation != null) {
+			boolean isComplete = conversation.acceptData(read);
+			if (isComplete) {
+				handleRequestComplete(key, socketChannel, conversation);
+			}
+		}
+	}
+
+	private void handleRequestComplete(SelectionKey key, SocketChannel socketChannel, Conversation conversation) {
+		if (conversation.isError()) {
+			// TODO send error response to client
+			OgreLog.error(conversation.getError());
+			closeConnection(key);
+		} else {
+			writeRequests.add(socketChannel);
+			switch (conversation.getType()) {
+			case LOAD_TYPE_DOMAIN:
+				try {
+					// TODO cache byte array
+					TypeDomain typeDomain = serverEngine.getTypeDomain(conversation.getTypeDomainId());
+					byte[] response = serialiser.serialiseTypeDomain(typeDomain);
+					conversation.addDataToSend(response);
+				} catch (NoSuchThingException e) {
+					// TODO send error response to client
+					OgreLog.error(e.getMessage());
+					closeConnection(key);
 				}
+				break;
+			case LOAD_OBJECT_GRAPH:
+				try {
+					// TODO cache byte array
+					GraphUpdate graphUpdate = serverEngine.getObjectGraph(conversation.getTypeDomainId(),
+							conversation.getObjectGraphId());
+					byte[] response = serialiser.serialiseGraphUpdate(graphUpdate);
+					conversation.addDataToSend(response);
+				} catch (NoSuchThingException e) {
+					// TODO send error response to client
+					OgreLog.error(e.getMessage());
+					closeConnection(key);
+				}
+				break;
 			}
 		}
 	}

@@ -2,6 +2,8 @@ package com.berniecode.ogre.wireformat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,24 +53,12 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 	// both of which are themselves commented
 	//
 
-	public TypeDomain deserialiseTypeDomain(InputStream inputStream) throws IOException {
-		TypeDomainMessage tdm;
-		try {
-			byte[] cbuf = new byte[ENVELOPE_HEADER.length];
-			inputStream.read(cbuf);
-			if (!Arrays.equals(cbuf, ENVELOPE_HEADER)) {
-				throw new OgreException("Invalid OGRE envelope header. Expected " + Arrays.toString(ENVELOPE_HEADER)
-						+ " (OGREv1), got " + Arrays.toString(cbuf));
-			}
+	// TODO split this class into more manageable units. Perhaps split each algorithm out into a
+	// static utility class
 
-			tdm = TypeDomainMessage.parseDelimitedFrom(inputStream);
-			if (OgreLog.isDebugEnabled()) {
-				OgreLog.debug("Deserialised TypeDomainMessage: " + tdm);
-			}
-		} catch (InvalidProtocolBufferException e) {
-			throw new OgreException("The supplied byte array is not a valid Protocol Buffers message", e);
-		}
-		return new TypeDomain(tdm.getTypeDomainId(), convertEntityTypes(tdm));
+	// TODO add to interface
+	public TypeDomain deserialiseTypeDomain(InputStream inputStream) throws IOException {
+		return deserialiseTypeDomainPayload(extractPayload(inputStream));
 	}
 
 	/**
@@ -76,11 +66,20 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 	 */
 	@Override
 	public TypeDomain deserialiseTypeDomain(byte[] message) {
+		return deserialiseTypeDomainPayload(extractPayload(message));
+	}
+
+	public TypeDomain deserialiseTypeDomainPayload(byte[] payload) {
+		TypeDomainMessage tdm;
 		try {
-			return deserialiseTypeDomain(new ByteArrayInputStream(message));
-		} catch (IOException e) {
-			throw new OgreException("Deserialising from a byte array threw an IOException (should never happen).", e);
+			tdm = TypeDomainMessage.parseFrom(payload);
+			if (OgreLog.isDebugEnabled()) {
+				OgreLog.debug("Deserialised TypeDomainMessage: " + tdm);
+			}
+		} catch (InvalidProtocolBufferException e) {
+			throw new OgreException("The supplied byte array is not a valid Protocol Buffers message", e);
 		}
+		return new TypeDomain(tdm.getTypeDomainId(), convertEntityTypes(tdm));
 	}
 
 	private EntityType[] convertEntityTypes(TypeDomainMessage tdm) {
@@ -143,15 +142,12 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 			}
 			tdBuilder.addEntityTypes(etBuilder);
 		}
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		try {
-			os.write(ENVELOPE_HEADER);
-			tdBuilder.build().writeDelimitedTo(os);
-		} catch (IOException e) {
-			throw new OgreException("Deserialising from a byte array threw an IOException (should never happen).", e);
-		}
-		return os.toByteArray();
+		return wrapInEnvelope(tdBuilder.build().toByteArray());
 	}
+	
+	//
+	// GRAPH UPDATE SERIALISATION
+	//
 
 	/**
 	 * @see EDRSerialiser#serialiseGraphUpdate(GraphUpdate)
@@ -171,7 +167,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 			guBuilder.addEntityDeletes(EntityDeleteMessage.newBuilder()
 					.setEntityTypeIndex(delete.getEntityType().getEntityTypeIndex()).setEntityId(delete.getEntityId()));
 		}
-		return guBuilder.build().toByteArray();
+		return wrapInEnvelope(guBuilder.build().toByteArray());
 	}
 
 	/**
@@ -233,12 +229,25 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		}
 		return evBuilder.build();
 	}
+	
+	//
+	// GRAPH UPDATE DESERIALISATION
+	//
+	
 
 	@Override
 	public GraphUpdate deserialiseGraphUpdate(byte[] message, TypeDomain typeDomain) {
+		return deserialiseGraphUpdatePayload(extractPayload(message), typeDomain);
+	}
+
+	public GraphUpdate deserialiseGraphUpdate(InputStream inputStream, TypeDomain typeDomain) throws IOException {
+		return deserialiseGraphUpdatePayload(extractPayload(inputStream), typeDomain);
+	}
+
+	public GraphUpdate deserialiseGraphUpdatePayload(byte[] payload, TypeDomain typeDomain) {
 		GraphUpdateMessage gum;
 		try {
-			gum = GraphUpdateMessage.parseFrom(message);
+			gum = GraphUpdateMessage.parseFrom(payload);
 			if (OgreLog.isDebugEnabled()) {
 				OgreLog.debug("Deserialised GraphUpdateMessage: " + gum);
 			}
@@ -360,4 +369,50 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		return deletes;
 	}
 
+	/*
+	 * Read a binary message wrapped in an OGRE envelope: "OGREv1", followed by a 32 bit integer
+	 * specifying the length of the message, then the byte
+	 */
+	private byte[] extractPayload(InputStream inputStream) throws IOException {
+		byte[] cbuf = new byte[ENVELOPE_HEADER.length];
+		System.out.println(inputStream.read(cbuf));
+		if (!Arrays.equals(cbuf, ENVELOPE_HEADER)) {
+			throw new OgreException("Invalid OGRE envelope header. Expected " + Arrays.toString(ENVELOPE_HEADER)
+					+ " (OGREv1), got " + Arrays.toString(cbuf) + " (" + new String(cbuf) + ")");
+		}
+		int length = new DataInputStream(inputStream).readInt();
+		byte[] message = new byte[length];
+		int bytesRead = inputStream.read(message);
+		if (bytesRead != length) {
+			// TODO error
+		}
+		return message;
+	}
+
+	/*
+	 * Wrap a byte array in an OGRE envelope
+	 */
+	private byte[] extractPayload(byte[] byteArray) {
+		try {
+			return extractPayload(new ByteArrayInputStream(byteArray));
+		} catch (IOException e) {
+			throw new OgreException("ByteArrayInputStream threw IOException - should never happen", e);
+		}
+	}
+
+	/*
+	 * Wrap a byte array in an OGRE envelope
+	 */
+	private byte[] wrapInEnvelope(byte[] payload) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(ENVELOPE_HEADER.length + 4 + payload.length);
+		DataOutputStream dos = new DataOutputStream(bos);
+		try {
+			dos.write(ENVELOPE_HEADER);
+			dos.writeInt(payload.length);
+			dos.write(payload);
+		} catch (IOException e) {
+			OgreLog.error("ByteArrayOutputStream threw an exception - should never happen: " + e.getMessage());
+		}
+		return bos.toByteArray();
+	}
 }
