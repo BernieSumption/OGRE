@@ -24,6 +24,7 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
+import com.berniecode.ogre.server.MessageServerAdapter;
 import com.berniecode.ogre.server.ServerEngine;
 import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
@@ -48,8 +49,9 @@ import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
  * <li>If the line is "loadObjectGraph[TAB]typeDomainId[TAB]objectGraphId" then the server sends the
  * requested object graph as a complete-style GraphUpdateMessage then closes the connection.
  * <li>If the line is "subscribeToGraphUpdates[TAB]typeDomainId[TAB]objectGraphId" then the server
- * enters into a loop, sending a diff-style GraphUpdateMessage for each change to the object graph,
- * as the changes occur. This loop continues until the client disconnects or the server exits.
+ * will keep the connection open, sending a diff-style GraphUpdateMessage every time the specified
+ * object graph changes. The connection will remain open until it is closed by the client or the
+ * server quits
  * </ul>
  * 
  * <p>
@@ -57,7 +59,7 @@ import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
  * 
  * @author Bernie Sumption
  */
-public class TcpBridgeServer extends InitialisingBean {
+public class TcpBridgeServer extends InitialisingBean implements MessageServerAdapter {
 
 	private static final Charset CHARACTER_SET = Charset.forName("UTF8");
 	//
@@ -306,6 +308,19 @@ public class TcpBridgeServer extends InitialisingBean {
 					closeConnection(key);
 				}
 				break;
+			case SUBSCRIBE_TO_GRAPH_UPDATES:
+				try {
+					// TODO cache byte array
+					GraphUpdate graphUpdate = serverEngine.getObjectGraph(conversation.getTypeDomainId(),
+							conversation.getObjectGraphId());
+					byte[] response = serialiser.serialiseGraphUpdate(graphUpdate);
+					conversation.addDataToSend(response);
+				} catch (NoSuchThingException e) {
+					// TODO send error response to client
+					OgreLog.error(e.getMessage());
+					closeConnection(key);
+				}
+				break;
 			}
 		}
 	}
@@ -344,6 +359,12 @@ public class TcpBridgeServer extends InitialisingBean {
 		synchronized (conversations) {
 			conversations.remove(key.channel());
 		}
+	}
+
+	@Override
+	public void publishGraphUpdate(GraphUpdate update) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -375,7 +375,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 	 */
 	private byte[] extractPayload(InputStream inputStream) throws IOException {
 		byte[] cbuf = new byte[ENVELOPE_HEADER.length];
-		System.out.println(inputStream.read(cbuf));
+		inputStream.read(cbuf);
 		if (!Arrays.equals(cbuf, ENVELOPE_HEADER)) {
 			throw new OgreException("Invalid OGRE envelope header. Expected " + Arrays.toString(ENVELOPE_HEADER)
 					+ " (OGREv1), got " + Arrays.toString(cbuf) + " (" + new String(cbuf) + ")");

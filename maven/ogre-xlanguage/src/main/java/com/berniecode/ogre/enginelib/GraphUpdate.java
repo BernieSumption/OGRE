@@ -1,9 +1,11 @@
 package com.berniecode.ogre.enginelib;
 
-
-
 /**
  * Represents a change to an object graph.
+ * 
+ * <p>
+ * This class maps closely onto the GraphUpdate message in the OGRE wire format, read the comments
+ * in the .proto file for an explanation of the function of a GraphUpdate.
  * 
  * @author Bernie Sumption
  */

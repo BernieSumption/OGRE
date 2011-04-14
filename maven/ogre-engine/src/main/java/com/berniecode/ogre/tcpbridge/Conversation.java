@@ -137,6 +137,14 @@ class Conversation {
 			type = Type.LOAD_OBJECT_GRAPH;
 			typeDomainId = parts[1];
 			objectGraphId = parts[2];
+		} else if (parts[0].equals("subscribeToGraphUpdates")) {
+			if (parts.length != 3) {
+				error = "Malformed request: subscribeToGraphUpdates requires exactly two arguments, " + (parts.length - 1) + " supplied";
+				return;
+			}
+			type = Type.SUBSCRIBE_TO_GRAPH_UPDATES;
+			typeDomainId = parts[1];
+			objectGraphId = parts[2];
 		} else {
 			error = "Unrecognised command '" + parts[0] + "'";
 		}
