@@ -7,10 +7,9 @@ import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.MessageClientAdapter;
 import com.berniecode.ogre.enginelib.TypeDomain;
-import com.berniecode.ogre.server.MessageServerAdapter;
 import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
-public class InProcessMessageBridge implements MessageServerAdapter, MessageClientAdapter {
+public class InProcessMessageBridge implements GraphUpdateListener, MessageClientAdapter {
 	
 	OgreWireFormatV1Serialiser ser = new OgreWireFormatV1Serialiser();
 	
@@ -20,7 +19,7 @@ public class InProcessMessageBridge implements MessageServerAdapter, MessageClie
 	List<ListenerHolder> holders = new ArrayList<ListenerHolder>();
 
 	@Override
-	public void publishGraphUpdate(GraphUpdate update) {
+	public void acceptGraphUpdate(GraphUpdate update) {
 		lastGraphUpdate = update;
 		messageCount++;
 		String key = getKey(update.getTypeDomain(), update.getObjectGraphId());

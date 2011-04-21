@@ -44,12 +44,11 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 
 	@Override
 	public TypeDomain loadTypeDomain(String typeDomainId) throws NoSuchThingException {
-		String request = "loadTypeDomain\t" + typeDomainId + "\n";
 		try {
 			Socket socket = null;
 			try {
 				socket = new Socket(host, port);
-				socket.getOutputStream().write(request.getBytes("UTF8"));
+				socket.getOutputStream().write(RequestType.CODE_TYPE_DOMAIN);
 				return serialiser.deserialiseTypeDomain(socket.getInputStream());
 			} finally {
 				if (socket != null) {
@@ -65,12 +64,11 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 	public GraphUpdate loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException {
 		// TODO split readEnvelopedBytes out of OgreWireFormatSerialiser, it will help refactor
 		// these methods
-		String request = "loadObjectGraph\t" + typeDomain.getTypeDomainId() + "\t" + objectGraphId + "\n";
 		try {
 			Socket socket = null;
 			try {
 				socket = new Socket(host, port);
-				socket.getOutputStream().write(request.getBytes("UTF8"));
+				socket.getOutputStream().write(RequestType.CODE_OBJECT_GRAPH);
 				return serialiser.deserialiseGraphUpdate(socket.getInputStream(), typeDomain);
 			} finally {
 				if (socket != null) {
@@ -84,8 +82,6 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 
 	@Override
 	public void subscribeToGraphUpdates(TypeDomain typeDomain, String objectGraphId, GraphUpdateListener listener) {
-		String key = typeDomain.getTypeDomainId() + "\t" + objectGraphId;
-		
 		Thread t = new SubscribeThread(typeDomain, objectGraphId, listener);
 		t.start();
 	}
@@ -106,13 +102,12 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 		
 		@Override
 		public void run() {
-			String request = "subscribeToGraphUpdates\t" + typeDomain.getTypeDomainId() + "\t" + objectGraphId + "\n";
 			try {
 				Socket socket = null;
 				try {
 					socket = new Socket(host, port);
 					InputStream inputStream = socket.getInputStream();
-					socket.getOutputStream().write(request.getBytes("UTF8"));
+					socket.getOutputStream().write(RequestType.CODE_SUBSCRIBE);
 					while (true) {
 						GraphUpdate update = serialiser.deserialiseGraphUpdate(inputStream, typeDomain);
 						listener.acceptGraphUpdate(update);

@@ -3,7 +3,6 @@ package com.berniecode.ogre;
 import com.berniecode.ogre.enginelib.ClientEngine;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
-import com.berniecode.ogre.server.ServerEngine;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
 
@@ -12,7 +11,6 @@ public abstract class EntityClassWithAllFieldsTestCase extends OgreTestCase {
 	protected InProcessDownloadBridge dlBridge;
 	protected InProcessMessageBridge msgBridge;
 	protected PojoDataSource dataSource;
-	protected ServerEngine serverEngine;
 	protected EntityClassWithAllFieldsImpl initialEntityObject;
 	protected TypeDomain typeDomain;
 
@@ -31,15 +29,13 @@ public abstract class EntityClassWithAllFieldsTestCase extends OgreTestCase {
 		dataSource.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class, EntityElement.class));
 		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
 		dataSource.initialise();
+
+		msgBridge = new InProcessMessageBridge();
+		dataSource.setGraphUpdateListener(msgBridge);
 		
 		typeDomain = dataSource.getTypeDomain();
 	
-		serverEngine = new ServerEngine();
-		serverEngine.setDataSource(dataSource);
-		serverEngine.setMessageAdapter(msgBridge = new InProcessMessageBridge());
-		serverEngine.initialise();
-	
-		dlBridge = new InProcessDownloadBridge(serverEngine);
+		dlBridge = new InProcessDownloadBridge(dataSource);
 		
 		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFieldsImpl(5, 6, 7L, 8L, "Shizzle", 9.0F, 10.0F, 11.0, 12.0, byteArray(1, 2, 3), new EntityElementImpl("Hi!")));
 	}

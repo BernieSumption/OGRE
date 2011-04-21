@@ -7,6 +7,7 @@ import com.berniecode.ogre.enginelib.GraphUpdate;
  *
  * @author Bernie Sumption
  */
+@Deprecated
 public interface MessageServerAdapter {
 	
 	void publishGraphUpdate(GraphUpdate update);

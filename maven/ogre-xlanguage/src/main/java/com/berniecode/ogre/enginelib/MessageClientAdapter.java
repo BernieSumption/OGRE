@@ -6,6 +6,7 @@ package com.berniecode.ogre.enginelib;
  *
  * @author Bernie Sumption
  */
+//TODO merge with DownloadClientAdapter
 public interface MessageClientAdapter {
 	
 	/**

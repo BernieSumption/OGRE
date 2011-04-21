@@ -7,6 +7,7 @@ import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
  * 
  * @author Bernie Sumption
  */
+//TODO this must be non-blocking, to take into account languages with no blocking IO 
 public interface DownloadClientAdapter {
 
 	/**

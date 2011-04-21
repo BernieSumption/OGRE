@@ -375,7 +375,10 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 	 */
 	private byte[] extractPayload(InputStream inputStream) throws IOException {
 		byte[] cbuf = new byte[ENVELOPE_HEADER.length];
-		inputStream.read(cbuf);
+		int numRead = inputStream.read(cbuf);
+		if (numRead < ENVELOPE_HEADER.length) {
+			throw new IOException("End of stream reached before envelope header could be read.");
+		}
 		if (!Arrays.equals(cbuf, ENVELOPE_HEADER)) {
 			throw new OgreException("Invalid OGRE envelope header. Expected " + Arrays.toString(ENVELOPE_HEADER)
 					+ " (OGREv1), got " + Arrays.toString(cbuf) + " (" + new String(cbuf) + ")");
@@ -384,7 +387,7 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		byte[] message = new byte[length];
 		int bytesRead = inputStream.read(message);
 		if (bytesRead != length) {
-			// TODO error
+			throw new IOException("End of stream reached before the number of bytes promised in the envelope header (" + length + ") could be read.");
 		}
 		return message;
 	}
