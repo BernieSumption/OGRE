@@ -20,6 +20,7 @@ import java.util.Set;
 
 import com.berniecode.ogre.EDRSerialiser;
 import com.berniecode.ogre.InitialisingBean;
+import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.OgreLog;
@@ -334,7 +335,17 @@ public class TcpBridgeServer extends InitialisingBean implements GraphUpdateList
 
 	@Override
 	public void acceptGraphUpdate(GraphUpdate update) {
-		// TODO do something interesting here!
+		if (OgreLog.isDebugEnabled()) {
+			OgreLog.debug("TcpBridgeServer: broadcasting new graph update: " + EDRDescriber.describeGraphUpdate(update));
+		}
+		byte[] responseBytes = serialiser.serialiseGraphUpdate(update);
+		synchronized (conversations) {
+			for (Response response: conversations.values()) {
+				if (response.getType() == RequestType.SUBSCRIBE) {
+					response.addDataToSend(responseBytes);
+				}
+			}
+		}
 	}
 
 }

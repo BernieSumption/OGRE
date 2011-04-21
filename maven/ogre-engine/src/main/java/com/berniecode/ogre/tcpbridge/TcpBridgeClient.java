@@ -6,15 +6,18 @@ import java.net.Socket;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.enginelib.DownloadClientAdapter;
+import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.MessageClientAdapter;
+import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 
 //TODO detect NoSuchThingException error messages from server and throw exceptions
+//TODO now that the server is single object graphed, this client should detect requests for invalid graphs
 public class TcpBridgeClient extends InitialisingBean implements DownloadClientAdapter, MessageClientAdapter {
 
 	private String host;
@@ -110,8 +113,10 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 					socket.getOutputStream().write(RequestType.CODE_SUBSCRIBE);
 					while (true) {
 						GraphUpdate update = serialiser.deserialiseGraphUpdate(inputStream, typeDomain);
+						if (OgreLog.isDebugEnabled()) {
+							OgreLog.debug("TcpBridgeClient: received new update message: " + EDRDescriber.describeGraphUpdate(update));
+						}
 						listener.acceptGraphUpdate(update);
-						System.out.println(update);
 					}
 				} finally {
 					if (socket != null) {

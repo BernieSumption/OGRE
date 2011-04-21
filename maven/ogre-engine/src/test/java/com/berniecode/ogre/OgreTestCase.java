@@ -10,10 +10,10 @@ import org.jmock.Mockery;
 
 import com.berniecode.ogre.enginelib.ClientEngine;
 import com.berniecode.ogre.enginelib.EDRDescriber;
-import com.berniecode.ogre.enginelib.PartialRawPropertyValueSet;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.LogWriter;
 import com.berniecode.ogre.enginelib.OgreLog;
+import com.berniecode.ogre.enginelib.PartialRawPropertyValueSet;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
@@ -54,8 +54,8 @@ public abstract class OgreTestCase extends TestCase {
 
 	protected void assertEqualsIgnoreWhitespace(String expected, String actual) {
 		String packagePrefix = getClass().getPackage().getName() + ".";
-		String expectedMunged = expected == null ? null : expected.replaceAll("\\s+", "\n").replace(packagePrefix, "");
-		String actualMunged = actual == null ? null : actual.replaceAll("\\s+", "\n").replace(packagePrefix, "");
+		String expectedMunged = expected == null ? null : expected.replaceAll("\\s+", "\n").replace(packagePrefix, "").replace("com.berniecode.ogre.", "");
+		String actualMunged = actual == null ? null : actual.replaceAll("\\s+", "\n").replace(packagePrefix, "").replace("com.berniecode.ogre.", "");
 		assertEquals(expectedMunged, actualMunged);
 		OgreLog.debug("assertEqualsIgnoreWhitespace values are equal:\n" + actual);
 	}
