@@ -2,7 +2,9 @@ package com.berniecode.ogre.tcpbridge;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import com.berniecode.ogre.InitialisingBean;
 import com.berniecode.ogre.enginelib.DownloadClientAdapter;
@@ -20,13 +22,30 @@ import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
 //TODO now that the server is single object graphed, this client should detect requests for invalid graphs
 public class TcpBridgeClient extends InitialisingBean implements DownloadClientAdapter, MessageClientAdapter {
 
-	private String host;
+	private InetAddress host;
 	private Integer port;
 	private OgreWireFormatV1Serialiser serialiser = new OgreWireFormatV1Serialiser();
 
-	public TcpBridgeClient(String host, int port) {
+	/**
+	 * Create a {@link TcpBridgeClient} with the specified host and port, and initialise it
+	 */
+	public TcpBridgeClient(InetAddress host, int port) {
 		this.host = host;
 		this.port = port;
+		initialise();
+	}
+
+	/**
+	 * Create a {@link TcpBridgeClient} with the specified host and port, and initialise it
+	 */
+	public TcpBridgeClient(String host, int port) throws UnknownHostException {
+		this(InetAddress.getByName(host), port);
+	}
+
+	/**
+	 * Create an uninitialised {@link TcpBridgeClient}
+	 */
+	public TcpBridgeClient() {
 	}
 
 	@Override
@@ -40,7 +59,7 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 		this.port = port;
 	}
 
-	public void setHost(String host) {
+	public void setHost(InetAddress host) {
 		requireInitialised(false, "setHost()");
 		this.host = host;
 	}
@@ -85,7 +104,7 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 
 	@Override
 	public void subscribeToGraphUpdates(TypeDomain typeDomain, String objectGraphId, GraphUpdateListener listener) {
-		Thread t = new SubscribeThread(typeDomain, objectGraphId, listener);
+		Thread t = new SubscribeThread(typeDomain, listener);
 		t.start();
 	}
 	
@@ -94,12 +113,10 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 	private class SubscribeThread extends Thread {
 
 		private final TypeDomain typeDomain;
-		private final String objectGraphId;
 		private final GraphUpdateListener listener;
 
-		public SubscribeThread(TypeDomain typeDomain, String objectGraphId, GraphUpdateListener listener) {
+		public SubscribeThread(TypeDomain typeDomain, GraphUpdateListener listener) {
 			this.typeDomain = typeDomain;
-			this.objectGraphId = objectGraphId;
 			this.listener = listener;
 		}
 		

@@ -6,11 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A simple implementation of {@link SocialNetwork}
+ * A simple implementation of {@link MutableSocialNetwork}
  *
  * @author Bernie Sumption
  */
-public class SocialNetworkImpl implements SocialNetwork {
+public class SocialNetworkImpl implements MutableSocialNetwork {
 
 	private List<Person> people = new ArrayList<Person>();
 	private List<Relationship> likesRelationships = new ArrayList<Relationship>();

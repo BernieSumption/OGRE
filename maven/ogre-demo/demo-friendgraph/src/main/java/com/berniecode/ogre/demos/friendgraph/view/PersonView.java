@@ -48,14 +48,16 @@ public class PersonView extends JPanel implements MouseMotionListener, MouseList
 	private int mouseYOffset;
 	private byte[] lastPhoto;
 	private JButton setFriendsButton;
+	private final SocialNetwork model;
 
 	/**
 	 * Constructor
 	 */
-	public PersonView(final Person person, final FriendGraphView friendGraphView) {
+	public PersonView(final Person person, final FriendGraphView friendGraphView, SocialNetwork model) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.person = person;
 		this.friendGraphView = friendGraphView;
+		this.model = model;
 		setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
 		setBorder(INITIAL_BORDER);
 		setBackground(Color.WHITE);
@@ -142,10 +144,6 @@ public class PersonView extends JPanel implements MouseMotionListener, MouseList
 
 	private EditEventListener getEditEventListener() {
 		return friendGraphView.getEditEventListener();
-	}
-
-	private SocialNetwork getSocialNetwork() {
-		return person.getSocialNetwork();
 	}
 
 	protected void handleNameLabelClick() {
@@ -248,7 +246,7 @@ public class PersonView extends JPanel implements MouseMotionListener, MouseList
 				// the button was clicked on this PersonView
 				setFriendsButton.setText("cancel");
 				currentSetFriendsOperation = null;
-			} else if (getSocialNetwork().getPersonLikesPerson(editedPerson, this.person)) {
+			} else if (model.getPersonLikesPerson(editedPerson, this.person)) {
 				// the button was clicked on another PersonView that already likes this person
 				setFriendsButton.setText("remove friend");
 				currentSetFriendsOperation = EditingOperation.REMOVE;

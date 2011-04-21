@@ -169,6 +169,12 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 			if (method.equals(Object.class.getMethod("toString"))) {
 				return entity.toString();
 			}
+			if (method.equals(Object.class.getMethod("equals", new Class<?>[] {Object.class}))) {
+				return args[0] == proxy;
+			}
+			if (method.equals(Object.class.getMethod("hashCode"))) {
+				return hashCode();
+			}
 			if (method.equals(EntityProxy.class.getMethod("getProxiedEntity"))) {
 				return entity;
 			}

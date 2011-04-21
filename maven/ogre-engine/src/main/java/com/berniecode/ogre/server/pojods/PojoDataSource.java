@@ -1,7 +1,7 @@
 package com.berniecode.ogre.server.pojods;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -122,6 +122,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * roots, and any other objects directly or indirectly referenced by a root object will be
 	 * considered part of the object graph.
 	 * 
+	 * <p>
+	 * Each root can either be an object, or an array of objects, or a java.util.Collection of
+	 * objects
+	 * 
 	 * <ul>
 	 * <li>Any objects that are not part of this graph will be added
 	 * <li>Any objects that are already part of this graph will be checked for modifications
@@ -139,16 +143,32 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * @throws ValueMappingException if there is a problem mapping one of the entity objects to an
 	 *             {@link Entity}
 	 */
-	public void setEntityObjects(Object... objectGraphRoots) throws ValueMappingException {
+	public void setEntityObjects(Object... roots) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
 
-		Set<Object> entityObjects = new LinkedHashSet<Object>(Arrays.asList(objectGraphRoots));
+		Set<Object> entityObjects = new LinkedHashSet<Object>();
+
+		// flatten arrays and collections
+		for (Object root : roots) {
+			if (root == null) {
+				continue;
+			}
+			if (root instanceof Collection) {
+				entityObjects.addAll((Collection<?>) root);
+			} else if (root instanceof Object[]) {
+				Object[] arr = (Object[]) root;
+				for (int i = 0; i < arr.length; i++) {
+					entityObjects.add(arr[i]);
+				}
+			} else {
+				entityObjects.add(root);
+			}
+		}
 
 		// iteratively grow the set of entity objects to include any objects referenced by any other
-		// objects
-		// in the set. This algorithm depends heavily on the behaviour of LinkedHashSet.addAll(),
-		// that is that
-		// objects already in the set are ignored, and new objects are added at the end of the list
+		// objects in the set. This algorithm depends on the behaviour of LinkedHashSet.addAll() -
+		// that objects already in the set are ignored, and new objects are added at the end of the
+		// list
 		{
 			int processedUpTo = -1;
 			while (entityObjects.size() - 1 > processedUpTo) {
@@ -165,7 +185,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 			}
 		}
 
-		// for each
+		
 		List<EntityValue> completeEntities = new ArrayList<EntityValue>();
 		List<EntityDiff> entityDiffs = new ArrayList<EntityDiff>();
 		List<EntityReference> entityDeletes = new ArrayList<EntityReference>();

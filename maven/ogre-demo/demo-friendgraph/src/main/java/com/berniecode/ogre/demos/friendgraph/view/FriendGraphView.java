@@ -80,7 +80,7 @@ public class FriendGraphView extends JFrame {
 		for (Person person : model.getPeople()) {
 			PersonView personView = personToView.get(person);
 			if (personView == null) {
-				personView = new PersonView(person, this);
+				personView = new PersonView(person, this, model);
 				contents.add(personView);
 				personToView.put(person, personView);
 			} else {

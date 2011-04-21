@@ -10,6 +10,7 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
  * 
  * @author Bernie Sumption
  */
+//TODO ensure that all subclasses of this provide a no-arg constructor and a constructor that provides all arguments and calls initialise()
 public abstract class InitialisingBean {
 
 	private boolean initialised;
