@@ -5,7 +5,8 @@ import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.server.DataSource;
-import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
+import com.berniecode.ogre.wireformat.OgreWireFormatDeserialiser;
+import com.berniecode.ogre.wireformat.OgreWireFormatSerialiser;
 
 /**
  * A {@link DownloadClientAdapter} that wraps a {@link ServerEngineTest}, directly transferring any
@@ -15,8 +16,9 @@ import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
  * @author Bernie Sumption
  */
 public class InProcessDownloadBridge implements DownloadClientAdapter {
-	
-	OgreWireFormatV1Serialiser ser = new OgreWireFormatV1Serialiser();
+
+	OgreWireFormatSerialiser ser = new OgreWireFormatSerialiser();
+	OgreWireFormatDeserialiser dser = new OgreWireFormatDeserialiser();
 
 	private final DataSource dataSource;
 
@@ -29,7 +31,7 @@ public class InProcessDownloadBridge implements DownloadClientAdapter {
 		if (!typeDomainId.equals(dataSource.getTypeDomain().getTypeDomainId())) {
 			throw new NoSuchThingException("There is no type domain with id '" + typeDomainId + "'");
 		}
-		return ser.deserialiseTypeDomain(ser.serialiseTypeDomain(dataSource.getTypeDomain()));
+		return dser.deserialiseTypeDomain(ser.serialiseTypeDomain(dataSource.getTypeDomain()));
 	}
 
 	@Override
@@ -41,7 +43,7 @@ public class InProcessDownloadBridge implements DownloadClientAdapter {
 			throw new NoSuchThingException("There is no object graph with id '" + objectGraphId + "'");
 		}
 		GraphUpdate objectGraph = dataSource.createSnapshot();
-		return ser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(objectGraph), typeDomain);
+		return dser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(objectGraph), typeDomain);
 	}
 
 }

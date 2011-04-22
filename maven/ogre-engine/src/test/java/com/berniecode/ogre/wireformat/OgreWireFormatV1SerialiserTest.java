@@ -11,11 +11,11 @@ public class OgreWireFormatV1SerialiserTest extends EntityClassWithAllFieldsTest
 
 	public void testTypeDomainSerialisation() {
 		
-		OgreWireFormatV1Serialiser serialiser = new OgreWireFormatV1Serialiser();
+		OgreWireFormatSerialiser serialiser = new OgreWireFormatSerialiser();
 		
 		byte[] serialisedTD = serialiser.serialiseTypeDomain(typeDomain);
 		
-		TypeDomain deserialisedTD = serialiser.deserialiseTypeDomain(serialisedTD);
+		TypeDomain deserialisedTD = new OgreWireFormatDeserialiser().deserialiseTypeDomain(serialisedTD);
 		
 		assertEqualsIgnoreWhitespace(EDRDescriber.describeTypeDomain(typeDomain), EDRDescriber.describeTypeDomain(deserialisedTD));
 		
@@ -38,10 +38,9 @@ public class OgreWireFormatV1SerialiserTest extends EntityClassWithAllFieldsTest
 		dataSource.setEntityObjects(initialEntityObject, elements[0], newEntity);
 
 		GraphUpdate graphUpdate = msgBridge.getLastGraphUpdate();
-		
-		OgreWireFormatV1Serialiser serialiser = new OgreWireFormatV1Serialiser();
-		byte[] serialisedGU = serialiser.serialiseGraphUpdate(graphUpdate);
-		GraphUpdate deserialisedGU = serialiser.deserialiseGraphUpdate(serialisedGU, typeDomain);
+
+		byte[] serialisedGU = new OgreWireFormatSerialiser().serialiseGraphUpdate(graphUpdate);
+		GraphUpdate deserialisedGU = new OgreWireFormatDeserialiser().deserialiseGraphUpdate(serialisedGU, typeDomain);
 		assertEqualsIgnoreWhitespace(
 				EDRDescriber.describeGraphUpdate(graphUpdate),
 				EDRDescriber.describeGraphUpdate(deserialisedGU));

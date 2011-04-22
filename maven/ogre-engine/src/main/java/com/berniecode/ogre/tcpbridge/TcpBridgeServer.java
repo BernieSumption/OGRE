@@ -27,7 +27,8 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.server.DataSource;
-import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
+import com.berniecode.ogre.wireformat.Envelope;
+import com.berniecode.ogre.wireformat.OgreWireFormatSerialiser;
 
 /**
  * A TCP socket server that exposes a {@link DataSource} over a TCP connection.
@@ -68,7 +69,7 @@ public class TcpBridgeServer extends InitialisingBean implements GraphUpdateList
 	// CONFIGURATION
 	//
 
-	private EDRSerialiser serialiser = new OgreWireFormatV1Serialiser();
+	private EDRSerialiser serialiser = new OgreWireFormatSerialiser();
 	private DataSource dataSource;
 	private InetAddress hostAddress;
 	private Integer port;
@@ -92,7 +93,7 @@ public class TcpBridgeServer extends InitialisingBean implements GraphUpdateList
 
 	/**
 	 * Set the {@link EDRSerialiser} to encode responses. If no value is provided,
-	 * {@link OgreWireFormatV1Serialiser} will be used.
+	 * {@link OgreWireFormatSerialiser} will be used.
 	 */
 	public void setSerialiser(EDRSerialiser serialiser) {
 		requireInitialised(false, "setSerialiser()");
@@ -275,13 +276,13 @@ public class TcpBridgeServer extends InitialisingBean implements GraphUpdateList
 			// TODO cache byte array
 			response = new Response(RequestType.TYPE_DOMAIN);
 			TypeDomain typeDomain = dataSource.getTypeDomain();
-			response.addDataToSend(serialiser.serialiseTypeDomain(typeDomain));
+			response.addDataToSend(Envelope.wrapInEnvelope(serialiser.serialiseTypeDomain(typeDomain)));
 			break;
 		case RequestType.CODE_OBJECT_GRAPH:
 			// TODO cache byte array
 			response = new Response(RequestType.OBJECT_GRAPH);
 			GraphUpdate graphUpdate = dataSource.createSnapshot();
-			response.addDataToSend(serialiser.serialiseGraphUpdate(graphUpdate));
+			response.addDataToSend(Envelope.wrapInEnvelope(serialiser.serialiseGraphUpdate(graphUpdate)));
 			break;
 		case RequestType.CODE_SUBSCRIBE:
 			response = new Response(RequestType.SUBSCRIBE);
@@ -338,7 +339,7 @@ public class TcpBridgeServer extends InitialisingBean implements GraphUpdateList
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug("TcpBridgeServer: broadcasting new graph update: " + EDRDescriber.describeGraphUpdate(update));
 		}
-		byte[] responseBytes = serialiser.serialiseGraphUpdate(update);
+		byte[] responseBytes = Envelope.wrapInEnvelope(serialiser.serialiseGraphUpdate(update));
 		synchronized (conversations) {
 			for (Response response: conversations.values()) {
 				if (response.getType() == RequestType.SUBSCRIBE) {

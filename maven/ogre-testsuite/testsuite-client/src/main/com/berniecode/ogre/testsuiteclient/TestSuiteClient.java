@@ -18,7 +18,8 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.server.pojods.EntityReferenceComparator;
-import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
+import com.berniecode.ogre.wireformat.OgreWireFormatDeserialiser;
+import com.berniecode.ogre.wireformat.OgreWireFormatSerialiser;
 
 public class TestSuiteClient {
 
@@ -31,7 +32,8 @@ public class TestSuiteClient {
 	private BufferedWriter traceFileWriter;
 	private final File suiteFolder;
 	
-	OgreWireFormatV1Serialiser serialiser = new OgreWireFormatV1Serialiser();
+	OgreWireFormatSerialiser serialiser = new OgreWireFormatSerialiser();
+	OgreWireFormatDeserialiser deserialiser = new OgreWireFormatDeserialiser();
 
 	public TestSuiteClient(File suiteFolder) {
 		this.suiteFolder = suiteFolder;
@@ -49,8 +51,8 @@ public class TestSuiteClient {
 		
 		try {
 
-			final TypeDomain typeDomain = serialiser.deserialiseTypeDomain(readFile(new File(suiteFolder, TYPE_DOMAIN_MESSAGE_FILE_NAME)));
-			final GraphUpdate initialData = serialiser.deserialiseGraphUpdate(readFile(new File(suiteFolder, INITIAL_DATA_MESSAGE_FILE_NAME)), typeDomain);
+			final TypeDomain typeDomain = deserialiser.deserialiseTypeDomain(readFile(new File(suiteFolder, TYPE_DOMAIN_MESSAGE_FILE_NAME)));
+			final GraphUpdate initialData = deserialiser.deserialiseGraphUpdate(readFile(new File(suiteFolder, INITIAL_DATA_MESSAGE_FILE_NAME)), typeDomain);
 			traceLine("type domain", EDRDescriber.describeTypeDomain(typeDomain));
 			traceLine("initial data set", EDRDescriber.describeObjectGraph(initialData));
 			
@@ -78,7 +80,7 @@ public class TestSuiteClient {
 					break;
 				}
 				
-				GraphUpdate graphUpdate = serialiser.deserialiseGraphUpdate(readFile(updateMessage), typeDomain);
+				GraphUpdate graphUpdate = deserialiser.deserialiseGraphUpdate(readFile(updateMessage), typeDomain);
 				
 				engine.acceptGraphUpdate(graphUpdate);
 

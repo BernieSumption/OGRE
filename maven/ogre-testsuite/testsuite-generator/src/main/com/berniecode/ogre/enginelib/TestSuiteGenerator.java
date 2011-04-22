@@ -18,7 +18,7 @@ import java.util.Random;
 import com.berniecode.ogre.EDRSerialiser;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.server.pojods.EntityReferenceComparator;
-import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
+import com.berniecode.ogre.wireformat.OgreWireFormatSerialiser;
 
 public class TestSuiteGenerator {
 
@@ -50,7 +50,7 @@ public class TestSuiteGenerator {
 	private final File outputFolder;
 	private final int suiteNumber;
 	private final int iterations;
-	private final EDRSerialiser serialiser = new OgreWireFormatV1Serialiser();
+	private final EDRSerialiser serialiser = new OgreWireFormatSerialiser();
 
 	private Random random;
 	private BufferedWriter traceFileWriter;

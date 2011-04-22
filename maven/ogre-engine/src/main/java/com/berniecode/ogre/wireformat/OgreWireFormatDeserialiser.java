@@ -1,17 +1,9 @@
 package com.berniecode.ogre.wireformat;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.berniecode.ogre.EDRDeserialiser;
-import com.berniecode.ogre.EDRSerialiser;
 import com.berniecode.ogre.enginelib.EntityDiff;
 import com.berniecode.ogre.enginelib.EntityReference;
 import com.berniecode.ogre.enginelib.EntityReferenceImpl;
@@ -19,12 +11,9 @@ import com.berniecode.ogre.enginelib.EntityType;
 import com.berniecode.ogre.enginelib.EntityValue;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.OgreLog;
-import com.berniecode.ogre.enginelib.PartialRawPropertyValueSet;
 import com.berniecode.ogre.enginelib.Property;
-import com.berniecode.ogre.enginelib.RawPropertyValueSet;
 import com.berniecode.ogre.enginelib.ReferenceProperty;
 import com.berniecode.ogre.enginelib.TypeDomain;
-import com.berniecode.ogre.enginelib.UnsafeAccess;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage;
 import com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage;
@@ -34,7 +23,6 @@ import com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage;
 import com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage;
 import com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type;
 import com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
@@ -43,9 +31,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
  * 
  * @author Bernie Sumption
  */
-public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialiser {
-
-	private static final byte[] ENVELOPE_HEADER = new byte[] { 'O', 'G', 'R', 'E', 'v', '1' };
+public class OgreWireFormatDeserialiser implements EDRDeserialiser {
 
 	//
 	// This class is uncommented. It implements a trivial mapping between the protocol
@@ -53,29 +39,14 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 	// both of which are themselves commented
 	//
 
-	// TODO split this class into more manageable units. Perhaps split each algorithm out into a
-	// static utility class
-
-	// TODO add to interface
-	public TypeDomain deserialiseTypeDomain(InputStream inputStream) throws IOException {
-		return deserialiseTypeDomainPayload(extractPayload(inputStream));
-	}
-
 	/**
 	 * @see EDRDeserialiser#deserialiseTypeDomain(byte[])
 	 */
 	@Override
 	public TypeDomain deserialiseTypeDomain(byte[] message) {
-		return deserialiseTypeDomainPayload(extractPayload(message));
-	}
-
-	public TypeDomain deserialiseTypeDomainPayload(byte[] payload) {
 		TypeDomainMessage tdm;
 		try {
-			tdm = TypeDomainMessage.parseFrom(payload);
-			if (OgreLog.isDebugEnabled()) {
-				OgreLog.debug("Deserialised TypeDomainMessage: " + tdm);
-			}
+			tdm = TypeDomainMessage.parseFrom(message);
 		} catch (InvalidProtocolBufferException e) {
 			throw new OgreException("The supplied byte array is not a valid Protocol Buffers message", e);
 		}
@@ -119,116 +90,6 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		}
 		return new Property(name, propertyType.getNumber(), pm.getNullable());
 	}
-
-	/**
-	 * @see EDRSerialiser#serialiseTypeDomain(TypeDomain)
-	 */
-	@Override
-	public byte[] serialiseTypeDomain(TypeDomain typeDomain) {
-		TypeDomainMessage.Builder tdBuilder = TypeDomainMessage.newBuilder();
-		tdBuilder.setTypeDomainId(typeDomain.getTypeDomainId());
-		for (EntityType entityType : UnsafeAccess.getEntityTypes(typeDomain)) {
-			EntityTypeMessage.Builder etBuilder = EntityTypeMessage.newBuilder();
-			etBuilder.setName(entityType.getName());
-			for (int i = 0; i < entityType.getPropertyCount(); i++) {
-				Property property = entityType.getProperty(i);
-				PropertyMessage.Builder pBuilder = PropertyMessage.newBuilder().setName(property.getName())
-						.setPropertyType(Type.valueOf(property.getTypeCode())).setNullable(property.isNullable());
-				if (property instanceof ReferenceProperty) {
-					pBuilder.setReferenceTypeIndex(((ReferenceProperty) property).getReferenceType()
-							.getEntityTypeIndex());
-				}
-				etBuilder.addProperties(pBuilder);
-			}
-			tdBuilder.addEntityTypes(etBuilder);
-		}
-		return wrapInEnvelope(tdBuilder.build().toByteArray());
-	}
-	
-	//
-	// GRAPH UPDATE SERIALISATION
-	//
-
-	/**
-	 * @see EDRSerialiser#serialiseGraphUpdate(GraphUpdate)
-	 */
-	@Override
-	public byte[] serialiseGraphUpdate(GraphUpdate graphUpdate) {
-		GraphUpdateMessage.Builder guBuilder = GraphUpdateMessage.newBuilder()
-				.setTypeDomainId(graphUpdate.getTypeDomain().getTypeDomainId())
-				.setObjectGraphId(graphUpdate.getObjectGraphId());
-		for (RawPropertyValueSet entity : graphUpdate.getEntityCreates()) {
-			guBuilder.addEntityCreates(getEntityValueMessage(entity, false));
-		}
-		for (PartialRawPropertyValueSet entity : graphUpdate.getEntityUpdates()) {
-			guBuilder.addEntityUpdates(getEntityValueMessage(entity, true));
-		}
-		for (EntityReference delete : graphUpdate.getEntityDeletes()) {
-			guBuilder.addEntityDeletes(EntityDeleteMessage.newBuilder()
-					.setEntityTypeIndex(delete.getEntityType().getEntityTypeIndex()).setEntityId(delete.getEntityId()));
-		}
-		return wrapInEnvelope(guBuilder.build().toByteArray());
-	}
-
-	/**
-	 * @param diffStyle whether this is a "diff-style" EntityValue as defined in
-	 *            V1GraphUpdate.proto. If true, the {@code entity} parameter must be an instance of
-	 *            {@link PartialRawPropertyValueSet}
-	 */
-	private EntityValueMessage getEntityValueMessage(RawPropertyValueSet entity, boolean diffStyle) {
-		EntityValueMessage.Builder evBuilder = EntityValueMessage.newBuilder()
-				.setEntityTypeIndex(entity.getEntityType().getEntityTypeIndex()).setEntityId(entity.getEntityId());
-
-		EntityType entityType = entity.getEntityType();
-		for (int i = 0; i < entityType.getPropertyCount(); i++) {
-			Property property = entityType.getProperty(i);
-			if (diffStyle) {
-				if (!((PartialRawPropertyValueSet) entity).hasUpdatedValue(property)) {
-					continue;
-				}
-			}
-			PropertyValueMessage.Builder pvBuilder = PropertyValueMessage.newBuilder();
-			Object value = entity.getRawPropertyValue(property);
-			if (diffStyle) {
-				pvBuilder.setPropertyIndex(property.getPropertyIndex());
-			}
-			if (value == null) {
-				pvBuilder.setNullValue(true);
-			} else {
-				try {
-					switch (property.getTypeCode()) {
-					case Property.TYPECODE_INT32:
-						pvBuilder.setIntValue((Integer) value);
-						break;
-					case Property.TYPECODE_INT64:
-						pvBuilder.setIntValue((Long) value);
-						break;
-					case Property.TYPECODE_FLOAT:
-						pvBuilder.setFloatValue((Float) value);
-						break;
-					case Property.TYPECODE_DOUBLE:
-						pvBuilder.setDoubleValue((Double) value);
-						break;
-					case Property.TYPECODE_STRING:
-						pvBuilder.setStringValue((String) value);
-						break;
-					case Property.TYPECODE_BYTES:
-						pvBuilder.setBytesValue(ByteString.copyFrom((byte[]) value));
-						break;
-					case Property.TYPECODE_REFERENCE:
-						pvBuilder.setIdValue((Long) value);
-						break;
-					default:
-						throw new OgreException(property + " has invalid invalid typeCode: " + property.getTypeCode());
-					}
-				} catch (ClassCastException e) {
-					throw new OgreException("Incorrect value for " + entityType + "/" + property, e);
-				}
-			}
-			evBuilder.addPropertyValues(pvBuilder);
-		}
-		return evBuilder.build();
-	}
 	
 	//
 	// GRAPH UPDATE DESERIALISATION
@@ -237,17 +98,9 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 
 	@Override
 	public GraphUpdate deserialiseGraphUpdate(byte[] message, TypeDomain typeDomain) {
-		return deserialiseGraphUpdatePayload(extractPayload(message), typeDomain);
-	}
-
-	public GraphUpdate deserialiseGraphUpdate(InputStream inputStream, TypeDomain typeDomain) throws IOException {
-		return deserialiseGraphUpdatePayload(extractPayload(inputStream), typeDomain);
-	}
-
-	public GraphUpdate deserialiseGraphUpdatePayload(byte[] payload, TypeDomain typeDomain) {
 		GraphUpdateMessage gum;
 		try {
-			gum = GraphUpdateMessage.parseFrom(payload);
+			gum = GraphUpdateMessage.parseFrom(message);
 			if (OgreLog.isDebugEnabled()) {
 				OgreLog.debug("Deserialised GraphUpdateMessage: " + gum);
 			}
@@ -369,53 +222,4 @@ public class OgreWireFormatV1Serialiser implements EDRSerialiser, EDRDeserialise
 		return deletes;
 	}
 
-	/*
-	 * Read a binary message wrapped in an OGRE envelope: "OGREv1", followed by a 32 bit integer
-	 * specifying the length of the message, then the byte
-	 */
-	private byte[] extractPayload(InputStream inputStream) throws IOException {
-		byte[] cbuf = new byte[ENVELOPE_HEADER.length];
-		int numRead = inputStream.read(cbuf);
-		if (numRead < ENVELOPE_HEADER.length) {
-			throw new IOException("End of stream reached before envelope header could be read.");
-		}
-		if (!Arrays.equals(cbuf, ENVELOPE_HEADER)) {
-			throw new OgreException("Invalid OGRE envelope header. Expected " + Arrays.toString(ENVELOPE_HEADER)
-					+ " (OGREv1), got " + Arrays.toString(cbuf) + " (" + new String(cbuf) + ")");
-		}
-		int length = new DataInputStream(inputStream).readInt();
-		byte[] message = new byte[length];
-		int bytesRead = inputStream.read(message);
-		if (bytesRead != length) {
-			throw new IOException("End of stream reached before the number of bytes promised in the envelope header (" + length + ") could be read.");
-		}
-		return message;
-	}
-
-	/*
-	 * Wrap a byte array in an OGRE envelope
-	 */
-	private byte[] extractPayload(byte[] byteArray) {
-		try {
-			return extractPayload(new ByteArrayInputStream(byteArray));
-		} catch (IOException e) {
-			throw new OgreException("ByteArrayInputStream threw IOException - should never happen", e);
-		}
-	}
-
-	/*
-	 * Wrap a byte array in an OGRE envelope
-	 */
-	private byte[] wrapInEnvelope(byte[] payload) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(ENVELOPE_HEADER.length + 4 + payload.length);
-		DataOutputStream dos = new DataOutputStream(bos);
-		try {
-			dos.write(ENVELOPE_HEADER);
-			dos.writeInt(payload.length);
-			dos.write(payload);
-		} catch (IOException e) {
-			OgreLog.error("ByteArrayOutputStream threw an exception - should never happen: " + e.getMessage());
-		}
-		return bos.toByteArray();
-	}
 }

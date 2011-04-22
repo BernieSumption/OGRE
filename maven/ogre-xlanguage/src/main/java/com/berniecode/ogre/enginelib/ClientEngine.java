@@ -79,6 +79,9 @@ public class ClientEngine implements GraphUpdateListener {
 		requireNotNull(objectGraphId, "objectGraphId");
 		
 		typeDomain = downloadAdapter.loadTypeDomain(typeDomainId);
+		if (OgreLog.isDebugEnabled()) {
+			OgreLog.debug("ClientEngine initialised with type domain: " + EDRDescriber.describeTypeDomain(typeDomain));
+		}
 		entities = new EntityStore(typeDomain);
 		initialised = true;
 		

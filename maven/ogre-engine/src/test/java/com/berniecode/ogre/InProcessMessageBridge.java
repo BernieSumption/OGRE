@@ -7,11 +7,13 @@ import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.MessageClientAdapter;
 import com.berniecode.ogre.enginelib.TypeDomain;
-import com.berniecode.ogre.wireformat.OgreWireFormatV1Serialiser;
+import com.berniecode.ogre.wireformat.OgreWireFormatDeserialiser;
+import com.berniecode.ogre.wireformat.OgreWireFormatSerialiser;
 
 public class InProcessMessageBridge implements GraphUpdateListener, MessageClientAdapter {
-	
-	OgreWireFormatV1Serialiser ser = new OgreWireFormatV1Serialiser();
+
+	OgreWireFormatSerialiser ser = new OgreWireFormatSerialiser();
+	OgreWireFormatDeserialiser dser = new OgreWireFormatDeserialiser();
 	
 	private int messageCount = 0;
 	private GraphUpdate lastGraphUpdate;
@@ -25,7 +27,7 @@ public class InProcessMessageBridge implements GraphUpdateListener, MessageClien
 		String key = getKey(update.getTypeDomain(), update.getObjectGraphId());
 		for (ListenerHolder holder: holders) {
 			if (holder.key.equals(key)) {
-				holder.listener.acceptGraphUpdate(ser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(update), holder.typeDomain));
+				holder.listener.acceptGraphUpdate(dser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(update), holder.typeDomain));
 			}
 		}
 	}
