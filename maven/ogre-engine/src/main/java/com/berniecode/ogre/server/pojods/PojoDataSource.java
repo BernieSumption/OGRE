@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
+import com.berniecode.ogre.enginelib.DataSource;
 import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.Entity;
 import com.berniecode.ogre.enginelib.EntityDiff;
@@ -20,7 +21,6 @@ import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.UnsafeAccess;
-import com.berniecode.ogre.server.DataSource;
 import com.berniecode.ogre.server.EDRMapper;
 import com.berniecode.ogre.server.IdMapper;
 

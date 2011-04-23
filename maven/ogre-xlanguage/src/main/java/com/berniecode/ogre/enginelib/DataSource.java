@@ -1,8 +1,5 @@
-package com.berniecode.ogre.server;
+package com.berniecode.ogre.enginelib;
 
-import com.berniecode.ogre.enginelib.GraphUpdate;
-import com.berniecode.ogre.enginelib.GraphUpdateListener;
-import com.berniecode.ogre.enginelib.TypeDomain;
 
 /**
  * A ServerDataAdapter is a view onto a single object graph that converts the object graph into EDR

@@ -19,9 +19,9 @@ import java.util.Queue;
 import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
+import com.berniecode.ogre.enginelib.DataSource;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
-import com.berniecode.ogre.server.DataSource;
 import com.berniecode.ogre.server.SerialisedDataSource;
 import com.berniecode.ogre.wireformat.Envelope;
 

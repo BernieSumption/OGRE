@@ -1,10 +1,7 @@
 package com.berniecode.ogre.demos.friendgraph;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.InetAddress;
 
-import javax.swing.Timer;
 import javax.swing.UIManager;
 
 import com.berniecode.ogre.client.ClientFacade;
@@ -18,6 +15,8 @@ import com.berniecode.ogre.demos.friendgraph.model.SocialNetwork;
 import com.berniecode.ogre.demos.friendgraph.model.SocialNetworkImpl;
 import com.berniecode.ogre.demos.friendgraph.view.FriendGraphView;
 import com.berniecode.ogre.enginelib.ClientEngine;
+import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.server.SerialisedDataSource;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
@@ -80,13 +79,11 @@ public class Main {
 			ClientFacade facade = new ClientFacade(ce);
 			
 			final SocialNetwork model = new SlaveSocialNetwork(facade);
-			
-			Timer t = new Timer(100, new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+			ce.setGraphUpdateListener(new GraphUpdateListener() {
+				public void acceptGraphUpdate(GraphUpdate update) {
 					view.updateFromModel(model);
 				}
 			});
-			t.start();
 		}
 		
 		view.setVisible(true);

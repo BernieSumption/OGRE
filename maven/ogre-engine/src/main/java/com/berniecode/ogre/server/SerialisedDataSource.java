@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.berniecode.ogre.EDRSerialiser;
 import com.berniecode.ogre.InitialisingBean;
+import com.berniecode.ogre.enginelib.DataSource;
 import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
