@@ -18,6 +18,7 @@ import com.berniecode.ogre.demos.friendgraph.model.SocialNetwork;
 import com.berniecode.ogre.demos.friendgraph.model.SocialNetworkImpl;
 import com.berniecode.ogre.demos.friendgraph.view.FriendGraphView;
 import com.berniecode.ogre.enginelib.ClientEngine;
+import com.berniecode.ogre.server.SerialisedDataSource;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
 import com.berniecode.ogre.tcpbridge.TcpBridgeClient;
@@ -58,7 +59,7 @@ public class Main {
 			ds.initialise();
 			
 			server = new TcpBridgeServer();
-			server.setDataSource(ds);
+			server.setDataSource(new SerialisedDataSource(ds, null));
 			server.setHost(host);
 			server.setPort(port);
 			server.initialise();

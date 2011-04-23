@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import com.berniecode.ogre.enginelib.platformhooks.OgreException;
-
 /**
  * Contains methods to wrap and unwrap binary messages in a header that specifies the length of the
  * message, so that they can be transmitted over network streams.
@@ -22,16 +20,20 @@ public class Envelope {
 	/**
 	 * Read a binary message wrapped in an OGRE envelope
 	 * 
-	 * @return the binary message, after discarding the envelope header
+	 * @return the binary message, after discarding the envelope header, or null if the end of the
+	 *         {@link InputStream} has been reached
 	 */
 	public static byte[] readEnvelopedBytes(InputStream inputStream) throws IOException {
 		byte[] cbuf = new byte[ENVELOPE_HEADER.length];
 		int numRead = inputStream.read(cbuf);
+		if (numRead == -1) {
+			return null;
+		}
 		if (numRead < ENVELOPE_HEADER.length) {
 			throw new IOException("End of stream reached before envelope header could be read.");
 		}
 		if (!Arrays.equals(cbuf, ENVELOPE_HEADER)) {
-			throw new OgreException("Invalid OGRE envelope header. Expected " + Arrays.toString(ENVELOPE_HEADER)
+			throw new IOException("Invalid OGRE envelope header. Expected " + Arrays.toString(ENVELOPE_HEADER)
 					+ " (OGREv1), got " + Arrays.toString(cbuf) + " (" + new String(cbuf) + ")");
 		}
 		int length = new DataInputStream(inputStream).readInt();

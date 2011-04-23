@@ -157,13 +157,23 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 					InputStream inputStream = socket.getInputStream();
 					socket.getOutputStream().write(RequestType.CODE_SUBSCRIBE);
 					while (true) {
-						byte[] message = Envelope.readEnvelopedBytes(inputStream);
-						GraphUpdate update = deserialiser.deserialiseGraphUpdate(message, typeDomain);
-						if (OgreLog.isDebugEnabled()) {
-							OgreLog.debug("TcpBridgeClient: received new update message: "
-									+ EDRDescriber.describeGraphUpdate(update));
+						try {
+							byte[] message = Envelope.readEnvelopedBytes(inputStream);
+							if (message == null) {
+								if (OgreLog.isInfoEnabled()) {
+									OgreLog.info("TcpBridgeClient: connection from server closed");
+								}
+								return;
+							}
+							GraphUpdate update = deserialiser.deserialiseGraphUpdate(message, typeDomain);
+							if (OgreLog.isDebugEnabled()) {
+								OgreLog.debug("TcpBridgeClient: received new update message: "
+										+ EDRDescriber.describeGraphUpdate(update));
+							}
+							listener.acceptGraphUpdate(update);
+						} catch (IOException e) {
+							OgreLog.error("Could not read data: " + e.getMessage());
 						}
-						listener.acceptGraphUpdate(update);
 					}
 				} finally {
 					if (socket != null) {

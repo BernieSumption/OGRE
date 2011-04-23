@@ -5,9 +5,12 @@ import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.TypeDomain;
 
 /**
- * A ServerDataAdapter is a view onto a single object graph that converts the object graph into
- * OGRE's Entity Data Representation. The object graph can be any structured data. By writing new
- * ServerDataAdapters, you can cause OGRE to run off any data source.
+ * A ServerDataAdapter is a view onto a single object graph that converts the object graph into EDR
+ * (Entity Data Representation). The object graph can be any structured data. By writing new
+ * DataSource implementations, you can cause OGRE to run off any source of structured data.
+ * 
+ * <p>
+ * Implementations do not need to be thread safe, or perform any caching
  * 
  * @author Bernie Sumption
  */

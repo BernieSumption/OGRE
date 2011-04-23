@@ -16,9 +16,9 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.PartialRawPropertyValueSet;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
+import com.berniecode.ogre.server.IdMapper;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.EntityReferenceComparator;
-import com.berniecode.ogre.server.pojods.IdMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
 
 public abstract class OgreTestCase extends TestCase {

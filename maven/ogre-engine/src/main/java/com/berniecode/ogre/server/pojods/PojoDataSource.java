@@ -21,6 +21,8 @@ import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.UnsafeAccess;
 import com.berniecode.ogre.server.DataSource;
+import com.berniecode.ogre.server.EDRMapper;
+import com.berniecode.ogre.server.IdMapper;
 
 /**
  * A {@link DataSource} that extracts a {@link TypeDomain} from a set of java classes and an
@@ -185,7 +187,6 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 			}
 		}
 
-		
 		List<EntityValue> completeEntities = new ArrayList<EntityValue>();
 		List<EntityDiff> entityDiffs = new ArrayList<EntityDiff>();
 		List<EntityReference> entityDeletes = new ArrayList<EntityReference>();
@@ -228,10 +229,6 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 		if (graphUpdateListener != null) {
 			GraphUpdate update = new GraphUpdate(typeDomain, objectGraphId, newEntities.toArray(new EntityValue[0]),
 					entityDiffs.toArray(new EntityDiff[0]), entityDeletes.toArray(new EntityReference[0]));
-			if (OgreLog.isDebugEnabled()) {
-				OgreLog.debug("PojoDataSource: broadcasting new graph update:\n"
-						+ EDRDescriber.describeGraphUpdate(update));
-			}
 			graphUpdateListener.acceptGraphUpdate(update);
 		}
 	}

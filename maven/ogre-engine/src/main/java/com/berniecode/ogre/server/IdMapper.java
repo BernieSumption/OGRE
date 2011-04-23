@@ -1,4 +1,6 @@
-package com.berniecode.ogre.server.pojods;
+package com.berniecode.ogre.server;
+
+import com.berniecode.ogre.server.pojods.PojoDataSource;
 
 /**
  * An {@link IdMapper} knows how to get an ID from an object managed by {@link PojoDataSource}. If

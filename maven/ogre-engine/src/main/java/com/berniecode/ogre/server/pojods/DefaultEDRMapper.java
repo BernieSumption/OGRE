@@ -19,6 +19,8 @@ import com.berniecode.ogre.enginelib.Property;
 import com.berniecode.ogre.enginelib.ReferenceProperty;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.UnsafeAccess;
+import com.berniecode.ogre.server.EDRMapper;
+import com.berniecode.ogre.server.IdMapper;
 
 /**
  * A {@link EDRMapper} that automatically converts from classes and objects to OGRE's Entity
@@ -249,7 +251,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	//
 
 	/**
-	 * @see com.berniecode.ogre.server.pojods.IdMapper#getIdForObject(Object)
+	 * @see com.berniecode.ogre.server.IdMapper#getIdForObject(Object)
 	 */
 	@Override
 	public long getIdForObject(Object entityObject) {
@@ -258,7 +260,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	}
 
 	/**
-	 * @see com.berniecode.ogre.server.pojods.IdMapper#objectHasId(Object)
+	 * @see com.berniecode.ogre.server.IdMapper#objectHasId(Object)
 	 */
 	@Override
 	public boolean objectHasId(Object entityObject) {

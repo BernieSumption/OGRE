@@ -1,5 +1,5 @@
 
-package com.berniecode.ogre.server.pojods;
+package com.berniecode.ogre.server;
 
 import java.util.List;
 

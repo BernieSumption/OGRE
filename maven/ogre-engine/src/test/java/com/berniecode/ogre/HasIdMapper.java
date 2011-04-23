@@ -1,6 +1,6 @@
 package com.berniecode.ogre;
 
-import com.berniecode.ogre.server.pojods.IdMapper;
+import com.berniecode.ogre.server.IdMapper;
 
 public class HasIdMapper implements IdMapper {
 

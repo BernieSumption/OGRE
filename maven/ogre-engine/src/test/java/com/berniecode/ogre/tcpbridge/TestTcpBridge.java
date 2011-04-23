@@ -6,6 +6,7 @@ import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.TypeDomain;
+import com.berniecode.ogre.server.SerialisedDataSource;
 
 public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
 
@@ -16,7 +17,7 @@ public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
 		super.doAdditionalSetup();
 		bridgeServer = new TcpBridgeServer();
 		bridgeServer.setPort(12345);
-		bridgeServer.setDataSource(dataSource);
+		bridgeServer.setDataSource(new SerialisedDataSource(dataSource, null));
 		bridgeServer.initialise();
 	}
 	
