@@ -20,12 +20,12 @@ import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.server.SerialisedDataSource;
 import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
-import com.berniecode.ogre.tcpbridge.TcpBridgeClient;
-import com.berniecode.ogre.tcpbridge.TcpBridgeServer;
+import com.berniecode.ogre.tcpbridge.SimpleTcpTransportClient;
+import com.berniecode.ogre.tcpbridge.SimpleTcpTransportServer;
 
 public class Main {
 
-	private static TcpBridgeServer server;
+	private static SimpleTcpTransportServer server;
 
 	public static void main(String[] args) throws Exception {
 
@@ -57,7 +57,7 @@ public class Main {
 			ds.setObjectGraphId("demo");
 			ds.initialise();
 			
-			server = new TcpBridgeServer();
+			server = new SimpleTcpTransportServer();
 			server.setDataSource(new SerialisedDataSource(ds, null));
 			server.setHost(host);
 			server.setPort(port);
@@ -71,9 +71,8 @@ public class Main {
 			ClientEngine ce = new ClientEngine();
 			ce.setTypeDomainId("friendgraph");
 			ce.setObjectGraphId("demo");
-			TcpBridgeClient client = new TcpBridgeClient(host, port);
-			ce.setDownloadAdapter(client);
-			ce.setMessageAdapter(client);
+			SimpleTcpTransportClient client = new SimpleTcpTransportClient(host, port, null);
+			ce.setTransportAdapter(client);
 			ce.initialise();
 			
 			ClientFacade facade = new ClientFacade(ce);

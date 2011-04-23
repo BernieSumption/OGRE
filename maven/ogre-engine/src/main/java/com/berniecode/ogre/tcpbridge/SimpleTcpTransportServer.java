@@ -52,7 +52,7 @@ import com.berniecode.ogre.wireformat.Envelope;
  * 
  * @author Bernie Sumption
  */
-public class TcpBridgeServer extends InitialisingBean implements SerialisedDataSource.Listener {
+public class SimpleTcpTransportServer extends InitialisingBean implements SerialisedDataSource.Listener {
 
 	//
 	// This server uses Java 1.4 nonblocking IO. The implementation is a pretty trivial NIO
@@ -68,7 +68,7 @@ public class TcpBridgeServer extends InitialisingBean implements SerialisedDataS
 	private InetAddress hostAddress;
 	private Integer port;
 
-	public TcpBridgeServer() {
+	public SimpleTcpTransportServer() {
 		try {
 			hostAddress = InetAddress.getByName("localhost");
 		} catch (UnknownHostException e) {
@@ -153,7 +153,7 @@ public class TcpBridgeServer extends InitialisingBean implements SerialisedDataS
 			serverThread = new SelectorThread();
 			serverThread.start();
 		} catch (IOException e) {
-			throw new OgreException("Failed to start TcpBridgeServer", e);
+			throw new OgreException("Failed to start SimpleTcpTransportServer", e);
 		}
 	}
 

@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import com.berniecode.ogre.InProcessMessageBridge;
 import com.berniecode.ogre.enginelib.ClientEngine;
-import com.berniecode.ogre.enginelib.DownloadClientAdapter;
+import com.berniecode.ogre.enginelib.ClientTransportAdapter;
 import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.GraphUpdate;
+import com.berniecode.ogre.enginelib.GraphUpdateListener;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
@@ -57,17 +57,18 @@ public class TestSuiteClient {
 			traceLine("initial data set", EDRDescriber.describeObjectGraph(initialData));
 			
 			ClientEngine engine = new ClientEngine();
-			engine.setMessageAdapter(new InProcessMessageBridge());
 			String objectGraphId = initialData.getObjectGraphId();
 			engine.setObjectGraphId(objectGraphId);
 			engine.setTypeDomainId(typeDomain.getTypeDomainId());
-			engine.setDownloadAdapter(new DownloadClientAdapter() {
+			engine.setTransportAdapter(new ClientTransportAdapter() {
 				public TypeDomain loadTypeDomain(String typeDomainId) throws NoSuchThingException {
 					return typeDomain;
 				}
 				public GraphUpdate loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException {
 					return initialData;
 				}
+				public void subscribeToGraphUpdates(TypeDomain typeDomain, String objectGraphId,
+						GraphUpdateListener listener) {}
 			});
 			engine.initialise();
 			

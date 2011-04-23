@@ -10,12 +10,12 @@ import com.berniecode.ogre.server.SerialisedDataSource;
 
 public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
 
-	private TcpBridgeServer bridgeServer;
+	private SimpleTcpTransportServer bridgeServer;
 
 	@Override
 	protected void doAdditionalSetup() throws Exception {
 		super.doAdditionalSetup();
-		bridgeServer = new TcpBridgeServer();
+		bridgeServer = new SimpleTcpTransportServer();
 		bridgeServer.setPort(12345);
 		bridgeServer.setDataSource(new SerialisedDataSource(dataSource, null));
 		bridgeServer.initialise();
@@ -29,7 +29,7 @@ public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
 
 
 	public void testFetchTypeDomain() throws Exception {
-		TcpBridgeClient bridgeClient = new TcpBridgeClient("localhost", 12345);
+		SimpleTcpTransportClient bridgeClient = new SimpleTcpTransportClient("localhost", 12345, null);
 		
 		TypeDomain td = bridgeClient.loadTypeDomain(TYPE_DOMAIN_ID);
 		
@@ -38,7 +38,7 @@ public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
 
 
 	public void testFetchObjectGraph() throws Exception {
-		TcpBridgeClient bridgeClient = new TcpBridgeClient("localhost", 12345);
+		SimpleTcpTransportClient bridgeClient = new SimpleTcpTransportClient("localhost", 12345, null);
 		
 		GraphUpdate objectGraph = bridgeClient.loadObjectGraph(typeDomain, OBJECT_GRAPH_ID);
 		
@@ -46,7 +46,7 @@ public class TestTcpBridge extends EntityClassWithAllFieldsTestCase {
 	}
 	
 	public void testTransmitGraphUpdates() throws Exception {
-		TcpBridgeClient bridgeClient = new TcpBridgeClient("localhost", 12345);
+		SimpleTcpTransportClient bridgeClient = new SimpleTcpTransportClient("localhost", 12345, null);
 		
 		MockGraphUpdateListener listener = new MockGraphUpdateListener();
 		bridgeClient.subscribeToGraphUpdates(typeDomain, OBJECT_GRAPH_ID, listener);

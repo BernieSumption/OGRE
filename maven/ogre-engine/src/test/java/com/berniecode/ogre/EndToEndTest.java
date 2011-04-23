@@ -92,13 +92,13 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		initialEntityObject.setNullableFloat(1144.0F);
 		initialEntityObject.setEntityElement(new EntityElementImpl("lala"));
 		
-		assertEquals(1, msgBridge.getMessageCount());
+		assertEquals(1, transport.getMessageCount());
 
 		// changes propagated
 		dataSource.setEntityObjects(initialEntityObject);
 
 		
-		assertEquals(2, msgBridge.getMessageCount());
+		assertEquals(2, transport.getMessageCount());
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
@@ -116,7 +116,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"      string=Fizzle" +
 				"  deleted entities:" +
 				"    delete EntityElement#1",
-				msgBridge.getLastGraphUpdate(), typeDomain);
+				transport.getLastGraphUpdate(), typeDomain);
 
 		 
 		assertClientEngineState(
@@ -142,7 +142,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 
 		dataSource.setEntityObjects(initialEntityObject, newEntityObject);
 
-		assertEquals(3, msgBridge.getMessageCount());
+		assertEquals(3, transport.getMessageCount());
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +
@@ -160,7 +160,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 				"      string=my bizzle" +
 				"    value for EntityElement#3" +
 				"      name=Bye!",
-				msgBridge.getLastGraphUpdate(), typeDomain);
+				transport.getLastGraphUpdate(), typeDomain);
 		 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -197,13 +197,13 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		// removes propagated
 		dataSource.setEntityObjects(newEntityObject);
 
-		assertEquals(4, msgBridge.getMessageCount());
+		assertEquals(4, transport.getMessageCount());
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  deleted entities:" +
 				"    delete EntityClassWithAllFields#1" +
 				"    delete EntityElement#2",
-				msgBridge.getLastGraphUpdate(), typeDomain);
+				transport.getLastGraphUpdate(), typeDomain);
 		 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph" +
@@ -225,18 +225,18 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		
 		// non-changes don't create extra graph updatess
 		dataSource.setEntityObjects(newEntityObject);
-		assertEquals(4, msgBridge.getMessageCount());
+		assertEquals(4, transport.getMessageCount());
 		
 		// removes propagated
 		dataSource.setEntityObjects();
 
-		assertEquals(5, msgBridge.getMessageCount());
+		assertEquals(5, transport.getMessageCount());
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  deleted entities:" +
 				"    delete EntityClassWithAllFields#2" +
 				"    delete EntityElement#3",
-				msgBridge.getLastGraphUpdate(), typeDomain);
+				transport.getLastGraphUpdate(), typeDomain);
 		 
 		assertClientEngineState(
 			"ObjectGraph TypeDomain/TestObjectGraph",
@@ -247,7 +247,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 	public void testNonChangesNotPropagated() throws Exception {
 		
 		// set all properties to new objects with the same value but different object identities
-		assertEquals(1, msgBridge.getMessageCount());
+		assertEquals(1, transport.getMessageCount());
 		initialEntityObject.setBytes(byteArray(1, 2, 3));
 		initialEntityObject.setNullableInt(new Integer(6));
 		initialEntityObject.setNullableLong(new Long(8));
@@ -255,10 +255,10 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 		initialEntityObject.setNullableFloat(new Float(10F));
 		initialEntityObject.setNullableDouble(new Double(12.0));
 		dataSource.setEntityObjects(initialEntityObject);
-		if (msgBridge.getMessageCount() != 1) {
+		if (transport.getMessageCount() != 1) {
 			OgreLog.error("Graph updates incorrectly transmitted:\n" + 
-					EDRDescriber.describeGraphUpdate(msgBridge.getLastGraphUpdate()));
+					EDRDescriber.describeGraphUpdate(transport.getLastGraphUpdate()));
 		}
-		assertEquals(1, msgBridge.getMessageCount());
+		assertEquals(1, transport.getMessageCount());
 	}
 }

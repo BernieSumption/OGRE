@@ -20,15 +20,13 @@ public class ClientEngineTest extends OgreTestCase {
 	
 	private GraphUpdate initialValueUpdate;
 
-	private DownloadClientAdapter downloadClientAdapter;
-	private MessageClientAdapter messageClientAdapter;
+	private ClientTransportAdapter adapter;
 	private Property parentName;
 
 	@Override
 	public void doAdditionalSetup() throws Exception {
 
-		downloadClientAdapter = context.mock(DownloadClientAdapter.class); 
-		messageClientAdapter = context.mock(MessageClientAdapter.class); 
+		adapter = context.mock(ClientTransportAdapter.class); 
 
 		parentType = new EntityType("parentType", new Property[] {
 				parentName = new Property("num", Property.TYPECODE_STRING, false),
@@ -68,12 +66,8 @@ public class ClientEngineTest extends OgreTestCase {
 		context.assertIsSatisfied();
 
 		try {
-			ce.setDownloadAdapter(null);
+			ce.setTransportAdapter(null);
 			fail("ClientEngine.setDownloadAdapter should fail after ClientEngine.initialise() is called");
-		} catch (InitialisationException e) {}
-		try {
-			ce.setMessageAdapter(null);
-			fail("ClientEngine.setMessageAdapter should fail after ClientEngine.initialise() is called");
 		} catch (InitialisationException e) {}
 		try {
 			ce.setTypeDomainId(null);
@@ -213,19 +207,18 @@ public class ClientEngineTest extends OgreTestCase {
 
 	private ClientEngine createClientEngine() throws NoSuchThingException {
 		final ClientEngine ce = new ClientEngine();
-		ce.setDownloadAdapter(downloadClientAdapter);
-		ce.setMessageAdapter(messageClientAdapter);
+		ce.setTransportAdapter(adapter);
 		ce.setTypeDomainId(TYPE_DOMAIN_ID);
 		ce.setObjectGraphId(OBJECT_GRAPH_ID);
 
 		context.checking(new Expectations() {{
-		    oneOf (downloadClientAdapter).loadTypeDomain(TYPE_DOMAIN_ID);
+		    oneOf (adapter).loadTypeDomain(TYPE_DOMAIN_ID);
 		    will(returnValue(typeDomain));
 		    
-		    oneOf (downloadClientAdapter).loadObjectGraph(typeDomain, OBJECT_GRAPH_ID);
+		    oneOf (adapter).loadObjectGraph(typeDomain, OBJECT_GRAPH_ID);
 		    will(returnValue(initialValueUpdate));
 		    
-		    oneOf (messageClientAdapter).subscribeToGraphUpdates(typeDomain, OBJECT_GRAPH_ID, ce);
+		    oneOf (adapter).subscribeToGraphUpdates(typeDomain, OBJECT_GRAPH_ID, ce);
 		}});
 		return ce;
 	}

@@ -8,11 +8,10 @@ import java.net.UnknownHostException;
 
 import com.berniecode.ogre.EDRDeserialiser;
 import com.berniecode.ogre.InitialisingBean;
-import com.berniecode.ogre.enginelib.DownloadClientAdapter;
+import com.berniecode.ogre.enginelib.ClientTransportAdapter;
 import com.berniecode.ogre.enginelib.EDRDescriber;
 import com.berniecode.ogre.enginelib.GraphUpdate;
 import com.berniecode.ogre.enginelib.GraphUpdateListener;
-import com.berniecode.ogre.enginelib.MessageClientAdapter;
 import com.berniecode.ogre.enginelib.OgreLog;
 import com.berniecode.ogre.enginelib.TypeDomain;
 import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
@@ -21,42 +20,46 @@ import com.berniecode.ogre.wireformat.Envelope;
 import com.berniecode.ogre.wireformat.OgreWireFormatDeserialiser;
 
 /**
- * A client to match {@link TcpBridgeServer}
+ * A client to match {@link SimpleTcpTransportServer}
  * 
  * @author Bernie Sumption
  */
-public class TcpBridgeClient extends InitialisingBean implements DownloadClientAdapter, MessageClientAdapter {
+public class SimpleTcpTransportClient extends InitialisingBean implements ClientTransportAdapter {
 
 	private InetAddress host;
 	private Integer port;
-	private EDRDeserialiser deserialiser = new OgreWireFormatDeserialiser();
+	private EDRDeserialiser deserialiser;
 
 	/**
-	 * Create a {@link TcpBridgeClient} with the specified host and port, and initialise it
+	 * Create a {@link SimpleTcpTransportClient} with the specified host and port, and initialise it
 	 */
-	public TcpBridgeClient(InetAddress host, int port) {
-		this.host = host;
-		this.port = port;
+	public SimpleTcpTransportClient(InetAddress host, int port, EDRDeserialiser deserialiser) {
+		setHost(host);
+		setPort(port);
+		setEDRDeserialiser(deserialiser);
 		initialise();
 	}
 
 	/**
-	 * Create a {@link TcpBridgeClient} with the specified host and port, and initialise it
+	 * Create a {@link SimpleTcpTransportClient} with the specified host and port, and initialise it
 	 */
-	public TcpBridgeClient(String host, int port) throws UnknownHostException {
-		this(InetAddress.getByName(host), port);
+	public SimpleTcpTransportClient(String host, int port, EDRDeserialiser deserialiser) throws UnknownHostException {
+		this(InetAddress.getByName(host), port, deserialiser);
 	}
 
 	/**
-	 * Create an uninitialised {@link TcpBridgeClient}
+	 * Create an uninitialised {@link SimpleTcpTransportClient}
 	 */
-	public TcpBridgeClient() {
+	public SimpleTcpTransportClient() {
 	}
 
 	@Override
 	protected void doInitialise() {
 		requireNotNull(host, "host");
 		requireNotNull(port, "port");
+		if (deserialiser == null) {
+			deserialiser = new OgreWireFormatDeserialiser();
+		}
 	}
 
 	/**
@@ -87,7 +90,7 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 	}
 
 	/**
-	 * Load the type domain that the {@link TcpBridgeServer} provides. Since {@link TcpBridgeServer}
+	 * Load the type domain that the {@link SimpleTcpTransportServer} provides. Since {@link SimpleTcpTransportServer}
 	 * only exposes a single type domain, the argument is ignored
 	 */
 	@Override
@@ -98,7 +101,7 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 
 
 	/**
-	 * Load the type object graph that the {@link TcpBridgeServer} provides. Since {@link TcpBridgeServer}
+	 * Load the type object graph that the {@link SimpleTcpTransportServer} provides. Since {@link SimpleTcpTransportServer}
 	 * only exposes a single object graph, the arguments are ignored
 	 */
 	@Override
@@ -108,7 +111,7 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 	}
 
 	/**
-	 * Subscribe to the graph updates that the {@link TcpBridgeServer} provides. Since {@link TcpBridgeServer}
+	 * Subscribe to the graph updates that the {@link SimpleTcpTransportServer} provides. Since {@link SimpleTcpTransportServer}
 	 * only exposes a single object graph, the argument is ignored
 	 */
 	@Override
@@ -161,13 +164,13 @@ public class TcpBridgeClient extends InitialisingBean implements DownloadClientA
 							byte[] message = Envelope.readEnvelopedBytes(inputStream);
 							if (message == null) {
 								if (OgreLog.isInfoEnabled()) {
-									OgreLog.info("TcpBridgeClient: connection from server closed");
+									OgreLog.info("SimpleTcpTransportClient: connection from server closed");
 								}
 								return;
 							}
 							GraphUpdate update = deserialiser.deserialiseGraphUpdate(message, typeDomain);
 							if (OgreLog.isDebugEnabled()) {
-								OgreLog.debug("TcpBridgeClient: received new update message: "
+								OgreLog.debug("SimpleTcpTransportClient: received new update message: "
 										+ EDRDescriber.describeGraphUpdate(update));
 							}
 							listener.acceptGraphUpdate(update);

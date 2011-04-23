@@ -37,7 +37,7 @@ public class OgreWireFormatV1SerialiserTest extends EntityClassWithAllFieldsTest
 		EntityClassWithAllFieldsImpl newEntity = new EntityClassWithAllFieldsImpl(-5, -6, -7L, -8L, "Raaa", -9.0F, -10.0F, -11.0, -12.0, byteArray(-1, -2, -3), new EntityElementImpl("Y"));
 		dataSource.setEntityObjects(initialEntityObject, elements[0], newEntity);
 
-		GraphUpdate graphUpdate = msgBridge.getLastGraphUpdate();
+		GraphUpdate graphUpdate = transport.getLastGraphUpdate();
 
 		byte[] serialisedGU = new OgreWireFormatSerialiser().serialiseGraphUpdate(graphUpdate);
 		GraphUpdate deserialisedGU = new OgreWireFormatDeserialiser().deserialiseGraphUpdate(serialisedGU, typeDomain);

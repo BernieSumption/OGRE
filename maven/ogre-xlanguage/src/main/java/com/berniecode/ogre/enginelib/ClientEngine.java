@@ -15,7 +15,7 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
  */
 public class ClientEngine implements GraphUpdateListener, DataSource {
 
-	private DownloadClientAdapter downloadAdapter;
+	private ClientTransportAdapter adapter;
 	private String typeDomainId;
 	private String objectGraphId;
 	private boolean initialised = false;
@@ -23,7 +23,6 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 	private TypeDomain typeDomain;
 
 	private EntityStore entities;
-	private MessageClientAdapter messageAdapter;
 	private GraphUpdateListener graphUpdateListener;
 
 	//
@@ -71,21 +70,12 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 	}
 
 	/**
-	 * Set the {@link DownloadClientAdapter} used by this engine. This must be called before the
+	 * Set the {@link ClientTransportAdapter} used by this engine. This must be called before the
 	 * engine is initialised, and can't be called again after initialisation
 	 */
-	public void setDownloadAdapter(DownloadClientAdapter adapter) {
+	public void setTransportAdapter(ClientTransportAdapter adapter) {
 		requireInitialised(false, "setDownloadAdapter()");
-		this.downloadAdapter = adapter;
-	}
-
-	/**
-	 * Set the {@link MessageClientAdapter} used by this engine. This must be called before the
-	 * engine is initialised, and can't be called again after initialisation
-	 */
-	public void setMessageAdapter(MessageClientAdapter adapter) {
-		requireInitialised(false, "setMessageAdapter()");
-		this.messageAdapter = adapter;
+		this.adapter = adapter;
 	}
 
 	/**
@@ -100,21 +90,20 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 		if (initialised) {
 			return;
 		}
-		requireNotNull(downloadAdapter, "downloadAdapter");
-		requireNotNull(messageAdapter, "messageAdapter");
+		requireNotNull(adapter, "adapter");
 		requireNotNull(typeDomainId, "typeDomainId");
 		requireNotNull(objectGraphId, "objectGraphId");
 
-		typeDomain = downloadAdapter.loadTypeDomain(typeDomainId);
+		typeDomain = adapter.loadTypeDomain(typeDomainId);
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug("ClientEngine initialised with type domain: " + EDRDescriber.describeTypeDomain(typeDomain));
 		}
 		entities = new EntityStore(typeDomain);
 		initialised = true;
 
-		acceptGraphUpdate(downloadAdapter.loadObjectGraph(typeDomain, objectGraphId));
+		acceptGraphUpdate(adapter.loadObjectGraph(typeDomain, objectGraphId));
 
-		messageAdapter.subscribeToGraphUpdates(typeDomain, objectGraphId, this);
+		adapter.subscribeToGraphUpdates(typeDomain, objectGraphId, this);
 
 	}
 
