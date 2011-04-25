@@ -64,7 +64,6 @@ public class Main {
 			server.initialise();
 			
 			new ServerController((MutableSocialNetwork) model, view, ds);
-
 			view.updateFromModel(model);
 		} else {
 
@@ -83,6 +82,7 @@ public class Main {
 					view.updateFromModel(model);
 				}
 			});
+			view.updateFromModel(model);
 		}
 		
 		view.setVisible(true);

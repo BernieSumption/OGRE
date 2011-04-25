@@ -223,7 +223,7 @@ public class SimpleTcpTransportServer extends InitialisingBean implements Serial
 			OgreLog.error("Exception while accepting a connection: " + e.getMessage());
 			return;
 		}
-		System.err.println("accepted " + socketChannel);
+		OgreLog.info("SimpleTcpTransportServer: accepted " + socketChannel);
 	}
 
 	private void readFromSocket(SelectionKey key) {

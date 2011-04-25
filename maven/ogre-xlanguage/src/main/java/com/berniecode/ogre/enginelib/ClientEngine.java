@@ -100,7 +100,7 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 		}
 		entities = new EntityStore(typeDomain);
 		initialised = true;
-
+		
 		acceptGraphUpdate(adapter.loadObjectGraph(typeDomain, objectGraphId));
 
 		adapter.subscribeToGraphUpdates(typeDomain, objectGraphId, this);

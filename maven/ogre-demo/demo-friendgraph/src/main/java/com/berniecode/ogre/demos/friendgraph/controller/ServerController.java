@@ -18,6 +18,7 @@ public class ServerController implements EditEventListener {
 		this.view = view;
 		this.dataSource = dataSource;
 		view.setEditEventListener(this);
+		handleChange();
 	}
 
 	public void setPersonLocation(Person p, int x, int y) {
