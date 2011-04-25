@@ -153,8 +153,9 @@ public class SerialisedDataSource extends InitialisingBean {
 	}
 
 	private void doAcceptGraphUpdate(GraphUpdate graphUpdate) {
+		OgreLog.info("SerialisedDataSource: broadcasting graph update " + graphUpdate);
 		if (OgreLog.isDebugEnabled()) {
-			OgreLog.debug("SerialisedDataSource: broadcasting new graph update: " + EDRDescriber.describeGraphUpdate(graphUpdate));
+			OgreLog.debug(EDRDescriber.describeGraphUpdate(graphUpdate));
 		}
 		synchronized (SNAPSHOT_CACHE_LOCK) {
 			currentSnapshot = null;

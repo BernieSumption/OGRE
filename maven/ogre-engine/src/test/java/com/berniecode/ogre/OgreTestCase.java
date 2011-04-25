@@ -32,7 +32,6 @@ public abstract class OgreTestCase extends TestCase {
 	@Override
 	public final void setUp() throws Exception {
 		OgreLog.setLogWriter(new StdErrLogWriter());
-		OgreLog.setLevel(OgreLog.LEVEL_DEBUG);
 		context = new Mockery();
 		doAdditionalSetup();
 	}

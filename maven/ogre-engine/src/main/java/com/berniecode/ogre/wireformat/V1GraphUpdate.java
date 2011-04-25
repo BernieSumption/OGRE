@@ -50,8 +50,22 @@ final class V1GraphUpdate {
     public boolean hasObjectGraphId() { return hasObjectGraphId; }
     public java.lang.String getObjectGraphId() { return objectGraphId_; }
     
-    // repeated .ogre.EntityValueMessage entityCreates = 3;
-    public static final int ENTITYCREATES_FIELD_NUMBER = 3;
+    // required int32 dataVersion = 3;
+    public static final int DATAVERSION_FIELD_NUMBER = 3;
+    private boolean hasDataVersion;
+    private int dataVersion_ = 0;
+    public boolean hasDataVersion() { return hasDataVersion; }
+    public int getDataVersion() { return dataVersion_; }
+    
+    // required int32 dataVersionScheme = 4;
+    public static final int DATAVERSIONSCHEME_FIELD_NUMBER = 4;
+    private boolean hasDataVersionScheme;
+    private int dataVersionScheme_ = 0;
+    public boolean hasDataVersionScheme() { return hasDataVersionScheme; }
+    public int getDataVersionScheme() { return dataVersionScheme_; }
+    
+    // repeated .ogre.EntityValueMessage entityCreates = 5;
+    public static final int ENTITYCREATES_FIELD_NUMBER = 5;
     private java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> entityCreates_ =
       java.util.Collections.emptyList();
     public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityCreatesList() {
@@ -62,8 +76,8 @@ final class V1GraphUpdate {
       return entityCreates_.get(index);
     }
     
-    // repeated .ogre.EntityValueMessage entityUpdates = 4;
-    public static final int ENTITYUPDATES_FIELD_NUMBER = 4;
+    // repeated .ogre.EntityValueMessage entityUpdates = 6;
+    public static final int ENTITYUPDATES_FIELD_NUMBER = 6;
     private java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> entityUpdates_ =
       java.util.Collections.emptyList();
     public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityUpdatesList() {
@@ -74,8 +88,8 @@ final class V1GraphUpdate {
       return entityUpdates_.get(index);
     }
     
-    // repeated .ogre.EntityDeleteMessage entityDeletes = 5;
-    public static final int ENTITYDELETES_FIELD_NUMBER = 5;
+    // repeated .ogre.EntityDeleteMessage entityDeletes = 7;
+    public static final int ENTITYDELETES_FIELD_NUMBER = 7;
     private java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage> entityDeletes_ =
       java.util.Collections.emptyList();
     public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage> getEntityDeletesList() {
@@ -91,6 +105,8 @@ final class V1GraphUpdate {
     public final boolean isInitialized() {
       if (!hasTypeDomainId) return false;
       if (!hasObjectGraphId) return false;
+      if (!hasDataVersion) return false;
+      if (!hasDataVersionScheme) return false;
       for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityCreatesList()) {
         if (!element.isInitialized()) return false;
       }
@@ -112,14 +128,20 @@ final class V1GraphUpdate {
       if (hasObjectGraphId()) {
         output.writeString(2, getObjectGraphId());
       }
+      if (hasDataVersion()) {
+        output.writeInt32(3, getDataVersion());
+      }
+      if (hasDataVersionScheme()) {
+        output.writeInt32(4, getDataVersionScheme());
+      }
       for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityCreatesList()) {
-        output.writeMessage(3, element);
+        output.writeMessage(5, element);
       }
       for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityUpdatesList()) {
-        output.writeMessage(4, element);
+        output.writeMessage(6, element);
       }
       for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage element : getEntityDeletesList()) {
-        output.writeMessage(5, element);
+        output.writeMessage(7, element);
       }
       getUnknownFields().writeTo(output);
     }
@@ -138,17 +160,25 @@ final class V1GraphUpdate {
         size += com.google.protobuf.CodedOutputStream
           .computeStringSize(2, getObjectGraphId());
       }
+      if (hasDataVersion()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, getDataVersion());
+      }
+      if (hasDataVersionScheme()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, getDataVersionScheme());
+      }
       for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityCreatesList()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, element);
+          .computeMessageSize(5, element);
       }
       for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage element : getEntityUpdatesList()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, element);
+          .computeMessageSize(6, element);
       }
       for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage element : getEntityDeletesList()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, element);
+          .computeMessageSize(7, element);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -326,6 +356,12 @@ final class V1GraphUpdate {
         if (other.hasObjectGraphId()) {
           setObjectGraphId(other.getObjectGraphId());
         }
+        if (other.hasDataVersion()) {
+          setDataVersion(other.getDataVersion());
+        }
+        if (other.hasDataVersionScheme()) {
+          setDataVersionScheme(other.getDataVersionScheme());
+        }
         if (!other.entityCreates_.isEmpty()) {
           if (result.entityCreates_.isEmpty()) {
             result.entityCreates_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage>();
@@ -377,19 +413,27 @@ final class V1GraphUpdate {
               setObjectGraphId(input.readString());
               break;
             }
-            case 26: {
+            case 24: {
+              setDataVersion(input.readInt32());
+              break;
+            }
+            case 32: {
+              setDataVersionScheme(input.readInt32());
+              break;
+            }
+            case 42: {
               com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addEntityCreates(subBuilder.buildPartial());
               break;
             }
-            case 34: {
+            case 50: {
               com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addEntityUpdates(subBuilder.buildPartial());
               break;
             }
-            case 42: {
+            case 58: {
               com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addEntityDeletes(subBuilder.buildPartial());
@@ -442,7 +486,43 @@ final class V1GraphUpdate {
         return this;
       }
       
-      // repeated .ogre.EntityValueMessage entityCreates = 3;
+      // required int32 dataVersion = 3;
+      public boolean hasDataVersion() {
+        return result.hasDataVersion();
+      }
+      public int getDataVersion() {
+        return result.getDataVersion();
+      }
+      public Builder setDataVersion(int value) {
+        result.hasDataVersion = true;
+        result.dataVersion_ = value;
+        return this;
+      }
+      public Builder clearDataVersion() {
+        result.hasDataVersion = false;
+        result.dataVersion_ = 0;
+        return this;
+      }
+      
+      // required int32 dataVersionScheme = 4;
+      public boolean hasDataVersionScheme() {
+        return result.hasDataVersionScheme();
+      }
+      public int getDataVersionScheme() {
+        return result.getDataVersionScheme();
+      }
+      public Builder setDataVersionScheme(int value) {
+        result.hasDataVersionScheme = true;
+        result.dataVersionScheme_ = value;
+        return this;
+      }
+      public Builder clearDataVersionScheme() {
+        result.hasDataVersionScheme = false;
+        result.dataVersionScheme_ = 0;
+        return this;
+      }
+      
+      // repeated .ogre.EntityValueMessage entityCreates = 5;
       public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityCreatesList() {
         return java.util.Collections.unmodifiableList(result.entityCreates_);
       }
@@ -493,7 +573,7 @@ final class V1GraphUpdate {
         return this;
       }
       
-      // repeated .ogre.EntityValueMessage entityUpdates = 4;
+      // repeated .ogre.EntityValueMessage entityUpdates = 6;
       public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage> getEntityUpdatesList() {
         return java.util.Collections.unmodifiableList(result.entityUpdates_);
       }
@@ -544,7 +624,7 @@ final class V1GraphUpdate {
         return this;
       }
       
-      // repeated .ogre.EntityDeleteMessage entityDeletes = 5;
+      // repeated .ogre.EntityDeleteMessage entityDeletes = 7;
       public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityDeleteMessage> getEntityDeletesList() {
         return java.util.Collections.unmodifiableList(result.entityDeletes_);
       }
@@ -1935,23 +2015,24 @@ final class V1GraphUpdate {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\030ogre/V1GraphUpdate.proto\022\004ogre\"\325\001\n\022Gra" +
+      "\n\030ogre/V1GraphUpdate.proto\022\004ogre\"\205\002\n\022Gra" +
       "phUpdateMessage\022\024\n\014typeDomainId\030\001 \002(\t\022\025\n" +
-      "\robjectGraphId\030\002 \002(\t\022/\n\rentityCreates\030\003 " +
-      "\003(\0132\030.ogre.EntityValueMessage\022/\n\rentityU" +
-      "pdates\030\004 \003(\0132\030.ogre.EntityValueMessage\0220" +
-      "\n\rentityDeletes\030\005 \003(\0132\031.ogre.EntityDelet" +
-      "eMessage\"s\n\022EntityValueMessage\022\027\n\017entity" +
-      "TypeIndex\030\001 \002(\005\022\020\n\010entityId\030\002 \002(\003\0222\n\016pro" +
-      "pertyValues\030\004 \003(\0132\032.ogre.PropertyValueMe" +
-      "ssage\"\265\001\n\024PropertyValueMessage\022\025\n\rproper",
-      "tyIndex\030\001 \001(\005\022\021\n\tnullValue\030\002 \001(\010\022\020\n\010intV" +
-      "alue\030\003 \001(\003\022\022\n\nfloatValue\030\004 \001(\002\022\023\n\013double" +
-      "Value\030\005 \001(\001\022\023\n\013stringValue\030\006 \001(\t\022\022\n\nbyte" +
-      "sValue\030\007 \001(\014\022\017\n\007idValue\030\010 \001(\003\"@\n\023EntityD" +
-      "eleteMessage\022\027\n\017entityTypeIndex\030\001 \002(\005\022\020\n" +
-      "\010entityId\030\002 \002(\003B \n\036com.berniecode.ogre.w" +
-      "ireformat"
+      "\robjectGraphId\030\002 \002(\t\022\023\n\013dataVersion\030\003 \002(" +
+      "\005\022\031\n\021dataVersionScheme\030\004 \002(\005\022/\n\rentityCr" +
+      "eates\030\005 \003(\0132\030.ogre.EntityValueMessage\022/\n" +
+      "\rentityUpdates\030\006 \003(\0132\030.ogre.EntityValueM" +
+      "essage\0220\n\rentityDeletes\030\007 \003(\0132\031.ogre.Ent" +
+      "ityDeleteMessage\"s\n\022EntityValueMessage\022\027" +
+      "\n\017entityTypeIndex\030\001 \002(\005\022\020\n\010entityId\030\002 \002(" +
+      "\003\0222\n\016propertyValues\030\004 \003(\0132\032.ogre.Propert",
+      "yValueMessage\"\265\001\n\024PropertyValueMessage\022\025" +
+      "\n\rpropertyIndex\030\001 \001(\005\022\021\n\tnullValue\030\002 \001(\010" +
+      "\022\020\n\010intValue\030\003 \001(\003\022\022\n\nfloatValue\030\004 \001(\002\022\023" +
+      "\n\013doubleValue\030\005 \001(\001\022\023\n\013stringValue\030\006 \001(\t" +
+      "\022\022\n\nbytesValue\030\007 \001(\014\022\017\n\007idValue\030\010 \001(\003\"@\n" +
+      "\023EntityDeleteMessage\022\027\n\017entityTypeIndex\030" +
+      "\001 \002(\005\022\020\n\010entityId\030\002 \002(\003B \n\036com.berniecod" +
+      "e.ogre.wireformat"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1963,7 +2044,7 @@ final class V1GraphUpdate {
           internal_static_ogre_GraphUpdateMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogre_GraphUpdateMessage_descriptor,
-              new java.lang.String[] { "TypeDomainId", "ObjectGraphId", "EntityCreates", "EntityUpdates", "EntityDeletes", },
+              new java.lang.String[] { "TypeDomainId", "ObjectGraphId", "DataVersion", "DataVersionScheme", "EntityCreates", "EntityUpdates", "EntityDeletes", },
               com.berniecode.ogre.wireformat.V1GraphUpdate.GraphUpdateMessage.class,
               com.berniecode.ogre.wireformat.V1GraphUpdate.GraphUpdateMessage.Builder.class);
           internal_static_ogre_EntityValueMessage_descriptor =

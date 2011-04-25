@@ -19,7 +19,7 @@ public class OgreLog {
 	public static final int LEVEL_DEBUG = 2;
 
 
-	private static int currentLevel = LEVEL_DEBUG;
+	private static int currentLevel = LEVEL_INFO;
 
 	private static LogWriter writer = new StdErrLogWriter();
 	

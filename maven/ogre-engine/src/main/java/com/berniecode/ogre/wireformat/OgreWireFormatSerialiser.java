@@ -75,7 +75,9 @@ public class OgreWireFormatSerialiser implements EDRSerialiser {
 	public byte[] serialiseGraphUpdate(GraphUpdate graphUpdate) {
 		GraphUpdateMessage.Builder guBuilder = GraphUpdateMessage.newBuilder()
 				.setTypeDomainId(graphUpdate.getTypeDomain().getTypeDomainId())
-				.setObjectGraphId(graphUpdate.getObjectGraphId());
+				.setObjectGraphId(graphUpdate.getObjectGraphId())
+				.setDataVersion(graphUpdate.getDataVersion())
+				.setDataVersionScheme(graphUpdate.getDataVersionScheme());
 		for (RawPropertyValueSet entity : graphUpdate.getEntityCreates()) {
 			guBuilder.addEntityCreates(getEntityValueMessage(entity, false));
 		}

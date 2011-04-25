@@ -99,6 +99,7 @@ public class EndToEndTest extends EntityClassWithAllFieldsTestCase {
 
 		
 		assertEquals(2, transport.getMessageCount());
+		
 		assertGraphUpdateState(
 				"GraphUpdate for object graph TypeDomain/TestObjectGraph" +
 				"  complete values:" +

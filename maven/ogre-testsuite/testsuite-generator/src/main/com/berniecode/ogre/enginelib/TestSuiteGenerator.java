@@ -26,13 +26,13 @@ public class TestSuiteGenerator {
 	private static final String INITIAL_DATA_MESSAGE_FILE_NAME = "initial-data.message";
 	private static final String GRAPH_UPDATE_MESSAGE_FILE_PATTERN = "graph-update-%d.message";
 	private static final String TRACE_FILE_NAME = "trace.txt";
-	
-	private static final Boolean[] TRUE_OR_FALSE = new Boolean[] {true, false};
+
+	private static final Boolean[] TRUE_OR_FALSE = new Boolean[] { true, false };
 
 	private static final int MAX_ENTITIES_TO_CHANGE_PER_ITERATION = 10;
 	private static final int MAX_ENTITIES_TO_DELETE_PER_ITERATION = 10;
 	private static final int MAX_ENTITIES_TO_ADD_PER_ITERATION = 3;
-	
+
 	private static final int MAX_RANDOM_STRING_LENGTH = 20;
 
 	private static final int MIN_ENTITY_TYPES_PER_TYPE_DOMAIN = 1;
@@ -41,11 +41,8 @@ public class TestSuiteGenerator {
 	private static final int MAX_PROPERTIES_PER_ENTITY_TYPE = 20;
 
 	private static final int MAX_INITIAL_ENTITIES = 100;
-	
-	
+
 	private static boolean OVERWRITE_TEST_SUITES = true;
-	
-	
 
 	private final File outputFolder;
 	private final int suiteNumber;
@@ -58,6 +55,8 @@ public class TestSuiteGenerator {
 	private List<EntityValue> entities;
 	private EntityType[] entityTypes;
 	private String objectGraphId;
+	private int dataVersion;
+	private int dataVersionScheme = new Random().nextInt();
 
 	public TestSuiteGenerator(int suiteNumber, int iterations, File outputFolder) {
 		this.suiteNumber = suiteNumber;
@@ -67,54 +66,54 @@ public class TestSuiteGenerator {
 
 	public void generateTestSuite() throws IOException {
 		if (outputFolder.exists() && !OVERWRITE_TEST_SUITES) {
-			System.err.println("Skipping suite " + suiteNumber + " because an output folder already exists at " + outputFolder.getAbsolutePath());
+			System.err.println("Skipping suite " + suiteNumber + " because an output folder already exists at "
+					+ outputFolder.getAbsolutePath());
 			return;
 		}
 		if (!outputFolder.exists() && !outputFolder.mkdir()) {
 			System.err.println("Failed to create folder " + outputFolder.getAbsolutePath());
 			return;
 		}
-		
+
 		try {
-		
+
 			random = new Random(suiteNumber);
 			setFile(TRACE_FILE_NAME, "");
 			traceFileWriter = new BufferedWriter(new FileWriter(new File(outputFolder, TRACE_FILE_NAME)));
-			
+
 			typeDomain = makeRandomTypeDomain(suiteNumber);
 			setFile(TYPE_DOMAIN_MESSAGE_FILE_NAME, serialiser.serialiseTypeDomain(typeDomain));
 			traceLine("type domain", EDRDescriber.describeTypeDomain(typeDomain));
-			
-			
+
 			entities = createObjectGraph();
 			objectGraphId = "object-graph-" + suiteNumber;
-			GraphUpdate initialData = new GraphUpdate(typeDomain, objectGraphId, entities.toArray(new EntityValue[0]), null, null);
+			GraphUpdate initialData = new GraphUpdate(typeDomain, objectGraphId, ++dataVersion, dataVersionScheme,
+					entities.toArray(new EntityValue[0]), null, null);
 			setFile(INITIAL_DATA_MESSAGE_FILE_NAME, serialiser.serialiseGraphUpdate(initialData));
 			traceLine("initial data set", EDRDescriber.describeObjectGraph(initialData));
-			
+
 			for (int i = 0; i < iterations; i++) {
 				doChangeIteration(i);
 			}
-		
-		}
-		finally {
+
+		} finally {
 			if (traceFileWriter != null) {
 				traceFileWriter.close();
 				traceFileWriter = null;
 			}
 		}
 	}
-	
+
 	private void doChangeIteration(int iteration) throws IOException {
 		EntityValue[] existingEntities = entities.toArray(new EntityValue[0]);
-		
+
 		// delete some entities
 		List<EntityReference> entityDeletes = new ArrayList<EntityReference>();
-		for (int i: makeRandomIndices(existingEntities.length, MAX_ENTITIES_TO_DELETE_PER_ITERATION)) {
+		for (int i : makeRandomIndices(existingEntities.length, MAX_ENTITIES_TO_DELETE_PER_ITERATION)) {
 			EntityValue entityToDelete = existingEntities[i];
 			entityDeletes.add(entityToDelete);
 			entities.remove(entityToDelete);
-			for (EntityValue entity: existingEntities) {
+			for (EntityValue entity : existingEntities) {
 				entity.nullReferencesTo(entityToDelete);
 			}
 		}
@@ -122,13 +121,13 @@ public class TestSuiteGenerator {
 
 		// build a Map<EntityType, List<Long>> of available references
 		Map<EntityType, List<Long>> availableEntities = new HashMap<EntityType, List<Long>>();
-		for (EntityType entityType: entityTypes) {
+		for (EntityType entityType : entityTypes) {
 			availableEntities.put(entityType, new ArrayList<Long>());
 		}
-		for (EntityValue entity: existingEntities) {
+		for (EntityValue entity : existingEntities) {
 			availableEntities.get(entity.getEntityType()).add(entity.getEntityId());
 		}
-		
+
 		// decide what entities we're going to add
 		int numEntitiesToAdd = makeRandomNumberInclusive(0, MAX_ENTITIES_TO_ADD_PER_ITERATION);
 		EntityType[] typesToAdd = new EntityType[numEntitiesToAdd];
@@ -138,7 +137,7 @@ public class TestSuiteGenerator {
 			idsToAdd[i] = makeId();
 			availableEntities.get(typesToAdd[i]).add(idsToAdd[i]);
 		}
-		
+
 		// add the new entities
 		EntityValue[] newEntities = new EntityValue[numEntitiesToAdd];
 		for (int i = 0; i < numEntitiesToAdd; i++) {
@@ -146,22 +145,22 @@ public class TestSuiteGenerator {
 			entities.add(newEntity);
 			newEntities[i] = newEntity;
 		}
-		
-		
+
 		// modify existing entities
-		
-		int qtyToChange = makeRandomNumberInclusive(0, Math.min(MAX_ENTITIES_TO_CHANGE_PER_ITERATION, existingEntities.length));
+
+		int qtyToChange = makeRandomNumberInclusive(0,
+				Math.min(MAX_ENTITIES_TO_CHANGE_PER_ITERATION, existingEntities.length));
 		List<EntityValue> entitiesToChange = Arrays.asList(existingEntities);
 		Collections.shuffle(entitiesToChange, random);
 		List<EntityDiff> entityDiffs = new ArrayList<EntityDiff>();
-		for (int i=0; i<qtyToChange; i++) {
+		for (int i = 0; i < qtyToChange; i++) {
 			EntityValue entity = entitiesToChange.get(i);
 			EntityType entityType = entity.getEntityType();
 			Object[] values = new Object[entityType.getPropertyCount()];
 			for (int j = 0; j < values.length; j++) {
 				values[i] = entity.getRawPropertyValue(entityType.getProperty(i));
 			}
-			for(int index: makeRandomIndices(entityType.getPropertyCount())) {
+			for (int index : makeRandomIndices(entityType.getPropertyCount())) {
 				values[index] = makeRandomPropertyValue(entityType.getProperty(index), availableEntities);
 			}
 			EntityValue newEntity = new EntityValue(entityType, entity.getEntityId(), values);
@@ -171,20 +170,23 @@ public class TestSuiteGenerator {
 			}
 			entities.set(entities.indexOf(entity), newEntity);
 		}
-		
+
 		// make update message
-		GraphUpdate graphUpdate = new GraphUpdate(typeDomain, objectGraphId, newEntities, entityDiffs.toArray(new EntityDiff[0]), entityDeletes.toArray(new EntityReference[0]));
-		
+		GraphUpdate graphUpdate = new GraphUpdate(typeDomain, objectGraphId, ++dataVersion, dataVersionScheme,
+				newEntities, entityDiffs.toArray(new EntityDiff[0]), entityDeletes.toArray(new EntityReference[0]));
+
 		// trace text version of update message
 		traceLine("update " + iteration, describeGraphUpdate(graphUpdate));
 		traceLine("graph state after update " + iteration, describeObjectGraph());
-		
+
 		// trace text version of object graph state
-		setFile(GRAPH_UPDATE_MESSAGE_FILE_PATTERN.replace("%d", String.valueOf(iteration)), serialiser.serialiseGraphUpdate(graphUpdate));
+		setFile(GRAPH_UPDATE_MESSAGE_FILE_PATTERN.replace("%d", String.valueOf(iteration)),
+				serialiser.serialiseGraphUpdate(graphUpdate));
 	}
 
 	private String describeObjectGraph() {
-		GraphUpdate objectGraph = new GraphUpdate(typeDomain, objectGraphId, entities.toArray(new EntityValue[0]), null, null);
+		GraphUpdate objectGraph = new GraphUpdate(typeDomain, objectGraphId, dataVersion, dataVersionScheme,
+				entities.toArray(new EntityValue[0]), null, null);
 		Arrays.sort(objectGraph.getEntityCreates(), new EntityReferenceComparator());
 		return EDRDescriber.describeObjectGraph(objectGraph);
 	}
@@ -196,12 +198,13 @@ public class TestSuiteGenerator {
 		Arrays.sort(graphUpdate.getEntityDeletes(), comparator);
 		return EDRDescriber.describeGraphUpdate(graphUpdate);
 	}
-	
+
 	private long idCounter = 0;
 
 	private long makeId() {
 		return ++idCounter;
-//		return random.nextLong() & 0x000FFFFFFFFFFFFFL; // always positive, never greater than 2^52
+		// return random.nextLong() & 0x000FFFFFFFFFFFFFL; // always positive, never greater than
+		// 2^52
 	}
 
 	//
@@ -209,7 +212,7 @@ public class TestSuiteGenerator {
 	//
 
 	/**
-	 * Pick {@code count} random indices from a list of size {@code size} 
+	 * Pick {@code count} random indices from a list of size {@code size}
 	 */
 	private List<Integer> makeRandomIndices(int size, int count) {
 		if (count > size) {
@@ -224,7 +227,7 @@ public class TestSuiteGenerator {
 	}
 
 	/**
-	 * Pick a random number of random indices from a list of size {@size} 
+	 * Pick a random number of random indices from a list of size {@size}
 	 */
 	private List<Integer> makeRandomIndices(int size) {
 		return makeRandomIndices(size, size);
@@ -233,7 +236,7 @@ public class TestSuiteGenerator {
 	private TypeDomain makeRandomTypeDomain(int suiteNumber) {
 		return new TypeDomain("com.berniecode.ogre.enginelib." + suiteNumber, entityTypes = makeRandomEntityTypes());
 	}
-	
+
 	private EntityType[] makeRandomEntityTypes() {
 		int length = makeRandomNumberInclusive(MIN_ENTITY_TYPES_PER_TYPE_DOMAIN, MAX_ENTITY_TYPES_PER_TYPE_DOMAIN);
 		String[] names = new String[length];
@@ -264,26 +267,27 @@ public class TestSuiteGenerator {
 		}
 		return properties;
 	}
-	
+
 	//
 	// DATA GENERATION
 	//
-	
+
 	private List<EntityValue> createObjectGraph() {
 
 		// allow replace
 		List<EntityValue> store = new ArrayList<EntityValue>();
-		
+
 		if (entityTypes.length > 0) {
-		
+
 			int numEntities = makeRandomNumberInclusive(0, MAX_INITIAL_ENTITIES);
-	
-			// pre-calculate the types and IDs of all entities, because makeRandomEntity() needs to know them in advance
+
+			// pre-calculate the types and IDs of all entities, because makeRandomEntity() needs to
+			// know them in advance
 			// in order to create random references to them
 			EntityType[] graphEntityTypes = new EntityType[numEntities];
 			long[] graphEntityIds = new long[numEntities];
 			Map<EntityType, List<Long>> idMap = new HashMap<EntityType, List<Long>>();
-			
+
 			for (int i = 0; i < graphEntityTypes.length; i++) {
 				EntityType entityType = makeRandomChoice(entityTypes);
 				long id = makeId();
@@ -293,14 +297,14 @@ public class TestSuiteGenerator {
 					idMap.put(entityType, new ArrayList<Long>());
 				}
 				idMap.get(entityType).add(id);
-				
+
 			}
-	
+
 			for (int i = 0; i < graphEntityTypes.length; i++) {
 				store.add(makeRandomEntityValue(graphEntityTypes[i], graphEntityIds[i], idMap));
 			}
 		}
-		
+
 		return store;
 	}
 
@@ -309,11 +313,11 @@ public class TestSuiteGenerator {
 		for (int i = 0; i < values.length; i++) {
 			values[i] = makeRandomPropertyValue(entityType.getProperty(i), idMap);
 		}
-		return new EntityValue(entityType, id, values );
+		return new EntityValue(entityType, id, values);
 	}
-	
+
 	private Object makeRandomPropertyValue(Property property, Map<EntityType, List<Long>> idMap) {
-		switch(property.getTypeCode()) {
+		switch (property.getTypeCode()) {
 		case Property.TYPECODE_INT32:
 			return random.nextInt();
 		case Property.TYPECODE_INT64:
@@ -347,7 +351,7 @@ public class TestSuiteGenerator {
 	private void setFile(String fileName, String string) throws IOException {
 		setFile(fileName, string.getBytes(Charset.forName("UTF8")));
 	}
-	
+
 	private void setFile(String fileName, byte[] bytes) throws IOException {
 		OutputStream os = new FileOutputStream(new File(outputFolder, fileName));
 		os.write(bytes);

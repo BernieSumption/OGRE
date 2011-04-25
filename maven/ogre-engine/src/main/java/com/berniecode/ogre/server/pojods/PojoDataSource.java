@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import com.berniecode.ogre.InitialisingBean;
@@ -48,6 +49,8 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	private EDRMapper edrMapper;
 	private String objectGraphId;
 	private GraphUpdateListener graphUpdateListener;
+	private int dataVersion;
+	private int dataVersionScheme;
 
 	private TypeDomain typeDomain;
 	private Map<EntityType, Map<Long, EntityValue>> entities;
@@ -61,6 +64,8 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	protected void doInitialise() {
 		requireNotNull(edrMapper, "edrMapper");
 		requireNotNull(objectGraphId, "objectGraphId");
+
+		dataVersionScheme = new Random().nextInt();
 
 		typeDomain = edrMapper.getTypeDomain();
 		entities = new HashMap<EntityType, Map<Long, EntityValue>>();
@@ -105,8 +110,9 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	}
 
 	@Override
-	public GraphUpdate createSnapshot() {
-		return new GraphUpdate(typeDomain, objectGraphId, getAllEntities().toArray(new EntityValue[0]), null, null);
+	public synchronized GraphUpdate createSnapshot() {
+		return new GraphUpdate(typeDomain, objectGraphId, dataVersion, dataVersionScheme, getAllEntities().toArray(
+				new EntityValue[0]), null, null);
 	}
 
 	@Override
@@ -145,7 +151,7 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * @throws ValueMappingException if there is a problem mapping one of the entity objects to an
 	 *             {@link Entity}
 	 */
-	public void setEntityObjects(Object... roots) throws ValueMappingException {
+	public synchronized void setEntityObjects(Object... roots) throws ValueMappingException {
 		requireInitialised(true, "setEntityObjects()");
 
 		Set<Object> entityObjects = new LinkedHashSet<Object>();
@@ -215,21 +221,19 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 				entityDeletes.add(oldEntity);
 			}
 		}
+		
+		
+		// send updates if required
+		if (completeEntities.size() > 0 || entityDiffs.size() > 0 || entityDeletes.size() > 0) {
+			
+			dataVersion++;
 
-		sendGraphUpdate(completeEntities, entityDiffs, entityDeletes);
-	}
-
-	private void sendGraphUpdate(List<EntityValue> newEntities, List<EntityDiff> entityDiffs,
-			List<EntityReference> entityDeletes) {
-
-		if (newEntities.size() == 0 && entityDiffs.size() == 0 && entityDeletes.size() == 0) {
-			return;
-		}
-
-		if (graphUpdateListener != null) {
-			GraphUpdate update = new GraphUpdate(typeDomain, objectGraphId, newEntities.toArray(new EntityValue[0]),
-					entityDiffs.toArray(new EntityDiff[0]), entityDeletes.toArray(new EntityReference[0]));
-			graphUpdateListener.acceptGraphUpdate(update);
+			if (graphUpdateListener != null) {
+				GraphUpdate update = new GraphUpdate(typeDomain, objectGraphId, dataVersion, dataVersionScheme,
+						completeEntities.toArray(new EntityValue[0]), entityDiffs.toArray(new EntityDiff[0]),
+						entityDeletes.toArray(new EntityReference[0]));
+				graphUpdateListener.acceptGraphUpdate(update);
+			}
 		}
 	}
 

@@ -85,7 +85,6 @@ public class SimpleTcpTransportServer extends InitialisingBean implements Serial
 		this.hostAddress = host;
 	}
 
-
 	/**
 	 * Set the TCP port to listen for new connections on.
 	 */
@@ -196,13 +195,19 @@ public class SimpleTcpTransportServer extends InitialisingBean implements Serial
 						continue;
 					}
 
-					if (key.isAcceptable()) {
-						acceptConnection(); // no need to pass key - only the serverChannel can
-											// accept connections
-					} else if (key.isReadable()) {
-						readFromSocket(key);
-					} else if (key.isWritable()) {
-						writeToSocket(key);
+					try {
+
+						if (key.isAcceptable()) {
+							acceptConnection();
+						} else if (key.isReadable()) {
+							readFromSocket(key);
+						} else if (key.isWritable()) {
+							writeToSocket(key);
+						}
+
+					} catch (Exception e) {
+						OgreLog.error("Closing connection due to exception: " + e.getMessage());
+						closeConnection(key);
 					}
 				}
 			}
@@ -319,7 +324,7 @@ public class SimpleTcpTransportServer extends InitialisingBean implements Serial
 	public void acceptSerialisedGraphUpdate(byte[] update) {
 		update = Envelope.wrapInEnvelope(update);
 		synchronized (conversations) {
-			for (Response response: conversations.values()) {
+			for (Response response : conversations.values()) {
 				if (response.getType() == RequestType.SUBSCRIBE) {
 					response.addDataToSend(update);
 				}

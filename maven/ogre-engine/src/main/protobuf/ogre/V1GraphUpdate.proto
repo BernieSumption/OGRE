@@ -11,9 +11,11 @@ option java_package = "com.berniecode.ogre.wireformat";
 message GraphUpdateMessage {
   required string typeDomainId = 1;
   required string objectGraphId = 2;
-  repeated EntityValueMessage entityCreates = 3; // complete-style EntityValues creating new entities
-  repeated EntityValueMessage entityUpdates = 4; // diff-style EntityValues updating existing entities
-  repeated EntityDeleteMessage entityDeletes = 5;
+  required int32 dataVersion = 3;
+  required int32 dataVersionScheme = 4;
+  repeated EntityValueMessage entityCreates = 5; // complete-style EntityValues creating new entities
+  repeated EntityValueMessage entityUpdates = 6; // diff-style EntityValues updating existing entities
+  repeated EntityDeleteMessage entityDeletes = 7;
 }
   
 // There are two flavours of validation for this message. "complete-style", and "diff-style"

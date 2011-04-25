@@ -4,8 +4,7 @@ package com.berniecode.ogre.enginelib;
  * Represents a change to an object graph.
  * 
  * <p>
- * This class maps closely onto the GraphUpdate message in the OGRE wire format, read the comments
- * in the .proto file for an explanation of the function of a GraphUpdate.
+ * See the OGRE white paper for an overview of the function of this and other EDR classes.
  * 
  * @author Bernie Sumption
  */
@@ -16,10 +15,16 @@ public class GraphUpdate {
 	private final RawPropertyValueSet[] entityCreates;
 	private final PartialRawPropertyValueSet[] entityUpdates;
 	private final EntityReference[] entityDeletes;
+	private final int dataVersion;
+	private final int dataVersionScheme;
 
-	public GraphUpdate(TypeDomain typeDomain, String objectGraphId, RawPropertyValueSet[] entityValues, PartialRawPropertyValueSet[] entityDiffs, EntityReference[] entityDeletes) {
+	public GraphUpdate(TypeDomain typeDomain, String objectGraphId, int dataVersion, int dataVersionScheme,
+			RawPropertyValueSet[] entityValues, PartialRawPropertyValueSet[] entityDiffs,
+			EntityReference[] entityDeletes) {
 		this.typeDomain = typeDomain;
 		this.objectGraphId = objectGraphId;
+		this.dataVersion = dataVersion;
+		this.dataVersionScheme = dataVersionScheme;
 		this.entityCreates = entityValues == null ? new RawPropertyValueSet[0] : entityValues;
 		this.entityUpdates = entityDiffs == null ? new PartialRawPropertyValueSet[0] : entityDiffs;
 		this.entityDeletes = entityDeletes == null ? new EntityReference[0] : entityDeletes;
@@ -42,6 +47,21 @@ public class GraphUpdate {
 	}
 
 	/**
+	 * A counter that increments with each graph update to the same object graph. Graph updates must
+	 * be applied in order to guarantee the integrity of the slave object graph.
+	 */
+	public int getDataVersion() {
+		return dataVersion;
+	}
+
+	/**
+	 * A unique id for the data version series.
+	 */
+	public int getDataVersionScheme() {
+		return dataVersionScheme;
+	}
+
+	/**
 	 * @return {@link RawPropertyValueSet}s for Entities that have been been created
 	 */
 	public RawPropertyValueSet[] getEntityCreates() {
@@ -61,9 +81,9 @@ public class GraphUpdate {
 	public EntityReference[] getEntityDeletes() {
 		return entityDeletes;
 	}
-	
+
 	public String toString() {
-		return "graph update for " + typeDomain.getTypeDomainId() + "/" + objectGraphId;
+		return "graph update #" + dataVersion + " for " + typeDomain.getTypeDomainId() + "/" + objectGraphId;
 	}
 
 }

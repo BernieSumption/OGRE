@@ -25,6 +25,8 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 	private EntityStore entities;
 	private GraphUpdateListener graphUpdateListener;
 
+	private GraphUpdate lastUpdate;
+
 	//
 	// CONFIGURATION AND INITIALISATION
 	//
@@ -100,7 +102,7 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 		}
 		entities = new EntityStore(typeDomain);
 		initialised = true;
-		
+
 		acceptGraphUpdate(adapter.loadObjectGraph(typeDomain, objectGraphId));
 
 		adapter.subscribeToGraphUpdates(typeDomain, objectGraphId, this);
@@ -126,7 +128,7 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 	 * 
 	 * @throws InitialisationException if the client engine has not been initialised yet
 	 */
-	public Entity[] getEntitiesByType(EntityType entityType) {
+	public synchronized Entity[] getEntitiesByType(EntityType entityType) {
 		requireInitialised(true, "getEntitiesByType()");
 		return entities.getEntitiesByType(entityType);
 	}
@@ -137,7 +139,7 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 	 * 
 	 * @throws InitialisationException if the client engine has not been initialised yet
 	 */
-	public Entity getEntityByTypeAndId(EntityType entityType, long id) {
+	public synchronized Entity getEntityByTypeAndId(EntityType entityType, long id) {
 		requireInitialised(true, "getEntitiesByType()");
 		return entities.get(entityType, id);
 	}
@@ -147,9 +149,13 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 	 * 
 	 * @throws InitialisationException if the client engine has not been initialised yet
 	 */
-	public GraphUpdate createSnapshot() {
+	public synchronized GraphUpdate createSnapshot() {
 		requireInitialised(true, "createSnapshot()");
-		return new GraphUpdate(typeDomain, objectGraphId, entities.getEntities(), null, null);
+		if (lastUpdate == null) {
+			return new GraphUpdate(typeDomain, objectGraphId, 0, 0, null, null, null);
+		}
+		return new GraphUpdate(typeDomain, objectGraphId, lastUpdate.getDataVersion(),
+				lastUpdate.getDataVersionScheme(), entities.getEntities(), null, null);
 	}
 
 	/**
@@ -159,7 +165,7 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 	 * @throws OgreException if {@code property.getReferenceType() != entity.getEntityType()}
 	 * @throws InitialisationException if the client engine has not been initialised yet
 	 */
-	public Entity[] getReferencesTo(Entity entity, ReferenceProperty property) {
+	public synchronized Entity[] getReferencesTo(Entity entity, ReferenceProperty property) {
 		requireInitialised(true, "getReferencesTo()");
 		if (property.getReferenceType() != entity.getEntityType()) {
 			throw new OgreException(property + " does not reference the EntityType " + entity.getEntityType());
@@ -203,13 +209,25 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 	/**
 	 * @private
 	 */
-	public void acceptGraphUpdate(GraphUpdate update) throws InvalidGraphUpdateException {
+	public synchronized void acceptGraphUpdate(GraphUpdate update) throws InvalidGraphUpdateException {
 		requireInitialised(true, "acceptGraphUpdate()");
 
 		OgreLog.info("ClientEngine: applying graph update " + update);
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug(EDRDescriber.describeGraphUpdate(update));
 		}
+		
+		if (lastUpdate != null) {
+			if (lastUpdate.getDataVersionScheme() != update.getDataVersionScheme()) {
+				//TODO this should trigger a reload of the whole data set
+				OgreLog.error("ClientEngine: incompatible data version scheme in graph update. Expected " + lastUpdate.getDataVersionScheme()  + " got " + update.getDataVersionScheme());
+			}
+			else if (lastUpdate.getDataVersion() + 1 != update.getDataVersion()) {
+				//TODO this should trigger a reload of the whole data set
+				OgreLog.error("ClientEngine: incorrect data version sequence. Expected " + (lastUpdate.getDataVersion() + 1) + " got " + update.getDataVersion());
+			}
+		}
+		lastUpdate = update;
 
 		// pre-build the Entities that we're going to add
 		RawPropertyValueSet[] completeValues = update.getEntityCreates();
@@ -269,7 +287,7 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 				entities.removeSimilar(target);
 			}
 		}
-		
+
 		if (graphUpdateListener != null) {
 			graphUpdateListener.acceptGraphUpdate(update);
 		}

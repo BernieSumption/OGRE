@@ -90,11 +90,10 @@ public class OgreWireFormatDeserialiser implements EDRDeserialiser {
 		}
 		return new Property(name, propertyType.getNumber(), pm.getNullable());
 	}
-	
+
 	//
 	// GRAPH UPDATE DESERIALISATION
 	//
-	
 
 	@Override
 	public GraphUpdate deserialiseGraphUpdate(byte[] message, TypeDomain typeDomain) {
@@ -107,8 +106,8 @@ public class OgreWireFormatDeserialiser implements EDRDeserialiser {
 		} catch (InvalidProtocolBufferException e) {
 			throw new OgreException("The supplied byte array is not a valid Protocol Buffers message", e);
 		}
-		return new GraphUpdate(typeDomain, gum.getObjectGraphId(), getEntityValues(gum, typeDomain), getEntityDiffs(
-				gum, typeDomain), getEntityDeletes(gum, typeDomain));
+		return new GraphUpdate(typeDomain, gum.getObjectGraphId(), gum.getDataVersion(), gum.getDataVersionScheme(),
+				getEntityValues(gum, typeDomain), getEntityDiffs(gum, typeDomain), getEntityDeletes(gum, typeDomain));
 	}
 
 	private EntityValue[] getEntityValues(GraphUpdateMessage gum, TypeDomain typeDomain) {

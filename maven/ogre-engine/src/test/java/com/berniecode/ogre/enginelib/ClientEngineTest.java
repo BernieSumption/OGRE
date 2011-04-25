@@ -22,9 +22,12 @@ public class ClientEngineTest extends OgreTestCase {
 
 	private ClientTransportAdapter adapter;
 	private Property parentName;
+	private int dataVersion;
 
 	@Override
 	public void doAdditionalSetup() throws Exception {
+		
+		dataVersion = 0;
 
 		adapter = context.mock(ClientTransportAdapter.class); 
 
@@ -37,7 +40,7 @@ public class ClientEngineTest extends OgreTestCase {
 		});
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { parentType, childType });
 		
-		initialValueUpdate = new GraphUpdate(typeDomain, OBJECT_GRAPH_ID, null, null, null);
+		initialValueUpdate = createGraphUpdate();
 	}
 
 	public void testInitialiseWithoutDependencies() throws NoSuchThingException {
@@ -199,7 +202,7 @@ public class ClientEngineTest extends OgreTestCase {
 				throw new OgreException("Invalid argument to createGraphUpdate() of type " + update.getClass());
 			}
 		}
-		return new GraphUpdate(typeDomain, OBJECT_GRAPH_ID,
+		return new GraphUpdate(typeDomain, OBJECT_GRAPH_ID, ++dataVersion, 1,
 				valueMessages.toArray(new RawPropertyValueSet[0]),
 				diffMessages.toArray(new PartialRawPropertyValueSet[0]),
 				null);
