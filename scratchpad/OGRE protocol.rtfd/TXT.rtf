@@ -46,6 +46,7 @@ Enough theory, time for an example. This is a type domain for a basic social net
 }¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \fs30 \cf0 \
+Notice that each friendship is an entity. In OGRE, properties can be references to single entities, but not collections of references. It is therefore necessary to represent many-to-many relationships using an intermediate entity type, in this case "Friendship".\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 \cf0 \
 Here's an object graph based on this type domain:\
@@ -60,7 +61,7 @@ Here's an object graph based on this type domain:\
 \cf0 \
 The first thing to notice is that each entity has been given a unique ID. Every OGRE entity has an ID, and this is how references are represented. Programming environments have different ways of expressing relationships. Object-oriented languages use pointers or references. SQL databases use linking tables. OGRE uses integer IDs.\
 \
-In the diagrammatic representation of the object graph above, friendships objects are indicated with arrows.\
+In the diagrammatic representation of the object graph above, friendship entities objects are indicated with arrows.\
 \
 In order to send a graph over the network, the OGRE server analyses the graph and transforms each Person's list of friends into an array of integers. Encoded like this, each object is a self-contained collection of values that can be sent over the network. OGRE clients receive these encoded objects and expand them back into a graph structure. Because each Person entity is associated with the Person entity type the OGRE client knows that the "friends" property should contains references to other Person entities, so it converts the array of integers back into a list of Person references.\
 \
@@ -78,8 +79,18 @@ When an OGRE client first connects to an OGRE server, it downloads a complete re
       \{type: "Person", id: 2, name: "Woody", dob: "1785-08-22", friends: [3, 4], photo: "..."\},\
       \{type: "Person", id: 3, name: "Bullseye", dob: "1814-12-25", friends: [1, 2, 4, 5], photo: "..."\},\
       \{type: "Person", id: 4, name: "Jessie", dob: "1772-01-05", friends: [1, 3], photo: "..."\},\
-      \{type: "Person", id: 5, name: "Stinky Pete", dob: "1761-11-08", friends: [], photo: "..."\}\
-      \{type: "Friendship", id: 1, liker\
+      \{type: "Person", id: 5, name: "Stinky Pete", dob: "1761-11-08", friends: [], photo: "..."\},\
+      \{type: "Friendship", id: 1, liker: 1, likee: 2\},\
+      \{type: "Friendship", id: 2, liker: 1, likee: 3\},\
+      \{type: "Friendship", id: 3, liker: 1, likee: 4\},\
+      \{type: "Friendship", id: 4, liker: 2, likee: 3\},\
+      \{type: "Friendship", id: 5, liker: 2, likee: 4\},\
+      \{type: "Friendship", id: 6, liker: 3, likee: 1\},\
+      \{type: "Friendship", id: 7, liker: 3, likee: 2\},\
+      \{type: "Friendship", id: 8, liker: 3, likee: 4\},\
+      \{type: "Friendship", id: 9, liker: 3, likee: 5\},\
+      \{type: "Friendship", id: 10, liker: 4, likee: 1\},\
+      \{type: "Friendship", id: 11, liker: 4, likee: 3\}\
     ]\
   \}\
 \
@@ -87,8 +98,8 @@ The interpretation of the "entities" array should be clear now. The other fields
 \
   * **typeDomainId:** an ID used to locate the type domain for this object graph. This is chosen by the programmer, and should be unique within the scope of an OGRE server to prevent clashes with other applications running on the same server. It is transmitted with each message, so should not be needlessly long.\
   * ** objectGraphId:** uniquely identifies the object graph. This is used to distinguish between object graphs when there are several of them with the same type domain. Again, it is transmitted with each message, so should not be needlessly long.\
-  * **dataVersion:** this number increments each time the object graph changes. If a client has a graph with dataVersion 7, and the dataVersion on the server is 10, then the client must apply updates 8, 9 and 10 to bring itself in sync with the server. After reaching the highest value that can be stored in a 32 bit integer (2147483647), the counter rolls over to the smallest 32 bit integer value (-2147483648) and continues incrementing from there.\
-  * **dataVersionScheme:** a unique string that changes every time the dataVersion resets. If the server restarts and loses it's internal state, it may have to start the dataVersion counting from 1 again. By changing the dataVersionScheme, all clients will be forced to download the new graph and start again.\
+  * **dataVersion:** this number increments each time the object graph changes. If a client has a graph with dataVersion 7, the next update it receives must be numbered 8. If not, then the client must download the whole object graph again. After reaching the highest value that can be stored in a 32 bit integer (2147483647), the counter rolls over to the smallest 32 bit integer value (-2147483648) and continues incrementing from there.\
+  * **dataVersionScheme:** a unique identifier that changes every time the dataVersion resets. If the server restarts and loses it's internal state, it may have to start the dataVersion counting from 1 again. By changing the dataVersionScheme, all clients will recognise that this reset has occurred, and can download the whole object graph and start again.\
 \
 === Encoding updates to a graph ====\
 \
@@ -100,32 +111,35 @@ After the client receives the whole graph structure, exactly three things can ha
 \
 If any of the above happen, the dataVersion property of the server-side graph will be incremented, and a new **graph update** will be created. After downloading the complete initial graph structure, clients receive a stream of graph updates, each one of which can contain multiple changes to the object graph.\
 \
-Let's introduce "Al" of Al's Toy Barn to the graph. He likes all the toys, but none of the toys like him except for Stinky Pete. The update message representing this change looks something like this:\
+Let's introduce "Al" of Al's Toy Barn to the graph. He likes all the toys, but none of the toys like him except for Stinky Pete. Meanwhile, Buzz goes insane and decides that his name is Mrs Nesbit. The update message representing this change looks something like this:\
 \
   updateMessage: \{\
-    domainId: "Social Network",\
+    typeDomainId: "Social Network",\
     objectGraphId: "Toy Story characters",\
     dataVersionScheme: "214A9A29-5887-4DE7-B55C-41400E1E0790",\
     dataVersion: 1858,\
     entities: [\
-      \{type: "Person", id: 6, name: "Al", dob: "1964-05-29", friends: [1, 2, 3, 4, 5], photo: "..."\}\
+      \{type: "Person", id: 6, name: "Al", dob: "1964-05-29", friends: [1, 2, 3, 4, 5], photo: "..."\},\
+      \{type: "Friendship", id: 12, liker: 6, likee: 1\},\
+      \{type: "Friendship", id: 13, liker: 6, likee: 2\},\
+      \{type: "Friendship", id: 14, liker: 6, likee: 3\},\
+      \{type: "Friendship", id: 15, liker: 6, likee: 4\},\
+      \{type: "Friendship", id: 16, liker: 6, likee: 5\},\
+      \{type: "Friendship", id: 17, liker: 5, likee: 6\}\
     ],\
-    updates: [\
-      \{type: "Person", id: 5, friends: [6]\}\
-    ],\
-    removals: []\
+    updates[\
+      \{type: "Person", id: 1, name: "Mrs Nesbit"\}\
+    ]\
   \}\
 \
-The first two fields are used to uniquely identify the object graph that the update should be applied to. The second two fields allow the client to decide whether this message is a valid update to apply to its local object graph. See the <error recovery> section for details on what happens if the update message is out of sequence.\
+The first two fields - typeDomainId and objectGraphId - are used to uniquely identify the object graph that the update should be applied to. The next two fields - dataVersion and dataVersionScheme - allow the client to decide whether this message is a valid update to apply to its local object graph. See the <error recovery> section for details on what happens if the update message is out of sequence.\
 \
-Once the client has established that the update message is valid, it applies it to the local object graph. Any new entities are added to the graph, any property updates are applied, and any old entities are removed. While this process is happening, the graph is allowed to be in an inconsistent state. For example, if two new Person entities are added and each of them is friends with the other, then when the first Person has been added to the graph it has a reference to a Person that is not yet part of the graph. Each update message must contain a set of changes that leaves the graph in a consistent state after the message has finished being processed.\
-\
-[geeky aside: this graph is not very efficient to update if people have large friend lists. The smallest unit that OGRE can update is the property value. When Woody realises that he likes Buzz after all, it is necessary to re-transmit his entire friend list in order to add Buzz to it. Since Woody is also friends with a great many other toys, including all 100 little green toy soldiers, this would be very inefficient. This can be solved by adding a new entity to the system, "Friendship". This entity represents a friendship between two Person entities. Individual friendships can be made and broken efficiently by adding and deleting Friendship entities.]\
+Once the client has established that the update message is valid, it applies it to the local object graph. Any new entities are added to the graph, any property updates are applied, and any old entities are removed. While this process is happening, the graph is locked because it might be in an inconsistent state. For example, a new Relationship entity might have been added to the graph before the Person that it refers to. Each update message must contain a set of changes that leaves the graph in a consistent state after the message has finished being processed.\
 \
 So anyway, Stinky Pete leaves the scene in a toddler's backpack, in Pixar's typical "happy happy days, the bad guy is sentenced to an eternity of suffering" ending. The removal of an entity looks like this:\
 \
   graphUpdate: \{\
-    domainId: "Social Network",\
+    typeDomainId: "Social Network",\
     objectGraphId: "Toy Story characters",\
     dataVersionScheme: "214A9A29-5887-4DE7-B55C-41400E1E0790",\
     dataVersion: 1859,\
@@ -136,17 +150,12 @@ So anyway, Stinky Pete leaves the scene in a toddler's backpack, in Pixar's typi
     ]\
   \}\
 \
-Note that the update message doesn't have to explicitly remove Pete from any friends lists - the OGRE client will do that automatically.\
+Note that the update message doesn't have to explicitly remove any relationships involving Pete - the OGRE client will do that automatically.\
 \
 That's more or less how OGRE works, and is probably more information than you need to use OGRE in a project.\
 \
 === Error recovery ===\
 \
-\
-\
-==== Formal specification ====\
-\
-The following section defines exactly how OGRE works, for people implementing clients and servers, and for people who aren't happy just knowing //more or less// what's happening under the hood.\
 \
 === Architectural overview ===\
 \
@@ -177,7 +186,7 @@ Running right to left, the key components of the OGRE system are:\
 \
 Ah yes, the automatic language conversion. Since OGRE is designed to be a cross-language solution, OGRE clients and servers need to be written for every supported language. For my own requirements, I'd like to see servers in Java and C#, and clients in JavaScript, ActionScript, C# and Java. That's six software libraries just for me. One of the goals of OGRE is to "solve the problem of client/server data replication once and for all". Not "six times and for all". If I have to implement the same code twice on the server and four times on the client, then every feature request has to be implemented six times, every unit test written six times, every bug fixed six times. The more languages OGRE supports, the harder it is to develop.\
 \
-Therefore the core client and server engines are written in Java and automatically translated into other languages. This is actually a lot easier than it sounds - we don't need a general purpose converter, just a converter that works for OGRE. Pretty much all modern imperative languages have a core set of features like classes, objects, methods, variables, operators, conditionals and for/while loops that are semantically identical, but with a few minor syntactical differences. For example, Java methods are expressed "ReturnType methodName()" and ActionScript methods use "methodName():ReturnType". Converting from Java to ActionScript is therefore a simple matter of rewriting the source code to use the new syntax - it's not much harder to make than an automatic source code formatter.\
+Therefore the core client and server engines are written in Java and automatically translated into other languages. This is actually a lot easier than it sounds - we don't need a general purpose converter, just a converter that works for OGRE. Pretty much all modern imperative languages have a core set of features like classes, objects, methods, variables, operators, conditionals and for/while loops that are semantically identical, but with a few minor syntactical differences. For example, Java methods are expressed "ReturnType methodName()" and ActionScript methods use "methodName():ReturnType". Converting from Java to ActionScript is therefore a simple matter of rewriting the source code to use the new syntax - it's not much harder than making a source code formatter.\
 \
 In order to permit this translation, the client and server engines are written in a simple subset of Java that avoids features that don't map well onto other languages, such as concrete inheritance, inner classes and reflection. This makes it ugly. The client data adapter and server data adapter take this ugly cross-language library and wrap it in a beautiful facade that uses all the recommended coding guidelines of the host language.\
 \
