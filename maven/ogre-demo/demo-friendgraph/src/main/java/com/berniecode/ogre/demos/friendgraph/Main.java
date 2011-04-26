@@ -9,7 +9,7 @@ import com.berniecode.ogre.demos.friendgraph.controller.ServerController;
 import com.berniecode.ogre.demos.friendgraph.model.MutableSocialNetwork;
 import com.berniecode.ogre.demos.friendgraph.model.Person;
 import com.berniecode.ogre.demos.friendgraph.model.PersonImpl;
-import com.berniecode.ogre.demos.friendgraph.model.Relationship;
+import com.berniecode.ogre.demos.friendgraph.model.Friendship;
 import com.berniecode.ogre.demos.friendgraph.model.SlaveSocialNetwork;
 import com.berniecode.ogre.demos.friendgraph.model.SocialNetwork;
 import com.berniecode.ogre.demos.friendgraph.model.SocialNetworkImpl;
@@ -53,7 +53,7 @@ public class Main {
 			populateSampleData((MutableSocialNetwork)model);
 			
 			PojoDataSource ds = new PojoDataSource();
-			ds.setEDRMapper(new DefaultEDRMapper("friendgraph", Person.class, Relationship.class));
+			ds.setEDRMapper(new DefaultEDRMapper("friendgraph", Person.class, Friendship.class));
 			ds.setObjectGraphId("demo");
 			ds.initialise();
 			

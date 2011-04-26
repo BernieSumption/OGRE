@@ -13,14 +13,14 @@ import java.util.List;
 public class SocialNetworkImpl implements MutableSocialNetwork {
 
 	private List<Person> people = new ArrayList<Person>();
-	private List<Relationship> likesRelationships = new ArrayList<Relationship>();
+	private List<Friendship> friendships = new ArrayList<Friendship>();
 
 	public Collection<Person> getPeople() {
 		return people;
 	}
 
-	public Collection<Relationship> getLikesRelationships() {
-		return likesRelationships;
+	public Collection<Friendship> getFriendships() {
+		return friendships;
 	}
 
 	public void addPerson(Person person) {
@@ -29,32 +29,32 @@ public class SocialNetworkImpl implements MutableSocialNetwork {
 
 	public void removePerson(Person person) {
 		people.remove(person);
-		Iterator<Relationship> it = likesRelationships.iterator();
+		Iterator<Friendship> it = friendships.iterator();
 		while (it.hasNext()) {
-			Relationship relationship = it.next();
-			if (relationship.getSubject().equals(person) || relationship.getObject().equals(person)) {
+			Friendship friendship = it.next();
+			if (friendship.getLiker().equals(person) || friendship.getLikee().equals(person)) {
 				it.remove();
 			}
 		}
 	}
 	
 	public boolean getPersonLikesPerson(Person subject, Person object) {
-		return findRelationship(subject, object) != null;
+		return findFriendship(subject, object) != null;
 	}
 	
 	public void setPersonLikesPerson(Person subject, Person object, boolean likes) {
-		Relationship existing = findRelationship(subject, object);
+		Friendship existing = findFriendship(subject, object);
 		if (existing != null && !likes) {
-			likesRelationships.remove(existing);
+			friendships.remove(existing);
 		} else if (existing == null && likes) {
-			likesRelationships.add(new RelationshipImpl(subject, object));
+			friendships.add(new FriendshipImpl(subject, object));
 		}
 	}
 	
-	private Relationship findRelationship(Person subject, Person object) {
-		for (Relationship relationship: likesRelationships) {
-			if (relationship.getSubject().equals(subject) && relationship.getObject().equals(object)) {
-				return relationship;
+	private Friendship findFriendship(Person subject, Person object) {
+		for (Friendship friendship: friendships) {
+			if (friendship.getLiker().equals(subject) && friendship.getLikee().equals(object)) {
+				return friendship;
 			}
 		}
 		return null;

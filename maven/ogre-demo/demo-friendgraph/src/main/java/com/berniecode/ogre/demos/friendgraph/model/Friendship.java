@@ -5,16 +5,16 @@ package com.berniecode.ogre.demos.friendgraph.model;
  *
  * @author Bernie Sumption
  */
-public interface Relationship {
+public interface Friendship {
 
 	/**
 	 * @return the person who does the liking
 	 */
-	public Person getSubject();
+	public Person getLiker();
 	
 	/**
 	 * @return the person who is liked
 	 */
-	public Person getObject();
+	public Person getLikee();
 
 }

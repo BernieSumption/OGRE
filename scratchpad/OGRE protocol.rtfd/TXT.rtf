@@ -10,11 +10,11 @@ In this white paper I describe OGRE, the Object Graph Replication Engine. OGRE i
 \
 ==== Introduction ====\
 \
-Many client-server applications have the requirement that the client must respond rapidly to changes in server-side state. Examples include chat rooms, stock tickers, systems monitoring and sports results trackers.\
+Many client-server applications have the requirement that the client must respond rapidly to changes in server-side state. Examples include stock tickers, systems monitoring applications and sports results trackers.\
 \
 Imagine a stock trading application that displays the values of thousands of stocks, updating the price displayed when the stock price changes. A file containing the names and prices of thousands of stocks could easily be tens or hundreds of kilobytes compressed.\
 \
-If stocks change price about once every two minutes on average, then every second approximately 1% of the stocks being monitored by the client will change price. If this application has the requirement that the client be no more than a second behind the server, it is simply not an option to download, decompress and parse the complete price data set every second. Instead, the client will only download the complete data set once at startup, and will then receive a stream of price changes as they occur and use these changes to update its local data set. In database terminology, this process is called 
+If stocks change price about once every two minutes on average, then every second approximately 1% of the stocks being monitored by the client will change price. If this application has the requirement that the client be no more than a second behind the server, it is simply not an option to download, decompress and parse the complete data set every second. Instead, the client will only download the complete data set once at startup, and will then receive a stream of price changes as they occur and use these changes to update its local data set. In database terminology, this process is called 
 \i replication
 \i0 , and the local copy is called a 
 \i replicated slave
@@ -26,7 +26,7 @@ In order to do this, the application must settle three technical issues:\
   - How is the stream of changes transmitted to the client?\
   - How is each change applied to the client's data set?\
 \
-There are a number of technologies that help application with items 1 and 2. Data can be encoded as XML, which is human readable, self-documenting and universally supported by programming languages, or in a binary format such as Protocol Buffers, Thrift or AMF which are more efficient and faster to parse compared to XML. Technologies like Comet combined with message queuing systems or networking libraries like ZeroMQ make it easy to publish a stream of changes to multiple clients. Issues 1 and 2 are solved problems - the hardest part is deciding which high-quality, free, open source solution to use!\
+There are a number of technologies that help application with items 1 and 2. Data can be encoded as XML, which is human readable, self-documenting and universally supported by programming languages, or in a binary format such as Protocol Buffers, Thrift or AMF which are more efficient and faster to parse than to XML. Technologies like Comet, message queuing systems or networking libraries like ZeroMQ make it easy to publish a stream of changes to multiple clients. Issues 1 and 2 are solved problems - the hardest part is deciding which of the many high-quality, free, open source software libraries to use!\
 \
 Issue 3 on the other hand, has not been solved in a general-purpose way. Over and over again, application developers build ad hoc protocols for describing changes to their data set. OGRE aims to change this.\
 \
@@ -58,9 +58,9 @@ Here's an object graph based on this type domain:\
 \fs30 \cf0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 \cf0 \
-The first thing to notice is that each entity has been given a unique ID. Every OGRE entity has an ID, and this is how references are represented.\
+The first thing to notice is that each entity has been given a unique ID. Every OGRE entity has an ID, and this is how references are represented. Programming environments have different ways of expressing relationships. Object-oriented languages use pointers or references. SQL databases use linking tables. OGRE uses integer IDs.\
 \
-In the diagrammatic representation of the object graph above, friendships are indicated with arrows. Programming environments have different ways of expressing relationships. Object-oriented languages use pointers or references. SQL databases use linking tables. OGRE uses integer IDs.\
+In the diagrammatic representation of the object graph above, friendships objects are indicated with arrows.\
 \
 In order to send a graph over the network, the OGRE server analyses the graph and transforms each Person's list of friends into an array of integers. Encoded like this, each object is a self-contained collection of values that can be sent over the network. OGRE clients receive these encoded objects and expand them back into a graph structure. Because each Person entity is associated with the Person entity type the OGRE client knows that the "friends" property should contains references to other Person entities, so it converts the array of integers back into a list of Person references.\
 \
@@ -79,6 +79,7 @@ When an OGRE client first connects to an OGRE server, it downloads a complete re
       \{type: "Person", id: 3, name: "Bullseye", dob: "1814-12-25", friends: [1, 2, 4, 5], photo: "..."\},\
       \{type: "Person", id: 4, name: "Jessie", dob: "1772-01-05", friends: [1, 3], photo: "..."\},\
       \{type: "Person", id: 5, name: "Stinky Pete", dob: "1761-11-08", friends: [], photo: "..."\}\
+      \{type: "Friendship", id: 1, liker\
     ]\
   \}\
 \

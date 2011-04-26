@@ -15,9 +15,9 @@ public interface SocialNetwork {
 	public Collection<Person> getPeople();
 
 	/**
-	 * @return all the {@link Relationship}s in this network
+	 * @return all the {@link Friendship}s in this network
 	 */
-	public Collection<Relationship> getLikesRelationships();
+	public Collection<Friendship> getFriendships();
 
 	/**
 	 * @return whether one person likes another

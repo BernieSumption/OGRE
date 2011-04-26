@@ -1,20 +1,20 @@
 package com.berniecode.ogre.demos.friendgraph.model;
 
-public class RelationshipImpl implements Relationship {
+public class FriendshipImpl implements Friendship {
 
 	private final Person subject;
 	private final Person object;
 
-	public RelationshipImpl(Person subject, Person object) {
+	public FriendshipImpl(Person subject, Person object) {
 		this.subject = subject;
 		this.object = object;
 	}
 
-	public Person getSubject() {
+	public Person getLiker() {
 		return subject;
 	}
 
-	public Person getObject() {
+	public Person getLikee() {
 		return object;
 	}
 	

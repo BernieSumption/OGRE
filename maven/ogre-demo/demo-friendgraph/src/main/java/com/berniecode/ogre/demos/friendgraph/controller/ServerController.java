@@ -64,7 +64,7 @@ public class ServerController implements EditEventListener {
 
 	private void handleChange() {
 		view.updateFromModel(model);
-		dataSource.setEntityObjects(model.getPeople(), model.getLikesRelationships());
+		dataSource.setEntityObjects(model.getPeople(), model.getFriendships());
 	}
 
 }

@@ -19,7 +19,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
 import com.berniecode.ogre.demos.friendgraph.model.Person;
-import com.berniecode.ogre.demos.friendgraph.model.Relationship;
+import com.berniecode.ogre.demos.friendgraph.model.Friendship;
 import com.berniecode.ogre.demos.friendgraph.model.SocialNetwork;
 
 /**
@@ -87,7 +87,7 @@ public class FriendGraphView extends JFrame {
 				personView.updateView();
 			}
 		}
-		contents.setRelationships(model.getLikesRelationships());
+		contents.setFriendships(model.getFriendships());
 		Iterator<Person> keys = personToView.keySet().iterator();
 		while (keys.hasNext()) {
 			Person person = keys.next();
@@ -157,7 +157,7 @@ class FriendshipContainer extends JLayeredPane {
 	private final static int ARROW_SIZE = 15; // edge length
 	private static final Color ARROW_COLOR = new Color(0x33AA33);
 
-	private Collection<Relationship> relationships;
+	private Collection<Friendship> friendships;
 	private final int yOffset;
 	private final int xOffset;
 	private Double arrow;
@@ -171,19 +171,19 @@ class FriendshipContainer extends JLayeredPane {
 	@Override
 	protected void paintComponent(java.awt.Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		if (relationships == null) {
+		if (friendships == null) {
 			return;
 		}
 		g2.setColor(ARROW_COLOR);
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		for (Relationship relationship : relationships) {
-			paintRelationship(g2, relationship);
+		for (Friendship friendship : friendships) {
+			paintFriendship(g2, friendship);
 		}
 	}
 
-	private void paintRelationship(Graphics2D g, Relationship relationship) {
-		Person subject = relationship.getSubject();
-		Person object = relationship.getObject();
+	private void paintFriendship(Graphics2D g, Friendship friendship) {
+		Person subject = friendship.getLiker();
+		Person object = friendship.getLikee();
 		int subjectX = subject.getXPosition() + xOffset;
 		int subjectY = subject.getYPosition() + yOffset;
 		int objectX = object.getXPosition() + xOffset;
@@ -214,7 +214,7 @@ class FriendshipContainer extends JLayeredPane {
 		return path;
 	}
 
-	public void setRelationships(Collection<Relationship> relationships) {
-		this.relationships = relationships;
+	public void setFriendships(Collection<Friendship> friendships) {
+		this.friendships = friendships;
 	}
 }

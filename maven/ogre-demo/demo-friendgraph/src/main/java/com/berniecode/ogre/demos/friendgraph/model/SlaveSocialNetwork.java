@@ -16,13 +16,13 @@ public class SlaveSocialNetwork implements SocialNetwork {
 		return facade.getEntitiesByType(Person.class);
 	}
 
-	public Collection<Relationship> getLikesRelationships() {
-		return facade.getEntitiesByType(Relationship.class);
+	public Collection<Friendship> getFriendships() {
+		return facade.getEntitiesByType(Friendship.class);
 	}
 
 	public boolean getPersonLikesPerson(Person subject, Person object) {
-		for (Relationship r: getLikesRelationships()) {
-			if (subject.equals(r.getSubject()) && object.equals(r.getObject())) {
+		for (Friendship r: getFriendships()) {
+			if (subject.equals(r.getLiker()) && object.equals(r.getLikee())) {
 				return true;
 			}
 		}
