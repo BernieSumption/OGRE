@@ -20,7 +20,6 @@
 
 package com.berniecode.ogre;
 
-
 public interface EntityClassWithAllFields {
 
 	Integer getNullableInt();

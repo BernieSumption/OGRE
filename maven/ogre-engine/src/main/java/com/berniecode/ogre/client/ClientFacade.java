@@ -98,7 +98,7 @@ public class ClientFacade {
 		Entity entity = clientEngine.getEntityByTypeAndId(entityType, id);
 		return getFacadeForEntity(entityClass, entity);
 	}
-	
+
 	//
 	// PRIVATE MACHINERY
 	//

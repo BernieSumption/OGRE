@@ -26,12 +26,14 @@ import java.awt.Dimension;
 import java.awt.LayoutManager;
 
 class AbsoluteLayout implements LayoutManager {
-	public void addLayoutComponent(String name, Component comp) { }
+	public void addLayoutComponent(String name, Component comp) {
+	}
 
-	public void removeLayoutComponent(Component comp) { }
+	public void removeLayoutComponent(Component comp) {
+	}
 
-	public Dimension preferredLayoutSize( Container container ) {
-		return new Dimension( 0, 0 );
+	public Dimension preferredLayoutSize(Container container) {
+		return new Dimension(0, 0);
 	}
 
 	public Dimension minimumLayoutSize(Container cont) {
@@ -39,7 +41,7 @@ class AbsoluteLayout implements LayoutManager {
 	}
 
 	public void layoutContainer(Container container) {
-		for (Component c: container.getComponents()) {
+		for (Component c : container.getComponents()) {
 			c.setBounds(c.getX(), c.getY(), c.getWidth(), c.getHeight());
 		}
 	}

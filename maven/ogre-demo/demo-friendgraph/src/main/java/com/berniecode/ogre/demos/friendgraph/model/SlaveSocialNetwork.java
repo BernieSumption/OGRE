@@ -41,7 +41,7 @@ public class SlaveSocialNetwork implements SocialNetwork {
 	}
 
 	public boolean getPersonLikesPerson(Person subject, Person object) {
-		for (Friendship r: getFriendships()) {
+		for (Friendship r : getFriendships()) {
 			if (subject.equals(r.getLiker()) && object.equals(r.getLikee())) {
 				return true;
 			}

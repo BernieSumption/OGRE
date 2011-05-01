@@ -24,7 +24,7 @@ import java.util.Collection;
 
 /**
  * A collection of friends, with relationships
- *
+ * 
  * @author Bernie Sumption
  */
 public interface SocialNetwork {

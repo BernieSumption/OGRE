@@ -44,7 +44,7 @@ public class StringConcatenator {
 		builder.append(o);
 		return this;
 	}
-	
+
 	/**
 	 * Add a number to the string
 	 */

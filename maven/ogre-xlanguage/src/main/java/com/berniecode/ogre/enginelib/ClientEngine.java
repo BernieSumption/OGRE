@@ -236,15 +236,16 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 		if (OgreLog.isDebugEnabled()) {
 			OgreLog.debug(EDRDescriber.describeGraphUpdate(update));
 		}
-		
+
 		if (lastUpdate != null) {
 			if (lastUpdate.getDataVersionScheme() != update.getDataVersionScheme()) {
-				//TODO this should trigger a reload of the whole data set
-				OgreLog.error("ClientEngine: incompatible data version scheme in graph update. Expected " + lastUpdate.getDataVersionScheme()  + " got " + update.getDataVersionScheme());
-			}
-			else if (lastUpdate.getDataVersion() + 1 != update.getDataVersion()) {
-				//TODO this should trigger a reload of the whole data set
-				OgreLog.error("ClientEngine: incorrect data version sequence. Expected " + (lastUpdate.getDataVersion() + 1) + " got " + update.getDataVersion());
+				// TODO this should trigger a reload of the whole data set
+				OgreLog.error("ClientEngine: incompatible data version scheme in graph update. Expected "
+						+ lastUpdate.getDataVersionScheme() + " got " + update.getDataVersionScheme());
+			} else if (lastUpdate.getDataVersion() + 1 != update.getDataVersion()) {
+				// TODO this should trigger a reload of the whole data set
+				OgreLog.error("ClientEngine: incorrect data version sequence. Expected "
+						+ (lastUpdate.getDataVersion() + 1) + " got " + update.getDataVersion());
 			}
 		}
 		lastUpdate = update;

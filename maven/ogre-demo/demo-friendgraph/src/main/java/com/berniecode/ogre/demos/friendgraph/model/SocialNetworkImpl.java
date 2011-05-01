@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * A simple implementation of {@link MutableSocialNetwork}
- *
+ * 
  * @author Bernie Sumption
  */
 public class SocialNetworkImpl implements MutableSocialNetwork {
@@ -57,11 +57,11 @@ public class SocialNetworkImpl implements MutableSocialNetwork {
 			}
 		}
 	}
-	
+
 	public boolean getPersonLikesPerson(Person subject, Person object) {
 		return findFriendship(subject, object) != null;
 	}
-	
+
 	public void setPersonLikesPerson(Person subject, Person object, boolean likes) {
 		Friendship existing = findFriendship(subject, object);
 		if (existing != null && !likes) {
@@ -70,9 +70,9 @@ public class SocialNetworkImpl implements MutableSocialNetwork {
 			friendships.add(new FriendshipImpl(subject, object));
 		}
 	}
-	
+
 	private Friendship findFriendship(Person subject, Person object) {
-		for (Friendship friendship: friendships) {
+		for (Friendship friendship : friendships) {
 			if (friendship.getLiker().equals(subject) && friendship.getLikee().equals(object)) {
 				return friendship;
 			}

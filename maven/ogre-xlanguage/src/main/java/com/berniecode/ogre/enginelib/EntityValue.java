@@ -22,7 +22,6 @@ package com.berniecode.ogre.enginelib;
 
 import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
 
-
 /**
  * A value for an Entity. The principle difference between {@link EntityValue} objects and
  * {@link Entity} objects is that {@link EntityValue}s store values for {@link ReferenceProperty}s
@@ -63,7 +62,7 @@ public class EntityValue implements EntityReference, RawPropertyValueSet {
 	public Object getRawPropertyValue(Property property) {
 		return values[property.getPropertyIndex()];
 	}
-	
+
 	public String toString() {
 		return "value for " + getEntityType() + "#" + getEntityId();
 	}
@@ -71,7 +70,8 @@ public class EntityValue implements EntityReference, RawPropertyValueSet {
 	/**
 	 * Set references to a specified Entity to null.
 	 * 
-	 * <p>The entity is located by identity, not by entityType and id
+	 * <p>
+	 * The entity is located by identity, not by entityType and id
 	 */
 	void nullReferencesTo(EntityReference entity) {
 		ReferenceProperty[] properties = entityType.getReferenceProperties();

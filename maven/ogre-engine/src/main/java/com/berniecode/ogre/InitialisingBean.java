@@ -23,14 +23,14 @@ package com.berniecode.ogre;
 import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
-
 /**
  * Support class for creating beans that have dependencies that must be set before the class is
  * initialised, and can't be set again after initialisation.
  * 
  * @author Bernie Sumption
  */
-//TODO ensure that all subclasses of this provide a no-arg constructor and a constructor that provides all arguments and calls initialise()
+// TODO ensure that all subclasses of this provide a no-arg constructor and a constructor that
+// provides all arguments and calls initialise()
 public abstract class InitialisingBean {
 
 	private boolean initialised;
@@ -57,7 +57,8 @@ public abstract class InitialisingBean {
 	 */
 	protected void requireNotNull(Object required, String name) {
 		if (required == null) {
-			throw new InitialisationException("A value for " + name + " must be supplied before initialise() is called.");
+			throw new InitialisationException("A value for " + name
+					+ " must be supplied before initialise() is called.");
 		}
 	}
 
@@ -67,8 +68,8 @@ public abstract class InitialisingBean {
 	 */
 	protected void requireInitialised(boolean requiredStatus, String methodName) {
 		if (initialised != requiredStatus) {
-			throw new InitialisationException(getClass().getSimpleName() + "." + methodName + " can't be called " + (requiredStatus ? "before" : "after")
-					+ " initialise()");
+			throw new InitialisationException(getClass().getSimpleName() + "." + methodName + " can't be called "
+					+ (requiredStatus ? "before" : "after") + " initialise()");
 		}
 	}
 

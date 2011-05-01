@@ -20,10 +20,9 @@
 
 package com.berniecode.ogre.enginelib;
 
-
 /**
  * A (type, id) tuple that can be used to locate an {@link Entity}.
- *
+ * 
  * @author Bernie Sumption
  */
 public interface EntityReference {

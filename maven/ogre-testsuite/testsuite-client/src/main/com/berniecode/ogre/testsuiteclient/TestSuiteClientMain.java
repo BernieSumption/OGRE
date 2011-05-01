@@ -29,7 +29,7 @@ public class TestSuiteClientMain {
 
 	/**
 	 * @param args
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
@@ -42,14 +42,13 @@ public class TestSuiteClientMain {
 			System.exit(1);
 		}
 		OgreLog.setLevel(OgreLog.LEVEL_WARN);
-		for (File childFolder: suiteFolder.listFiles()) {
+		for (File childFolder : suiteFolder.listFiles()) {
 			if (new File(childFolder, TestSuiteClient.TYPE_DOMAIN_MESSAGE_FILE_NAME).exists()) {
 				System.err.println("Running test suite " + childFolder);
 				new TestSuiteClient(childFolder).runTestSuite();
 			}
 		}
-		
-		
+
 	}
 
 }

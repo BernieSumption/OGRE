@@ -30,15 +30,15 @@ import com.berniecode.ogre.enginelib.TypeDomain;
  * @author Bernie Sumption
  */
 public interface EDRSerialiser {
-	
+
 	/**
 	 * Serialise a {@link TypeDomain} into a binary message.
 	 */
 	public byte[] serialiseTypeDomain(TypeDomain typeDomain);
-	
+
 	/**
 	 * Serialise a {@link TypeDomain} into a binary message.
 	 */
 	public byte[] serialiseGraphUpdate(GraphUpdate graphUpdate);
-	
+
 }

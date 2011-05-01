@@ -25,7 +25,7 @@ import com.berniecode.ogre.enginelib.EntityType;
 
 /**
  * Maps from OGRE's Entity Data representation to Java classes and objects
- *
+ * 
  * @author Bernie Sumption
  */
 public interface EDRFacadeFactory {
@@ -37,8 +37,8 @@ public interface EDRFacadeFactory {
 	Class<?> getClassForEntityType(EntityType entityType);
 
 	/**
-	 * Return a facade for an {@link Entity}. The returned object will be an instance of the
-	 * type returned by {@code getClassForEntityType(entity.getEntityType())}
+	 * Return a facade for an {@link Entity}. The returned object will be an instance of the type
+	 * returned by {@code getClassForEntityType(entity.getEntityType())}
 	 */
 	Object getFacadeForEntity(Entity entity) throws ClientFacadeException;
 }

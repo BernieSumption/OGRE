@@ -47,16 +47,16 @@ public class EntityType {
 		for (int i = 0; i < properties.length; i++) {
 			propertiesByName.put(properties[i].getName(), properties[i]);
 		}
-		
+
 		ArrayBuilder builder = new ArrayBuilder(ReferenceProperty.class);
-		for (int i=0; i<properties.length; i++) {
+		for (int i = 0; i < properties.length; i++) {
 			if (properties[i] instanceof ReferenceProperty) {
 				builder.add(properties[i]);
 			}
 		}
 		referenceProperties = (ReferenceProperty[]) builder.buildArray();
 	}
-	
+
 	/**
 	 * The {@link TypeDomain} that this {@link EntityType} belongs to.
 	 */
@@ -91,7 +91,7 @@ public class EntityType {
 	public int getPropertyCount() {
 		return properties.length;
 	}
-	
+
 	public String toString() {
 		return name;
 	}
@@ -108,7 +108,7 @@ public class EntityType {
 		}
 		return false;
 	}
-	
+
 	//
 	// OGRE INTERNAL API
 	//

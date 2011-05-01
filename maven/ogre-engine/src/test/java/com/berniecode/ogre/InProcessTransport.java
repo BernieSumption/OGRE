@@ -34,8 +34,8 @@ import com.berniecode.ogre.wireformat.OgreWireFormatSerialiser;
 
 /**
  * A {@link ClientTransportAdapter} that wraps a {@link DataSource}, directly transferring any
- * requests to it (normally, a ClientTransportAdapter would send the requestBuilder over some kind of
- * network transport, e.g. a HTTP requestBuilder).
+ * requests to it (normally, a ClientTransportAdapter would send the requestBuilder over some kind
+ * of network transport, e.g. a HTTP requestBuilder).
  * 
  * @author Bernie Sumption
  */
@@ -69,14 +69,14 @@ public class InProcessTransport implements ClientTransportAdapter, GraphUpdateLi
 		GraphUpdate objectGraph = dataSource.createSnapshot();
 		return dser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(objectGraph), typeDomain);
 	}
-	
+
 	//
 	// GRAPH UPDATES
 	//
-	
+
 	private int messageCount = 0;
 	private GraphUpdate lastGraphUpdate;
-	
+
 	List<ListenerHolder> holders = new ArrayList<ListenerHolder>();
 
 	@Override
@@ -84,9 +84,10 @@ public class InProcessTransport implements ClientTransportAdapter, GraphUpdateLi
 		lastGraphUpdate = update;
 		messageCount++;
 		String key = getKey(update.getTypeDomain(), update.getObjectGraphId());
-		for (ListenerHolder holder: holders) {
+		for (ListenerHolder holder : holders) {
 			if (holder.key.equals(key)) {
-				holder.listener.acceptGraphUpdate(dser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(update), holder.typeDomain));
+				holder.listener.acceptGraphUpdate(dser.deserialiseGraphUpdate(ser.serialiseGraphUpdate(update),
+						holder.typeDomain));
 			}
 		}
 	}
@@ -118,6 +119,7 @@ class ListenerHolder {
 	public final String key;
 	public final GraphUpdateListener listener;
 	public final TypeDomain typeDomain;
+
 	public ListenerHolder(String key, GraphUpdateListener listener, TypeDomain typeDomain) {
 		this.key = key;
 		this.listener = listener;

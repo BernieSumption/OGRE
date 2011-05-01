@@ -39,8 +39,9 @@ public class OgreLogTest extends TestCase {
 		try {
 			OgreLog.setLogWriter(null);
 			fail("setWriter() should fail with a null value");
-		} catch (NullPointerException e) {}
-		
+		} catch (NullPointerException e) {
+		}
+
 		OgreLog.setLogWriter(new LogWriter() {
 			@Override
 			public void acceptMessage(int level, String levelDescription, String message) {
@@ -67,7 +68,7 @@ public class OgreLogTest extends TestCase {
 		OgreLog.setLevel(OgreLog.LEVEL_WARN);
 		OgreLog.info("b");
 		assertNoLog();
-		
+
 		reset();
 		OgreLog.setLevel(OgreLog.LEVEL_INFO);
 		OgreLog.info("b");
@@ -106,13 +107,13 @@ public class OgreLogTest extends TestCase {
 		assertEquals("ERROR", lastLogLevelDesc);
 		assertEquals("d", lastLogMessage);
 	}
-	
+
 	private void reset() {
 		lastLogLevel = -1;
 		lastLogLevelDesc = null;
 		lastLogMessage = null;
 	}
-	
+
 	private void assertNoLog() {
 		assertEquals(-1, lastLogLevel);
 		assertEquals(null, lastLogLevelDesc);

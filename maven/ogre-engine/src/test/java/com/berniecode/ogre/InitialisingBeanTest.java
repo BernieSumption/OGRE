@@ -24,7 +24,6 @@ import com.berniecode.ogre.enginelib.platformhooks.InitialisationException;
 
 import junit.framework.TestCase;
 
-
 /**
  * Support class for creating beans that have dependencies that must be set before the class is
  * initialised, and can't be set again after initialisation.
@@ -48,7 +47,7 @@ public class InitialisingBeanTest extends TestCase {
 		bean.initialise();
 		assertEquals(1, bean.initCount);
 	}
-	
+
 	public void testRequireInitialised() {
 		MyInitialisingBean bean = new MyInitialisingBean();
 		try {
@@ -70,9 +69,9 @@ public class InitialisingBeanTest extends TestCase {
 }
 
 class MyInitialisingBean extends InitialisingBean {
-	
+
 	public int initCount;
-	
+
 	private Object dep1;
 
 	@Override
@@ -85,9 +84,9 @@ class MyInitialisingBean extends InitialisingBean {
 		requireInitialised(false, "setDep1()");
 		this.dep1 = dep1;
 	}
-	
+
 	public void requireInitialisation() {
 		requireInitialised(true, "requiredInitialisation()");
 	}
-	
+
 }

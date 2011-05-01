@@ -29,19 +29,18 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
  * @author Bernie Sumption
  */
 public class Property {
-	
-	private static final String[] TYPECODE_NAMES = {"int32", "int64", "float", "double", "string", "byte-array", "reference"};
-	
-    public static final int TYPECODE_INT32     = 0;
-	public static final int TYPECODE_INT64     = 1;
-    public static final int TYPECODE_FLOAT     = 2;
-    public static final int TYPECODE_DOUBLE    = 3;
-    public static final int TYPECODE_STRING    = 4;
-    public static final int TYPECODE_BYTES     = 5;
-	// REFERENCE Property objects can be cast to ReferenceProperty to access more information
-    public static final int TYPECODE_REFERENCE = 6;
 
-    
+	private static final String[] TYPECODE_NAMES = { "int32", "int64", "float", "double", "string", "byte-array",
+			"reference" };
+
+	public static final int TYPECODE_INT32 = 0;
+	public static final int TYPECODE_INT64 = 1;
+	public static final int TYPECODE_FLOAT = 2;
+	public static final int TYPECODE_DOUBLE = 3;
+	public static final int TYPECODE_STRING = 4;
+	public static final int TYPECODE_BYTES = 5;
+	// REFERENCE Property objects can be cast to ReferenceProperty to access more information
+	public static final int TYPECODE_REFERENCE = 6;
 
 	private final String name;
 	private final int typeCode;
@@ -78,7 +77,7 @@ public class Property {
 	public int getPropertyIndex() {
 		return propertyIndex;
 	}
-	
+
 	public String toString() {
 		return toStringCache;
 	}
@@ -94,18 +93,18 @@ public class Property {
 	public boolean isNullable() {
 		return nullable;
 	}
-	
+
 	/**
 	 * @return The {@link EntityType} that this {@link Property} belongs to
 	 */
 	public EntityType getEntityType() {
 		return entityType;
 	}
-	
+
 	public static String getNameForTypecode(int typeCode) {
 		return TYPECODE_NAMES[typeCode];
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -113,5 +112,5 @@ public class Property {
 		this.entityType = entityType;
 		this.propertyIndex = propertyIndex;
 	}
-	
+
 }

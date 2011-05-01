@@ -30,16 +30,15 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
  * @author Bernie Sumption
  */
 public class EntityStore {
-	
+
 	private final EntityMap[] entityMaps;
-	
+
 	public EntityStore(TypeDomain typeDomain) {
 		entityMaps = new EntityMap[typeDomain.getEntityTypes().length];
-		for (int i=0; i<entityMaps.length; i++) {
+		for (int i = 0; i < entityMaps.length; i++) {
 			entityMaps[i] = new EntityMap();
 		}
 	}
-
 
 	/**
 	 * Check whether this store contains an entity with a specified type and ID
@@ -78,7 +77,7 @@ public class EntityStore {
 		Entity entityToRemove = get(entityType, id);
 		if (entityToRemove != null) {
 			entityMaps[entityType.getEntityTypeIndex()].remove(id);
-			
+
 			// null all references to the removed entity
 			for (int i = 0; i < entityMaps.length; i++) {
 				Entity[] entities = entityMaps[i].getEntities();
@@ -125,14 +124,13 @@ public class EntityStore {
 		}
 	}
 
-
 	/**
 	 * @return every {@link Entity} in this store. The returned list is a copy of the internal list,
 	 *         and is safe to modify.
 	 */
 	public Entity[] getEntities() {
 		ArrayBuilder resultList = new ArrayBuilder(Entity.class);
-		for (int i=0; i<entityMaps.length; i++) {
+		for (int i = 0; i < entityMaps.length; i++) {
 			resultList.addAll(entityMaps[i].getEntities());
 		}
 		return (Entity[]) resultList.buildArray();
@@ -145,6 +143,5 @@ public class EntityStore {
 	public Entity[] getEntitiesByType(EntityType entityType) {
 		return entityMaps[entityType.getEntityTypeIndex()].getEntities();
 	}
-
 
 }

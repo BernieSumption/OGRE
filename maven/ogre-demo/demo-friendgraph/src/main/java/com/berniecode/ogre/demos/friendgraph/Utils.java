@@ -42,7 +42,7 @@ public class Utils {
 		fis.close();
 		return result;
 	}
-	
+
 	public static Image loadImageFromFile(String fileName) {
 		try {
 			return ImageIO.read(new File(fileName));
@@ -50,7 +50,7 @@ public class Utils {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public static Image loadImageFromBytes(byte[] bytes) {
 		try {
 			ByteArrayInputStream is = new ByteArrayInputStream(bytes);
@@ -61,7 +61,7 @@ public class Utils {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public static Image loadImageFromClasspath(String fileName) {
 		try {
 			InputStream is = Utils.class.getClassLoader().getResourceAsStream(fileName);

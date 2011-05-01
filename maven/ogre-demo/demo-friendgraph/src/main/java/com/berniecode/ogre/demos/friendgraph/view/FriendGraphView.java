@@ -77,14 +77,12 @@ public class FriendGraphView extends JFrame {
 		} catch (Exception e) {
 			System.err.println("Can't set look and feel: " + e.getMessage());
 		}
-		
+
 		this.editable = editable;
 		setTitle(INITIAL_TITLE);
 		setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
 		setLocation(INITIAL_LEFT, INITIAL_TOP);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-		
 
 		contents = new FriendshipContainer(editable);
 		add(contents);

@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class TestSuiteGenMain {
-	
+
 	public static void main(String[] args) throws IOException {
 		if (args.length == 1 && "--help".equals(args[0])) {
 			System.err.println("Generates a number of test suites in a specified directory.");
@@ -43,7 +43,7 @@ public class TestSuiteGenMain {
 			System.err.println("Error: " + e);
 			printHelpAndExit();
 		}
-		
+
 		File outputFolder = new File(args[3]);
 		if (!outputFolder.isDirectory()) {
 			if (!outputFolder.mkdirs()) {

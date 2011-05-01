@@ -32,12 +32,12 @@ import com.berniecode.ogre.enginelib.platformhooks.NoSuchThingException;
 import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 
 public class ClientEngineTest extends OgreTestCase {
-	
+
 	private EntityType parentType;
 	private ReferenceProperty refProperty;
 	private EntityType childType;
 	private TypeDomain typeDomain;
-	
+
 	private GraphUpdate initialValueUpdate;
 
 	private ClientTransportAdapter adapter;
@@ -46,41 +46,40 @@ public class ClientEngineTest extends OgreTestCase {
 
 	@Override
 	public void doAdditionalSetup() throws Exception {
-		
+
 		dataVersion = 0;
 
-		adapter = context.mock(ClientTransportAdapter.class); 
+		adapter = context.mock(ClientTransportAdapter.class);
 
 		parentType = new EntityType("parentType", new Property[] {
 				parentName = new Property("num", Property.TYPECODE_STRING, false),
-				refProperty = new ReferenceProperty("ref", "childType")
-		});
-		childType = new EntityType("childType", new Property[] {
-				new Property("name", Property.TYPECODE_STRING, true)
-		});
+				refProperty = new ReferenceProperty("ref", "childType") });
+		childType = new EntityType("childType", new Property[] { new Property("name", Property.TYPECODE_STRING, true) });
 		typeDomain = new TypeDomain(TYPE_DOMAIN_ID, new EntityType[] { parentType, childType });
-		
+
 		initialValueUpdate = createGraphUpdate();
 	}
 
 	public void testInitialiseWithoutDependencies() throws NoSuchThingException {
-		
+
 		ClientEngine ce = new ClientEngine();
 		try {
 			ce.initialise();
 			fail("ClientEngine.initialise() should throw an exception if initialised without dependencies");
-		} catch (InitialisationException e) {}
-		
+		} catch (InitialisationException e) {
+		}
+
 		ce = new ClientEngine();
 		try {
 			ce.getTypeDomain();
 			fail("ClientEngine.getTypeDomain() should throw an exception if called before initialise()");
-		} catch (InitialisationException e) {}
-		
+		} catch (InitialisationException e) {
+		}
+
 	}
-	
+
 	public void testInitialiseWithDependencies() throws Exception {
-		
+
 		ClientEngine ce = createClientEngine();
 
 		ce.initialise();
@@ -91,114 +90,109 @@ public class ClientEngineTest extends OgreTestCase {
 		try {
 			ce.setTransportAdapter(null);
 			fail("ClientEngine.setDownloadAdapter should fail after ClientEngine.initialise() is called");
-		} catch (InitialisationException e) {}
+		} catch (InitialisationException e) {
+		}
 		try {
 			ce.setTypeDomainId(null);
 			fail("ClientEngine.setTypeDomainId should fail after ClientEngine.initialise() is called");
-		} catch (InitialisationException e) {}
+		} catch (InitialisationException e) {
+		}
 		try {
 			ce.setObjectGraphId(null);
 			fail("ClientEngine.setObjectGraphId should fail after ClientEngine.initialise() is called");
-		} catch (InitialisationException e) {}
-		
+		} catch (InitialisationException e) {
+		}
+
 	}
 
 	public void testEntityMerging() throws Exception {
 
 		ClientEngine ce = createClientEngine();
 		ce.initialise();
-		
-		
-		// test new entity created with complete value
-		ce.acceptGraphUpdate(createGraphUpdate(new Entity(parentType, 200, new Object[] {"5", null})));
 
-		assertClientEngineState(
-			"ObjectGraph TypeDomain/TestObjectGraph" +
-			"  Entity parentType#200" +
-			"    num=5" +
-			"    ref=null",
-			ce);
-		
+		// test new entity created with complete value
+		ce.acceptGraphUpdate(createGraphUpdate(new Entity(parentType, 200, new Object[] { "5", null })));
+
+		assertClientEngineState("ObjectGraph TypeDomain/TestObjectGraph" + "  Entity parentType#200" + "    num=5"
+				+ "    ref=null", ce);
+
 		// test creating a new entity with same type and id fails
 		try {
-			ce.acceptGraphUpdate(createGraphUpdate(new Entity(parentType, 200, new Object[] {"7", null})));
+			ce.acceptGraphUpdate(createGraphUpdate(new Entity(parentType, 200, new Object[] { "7", null })));
 			fail("acceptGraphUpdate() should fail with an entity that already exists in the cient engine");
-		} catch (InvalidGraphUpdateException e) {}
-		
-		// test entity can be updated with partial update
-		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(parentType, 200, new Object[] {"9", null}, new boolean[] {true, false})));
+		} catch (InvalidGraphUpdateException e) {
+		}
 
-		assertClientEngineState(
-			"ObjectGraph TypeDomain/TestObjectGraph" +
-			"  Entity parentType#200" +
-			"    num=9" +
-			"    ref=null",
-			ce);
-		
+		// test entity can be updated with partial update
+		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(parentType, 200, new Object[] { "9", null },
+				new boolean[] { true, false })));
+
+		assertClientEngineState("ObjectGraph TypeDomain/TestObjectGraph" + "  Entity parentType#200" + "    num=9"
+				+ "    ref=null", ce);
+
 		// test partial value without existing entity causes log error but no exception failure
-		
+
 		requireOneLogError(OgreLog.LEVEL_ERROR);
-		
-		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(parentType, 100, new Object[] {"10", null}, new boolean[] {true, false})));
-		
+
+		ce.acceptGraphUpdate(createGraphUpdate(new EntityDiff(parentType, 100, new Object[] { "10", null },
+				new boolean[] { true, false })));
+
 	}
 
 	public void testEntityMergingError() throws Exception {
-		
 
 		ClientEngine ce = createClientEngine();
 		ce.initialise();
 
 		try {
-			new Entity(parentType, 200, new Object[] {10});
+			new Entity(parentType, 200, new Object[] { 10 });
 			fail("new Entity() should fail when given an initialValues array with too new values");
-		} catch (OgreException e) {}
+		} catch (OgreException e) {
+		}
 
 		try {
-			ce.acceptGraphUpdate(createGraphUpdate(new EntityValue(parentType, 20, new Object[] {"0", 10L})));
+			ce.acceptGraphUpdate(createGraphUpdate(new EntityValue(parentType, 20, new Object[] { "0", 10L })));
 			fail("acceptGraphUpdate() should fail when given a GraphUpdate that references a non-existant entity");
-		} catch (InvalidGraphUpdateException e) {}
+		} catch (InvalidGraphUpdateException e) {
+		}
 
 		try {
-			ce.acceptGraphUpdate(createGraphUpdate(
-					new EntityValue(parentType, 20, new Object[] {"a", null}),
-					new EntityValue(parentType, 20, new Object[] {"b", null})));
+			ce.acceptGraphUpdate(createGraphUpdate(new EntityValue(parentType, 20, new Object[] { "a", null }),
+					new EntityValue(parentType, 20, new Object[] { "b", null })));
 			fail("acceptGraphUpdate() should fail when given a GraphUpdate contains duplicate IDs");
-		} catch (InvalidGraphUpdateException e) {}
+		} catch (InvalidGraphUpdateException e) {
+		}
 
 		try {
-			ce.acceptGraphUpdate(createGraphUpdate(new EntityValue(parentType, 20, new Object[] {null, null})));
+			ce.acceptGraphUpdate(createGraphUpdate(new EntityValue(parentType, 20, new Object[] { null, null })));
 			fail("acceptGraphUpdate() should fail when given a GraphUpdate has a null value for a non-nullable property");
-		} catch (InvalidGraphUpdateException e) {}
-		
-		assertClientEngineState(
-			"ObjectGraph TypeDomain/TestObjectGraph",
-			ce);
-		
+		} catch (InvalidGraphUpdateException e) {
+		}
+
+		assertClientEngineState("ObjectGraph TypeDomain/TestObjectGraph", ce);
+
 	}
-	
+
 	public void testBackReferences() throws Exception {
 		ClientEngine ce = createClientEngine();
 		ce.initialise();
-		
-		ce.acceptGraphUpdate(createGraphUpdate(
-				new EntityValue(parentType, 1, new Object[] {"to dave", 1L}),
-				new EntityValue(parentType, 2, new Object[] {"to none", null}),
-				new EntityValue(parentType, 3, new Object[] {"to sally", 2L}),
-				new EntityValue(parentType, 4, new Object[] {"to dave also", 1L}),
-				new EntityValue(parentType, 5, new Object[] {"to none also", null}),
-				new EntityValue(childType, 1, new Object[] {"dave"}),
-				new EntityValue(childType, 2, new Object[] {"sally"})));
-		
+
+		ce.acceptGraphUpdate(createGraphUpdate(new EntityValue(parentType, 1, new Object[] { "to dave", 1L }),
+				new EntityValue(parentType, 2, new Object[] { "to none", null }), new EntityValue(parentType, 3,
+						new Object[] { "to sally", 2L }), new EntityValue(parentType, 4, new Object[] { "to dave also",
+						1L }), new EntityValue(parentType, 5, new Object[] { "to none also", null }), new EntityValue(
+						childType, 1, new Object[] { "dave" }), new EntityValue(childType, 2, new Object[] { "sally" })));
+
 		Entity dave = ce.getEntityByTypeAndId(childType, 1);
-		
+
 		try {
 			ce.getReferencesTo(dave, new ReferenceProperty("random", "foo"));
 			fail("Entity.getBackReferences() should fail with a property that does not reference the entity type in question");
-		} catch (OgreException e) {}
-		
+		} catch (OgreException e) {
+		}
+
 		Entity[] references = ce.getReferencesTo(dave, refProperty);
-		
+
 		assertNotNull(references);
 		assertEquals(2, references.length);
 		assertEquals(references[0].getPropertyValue(parentName), "to dave");
@@ -208,24 +202,20 @@ public class ClientEngineTest extends OgreTestCase {
 	private GraphUpdate createGraphUpdate(EntityReference... updates) {
 		List<RawPropertyValueSet> valueMessages = new ArrayList<RawPropertyValueSet>();
 		List<PartialRawPropertyValueSet> diffMessages = new ArrayList<PartialRawPropertyValueSet>();
-		for (EntityReference update: updates) {
+		for (EntityReference update : updates) {
 			if (update instanceof Entity) {
 				valueMessages.add((Entity) update);
-			}
-			else if (update instanceof EntityDiff) {
+			} else if (update instanceof EntityDiff) {
 				diffMessages.add((EntityDiff) update);
-			}
-			else if (update instanceof EntityValue) {
+			} else if (update instanceof EntityValue) {
 				valueMessages.add((EntityValue) update);
-			}
-			else {
+			} else {
 				throw new OgreException("Invalid argument to createGraphUpdate() of type " + update.getClass());
 			}
 		}
 		return new GraphUpdate(typeDomain, OBJECT_GRAPH_ID, ++dataVersion, 1,
 				valueMessages.toArray(new RawPropertyValueSet[0]),
-				diffMessages.toArray(new PartialRawPropertyValueSet[0]),
-				null);
+				diffMessages.toArray(new PartialRawPropertyValueSet[0]), null);
 	}
 
 	private ClientEngine createClientEngine() throws NoSuchThingException {
@@ -234,15 +224,17 @@ public class ClientEngineTest extends OgreTestCase {
 		ce.setTypeDomainId(TYPE_DOMAIN_ID);
 		ce.setObjectGraphId(OBJECT_GRAPH_ID);
 
-		context.checking(new Expectations() {{
-		    oneOf (adapter).loadTypeDomain(TYPE_DOMAIN_ID);
-		    will(returnValue(typeDomain));
-		    
-		    oneOf (adapter).loadObjectGraph(typeDomain, OBJECT_GRAPH_ID);
-		    will(returnValue(initialValueUpdate));
-		    
-		    oneOf (adapter).subscribeToGraphUpdates(typeDomain, OBJECT_GRAPH_ID, ce);
-		}});
+		context.checking(new Expectations() {
+			{
+				oneOf(adapter).loadTypeDomain(TYPE_DOMAIN_ID);
+				will(returnValue(typeDomain));
+
+				oneOf(adapter).loadObjectGraph(typeDomain, OBJECT_GRAPH_ID);
+				will(returnValue(initialValueUpdate));
+
+				oneOf(adapter).subscribeToGraphUpdates(typeDomain, OBJECT_GRAPH_ID, ce);
+			}
+		});
 		return ce;
 	}
 }

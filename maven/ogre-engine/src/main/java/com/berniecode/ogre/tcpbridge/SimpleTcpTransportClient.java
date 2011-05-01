@@ -110,8 +110,8 @@ public class SimpleTcpTransportClient extends InitialisingBean implements Client
 	}
 
 	/**
-	 * Load the type domain that the {@link SimpleTcpTransportServer} provides. Since {@link SimpleTcpTransportServer}
-	 * only exposes a single type domain, the argument is ignored
+	 * Load the type domain that the {@link SimpleTcpTransportServer} provides. Since
+	 * {@link SimpleTcpTransportServer} only exposes a single type domain, the argument is ignored
 	 */
 	@Override
 	public TypeDomain loadTypeDomain(String typeDomainId) throws NoSuchThingException {
@@ -119,10 +119,10 @@ public class SimpleTcpTransportClient extends InitialisingBean implements Client
 		return deserialiser.deserialiseTypeDomain(message);
 	}
 
-
 	/**
-	 * Load the type object graph that the {@link SimpleTcpTransportServer} provides. Since {@link SimpleTcpTransportServer}
-	 * only exposes a single object graph, the arguments are ignored
+	 * Load the type object graph that the {@link SimpleTcpTransportServer} provides. Since
+	 * {@link SimpleTcpTransportServer} only exposes a single object graph, the arguments are
+	 * ignored
 	 */
 	@Override
 	public GraphUpdate loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException {
@@ -131,19 +131,19 @@ public class SimpleTcpTransportClient extends InitialisingBean implements Client
 	}
 
 	/**
-	 * Subscribe to the graph updates that the {@link SimpleTcpTransportServer} provides. Since {@link SimpleTcpTransportServer}
-	 * only exposes a single object graph, the argument is ignored
+	 * Subscribe to the graph updates that the {@link SimpleTcpTransportServer} provides. Since
+	 * {@link SimpleTcpTransportServer} only exposes a single object graph, the argument is ignored
 	 */
 	@Override
 	public void subscribeToGraphUpdates(TypeDomain typeDomain, String objectGraphId, GraphUpdateListener listener) {
 		Thread t = new SubscribeThread(typeDomain, listener);
 		t.start();
 	}
-	
+
 	//
 	// INTERNAL MACHINERY
 	//
-	
+
 	private byte[] doEnvelopedRequest(int requestCode) {
 		try {
 			Socket socket = null;

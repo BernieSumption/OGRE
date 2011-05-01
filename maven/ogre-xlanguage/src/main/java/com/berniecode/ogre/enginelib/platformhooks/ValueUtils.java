@@ -28,12 +28,13 @@ import com.berniecode.ogre.enginelib.ReferenceProperty;
 
 /**
  * Cross-language operations for working with values
- *
+ * 
  * @author Bernie Sumption
  */
 public class ValueUtils {
-	
-	private ValueUtils() {}
+
+	private ValueUtils() {
+	}
 
 	/**
 	 * Check whether two values are equivalent according to the following rules.
@@ -74,7 +75,7 @@ public class ValueUtils {
 	public static Long idToObject(long id) {
 		return Long.valueOf(id);
 	}
-	
+
 	/**
 	 * Check whether an arbitrary value is a suitable runtime type for a specific property.
 	 * 
@@ -83,12 +84,13 @@ public class ValueUtils {
 	public static void validatePropertyValue(Property property, Object object) {
 		if (object == null) {
 			if (!property.isNullable()) {
-				throw new InvalidGraphUpdateException("Invalid value for " + property + ": null values are not permitted");
+				throw new InvalidGraphUpdateException("Invalid value for " + property
+						+ ": null values are not permitted");
 			}
 			return;
 		}
 		Class requiredClass;
-		switch(property.getTypeCode()) {
+		switch (property.getTypeCode()) {
 		case Property.TYPECODE_INT32:
 			requiredClass = Integer.class;
 			break;
@@ -114,12 +116,15 @@ public class ValueUtils {
 			throw new InvalidGraphUpdateException(property + " has invalid invalid typeCode: " + property.getTypeCode());
 		}
 		if (!requiredClass.isInstance(object)) {
-			throw new InvalidGraphUpdateException("Invalid value for " + property + ": expected " + requiredClass + ", found " + object.getClass());
+			throw new InvalidGraphUpdateException("Invalid value for " + property + ": expected " + requiredClass
+					+ ", found " + object.getClass());
 		}
 		if (property.getTypeCode() == Property.TYPECODE_REFERENCE) {
 			Entity entity = (Entity) object;
 			if (entity.getEntityType() != ((ReferenceProperty) property).getReferenceType()) {
-				throw new InvalidGraphUpdateException("Invalid value for " + property + ": expected entity of type " + entity.getEntityType() + ", found entity of type " + ((ReferenceProperty) property).getReferenceType());
+				throw new InvalidGraphUpdateException("Invalid value for " + property + ": expected entity of type "
+						+ entity.getEntityType() + ", found entity of type "
+						+ ((ReferenceProperty) property).getReferenceType());
 			}
 		}
 	}

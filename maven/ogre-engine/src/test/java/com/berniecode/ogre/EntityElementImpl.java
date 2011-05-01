@@ -21,12 +21,12 @@
 package com.berniecode.ogre;
 
 public class EntityElementImpl implements EntityElement {
-	
+
 	private String name;
 
 	public EntityElementImpl(String name) {
 		this.name = name;
-		
+
 	}
 
 	public void setName(String name) {
@@ -37,5 +37,5 @@ public class EntityElementImpl implements EntityElement {
 	public String getName() {
 		return name;
 	}
-	
+
 }

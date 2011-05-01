@@ -24,12 +24,14 @@ import java.lang.reflect.Method;
 
 public class Utils {
 
-	private Utils() {}
+	private Utils() {
+	}
 
 	/**
 	 * Check whether a method is a javabean getter, e.g. getFoo().
 	 * 
-	 * <p>java.lang.Object#getClass() is not considered a valid getter
+	 * <p>
+	 * java.lang.Object#getClass() is not considered a valid getter
 	 */
 	public static boolean isGetterMethod(Method method) {
 		if (method.getDeclaringClass().equals(Object.class)) {

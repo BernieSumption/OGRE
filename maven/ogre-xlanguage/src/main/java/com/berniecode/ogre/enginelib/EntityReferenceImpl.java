@@ -20,11 +20,9 @@
 
 package com.berniecode.ogre.enginelib;
 
-
-
 /**
  * Simple implementation of {@link EntityReference}
- *
+ * 
  * @author Bernie Sumption
  */
 public class EntityReferenceImpl implements EntityReference {

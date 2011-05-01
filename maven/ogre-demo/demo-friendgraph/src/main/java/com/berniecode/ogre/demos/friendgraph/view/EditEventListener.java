@@ -29,9 +29,9 @@ import com.berniecode.ogre.demos.friendgraph.model.Person;
  * @author Bernie Sumption
  */
 public interface EditEventListener {
-	
+
 	void setPersonLocation(Person p, int x, int y);
-	
+
 	void setPersonName(Person p, String name);
 
 	Person createNewPerson(String name, int x, int y);

@@ -20,7 +20,6 @@
 
 package com.berniecode.ogre;
 
-
 public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 
 	private int nonNullableInt;
@@ -28,7 +27,7 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 
 	private long nonNullableLong;
 	private Long nullableLong;
-	
+
 	private String string;
 
 	private float nonNullableFloat;
@@ -36,15 +35,14 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 
 	private double nonNullableDouble;
 	private Double nullableDouble;
-	
+
 	private byte[] bytes;
 	private EntityElement entityElement;
-	
+
 	/**
 	 * Construct with specific values for all fields
 	 */
-	public EntityClassWithAllFieldsImpl(int i1, Integer i2, 
-			long l1, Long l2, String str, float f1, Float f2,
+	public EntityClassWithAllFieldsImpl(int i1, Integer i2, long l1, Long l2, String str, float f1, Float f2,
 			double d1, Double d2, byte[] bs, EntityElementImpl e) {
 		nonNullableInt = i1;
 		nullableInt = i2;
@@ -59,7 +57,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		entityElement = e;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableInt()
 	 */
 	@Override
@@ -71,7 +71,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.nullableInt = nullableInt;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableInt()
 	 */
 	@Override
@@ -83,7 +85,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.nonNullableInt = nonNullableInt;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableLong()
 	 */
 	@Override
@@ -95,7 +99,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.nonNullableLong = nonNullableLong;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableLong()
 	 */
 	@Override
@@ -111,7 +117,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.string = string;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getString()
 	 */
 	@Override
@@ -123,7 +131,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.nonNullableFloat = nonNullableFloat;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableFloat()
 	 */
 	@Override
@@ -135,7 +145,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.nullableFloat = nullableFloat;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableFloat()
 	 */
 	@Override
@@ -147,7 +159,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.nonNullableDouble = nonNullableDouble;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNonNullableDouble()
 	 */
 	@Override
@@ -159,7 +173,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.nullableDouble = nullableDouble;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getNullableDouble()
 	 */
 	@Override
@@ -171,7 +187,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.bytes = bytes;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getBytes()
 	 */
 	@Override
@@ -183,7 +201,9 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 		this.entityElement = entityElement;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.berniecode.ogre.EntityClassWithAllFields#getEntityElement()
 	 */
 	@Override
@@ -193,7 +213,7 @@ public class EntityClassWithAllFieldsImpl implements EntityClassWithAllFields {
 
 	@Override
 	public void nonGetterMethod() {
-		
+
 	}
 
 }

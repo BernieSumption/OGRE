@@ -27,8 +27,9 @@ import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
  * @author bernie
  */
 public class OgreLog {
-	
-	private OgreLog() {}
+
+	private OgreLog() {
+	}
 
 	public static final int LEVEL_NONE = 10;
 	public static final int LEVEL_ERROR = 5;
@@ -36,11 +37,9 @@ public class OgreLog {
 	public static final int LEVEL_INFO = 3;
 	public static final int LEVEL_DEBUG = 2;
 
-
 	private static int currentLevel = LEVEL_INFO;
 
 	private static LogWriter writer = new StdErrLogWriter();
-	
 
 	public static void setLevel(int newLevel) {
 		currentLevel = newLevel;
@@ -61,24 +60,22 @@ public class OgreLog {
 	public static void debug(String message) {
 		doLog(LEVEL_DEBUG, "DEBUG", message);
 	}
-	
+
 	public static boolean isDebugEnabled() {
 		return isEnabled(LEVEL_DEBUG);
 	}
-	
+
 	public static boolean isInfoEnabled() {
 		return isEnabled(LEVEL_INFO);
 	}
-	
+
 	public static boolean isWarnEnabled() {
 		return isEnabled(LEVEL_WARN);
 	}
-	
+
 	public static boolean isErrorEnabled() {
 		return isEnabled(LEVEL_ERROR);
 	}
-	
-
 
 	/**
 	 * Set a LogWriter to handle log messages. This can be used to redirect OGRE log messages to any

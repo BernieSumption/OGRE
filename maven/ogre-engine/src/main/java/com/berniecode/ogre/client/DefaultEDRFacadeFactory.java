@@ -52,11 +52,9 @@ import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
  */
 public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 
-	
-	private final Map<Class<?>, Map<Method, Property>> methodMaps = new HashMap<Class<?>, Map<Method,Property>>();
+	private final Map<Class<?>, Map<Method, Property>> methodMaps = new HashMap<Class<?>, Map<Method, Property>>();
 	private final Map<EntityType, Class<?>> classMap;
 
-	
 	/**
 	 * Create a DefaultEDRFacadeFactory using a custom mapping of {@link EntityType} to interface.
 	 * 
@@ -64,13 +62,12 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 	 */
 	public DefaultEDRFacadeFactory(ClientEngine clientEngine, Map<EntityType, Class<?>> classMap) {
 		this.classMap = classMap;
-		for (EntityType entityType: classMap.keySet()) {
+		for (EntityType entityType : classMap.keySet()) {
 			Class<?> klass = classMap.get(entityType);
 			methodMaps.put(klass, makeMethodMap(entityType, klass));
 		}
 	}
 
-	
 	/**
 	 * Create a {@link DefaultEDRFacadeFactory}, mapping {@link EntityType}s onto interfaces by
 	 * means of {@code Class.forName(entityType.getName())}
@@ -79,15 +76,15 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 		this(clientEngine, makeClassMap(clientEngine));
 	}
 
-	
 	private static Map<EntityType, Class<?>> makeClassMap(ClientEngine clientEngine) throws ClientFacadeException {
 		HashMap<EntityType, Class<?>> methodMap = new HashMap<EntityType, Class<?>>();
 		TypeDomain typeDomain = clientEngine.getTypeDomain();
-		for (EntityType entityType: UnsafeAccess.getEntityTypes(typeDomain)) {
+		for (EntityType entityType : UnsafeAccess.getEntityTypes(typeDomain)) {
 			try {
 				methodMap.put(entityType, Class.forName(entityType.getName()));
 			} catch (ClassNotFoundException e) {
-				throw new ClientFacadeException("There is no interface '" + e + "' to map onto the entity type with the same name.");
+				throw new ClientFacadeException("There is no interface '" + e
+						+ "' to map onto the entity type with the same name.");
 			}
 		}
 		return methodMap;
@@ -106,19 +103,20 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 	 */
 	protected Map<Method, Property> makeMethodMap(EntityType entityType, Class<?> klass) {
 		Map<Method, Property> methodMap = new HashMap<Method, Property>();
-		for (Method method: klass.getMethods()) {
+		for (Method method : klass.getMethods()) {
 			if (Utils.isGetterMethod(method)) {
 				String propertyName = Utils.getPropertyNameForGetter(method);
 				Property property = entityType.getPropertyByName(propertyName);
 				if (property == null) {
-					throw new ClientFacadeException(entityType + " does not contain a property called '" + propertyName + "'");
+					throw new ClientFacadeException(entityType + " does not contain a property called '" + propertyName
+							+ "'");
 				}
 				methodMap.put(method, property);
 			}
 		}
 		return methodMap;
 	}
-	
+
 	//
 	// PUBLIC API
 	//
@@ -154,12 +152,10 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 	public Object getFacadeForEntity(Entity entity) {
 		Class<?> klass = classMap.get(entity.getEntityType());
 		Map<Method, Property> methodMap = methodMaps.get(klass);
-		return Proxy.newProxyInstance(
-				getClass().getClassLoader(),
-				new Class[] { klass, EntityProxy.class },
+		return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { klass, EntityProxy.class },
 				new EntityFacadeInvocationHandler(methodMap, entity));
 	}
-	
+
 	/**
 	 * Forwards proxy invocations to an {@link Entity} according to the rules specified in
 	 * {@link DefaultEDRFacadeFactory#getFacadeForEntity(Entity)}
@@ -167,7 +163,7 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 	 * @author Bernie Sumption
 	 */
 	private class EntityFacadeInvocationHandler implements InvocationHandler {
-		
+
 		private final Entity entity;
 		private final Map<Method, Property> methodMap;
 
@@ -189,7 +185,7 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 			if (method.equals(Object.class.getMethod("toString"))) {
 				return entity.toString();
 			}
-			if (method.equals(Object.class.getMethod("equals", new Class<?>[] {Object.class}))) {
+			if (method.equals(Object.class.getMethod("equals", new Class<?>[] { Object.class }))) {
 				return args[0] == proxy;
 			}
 			if (method.equals(Object.class.getMethod("hashCode"))) {

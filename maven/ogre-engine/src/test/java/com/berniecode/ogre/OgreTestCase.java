@@ -42,12 +42,11 @@ import com.berniecode.ogre.server.pojods.EntityReferenceComparator;
 import com.berniecode.ogre.server.pojods.PojoDataSource;
 
 public abstract class OgreTestCase extends TestCase {
-	
+
 	protected Mockery context;
 
 	protected static final String TYPE_DOMAIN_ID = "TypeDomain";
 	protected static final String OBJECT_GRAPH_ID = "TestObjectGraph";
-	
 
 	@Override
 	public final void setUp() throws Exception {
@@ -55,13 +54,14 @@ public abstract class OgreTestCase extends TestCase {
 		context = new Mockery();
 		doAdditionalSetup();
 	}
-	
+
 	@Override
 	protected void tearDown() throws Exception {
 		context.assertIsSatisfied();
 	}
 
-	protected void doAdditionalSetup() throws Exception {}
+	protected void doAdditionalSetup() throws Exception {
+	}
 
 	public OgreTestCase() {
 		super();
@@ -73,22 +73,24 @@ public abstract class OgreTestCase extends TestCase {
 
 	protected void assertEqualsIgnoreWhitespace(String expected, String actual) {
 		String packagePrefix = getClass().getPackage().getName() + ".";
-		String expectedMunged = expected == null ? null : expected.replaceAll("\\s+", "\n").replace(packagePrefix, "").replace("com.berniecode.ogre.", "");
-		String actualMunged = actual == null ? null : actual.replaceAll("\\s+", "\n").replace(packagePrefix, "").replace("com.berniecode.ogre.", "");
+		String expectedMunged = expected == null ? null : expected.replaceAll("\\s+", "\n").replace(packagePrefix, "")
+				.replace("com.berniecode.ogre.", "");
+		String actualMunged = actual == null ? null : actual.replaceAll("\\s+", "\n").replace(packagePrefix, "")
+				.replace("com.berniecode.ogre.", "");
 		assertEquals(expectedMunged, actualMunged);
 		OgreLog.debug("assertEqualsIgnoreWhitespace values are equal:\n" + actual);
 	}
-	
+
 	protected void assertTypeDomainState(String expected, TypeDomain typeDomain) {
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeTypeDomain(typeDomain));
 	}
-	
+
 	protected void assertObjectGraphState(String expected, GraphUpdate objectGraph, TypeDomain typeDomain) {
 		EntityReferenceComparator comparator = new EntityReferenceComparator();
 		Arrays.sort(objectGraph.getEntityCreates(), comparator);
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeObjectGraph(objectGraph));
 	}
-	
+
 	protected void assertGraphUpdateState(String expected, GraphUpdate graphUpdate, TypeDomain typeDomain) {
 		EntityReferenceComparator comparator = new EntityReferenceComparator();
 		Arrays.sort(graphUpdate.getEntityCreates(), comparator);
@@ -96,11 +98,12 @@ public abstract class OgreTestCase extends TestCase {
 		Arrays.sort(graphUpdate.getEntityUpdates(), comparator);
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeGraphUpdate(graphUpdate));
 	}
-	
-	protected void assertEntityUpdateState(String expected, PartialRawPropertyValueSet entityUpdate, TypeDomain typeDomain) {
+
+	protected void assertEntityUpdateState(String expected, PartialRawPropertyValueSet entityUpdate,
+			TypeDomain typeDomain) {
 		assertEqualsIgnoreWhitespace(expected, EDRDescriber.describeEntityUpdate(entityUpdate));
 	}
-	
+
 	protected void assertClientEngineState(String expected, ClientEngine actual) {
 		assertObjectGraphState(expected, actual.createSnapshot(), actual.getTypeDomain());
 	}
@@ -110,7 +113,7 @@ public abstract class OgreTestCase extends TestCase {
 	 */
 	protected void requireOneLogError(final int level) {
 		final LogWriter mockLogWriter = context.mock(LogWriter.class);
-		
+
 		OgreLog.setLogWriter(new StdErrLogWriter() {
 			@Override
 			public void acceptMessage(int level, String levelDescription, String message) {
@@ -118,18 +121,22 @@ public abstract class OgreTestCase extends TestCase {
 				mockLogWriter.acceptMessage(level, levelDescription, message);
 			}
 		});
-	
-		context.checking(new Expectations() {{
-			allowing (mockLogWriter).acceptMessage(with(IsNot.not((equal(level)))), with(any(String.class)), with(any(String.class)));
-		    oneOf (mockLogWriter).acceptMessage(with(equal(level)), with(any(String.class)), with(any(String.class)));
-		}});
+
+		context.checking(new Expectations() {
+			{
+				allowing(mockLogWriter).acceptMessage(with(IsNot.not((equal(level)))), with(any(String.class)),
+						with(any(String.class)));
+				oneOf(mockLogWriter)
+						.acceptMessage(with(equal(level)), with(any(String.class)), with(any(String.class)));
+			}
+		});
 	}
 
-	protected PojoDataSource createInitialisedDataSource(Class<?> ... classes) {
+	protected PojoDataSource createInitialisedDataSource(Class<?>... classes) {
 		return createInitialisedDataSource(null, classes);
 	}
 
-	protected PojoDataSource createInitialisedDataSource(IdMapper idMapper, Class<?> ... classes) {
+	protected PojoDataSource createInitialisedDataSource(IdMapper idMapper, Class<?>... classes) {
 		PojoDataSource dataSource = new PojoDataSource();
 		DefaultEDRMapper edrMapper = new DefaultEDRMapper();
 		edrMapper.setTypeDomainId(TYPE_DOMAIN_ID);

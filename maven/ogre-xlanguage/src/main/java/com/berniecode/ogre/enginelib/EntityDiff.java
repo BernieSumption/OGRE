@@ -25,7 +25,7 @@ import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
 
 /**
  * Represents an update to a single {@link Entity}
- *
+ * 
  * @author Bernie Sumption
  */
 public class EntityDiff extends EntityValue implements PartialRawPropertyValueSet {
@@ -44,13 +44,14 @@ public class EntityDiff extends EntityValue implements PartialRawPropertyValueSe
 	public static EntityDiff build(RawPropertyValueSet from, RawPropertyValueSet to) {
 		EntityType entityType = from.getEntityType();
 		if (entityType != to.getEntityType()) {
-			throw new OgreException("Can't build an EntityDiff from " + from + " to " + to + " because their entityTypes are different");
+			throw new OgreException("Can't build an EntityDiff from " + from + " to " + to
+					+ " because their entityTypes are different");
 		}
 		int propertyCount = entityType.getPropertyCount();
 		Object[] changedValues = new Object[propertyCount];
 		boolean[] changed = new boolean[propertyCount];
 		boolean anyChanged = false;
-		for (int i=0; i<propertyCount; i++) {
+		for (int i = 0; i < propertyCount; i++) {
 			Property property = entityType.getProperty(i);
 			Object fromValue = from.getRawPropertyValue(property);
 			Object toValue = to.getRawPropertyValue(property);

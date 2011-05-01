@@ -100,7 +100,8 @@ public class SerialisedDataSource extends InitialisingBean {
 		objectGraphId = dataSource.getObjectGraphId();
 
 		if (OgreLog.isDebugEnabled()) {
-			OgreLog.debug("SerialisedDataSource: initialised with type domain: " + EDRDescriber.describeTypeDomain(initialTypeDomain));
+			OgreLog.debug("SerialisedDataSource: initialised with type domain: "
+					+ EDRDescriber.describeTypeDomain(initialTypeDomain));
 		}
 
 		dataSource.setGraphUpdateListener(new GraphUpdateListener() {
@@ -165,7 +166,7 @@ public class SerialisedDataSource extends InitialisingBean {
 
 	/**
 	 * Interface to be implemented by any objects wanting to register for serialised graph updates
-	 *
+	 * 
 	 * @author Bernie Sumption
 	 */
 	public static interface Listener {
@@ -185,7 +186,7 @@ public class SerialisedDataSource extends InitialisingBean {
 			copy = new HashSet<Listener>(listeners);
 		}
 		byte[] update = serialiser.serialiseGraphUpdate(graphUpdate);
-		for (Listener listener: copy) {
+		for (Listener listener : copy) {
 			listener.acceptSerialisedGraphUpdate(update);
 		}
 	}

@@ -37,7 +37,7 @@ public class FriendshipImpl implements Friendship {
 	public Person getLikee() {
 		return object;
 	}
-	
+
 	@Override
 	public String toString() {
 		return subject + " to " + object;

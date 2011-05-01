@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2011 Bernie Sumption. All rights reserved.
  * 
@@ -33,12 +32,12 @@ import com.berniecode.ogre.enginelib.TypeDomain;
  * @author Bernie Sumption
  */
 public interface EDRMapper extends IdMapper {
-	
+
 	/**
 	 * @return The TypeDOmain mapped by this {@link EDRMapper}
 	 */
 	TypeDomain getTypeDomain();
-	
+
 	/**
 	 * Convert an object into an {@link EntityValue}
 	 */
@@ -49,9 +48,9 @@ public interface EDRMapper extends IdMapper {
 	 * createEntity(entityObject).getEntityType()
 	 */
 	public EntityType getEntityTypeForObject(Object entityObject);
-	
+
 	/**
-	 * @param entityObject 
+	 * @param entityObject
 	 * @return any objects that this object references.
 	 */
 	public List<Object> getRelatedObjects(Object entityObject);

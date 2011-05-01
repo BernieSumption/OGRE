@@ -25,1334 +25,1404 @@ package com.berniecode.ogre.wireformat;
 
 @SuppressWarnings("all")
 final class V1TypeDomain {
-  private V1TypeDomain() {}
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistry registry) {
-  }
-  public static final class TypeDomainMessage extends
-      com.google.protobuf.GeneratedMessage {
-    // Use TypeDomainMessage.newBuilder() to construct.
-    private TypeDomainMessage() {
-      initFields();
-    }
-    private TypeDomainMessage(boolean noInit) {}
-    
-    private static final TypeDomainMessage defaultInstance;
-    public static TypeDomainMessage getDefaultInstance() {
-      return defaultInstance;
-    }
-    
-    public TypeDomainMessage getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-    
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_TypeDomainMessage_descriptor;
-    }
-    
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_TypeDomainMessage_fieldAccessorTable;
-    }
-    
-    // required string typeDomainId = 1;
-    public static final int TYPEDOMAINID_FIELD_NUMBER = 1;
-    private boolean hasTypeDomainId;
-    private java.lang.String typeDomainId_ = "";
-    public boolean hasTypeDomainId() { return hasTypeDomainId; }
-    public java.lang.String getTypeDomainId() { return typeDomainId_; }
-    
-    // repeated .ogre.EntityTypeMessage entityTypes = 2;
-    public static final int ENTITYTYPES_FIELD_NUMBER = 2;
-    private java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage> entityTypes_ =
-      java.util.Collections.emptyList();
-    public java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage> getEntityTypesList() {
-      return entityTypes_;
-    }
-    public int getEntityTypesCount() { return entityTypes_.size(); }
-    public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage getEntityTypes(int index) {
-      return entityTypes_.get(index);
-    }
-    
-    private void initFields() {
-    }
-    public final boolean isInitialized() {
-      if (!hasTypeDomainId) return false;
-      for (com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage element : getEntityTypesList()) {
-        if (!element.isInitialized()) return false;
-      }
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (hasTypeDomainId()) {
-        output.writeString(1, getTypeDomainId());
-      }
-      for (com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage element : getEntityTypesList()) {
-        output.writeMessage(2, element);
-      }
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (hasTypeDomainId()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getTypeDomainId());
-      }
-      for (com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage element : getEntityTypesList()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, element);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage result;
-      
-      // Construct using com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage();
-        return builder;
-      }
-      
-      protected com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage internalGetResult() {
-        return result;
-      }
-      
-      public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage();
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(result);
-      }
-      
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.getDescriptor();
-      }
-      
-      public com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage getDefaultInstanceForType() {
-        return com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.getDefaultInstance();
-      }
-      
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
-      public com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage build() {
-        if (result != null && !isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return buildPartial();
-      }
-      
-      private com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return buildPartial();
-      }
-      
-      public com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
-        }
-        if (result.entityTypes_ != java.util.Collections.EMPTY_LIST) {
-          result.entityTypes_ =
-            java.util.Collections.unmodifiableList(result.entityTypes_);
-        }
-        com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage returnMe = result;
-        result = null;
-        return returnMe;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage) {
-          return mergeFrom((com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage other) {
-        if (other == com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.getDefaultInstance()) return this;
-        if (other.hasTypeDomainId()) {
-          setTypeDomainId(other.getTypeDomainId());
-        }
-        if (!other.entityTypes_.isEmpty()) {
-          if (result.entityTypes_.isEmpty()) {
-            result.entityTypes_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage>();
-          }
-          result.entityTypes_.addAll(other.entityTypes_);
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              setTypeDomainId(input.readString());
-              break;
-            }
-            case 18: {
-              com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addEntityTypes(subBuilder.buildPartial());
-              break;
-            }
-          }
-        }
-      }
-      
-      
-      // required string typeDomainId = 1;
-      public boolean hasTypeDomainId() {
-        return result.hasTypeDomainId();
-      }
-      public java.lang.String getTypeDomainId() {
-        return result.getTypeDomainId();
-      }
-      public Builder setTypeDomainId(java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasTypeDomainId = true;
-        result.typeDomainId_ = value;
-        return this;
-      }
-      public Builder clearTypeDomainId() {
-        result.hasTypeDomainId = false;
-        result.typeDomainId_ = getDefaultInstance().getTypeDomainId();
-        return this;
-      }
-      
-      // repeated .ogre.EntityTypeMessage entityTypes = 2;
-      public java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage> getEntityTypesList() {
-        return java.util.Collections.unmodifiableList(result.entityTypes_);
-      }
-      public int getEntityTypesCount() {
-        return result.getEntityTypesCount();
-      }
-      public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage getEntityTypes(int index) {
-        return result.getEntityTypes(index);
-      }
-      public Builder setEntityTypes(int index, com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        result.entityTypes_.set(index, value);
-        return this;
-      }
-      public Builder setEntityTypes(int index, com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.Builder builderForValue) {
-        result.entityTypes_.set(index, builderForValue.build());
-        return this;
-      }
-      public Builder addEntityTypes(com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        if (result.entityTypes_.isEmpty()) {
-          result.entityTypes_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage>();
-        }
-        result.entityTypes_.add(value);
-        return this;
-      }
-      public Builder addEntityTypes(com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.Builder builderForValue) {
-        if (result.entityTypes_.isEmpty()) {
-          result.entityTypes_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage>();
-        }
-        result.entityTypes_.add(builderForValue.build());
-        return this;
-      }
-      public Builder addAllEntityTypes(
-          java.lang.Iterable<? extends com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage> values) {
-        if (result.entityTypes_.isEmpty()) {
-          result.entityTypes_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage>();
-        }
-        super.addAll(values, result.entityTypes_);
-        return this;
-      }
-      public Builder clearEntityTypes() {
-        result.entityTypes_ = java.util.Collections.emptyList();
-        return this;
-      }
-      
-      // @@protoc_insertion_point(builder_scope:ogre.TypeDomainMessage)
-    }
-    
-    static {
-      defaultInstance = new TypeDomainMessage(true);
-      com.berniecode.ogre.wireformat.V1TypeDomain.internalForceInit();
-      defaultInstance.initFields();
-    }
-    
-    // @@protoc_insertion_point(class_scope:ogre.TypeDomainMessage)
-  }
-  
-  public static final class EntityTypeMessage extends
-      com.google.protobuf.GeneratedMessage {
-    // Use EntityTypeMessage.newBuilder() to construct.
-    private EntityTypeMessage() {
-      initFields();
-    }
-    private EntityTypeMessage(boolean noInit) {}
-    
-    private static final EntityTypeMessage defaultInstance;
-    public static EntityTypeMessage getDefaultInstance() {
-      return defaultInstance;
-    }
-    
-    public EntityTypeMessage getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-    
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_EntityTypeMessage_descriptor;
-    }
-    
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_EntityTypeMessage_fieldAccessorTable;
-    }
-    
-    // required string name = 1;
-    public static final int NAME_FIELD_NUMBER = 1;
-    private boolean hasName;
-    private java.lang.String name_ = "";
-    public boolean hasName() { return hasName; }
-    public java.lang.String getName() { return name_; }
-    
-    // repeated .ogre.PropertyMessage properties = 2;
-    public static final int PROPERTIES_FIELD_NUMBER = 2;
-    private java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage> properties_ =
-      java.util.Collections.emptyList();
-    public java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage> getPropertiesList() {
-      return properties_;
-    }
-    public int getPropertiesCount() { return properties_.size(); }
-    public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage getProperties(int index) {
-      return properties_.get(index);
-    }
-    
-    private void initFields() {
-    }
-    public final boolean isInitialized() {
-      if (!hasName) return false;
-      for (com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage element : getPropertiesList()) {
-        if (!element.isInitialized()) return false;
-      }
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (hasName()) {
-        output.writeString(1, getName());
-      }
-      for (com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage element : getPropertiesList()) {
-        output.writeMessage(2, element);
-      }
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (hasName()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getName());
-      }
-      for (com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage element : getPropertiesList()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, element);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage result;
-      
-      // Construct using com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage();
-        return builder;
-      }
-      
-      protected com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage internalGetResult() {
-        return result;
-      }
-      
-      public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage();
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(result);
-      }
-      
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.getDescriptor();
-      }
-      
-      public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage getDefaultInstanceForType() {
-        return com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.getDefaultInstance();
-      }
-      
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
-      public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage build() {
-        if (result != null && !isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return buildPartial();
-      }
-      
-      private com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return buildPartial();
-      }
-      
-      public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
-        }
-        if (result.properties_ != java.util.Collections.EMPTY_LIST) {
-          result.properties_ =
-            java.util.Collections.unmodifiableList(result.properties_);
-        }
-        com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage returnMe = result;
-        result = null;
-        return returnMe;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage) {
-          return mergeFrom((com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage other) {
-        if (other == com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.getDefaultInstance()) return this;
-        if (other.hasName()) {
-          setName(other.getName());
-        }
-        if (!other.properties_.isEmpty()) {
-          if (result.properties_.isEmpty()) {
-            result.properties_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage>();
-          }
-          result.properties_.addAll(other.properties_);
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              setName(input.readString());
-              break;
-            }
-            case 18: {
-              com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addProperties(subBuilder.buildPartial());
-              break;
-            }
-          }
-        }
-      }
-      
-      
-      // required string name = 1;
-      public boolean hasName() {
-        return result.hasName();
-      }
-      public java.lang.String getName() {
-        return result.getName();
-      }
-      public Builder setName(java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasName = true;
-        result.name_ = value;
-        return this;
-      }
-      public Builder clearName() {
-        result.hasName = false;
-        result.name_ = getDefaultInstance().getName();
-        return this;
-      }
-      
-      // repeated .ogre.PropertyMessage properties = 2;
-      public java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage> getPropertiesList() {
-        return java.util.Collections.unmodifiableList(result.properties_);
-      }
-      public int getPropertiesCount() {
-        return result.getPropertiesCount();
-      }
-      public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage getProperties(int index) {
-        return result.getProperties(index);
-      }
-      public Builder setProperties(int index, com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        result.properties_.set(index, value);
-        return this;
-      }
-      public Builder setProperties(int index, com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder builderForValue) {
-        result.properties_.set(index, builderForValue.build());
-        return this;
-      }
-      public Builder addProperties(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        if (result.properties_.isEmpty()) {
-          result.properties_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage>();
-        }
-        result.properties_.add(value);
-        return this;
-      }
-      public Builder addProperties(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder builderForValue) {
-        if (result.properties_.isEmpty()) {
-          result.properties_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage>();
-        }
-        result.properties_.add(builderForValue.build());
-        return this;
-      }
-      public Builder addAllProperties(
-          java.lang.Iterable<? extends com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage> values) {
-        if (result.properties_.isEmpty()) {
-          result.properties_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage>();
-        }
-        super.addAll(values, result.properties_);
-        return this;
-      }
-      public Builder clearProperties() {
-        result.properties_ = java.util.Collections.emptyList();
-        return this;
-      }
-      
-      // @@protoc_insertion_point(builder_scope:ogre.EntityTypeMessage)
-    }
-    
-    static {
-      defaultInstance = new EntityTypeMessage(true);
-      com.berniecode.ogre.wireformat.V1TypeDomain.internalForceInit();
-      defaultInstance.initFields();
-    }
-    
-    // @@protoc_insertion_point(class_scope:ogre.EntityTypeMessage)
-  }
-  
-  public static final class PropertyMessage extends
-      com.google.protobuf.GeneratedMessage {
-    // Use PropertyMessage.newBuilder() to construct.
-    private PropertyMessage() {
-      initFields();
-    }
-    private PropertyMessage(boolean noInit) {}
-    
-    private static final PropertyMessage defaultInstance;
-    public static PropertyMessage getDefaultInstance() {
-      return defaultInstance;
-    }
-    
-    public PropertyMessage getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-    
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_PropertyMessage_descriptor;
-    }
-    
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_PropertyMessage_fieldAccessorTable;
-    }
-    
-    public enum Type
-        implements com.google.protobuf.ProtocolMessageEnum {
-      INT32(0, 0),
-      INT64(1, 1),
-      FLOAT(2, 2),
-      DOUBLE(3, 3),
-      STRING(4, 4),
-      BYTES(5, 5),
-      REFERENCE(6, 6),
-      ;
-      
-      
-      public final int getNumber() { return value; }
-      
-      public static Type valueOf(int value) {
-        switch (value) {
-          case 0: return INT32;
-          case 1: return INT64;
-          case 2: return FLOAT;
-          case 3: return DOUBLE;
-          case 4: return STRING;
-          case 5: return BYTES;
-          case 6: return REFERENCE;
-          default: return null;
-        }
-      }
-      
-      public static com.google.protobuf.Internal.EnumLiteMap<Type>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static com.google.protobuf.Internal.EnumLiteMap<Type>
-          internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<Type>() {
-              public Type findValueByNumber(int number) {
-                return Type.valueOf(number)
-      ;        }
-            };
-      
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDescriptor().getEnumTypes().get(0);
-      }
-      
-      private static final Type[] VALUES = {
-        INT32, INT64, FLOAT, DOUBLE, STRING, BYTES, REFERENCE, 
-      };
-      public static Type valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        return VALUES[desc.getIndex()];
-      }
-      private final int index;
-      private final int value;
-      private Type(int index, int value) {
-        this.index = index;
-        this.value = value;
-      }
-      
-      static {
-        com.berniecode.ogre.wireformat.V1TypeDomain.getDescriptor();
-      }
-      
-      // @@protoc_insertion_point(enum_scope:ogre.PropertyMessage.Type)
-    }
-    
-    // required string name = 1;
-    public static final int NAME_FIELD_NUMBER = 1;
-    private boolean hasName;
-    private java.lang.String name_ = "";
-    public boolean hasName() { return hasName; }
-    public java.lang.String getName() { return name_; }
-    
-    // required .ogre.PropertyMessage.Type propertyType = 2;
-    public static final int PROPERTYTYPE_FIELD_NUMBER = 2;
-    private boolean hasPropertyType;
-    private com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type propertyType_;
-    public boolean hasPropertyType() { return hasPropertyType; }
-    public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type getPropertyType() { return propertyType_; }
-    
-    // required bool nullable = 3;
-    public static final int NULLABLE_FIELD_NUMBER = 3;
-    private boolean hasNullable;
-    private boolean nullable_ = false;
-    public boolean hasNullable() { return hasNullable; }
-    public boolean getNullable() { return nullable_; }
-    
-    // optional uint32 referenceTypeIndex = 5;
-    public static final int REFERENCETYPEINDEX_FIELD_NUMBER = 5;
-    private boolean hasReferenceTypeIndex;
-    private int referenceTypeIndex_ = 0;
-    public boolean hasReferenceTypeIndex() { return hasReferenceTypeIndex; }
-    public int getReferenceTypeIndex() { return referenceTypeIndex_; }
-    
-    private void initFields() {
-      propertyType_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type.INT32;
-    }
-    public final boolean isInitialized() {
-      if (!hasName) return false;
-      if (!hasPropertyType) return false;
-      if (!hasNullable) return false;
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (hasName()) {
-        output.writeString(1, getName());
-      }
-      if (hasPropertyType()) {
-        output.writeEnum(2, getPropertyType().getNumber());
-      }
-      if (hasNullable()) {
-        output.writeBool(3, getNullable());
-      }
-      if (hasReferenceTypeIndex()) {
-        output.writeUInt32(5, getReferenceTypeIndex());
-      }
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (hasName()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getName());
-      }
-      if (hasPropertyType()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, getPropertyType().getNumber());
-      }
-      if (hasNullable()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, getNullable());
-      }
-      if (hasReferenceTypeIndex()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(5, getReferenceTypeIndex());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage result;
-      
-      // Construct using com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage();
-        return builder;
-      }
-      
-      protected com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage internalGetResult() {
-        return result;
-      }
-      
-      public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage();
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(result);
-      }
-      
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDescriptor();
-      }
-      
-      public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage getDefaultInstanceForType() {
-        return com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDefaultInstance();
-      }
-      
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
-      public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage build() {
-        if (result != null && !isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return buildPartial();
-      }
-      
-      private com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return buildPartial();
-      }
-      
-      public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
-        }
-        com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage returnMe = result;
-        result = null;
-        return returnMe;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage) {
-          return mergeFrom((com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage other) {
-        if (other == com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDefaultInstance()) return this;
-        if (other.hasName()) {
-          setName(other.getName());
-        }
-        if (other.hasPropertyType()) {
-          setPropertyType(other.getPropertyType());
-        }
-        if (other.hasNullable()) {
-          setNullable(other.getNullable());
-        }
-        if (other.hasReferenceTypeIndex()) {
-          setReferenceTypeIndex(other.getReferenceTypeIndex());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              setName(input.readString());
-              break;
-            }
-            case 16: {
-              int rawValue = input.readEnum();
-              com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type value = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(2, rawValue);
-              } else {
-                setPropertyType(value);
-              }
-              break;
-            }
-            case 24: {
-              setNullable(input.readBool());
-              break;
-            }
-            case 40: {
-              setReferenceTypeIndex(input.readUInt32());
-              break;
-            }
-          }
-        }
-      }
-      
-      
-      // required string name = 1;
-      public boolean hasName() {
-        return result.hasName();
-      }
-      public java.lang.String getName() {
-        return result.getName();
-      }
-      public Builder setName(java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasName = true;
-        result.name_ = value;
-        return this;
-      }
-      public Builder clearName() {
-        result.hasName = false;
-        result.name_ = getDefaultInstance().getName();
-        return this;
-      }
-      
-      // required .ogre.PropertyMessage.Type propertyType = 2;
-      public boolean hasPropertyType() {
-        return result.hasPropertyType();
-      }
-      public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type getPropertyType() {
-        return result.getPropertyType();
-      }
-      public Builder setPropertyType(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        result.hasPropertyType = true;
-        result.propertyType_ = value;
-        return this;
-      }
-      public Builder clearPropertyType() {
-        result.hasPropertyType = false;
-        result.propertyType_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type.INT32;
-        return this;
-      }
-      
-      // required bool nullable = 3;
-      public boolean hasNullable() {
-        return result.hasNullable();
-      }
-      public boolean getNullable() {
-        return result.getNullable();
-      }
-      public Builder setNullable(boolean value) {
-        result.hasNullable = true;
-        result.nullable_ = value;
-        return this;
-      }
-      public Builder clearNullable() {
-        result.hasNullable = false;
-        result.nullable_ = false;
-        return this;
-      }
-      
-      // optional uint32 referenceTypeIndex = 5;
-      public boolean hasReferenceTypeIndex() {
-        return result.hasReferenceTypeIndex();
-      }
-      public int getReferenceTypeIndex() {
-        return result.getReferenceTypeIndex();
-      }
-      public Builder setReferenceTypeIndex(int value) {
-        result.hasReferenceTypeIndex = true;
-        result.referenceTypeIndex_ = value;
-        return this;
-      }
-      public Builder clearReferenceTypeIndex() {
-        result.hasReferenceTypeIndex = false;
-        result.referenceTypeIndex_ = 0;
-        return this;
-      }
-      
-      // @@protoc_insertion_point(builder_scope:ogre.PropertyMessage)
-    }
-    
-    static {
-      defaultInstance = new PropertyMessage(true);
-      com.berniecode.ogre.wireformat.V1TypeDomain.internalForceInit();
-      defaultInstance.initFields();
-    }
-    
-    // @@protoc_insertion_point(class_scope:ogre.PropertyMessage)
-  }
-  
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_ogre_TypeDomainMessage_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_ogre_TypeDomainMessage_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_ogre_EntityTypeMessage_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_ogre_EntityTypeMessage_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_ogre_PropertyMessage_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_ogre_PropertyMessage_fieldAccessorTable;
-  
-  public static com.google.protobuf.Descriptors.FileDescriptor
-      getDescriptor() {
-    return descriptor;
-  }
-  private static com.google.protobuf.Descriptors.FileDescriptor
-      descriptor;
-  static {
-    java.lang.String[] descriptorData = {
-      "\n\027ogre/V1TypeDomain.proto\022\004ogre\"W\n\021TypeD" +
-      "omainMessage\022\024\n\014typeDomainId\030\001 \002(\t\022,\n\013en" +
-      "tityTypes\030\002 \003(\0132\027.ogre.EntityTypeMessage" +
-      "\"L\n\021EntityTypeMessage\022\014\n\004name\030\001 \002(\t\022)\n\np" +
-      "roperties\030\002 \003(\0132\025.ogre.PropertyMessage\"\332" +
-      "\001\n\017PropertyMessage\022\014\n\004name\030\001 \002(\t\0220\n\014prop" +
-      "ertyType\030\002 \002(\0162\032.ogre.PropertyMessage.Ty" +
-      "pe\022\020\n\010nullable\030\003 \002(\010\022\032\n\022referenceTypeInd" +
-      "ex\030\005 \001(\r\"Y\n\004Type\022\t\n\005INT32\020\000\022\t\n\005INT64\020\001\022\t" +
-      "\n\005FLOAT\020\002\022\n\n\006DOUBLE\020\003\022\n\n\006STRING\020\004\022\t\n\005BYT",
-      "ES\020\005\022\r\n\tREFERENCE\020\006B \n\036com.berniecode.og" +
-      "re.wireformat"
-    };
-    com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-        public com.google.protobuf.ExtensionRegistry assignDescriptors(
-            com.google.protobuf.Descriptors.FileDescriptor root) {
-          descriptor = root;
-          internal_static_ogre_TypeDomainMessage_descriptor =
-            getDescriptor().getMessageTypes().get(0);
-          internal_static_ogre_TypeDomainMessage_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_ogre_TypeDomainMessage_descriptor,
-              new java.lang.String[] { "TypeDomainId", "EntityTypes", },
-              com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.class,
-              com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.Builder.class);
-          internal_static_ogre_EntityTypeMessage_descriptor =
-            getDescriptor().getMessageTypes().get(1);
-          internal_static_ogre_EntityTypeMessage_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_ogre_EntityTypeMessage_descriptor,
-              new java.lang.String[] { "Name", "Properties", },
-              com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.class,
-              com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.Builder.class);
-          internal_static_ogre_PropertyMessage_descriptor =
-            getDescriptor().getMessageTypes().get(2);
-          internal_static_ogre_PropertyMessage_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_ogre_PropertyMessage_descriptor,
-              new java.lang.String[] { "Name", "PropertyType", "Nullable", "ReferenceTypeIndex", },
-              com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.class,
-              com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder.class);
-          return null;
-        }
-      };
-    com.google.protobuf.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new com.google.protobuf.Descriptors.FileDescriptor[] {
-        }, assigner);
-  }
-  
-  public static void internalForceInit() {}
-  
-  // @@protoc_insertion_point(outer_class_scope)
+	private V1TypeDomain() {
+	}
+
+	public static void registerAllExtensions(com.google.protobuf.ExtensionRegistry registry) {
+	}
+
+	public static final class TypeDomainMessage extends com.google.protobuf.GeneratedMessage {
+		// Use TypeDomainMessage.newBuilder() to construct.
+		private TypeDomainMessage() {
+			initFields();
+		}
+
+		private TypeDomainMessage(boolean noInit) {
+		}
+
+		private static final TypeDomainMessage defaultInstance;
+
+		public static TypeDomainMessage getDefaultInstance() {
+			return defaultInstance;
+		}
+
+		public TypeDomainMessage getDefaultInstanceForType() {
+			return defaultInstance;
+		}
+
+		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+			return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_TypeDomainMessage_descriptor;
+		}
+
+		protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+			return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_TypeDomainMessage_fieldAccessorTable;
+		}
+
+		// required string typeDomainId = 1;
+		public static final int TYPEDOMAINID_FIELD_NUMBER = 1;
+		private boolean hasTypeDomainId;
+		private java.lang.String typeDomainId_ = "";
+
+		public boolean hasTypeDomainId() {
+			return hasTypeDomainId;
+		}
+
+		public java.lang.String getTypeDomainId() {
+			return typeDomainId_;
+		}
+
+		// repeated .ogre.EntityTypeMessage entityTypes = 2;
+		public static final int ENTITYTYPES_FIELD_NUMBER = 2;
+		private java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage> entityTypes_ = java.util.Collections
+				.emptyList();
+
+		public java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage> getEntityTypesList() {
+			return entityTypes_;
+		}
+
+		public int getEntityTypesCount() {
+			return entityTypes_.size();
+		}
+
+		public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage getEntityTypes(int index) {
+			return entityTypes_.get(index);
+		}
+
+		private void initFields() {
+		}
+
+		public final boolean isInitialized() {
+			if (!hasTypeDomainId)
+				return false;
+			for (com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage element : getEntityTypesList()) {
+				if (!element.isInitialized())
+					return false;
+			}
+			return true;
+		}
+
+		public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
+			getSerializedSize();
+			if (hasTypeDomainId()) {
+				output.writeString(1, getTypeDomainId());
+			}
+			for (com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage element : getEntityTypesList()) {
+				output.writeMessage(2, element);
+			}
+			getUnknownFields().writeTo(output);
+		}
+
+		private int memoizedSerializedSize = -1;
+
+		public int getSerializedSize() {
+			int size = memoizedSerializedSize;
+			if (size != -1)
+				return size;
+
+			size = 0;
+			if (hasTypeDomainId()) {
+				size += com.google.protobuf.CodedOutputStream.computeStringSize(1, getTypeDomainId());
+			}
+			for (com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage element : getEntityTypesList()) {
+				size += com.google.protobuf.CodedOutputStream.computeMessageSize(2, element);
+			}
+			size += getUnknownFields().getSerializedSize();
+			memoizedSerializedSize = size;
+			return size;
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
+				com.google.protobuf.ByteString data) throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
+				com.google.protobuf.ByteString data, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data, extensionRegistry).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(byte[] data)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(byte[] data,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data, extensionRegistry).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(java.io.InputStream input)
+				throws java.io.IOException {
+			return newBuilder().mergeFrom(input).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
+				java.io.InputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws java.io.IOException {
+			return newBuilder().mergeFrom(input, extensionRegistry).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseDelimitedFrom(
+				java.io.InputStream input) throws java.io.IOException {
+			Builder builder = newBuilder();
+			if (builder.mergeDelimitedFrom(input)) {
+				return builder.buildParsed();
+			} else {
+				return null;
+			}
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseDelimitedFrom(
+				java.io.InputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws java.io.IOException {
+			Builder builder = newBuilder();
+			if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+				return builder.buildParsed();
+			} else {
+				return null;
+			}
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
+				com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+			return newBuilder().mergeFrom(input).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage parseFrom(
+				com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws java.io.IOException {
+			return newBuilder().mergeFrom(input, extensionRegistry).buildParsed();
+		}
+
+		public static Builder newBuilder() {
+			return Builder.create();
+		}
+
+		public Builder newBuilderForType() {
+			return newBuilder();
+		}
+
+		public static Builder newBuilder(com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage prototype) {
+			return newBuilder().mergeFrom(prototype);
+		}
+
+		public Builder toBuilder() {
+			return newBuilder(this);
+		}
+
+		public static final class Builder extends com.google.protobuf.GeneratedMessage.Builder<Builder> {
+			private com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage result;
+
+			// Construct using
+			// com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.newBuilder()
+			private Builder() {
+			}
+
+			private static Builder create() {
+				Builder builder = new Builder();
+				builder.result = new com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage();
+				return builder;
+			}
+
+			protected com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage internalGetResult() {
+				return result;
+			}
+
+			public Builder clear() {
+				if (result == null) {
+					throw new IllegalStateException("Cannot call clear() after build().");
+				}
+				result = new com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage();
+				return this;
+			}
+
+			public Builder clone() {
+				return create().mergeFrom(result);
+			}
+
+			public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+				return com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.getDescriptor();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage getDefaultInstanceForType() {
+				return com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.getDefaultInstance();
+			}
+
+			public boolean isInitialized() {
+				return result.isInitialized();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage build() {
+				if (result != null && !isInitialized()) {
+					throw newUninitializedMessageException(result);
+				}
+				return buildPartial();
+			}
+
+			private com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage buildParsed()
+					throws com.google.protobuf.InvalidProtocolBufferException {
+				if (!isInitialized()) {
+					throw newUninitializedMessageException(result).asInvalidProtocolBufferException();
+				}
+				return buildPartial();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage buildPartial() {
+				if (result == null) {
+					throw new IllegalStateException("build() has already been called on this Builder.");
+				}
+				if (result.entityTypes_ != java.util.Collections.EMPTY_LIST) {
+					result.entityTypes_ = java.util.Collections.unmodifiableList(result.entityTypes_);
+				}
+				com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage returnMe = result;
+				result = null;
+				return returnMe;
+			}
+
+			public Builder mergeFrom(com.google.protobuf.Message other) {
+				if (other instanceof com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage) {
+					return mergeFrom((com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage) other);
+				} else {
+					super.mergeFrom(other);
+					return this;
+				}
+			}
+
+			public Builder mergeFrom(com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage other) {
+				if (other == com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.getDefaultInstance())
+					return this;
+				if (other.hasTypeDomainId()) {
+					setTypeDomainId(other.getTypeDomainId());
+				}
+				if (!other.entityTypes_.isEmpty()) {
+					if (result.entityTypes_.isEmpty()) {
+						result.entityTypes_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage>();
+					}
+					result.entityTypes_.addAll(other.entityTypes_);
+				}
+				this.mergeUnknownFields(other.getUnknownFields());
+				return this;
+			}
+
+			public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+					com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+				com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet
+						.newBuilder(this.getUnknownFields());
+				while (true) {
+					int tag = input.readTag();
+					switch (tag) {
+					case 0:
+						this.setUnknownFields(unknownFields.build());
+						return this;
+					default: {
+						if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+							this.setUnknownFields(unknownFields.build());
+							return this;
+						}
+						break;
+					}
+					case 10: {
+						setTypeDomainId(input.readString());
+						break;
+					}
+					case 18: {
+						com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage
+								.newBuilder();
+						input.readMessage(subBuilder, extensionRegistry);
+						addEntityTypes(subBuilder.buildPartial());
+						break;
+					}
+					}
+				}
+			}
+
+			// required string typeDomainId = 1;
+			public boolean hasTypeDomainId() {
+				return result.hasTypeDomainId();
+			}
+
+			public java.lang.String getTypeDomainId() {
+				return result.getTypeDomainId();
+			}
+
+			public Builder setTypeDomainId(java.lang.String value) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				result.hasTypeDomainId = true;
+				result.typeDomainId_ = value;
+				return this;
+			}
+
+			public Builder clearTypeDomainId() {
+				result.hasTypeDomainId = false;
+				result.typeDomainId_ = getDefaultInstance().getTypeDomainId();
+				return this;
+			}
+
+			// repeated .ogre.EntityTypeMessage entityTypes = 2;
+			public java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage> getEntityTypesList() {
+				return java.util.Collections.unmodifiableList(result.entityTypes_);
+			}
+
+			public int getEntityTypesCount() {
+				return result.getEntityTypesCount();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage getEntityTypes(int index) {
+				return result.getEntityTypes(index);
+			}
+
+			public Builder setEntityTypes(int index, com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage value) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				result.entityTypes_.set(index, value);
+				return this;
+			}
+
+			public Builder setEntityTypes(int index,
+					com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.Builder builderForValue) {
+				result.entityTypes_.set(index, builderForValue.build());
+				return this;
+			}
+
+			public Builder addEntityTypes(com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage value) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				if (result.entityTypes_.isEmpty()) {
+					result.entityTypes_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage>();
+				}
+				result.entityTypes_.add(value);
+				return this;
+			}
+
+			public Builder addEntityTypes(
+					com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.Builder builderForValue) {
+				if (result.entityTypes_.isEmpty()) {
+					result.entityTypes_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage>();
+				}
+				result.entityTypes_.add(builderForValue.build());
+				return this;
+			}
+
+			public Builder addAllEntityTypes(
+					java.lang.Iterable<? extends com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage> values) {
+				if (result.entityTypes_.isEmpty()) {
+					result.entityTypes_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage>();
+				}
+				super.addAll(values, result.entityTypes_);
+				return this;
+			}
+
+			public Builder clearEntityTypes() {
+				result.entityTypes_ = java.util.Collections.emptyList();
+				return this;
+			}
+
+			// @@protoc_insertion_point(builder_scope:ogre.TypeDomainMessage)
+		}
+
+		static {
+			defaultInstance = new TypeDomainMessage(true);
+			com.berniecode.ogre.wireformat.V1TypeDomain.internalForceInit();
+			defaultInstance.initFields();
+		}
+
+		// @@protoc_insertion_point(class_scope:ogre.TypeDomainMessage)
+	}
+
+	public static final class EntityTypeMessage extends com.google.protobuf.GeneratedMessage {
+		// Use EntityTypeMessage.newBuilder() to construct.
+		private EntityTypeMessage() {
+			initFields();
+		}
+
+		private EntityTypeMessage(boolean noInit) {
+		}
+
+		private static final EntityTypeMessage defaultInstance;
+
+		public static EntityTypeMessage getDefaultInstance() {
+			return defaultInstance;
+		}
+
+		public EntityTypeMessage getDefaultInstanceForType() {
+			return defaultInstance;
+		}
+
+		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+			return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_EntityTypeMessage_descriptor;
+		}
+
+		protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+			return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_EntityTypeMessage_fieldAccessorTable;
+		}
+
+		// required string name = 1;
+		public static final int NAME_FIELD_NUMBER = 1;
+		private boolean hasName;
+		private java.lang.String name_ = "";
+
+		public boolean hasName() {
+			return hasName;
+		}
+
+		public java.lang.String getName() {
+			return name_;
+		}
+
+		// repeated .ogre.PropertyMessage properties = 2;
+		public static final int PROPERTIES_FIELD_NUMBER = 2;
+		private java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage> properties_ = java.util.Collections
+				.emptyList();
+
+		public java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage> getPropertiesList() {
+			return properties_;
+		}
+
+		public int getPropertiesCount() {
+			return properties_.size();
+		}
+
+		public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage getProperties(int index) {
+			return properties_.get(index);
+		}
+
+		private void initFields() {
+		}
+
+		public final boolean isInitialized() {
+			if (!hasName)
+				return false;
+			for (com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage element : getPropertiesList()) {
+				if (!element.isInitialized())
+					return false;
+			}
+			return true;
+		}
+
+		public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
+			getSerializedSize();
+			if (hasName()) {
+				output.writeString(1, getName());
+			}
+			for (com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage element : getPropertiesList()) {
+				output.writeMessage(2, element);
+			}
+			getUnknownFields().writeTo(output);
+		}
+
+		private int memoizedSerializedSize = -1;
+
+		public int getSerializedSize() {
+			int size = memoizedSerializedSize;
+			if (size != -1)
+				return size;
+
+			size = 0;
+			if (hasName()) {
+				size += com.google.protobuf.CodedOutputStream.computeStringSize(1, getName());
+			}
+			for (com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage element : getPropertiesList()) {
+				size += com.google.protobuf.CodedOutputStream.computeMessageSize(2, element);
+			}
+			size += getUnknownFields().getSerializedSize();
+			memoizedSerializedSize = size;
+			return size;
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
+				com.google.protobuf.ByteString data) throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
+				com.google.protobuf.ByteString data, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data, extensionRegistry).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(byte[] data)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(byte[] data,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data, extensionRegistry).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(java.io.InputStream input)
+				throws java.io.IOException {
+			return newBuilder().mergeFrom(input).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
+				java.io.InputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws java.io.IOException {
+			return newBuilder().mergeFrom(input, extensionRegistry).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseDelimitedFrom(
+				java.io.InputStream input) throws java.io.IOException {
+			Builder builder = newBuilder();
+			if (builder.mergeDelimitedFrom(input)) {
+				return builder.buildParsed();
+			} else {
+				return null;
+			}
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseDelimitedFrom(
+				java.io.InputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws java.io.IOException {
+			Builder builder = newBuilder();
+			if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+				return builder.buildParsed();
+			} else {
+				return null;
+			}
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
+				com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+			return newBuilder().mergeFrom(input).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage parseFrom(
+				com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws java.io.IOException {
+			return newBuilder().mergeFrom(input, extensionRegistry).buildParsed();
+		}
+
+		public static Builder newBuilder() {
+			return Builder.create();
+		}
+
+		public Builder newBuilderForType() {
+			return newBuilder();
+		}
+
+		public static Builder newBuilder(com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage prototype) {
+			return newBuilder().mergeFrom(prototype);
+		}
+
+		public Builder toBuilder() {
+			return newBuilder(this);
+		}
+
+		public static final class Builder extends com.google.protobuf.GeneratedMessage.Builder<Builder> {
+			private com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage result;
+
+			// Construct using
+			// com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.newBuilder()
+			private Builder() {
+			}
+
+			private static Builder create() {
+				Builder builder = new Builder();
+				builder.result = new com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage();
+				return builder;
+			}
+
+			protected com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage internalGetResult() {
+				return result;
+			}
+
+			public Builder clear() {
+				if (result == null) {
+					throw new IllegalStateException("Cannot call clear() after build().");
+				}
+				result = new com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage();
+				return this;
+			}
+
+			public Builder clone() {
+				return create().mergeFrom(result);
+			}
+
+			public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+				return com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.getDescriptor();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage getDefaultInstanceForType() {
+				return com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.getDefaultInstance();
+			}
+
+			public boolean isInitialized() {
+				return result.isInitialized();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage build() {
+				if (result != null && !isInitialized()) {
+					throw newUninitializedMessageException(result);
+				}
+				return buildPartial();
+			}
+
+			private com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage buildParsed()
+					throws com.google.protobuf.InvalidProtocolBufferException {
+				if (!isInitialized()) {
+					throw newUninitializedMessageException(result).asInvalidProtocolBufferException();
+				}
+				return buildPartial();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage buildPartial() {
+				if (result == null) {
+					throw new IllegalStateException("build() has already been called on this Builder.");
+				}
+				if (result.properties_ != java.util.Collections.EMPTY_LIST) {
+					result.properties_ = java.util.Collections.unmodifiableList(result.properties_);
+				}
+				com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage returnMe = result;
+				result = null;
+				return returnMe;
+			}
+
+			public Builder mergeFrom(com.google.protobuf.Message other) {
+				if (other instanceof com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage) {
+					return mergeFrom((com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage) other);
+				} else {
+					super.mergeFrom(other);
+					return this;
+				}
+			}
+
+			public Builder mergeFrom(com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage other) {
+				if (other == com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.getDefaultInstance())
+					return this;
+				if (other.hasName()) {
+					setName(other.getName());
+				}
+				if (!other.properties_.isEmpty()) {
+					if (result.properties_.isEmpty()) {
+						result.properties_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage>();
+					}
+					result.properties_.addAll(other.properties_);
+				}
+				this.mergeUnknownFields(other.getUnknownFields());
+				return this;
+			}
+
+			public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+					com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+				com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet
+						.newBuilder(this.getUnknownFields());
+				while (true) {
+					int tag = input.readTag();
+					switch (tag) {
+					case 0:
+						this.setUnknownFields(unknownFields.build());
+						return this;
+					default: {
+						if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+							this.setUnknownFields(unknownFields.build());
+							return this;
+						}
+						break;
+					}
+					case 10: {
+						setName(input.readString());
+						break;
+					}
+					case 18: {
+						com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage
+								.newBuilder();
+						input.readMessage(subBuilder, extensionRegistry);
+						addProperties(subBuilder.buildPartial());
+						break;
+					}
+					}
+				}
+			}
+
+			// required string name = 1;
+			public boolean hasName() {
+				return result.hasName();
+			}
+
+			public java.lang.String getName() {
+				return result.getName();
+			}
+
+			public Builder setName(java.lang.String value) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				result.hasName = true;
+				result.name_ = value;
+				return this;
+			}
+
+			public Builder clearName() {
+				result.hasName = false;
+				result.name_ = getDefaultInstance().getName();
+				return this;
+			}
+
+			// repeated .ogre.PropertyMessage properties = 2;
+			public java.util.List<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage> getPropertiesList() {
+				return java.util.Collections.unmodifiableList(result.properties_);
+			}
+
+			public int getPropertiesCount() {
+				return result.getPropertiesCount();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage getProperties(int index) {
+				return result.getProperties(index);
+			}
+
+			public Builder setProperties(int index, com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage value) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				result.properties_.set(index, value);
+				return this;
+			}
+
+			public Builder setProperties(int index,
+					com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder builderForValue) {
+				result.properties_.set(index, builderForValue.build());
+				return this;
+			}
+
+			public Builder addProperties(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage value) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				if (result.properties_.isEmpty()) {
+					result.properties_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage>();
+				}
+				result.properties_.add(value);
+				return this;
+			}
+
+			public Builder addProperties(
+					com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder builderForValue) {
+				if (result.properties_.isEmpty()) {
+					result.properties_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage>();
+				}
+				result.properties_.add(builderForValue.build());
+				return this;
+			}
+
+			public Builder addAllProperties(
+					java.lang.Iterable<? extends com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage> values) {
+				if (result.properties_.isEmpty()) {
+					result.properties_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage>();
+				}
+				super.addAll(values, result.properties_);
+				return this;
+			}
+
+			public Builder clearProperties() {
+				result.properties_ = java.util.Collections.emptyList();
+				return this;
+			}
+
+			// @@protoc_insertion_point(builder_scope:ogre.EntityTypeMessage)
+		}
+
+		static {
+			defaultInstance = new EntityTypeMessage(true);
+			com.berniecode.ogre.wireformat.V1TypeDomain.internalForceInit();
+			defaultInstance.initFields();
+		}
+
+		// @@protoc_insertion_point(class_scope:ogre.EntityTypeMessage)
+	}
+
+	public static final class PropertyMessage extends com.google.protobuf.GeneratedMessage {
+		// Use PropertyMessage.newBuilder() to construct.
+		private PropertyMessage() {
+			initFields();
+		}
+
+		private PropertyMessage(boolean noInit) {
+		}
+
+		private static final PropertyMessage defaultInstance;
+
+		public static PropertyMessage getDefaultInstance() {
+			return defaultInstance;
+		}
+
+		public PropertyMessage getDefaultInstanceForType() {
+			return defaultInstance;
+		}
+
+		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+			return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_PropertyMessage_descriptor;
+		}
+
+		protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+			return com.berniecode.ogre.wireformat.V1TypeDomain.internal_static_ogre_PropertyMessage_fieldAccessorTable;
+		}
+
+		public enum Type implements com.google.protobuf.ProtocolMessageEnum {
+			INT32(0, 0), INT64(1, 1), FLOAT(2, 2), DOUBLE(3, 3), STRING(4, 4), BYTES(5, 5), REFERENCE(6, 6), ;
+
+			public final int getNumber() {
+				return value;
+			}
+
+			public static Type valueOf(int value) {
+				switch (value) {
+				case 0:
+					return INT32;
+				case 1:
+					return INT64;
+				case 2:
+					return FLOAT;
+				case 3:
+					return DOUBLE;
+				case 4:
+					return STRING;
+				case 5:
+					return BYTES;
+				case 6:
+					return REFERENCE;
+				default:
+					return null;
+				}
+			}
+
+			public static com.google.protobuf.Internal.EnumLiteMap<Type> internalGetValueMap() {
+				return internalValueMap;
+			}
+
+			private static com.google.protobuf.Internal.EnumLiteMap<Type> internalValueMap = new com.google.protobuf.Internal.EnumLiteMap<Type>() {
+				public Type findValueByNumber(int number) {
+					return Type.valueOf(number);
+				}
+			};
+
+			public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
+				return getDescriptor().getValues().get(index);
+			}
+
+			public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
+				return getDescriptor();
+			}
+
+			public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
+				return com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDescriptor().getEnumTypes()
+						.get(0);
+			}
+
+			private static final Type[] VALUES = { INT32, INT64, FLOAT, DOUBLE, STRING, BYTES, REFERENCE, };
+
+			public static Type valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+				if (desc.getType() != getDescriptor()) {
+					throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
+				}
+				return VALUES[desc.getIndex()];
+			}
+
+			private final int index;
+			private final int value;
+
+			private Type(int index, int value) {
+				this.index = index;
+				this.value = value;
+			}
+
+			static {
+				com.berniecode.ogre.wireformat.V1TypeDomain.getDescriptor();
+			}
+
+			// @@protoc_insertion_point(enum_scope:ogre.PropertyMessage.Type)
+		}
+
+		// required string name = 1;
+		public static final int NAME_FIELD_NUMBER = 1;
+		private boolean hasName;
+		private java.lang.String name_ = "";
+
+		public boolean hasName() {
+			return hasName;
+		}
+
+		public java.lang.String getName() {
+			return name_;
+		}
+
+		// required .ogre.PropertyMessage.Type propertyType = 2;
+		public static final int PROPERTYTYPE_FIELD_NUMBER = 2;
+		private boolean hasPropertyType;
+		private com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type propertyType_;
+
+		public boolean hasPropertyType() {
+			return hasPropertyType;
+		}
+
+		public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type getPropertyType() {
+			return propertyType_;
+		}
+
+		// required bool nullable = 3;
+		public static final int NULLABLE_FIELD_NUMBER = 3;
+		private boolean hasNullable;
+		private boolean nullable_ = false;
+
+		public boolean hasNullable() {
+			return hasNullable;
+		}
+
+		public boolean getNullable() {
+			return nullable_;
+		}
+
+		// optional uint32 referenceTypeIndex = 5;
+		public static final int REFERENCETYPEINDEX_FIELD_NUMBER = 5;
+		private boolean hasReferenceTypeIndex;
+		private int referenceTypeIndex_ = 0;
+
+		public boolean hasReferenceTypeIndex() {
+			return hasReferenceTypeIndex;
+		}
+
+		public int getReferenceTypeIndex() {
+			return referenceTypeIndex_;
+		}
+
+		private void initFields() {
+			propertyType_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type.INT32;
+		}
+
+		public final boolean isInitialized() {
+			if (!hasName)
+				return false;
+			if (!hasPropertyType)
+				return false;
+			if (!hasNullable)
+				return false;
+			return true;
+		}
+
+		public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
+			getSerializedSize();
+			if (hasName()) {
+				output.writeString(1, getName());
+			}
+			if (hasPropertyType()) {
+				output.writeEnum(2, getPropertyType().getNumber());
+			}
+			if (hasNullable()) {
+				output.writeBool(3, getNullable());
+			}
+			if (hasReferenceTypeIndex()) {
+				output.writeUInt32(5, getReferenceTypeIndex());
+			}
+			getUnknownFields().writeTo(output);
+		}
+
+		private int memoizedSerializedSize = -1;
+
+		public int getSerializedSize() {
+			int size = memoizedSerializedSize;
+			if (size != -1)
+				return size;
+
+			size = 0;
+			if (hasName()) {
+				size += com.google.protobuf.CodedOutputStream.computeStringSize(1, getName());
+			}
+			if (hasPropertyType()) {
+				size += com.google.protobuf.CodedOutputStream.computeEnumSize(2, getPropertyType().getNumber());
+			}
+			if (hasNullable()) {
+				size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, getNullable());
+			}
+			if (hasReferenceTypeIndex()) {
+				size += com.google.protobuf.CodedOutputStream.computeUInt32Size(5, getReferenceTypeIndex());
+			}
+			size += getUnknownFields().getSerializedSize();
+			memoizedSerializedSize = size;
+			return size;
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
+				com.google.protobuf.ByteString data) throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
+				com.google.protobuf.ByteString data, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data, extensionRegistry).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(byte[] data)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(byte[] data,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data, extensionRegistry).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(java.io.InputStream input)
+				throws java.io.IOException {
+			return newBuilder().mergeFrom(input).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(java.io.InputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+			return newBuilder().mergeFrom(input, extensionRegistry).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseDelimitedFrom(
+				java.io.InputStream input) throws java.io.IOException {
+			Builder builder = newBuilder();
+			if (builder.mergeDelimitedFrom(input)) {
+				return builder.buildParsed();
+			} else {
+				return null;
+			}
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseDelimitedFrom(
+				java.io.InputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws java.io.IOException {
+			Builder builder = newBuilder();
+			if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+				return builder.buildParsed();
+			} else {
+				return null;
+			}
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
+				com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+			return newBuilder().mergeFrom(input).buildParsed();
+		}
+
+		public static com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage parseFrom(
+				com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws java.io.IOException {
+			return newBuilder().mergeFrom(input, extensionRegistry).buildParsed();
+		}
+
+		public static Builder newBuilder() {
+			return Builder.create();
+		}
+
+		public Builder newBuilderForType() {
+			return newBuilder();
+		}
+
+		public static Builder newBuilder(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage prototype) {
+			return newBuilder().mergeFrom(prototype);
+		}
+
+		public Builder toBuilder() {
+			return newBuilder(this);
+		}
+
+		public static final class Builder extends com.google.protobuf.GeneratedMessage.Builder<Builder> {
+			private com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage result;
+
+			// Construct using
+			// com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.newBuilder()
+			private Builder() {
+			}
+
+			private static Builder create() {
+				Builder builder = new Builder();
+				builder.result = new com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage();
+				return builder;
+			}
+
+			protected com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage internalGetResult() {
+				return result;
+			}
+
+			public Builder clear() {
+				if (result == null) {
+					throw new IllegalStateException("Cannot call clear() after build().");
+				}
+				result = new com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage();
+				return this;
+			}
+
+			public Builder clone() {
+				return create().mergeFrom(result);
+			}
+
+			public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+				return com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDescriptor();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage getDefaultInstanceForType() {
+				return com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDefaultInstance();
+			}
+
+			public boolean isInitialized() {
+				return result.isInitialized();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage build() {
+				if (result != null && !isInitialized()) {
+					throw newUninitializedMessageException(result);
+				}
+				return buildPartial();
+			}
+
+			private com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage buildParsed()
+					throws com.google.protobuf.InvalidProtocolBufferException {
+				if (!isInitialized()) {
+					throw newUninitializedMessageException(result).asInvalidProtocolBufferException();
+				}
+				return buildPartial();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage buildPartial() {
+				if (result == null) {
+					throw new IllegalStateException("build() has already been called on this Builder.");
+				}
+				com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage returnMe = result;
+				result = null;
+				return returnMe;
+			}
+
+			public Builder mergeFrom(com.google.protobuf.Message other) {
+				if (other instanceof com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage) {
+					return mergeFrom((com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage) other);
+				} else {
+					super.mergeFrom(other);
+					return this;
+				}
+			}
+
+			public Builder mergeFrom(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage other) {
+				if (other == com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.getDefaultInstance())
+					return this;
+				if (other.hasName()) {
+					setName(other.getName());
+				}
+				if (other.hasPropertyType()) {
+					setPropertyType(other.getPropertyType());
+				}
+				if (other.hasNullable()) {
+					setNullable(other.getNullable());
+				}
+				if (other.hasReferenceTypeIndex()) {
+					setReferenceTypeIndex(other.getReferenceTypeIndex());
+				}
+				this.mergeUnknownFields(other.getUnknownFields());
+				return this;
+			}
+
+			public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+					com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+				com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet
+						.newBuilder(this.getUnknownFields());
+				while (true) {
+					int tag = input.readTag();
+					switch (tag) {
+					case 0:
+						this.setUnknownFields(unknownFields.build());
+						return this;
+					default: {
+						if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+							this.setUnknownFields(unknownFields.build());
+							return this;
+						}
+						break;
+					}
+					case 10: {
+						setName(input.readString());
+						break;
+					}
+					case 16: {
+						int rawValue = input.readEnum();
+						com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type value = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type
+								.valueOf(rawValue);
+						if (value == null) {
+							unknownFields.mergeVarintField(2, rawValue);
+						} else {
+							setPropertyType(value);
+						}
+						break;
+					}
+					case 24: {
+						setNullable(input.readBool());
+						break;
+					}
+					case 40: {
+						setReferenceTypeIndex(input.readUInt32());
+						break;
+					}
+					}
+				}
+			}
+
+			// required string name = 1;
+			public boolean hasName() {
+				return result.hasName();
+			}
+
+			public java.lang.String getName() {
+				return result.getName();
+			}
+
+			public Builder setName(java.lang.String value) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				result.hasName = true;
+				result.name_ = value;
+				return this;
+			}
+
+			public Builder clearName() {
+				result.hasName = false;
+				result.name_ = getDefaultInstance().getName();
+				return this;
+			}
+
+			// required .ogre.PropertyMessage.Type propertyType = 2;
+			public boolean hasPropertyType() {
+				return result.hasPropertyType();
+			}
+
+			public com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type getPropertyType() {
+				return result.getPropertyType();
+			}
+
+			public Builder setPropertyType(com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type value) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				result.hasPropertyType = true;
+				result.propertyType_ = value;
+				return this;
+			}
+
+			public Builder clearPropertyType() {
+				result.hasPropertyType = false;
+				result.propertyType_ = com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Type.INT32;
+				return this;
+			}
+
+			// required bool nullable = 3;
+			public boolean hasNullable() {
+				return result.hasNullable();
+			}
+
+			public boolean getNullable() {
+				return result.getNullable();
+			}
+
+			public Builder setNullable(boolean value) {
+				result.hasNullable = true;
+				result.nullable_ = value;
+				return this;
+			}
+
+			public Builder clearNullable() {
+				result.hasNullable = false;
+				result.nullable_ = false;
+				return this;
+			}
+
+			// optional uint32 referenceTypeIndex = 5;
+			public boolean hasReferenceTypeIndex() {
+				return result.hasReferenceTypeIndex();
+			}
+
+			public int getReferenceTypeIndex() {
+				return result.getReferenceTypeIndex();
+			}
+
+			public Builder setReferenceTypeIndex(int value) {
+				result.hasReferenceTypeIndex = true;
+				result.referenceTypeIndex_ = value;
+				return this;
+			}
+
+			public Builder clearReferenceTypeIndex() {
+				result.hasReferenceTypeIndex = false;
+				result.referenceTypeIndex_ = 0;
+				return this;
+			}
+
+			// @@protoc_insertion_point(builder_scope:ogre.PropertyMessage)
+		}
+
+		static {
+			defaultInstance = new PropertyMessage(true);
+			com.berniecode.ogre.wireformat.V1TypeDomain.internalForceInit();
+			defaultInstance.initFields();
+		}
+
+		// @@protoc_insertion_point(class_scope:ogre.PropertyMessage)
+	}
+
+	private static com.google.protobuf.Descriptors.Descriptor internal_static_ogre_TypeDomainMessage_descriptor;
+	private static com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_ogre_TypeDomainMessage_fieldAccessorTable;
+	private static com.google.protobuf.Descriptors.Descriptor internal_static_ogre_EntityTypeMessage_descriptor;
+	private static com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_ogre_EntityTypeMessage_fieldAccessorTable;
+	private static com.google.protobuf.Descriptors.Descriptor internal_static_ogre_PropertyMessage_descriptor;
+	private static com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_ogre_PropertyMessage_fieldAccessorTable;
+
+	public static com.google.protobuf.Descriptors.FileDescriptor getDescriptor() {
+		return descriptor;
+	}
+
+	private static com.google.protobuf.Descriptors.FileDescriptor descriptor;
+	static {
+		java.lang.String[] descriptorData = {
+				"\n\027ogre/V1TypeDomain.proto\022\004ogre\"W\n\021TypeD"
+						+ "omainMessage\022\024\n\014typeDomainId\030\001 \002(\t\022,\n\013en"
+						+ "tityTypes\030\002 \003(\0132\027.ogre.EntityTypeMessage"
+						+ "\"L\n\021EntityTypeMessage\022\014\n\004name\030\001 \002(\t\022)\n\np"
+						+ "roperties\030\002 \003(\0132\025.ogre.PropertyMessage\"\332"
+						+ "\001\n\017PropertyMessage\022\014\n\004name\030\001 \002(\t\0220\n\014prop"
+						+ "ertyType\030\002 \002(\0162\032.ogre.PropertyMessage.Ty"
+						+ "pe\022\020\n\010nullable\030\003 \002(\010\022\032\n\022referenceTypeInd"
+						+ "ex\030\005 \001(\r\"Y\n\004Type\022\t\n\005INT32\020\000\022\t\n\005INT64\020\001\022\t"
+						+ "\n\005FLOAT\020\002\022\n\n\006DOUBLE\020\003\022\n\n\006STRING\020\004\022\t\n\005BYT",
+				"ES\020\005\022\r\n\tREFERENCE\020\006B \n\036com.berniecode.og" + "re.wireformat" };
+		com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner = new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
+			public com.google.protobuf.ExtensionRegistry assignDescriptors(
+					com.google.protobuf.Descriptors.FileDescriptor root) {
+				descriptor = root;
+				internal_static_ogre_TypeDomainMessage_descriptor = getDescriptor().getMessageTypes().get(0);
+				internal_static_ogre_TypeDomainMessage_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+						internal_static_ogre_TypeDomainMessage_descriptor, new java.lang.String[] { "TypeDomainId",
+								"EntityTypes", }, com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.class,
+						com.berniecode.ogre.wireformat.V1TypeDomain.TypeDomainMessage.Builder.class);
+				internal_static_ogre_EntityTypeMessage_descriptor = getDescriptor().getMessageTypes().get(1);
+				internal_static_ogre_EntityTypeMessage_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+						internal_static_ogre_EntityTypeMessage_descriptor, new java.lang.String[] { "Name",
+								"Properties", }, com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.class,
+						com.berniecode.ogre.wireformat.V1TypeDomain.EntityTypeMessage.Builder.class);
+				internal_static_ogre_PropertyMessage_descriptor = getDescriptor().getMessageTypes().get(2);
+				internal_static_ogre_PropertyMessage_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+						internal_static_ogre_PropertyMessage_descriptor, new java.lang.String[] { "Name",
+								"PropertyType", "Nullable", "ReferenceTypeIndex", },
+						com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.class,
+						com.berniecode.ogre.wireformat.V1TypeDomain.PropertyMessage.Builder.class);
+				return null;
+			}
+		};
+		com.google.protobuf.Descriptors.FileDescriptor.internalBuildGeneratedFileFrom(descriptorData,
+				new com.google.protobuf.Descriptors.FileDescriptor[] {}, assigner);
+	}
+
+	public static void internalForceInit() {
+	}
+
+	// @@protoc_insertion_point(outer_class_scope)
 }

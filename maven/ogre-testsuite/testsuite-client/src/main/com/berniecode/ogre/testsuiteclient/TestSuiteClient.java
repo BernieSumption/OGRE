@@ -51,7 +51,7 @@ public class TestSuiteClient {
 
 	private BufferedWriter traceFileWriter;
 	private final File suiteFolder;
-	
+
 	OgreWireFormatSerialiser serialiser = new OgreWireFormatSerialiser();
 	OgreWireFormatDeserialiser deserialiser = new OgreWireFormatDeserialiser();
 
@@ -66,16 +66,18 @@ public class TestSuiteClient {
 		OutputStream os = new FileOutputStream(traceFile);
 		os.write(new byte[0]);
 		os.close();
-		
+
 		traceFileWriter = new BufferedWriter(new FileWriter(traceFile));
-		
+
 		try {
 
-			final TypeDomain typeDomain = deserialiser.deserialiseTypeDomain(readFile(new File(suiteFolder, TYPE_DOMAIN_MESSAGE_FILE_NAME)));
-			final GraphUpdate initialData = deserialiser.deserialiseGraphUpdate(readFile(new File(suiteFolder, INITIAL_DATA_MESSAGE_FILE_NAME)), typeDomain);
+			final TypeDomain typeDomain = deserialiser.deserialiseTypeDomain(readFile(new File(suiteFolder,
+					TYPE_DOMAIN_MESSAGE_FILE_NAME)));
+			final GraphUpdate initialData = deserialiser.deserialiseGraphUpdate(readFile(new File(suiteFolder,
+					INITIAL_DATA_MESSAGE_FILE_NAME)), typeDomain);
 			traceLine("type domain", EDRDescriber.describeTypeDomain(typeDomain));
 			traceLine("initial data set", EDRDescriber.describeObjectGraph(initialData));
-			
+
 			ClientEngine engine = new ClientEngine();
 			String objectGraphId = initialData.getObjectGraphId();
 			engine.setObjectGraphId(objectGraphId);
@@ -84,35 +86,37 @@ public class TestSuiteClient {
 				public TypeDomain loadTypeDomain(String typeDomainId) throws NoSuchThingException {
 					return typeDomain;
 				}
-				public GraphUpdate loadObjectGraph(TypeDomain typeDomain, String objectGraphId) throws NoSuchThingException {
+
+				public GraphUpdate loadObjectGraph(TypeDomain typeDomain, String objectGraphId)
+						throws NoSuchThingException {
 					return initialData;
 				}
+
 				public void subscribeToGraphUpdates(TypeDomain typeDomain, String objectGraphId,
-						GraphUpdateListener listener) {}
+						GraphUpdateListener listener) {
+				}
 			});
 			engine.initialise();
-			
 
-			
-	
 			for (int i = 0;; i++) {
-				File updateMessage = new File(suiteFolder, GRAPH_UPDATE_MESSAGE_FILE_PATTERN.replace("%d", String.valueOf(i)));
+				File updateMessage = new File(suiteFolder, GRAPH_UPDATE_MESSAGE_FILE_PATTERN.replace("%d",
+						String.valueOf(i)));
 				if (!updateMessage.exists()) {
 					break;
 				}
-				
+
 				GraphUpdate graphUpdate = deserialiser.deserialiseGraphUpdate(readFile(updateMessage), typeDomain);
-				
+
 				engine.acceptGraphUpdate(graphUpdate);
 
 				traceLine("update " + i, describeGraphUpdate(graphUpdate));
 				traceLine("graph state after update " + i, describeObjectGraph(engine));
 			}
-		
+
 		} finally {
 			traceFileWriter.close();
 		}
-		
+
 		if (!Arrays.equals(readFile(traceFile), readFile(new File(suiteFolder, REFERENCE_TRACE_FILE_NAME)))) {
 			OgreLog.error("Differences detected in test suite " + suiteFolder.getName());
 		}
@@ -132,11 +136,10 @@ public class TestSuiteClient {
 		return EDRDescriber.describeGraphUpdate(graphUpdate);
 	}
 
-
 	private void traceLine(String title, String string) throws IOException {
 		traceFileWriter.write("#\n# " + title + "\n#\n" + string + "\n");
 	}
-	
+
 	private byte[] readFile(File file) throws IOException {
 		byte[] buffer = new byte[(int) file.length()];
 		FileInputStream r = new FileInputStream(file);

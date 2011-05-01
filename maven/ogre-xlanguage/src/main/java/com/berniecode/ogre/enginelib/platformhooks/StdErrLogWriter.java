@@ -24,7 +24,7 @@ import com.berniecode.ogre.enginelib.LogWriter;
 
 /**
  * A {@link LogWriter} that prints messages on the standard error stream
- *
+ * 
  * @author Bernie Sumption
  */
 public class StdErrLogWriter implements LogWriter {

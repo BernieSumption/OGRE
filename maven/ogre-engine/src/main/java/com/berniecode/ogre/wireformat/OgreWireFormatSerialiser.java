@@ -54,7 +54,7 @@ public class OgreWireFormatSerialiser implements EDRSerialiser {
 	// buffers messages defined in the various .proto files, and OGRE's EDR classes,
 	// both of which are themselves commented
 	//
-	
+
 	//
 	// TYPE DOMAIN SERIALISATION
 	//
@@ -83,7 +83,7 @@ public class OgreWireFormatSerialiser implements EDRSerialiser {
 		}
 		return tdBuilder.build().toByteArray();
 	}
-	
+
 	//
 	// GRAPH UPDATE SERIALISATION
 	//
@@ -95,8 +95,7 @@ public class OgreWireFormatSerialiser implements EDRSerialiser {
 	public byte[] serialiseGraphUpdate(GraphUpdate graphUpdate) {
 		GraphUpdateMessage.Builder guBuilder = GraphUpdateMessage.newBuilder()
 				.setTypeDomainId(graphUpdate.getTypeDomain().getTypeDomainId())
-				.setObjectGraphId(graphUpdate.getObjectGraphId())
-				.setDataVersion(graphUpdate.getDataVersion())
+				.setObjectGraphId(graphUpdate.getObjectGraphId()).setDataVersion(graphUpdate.getDataVersion())
 				.setDataVersionScheme(graphUpdate.getDataVersionScheme());
 		for (RawPropertyValueSet entity : graphUpdate.getEntityCreates()) {
 			guBuilder.addEntityCreates(getEntityValueMessage(entity, false));

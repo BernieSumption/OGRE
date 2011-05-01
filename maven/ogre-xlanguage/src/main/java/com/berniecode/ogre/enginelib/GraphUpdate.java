@@ -59,8 +59,8 @@ public class GraphUpdate {
 	}
 
 	/**
-	 * Together with the type domain, identifies the object graph that this message
-	 * should be applied to
+	 * Together with the type domain, identifies the object graph that this message should be
+	 * applied to
 	 */
 	public String getObjectGraphId() {
 		return objectGraphId;

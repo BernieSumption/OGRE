@@ -35,14 +35,14 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 	 * The minimum permitted ID
 	 */
 	public static final long MIN_ID = 1L;
-	
+
 	/**
 	 * The maximum permitted ID is 2^52. Higher IDs can't be unambiguously represented as double
 	 * precision floating point numbers, and some clients must use that representation as the host
 	 * language has no native long integer
 	 */
-	//TODO verify this number
-	public static final long MAX_ID = 0x000FFFFFFFFFFFFFL; 
+	// TODO verify this number
+	public static final long MAX_ID = 0x000FFFFFFFFFFFFFL;
 
 	private final EntityType entityType;
 	private final long id;
@@ -59,7 +59,11 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 			throw new OgreException("IDs must be positive integers between 1 and 2^52");
 		}
 		if (id > MAX_ID) {
-			OgreLog.warn("Entity " + entityType + "#" + id + " has an ID higer than 2^52, and may cause undefined bahaviour on client languages with no long integer type");
+			OgreLog.warn("Entity "
+					+ entityType
+					+ "#"
+					+ id
+					+ " has an ID higer than 2^52, and may cause undefined bahaviour on client languages with no long integer type");
 		}
 		this.entityType = entityType;
 		this.id = id;
@@ -86,12 +90,13 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 	/**
 	 * @return The value for a property of this {@link Entity}
 	 * 
-	 * @throws OgreException if the supplied property does not belong this Entity's {@link EntityType} 
+	 * @throws OgreException if the supplied property does not belong this Entity's
+	 *             {@link EntityType}
 	 */
 	public Object getPropertyValue(Property property) {
 		if (property.getEntityType() != entityType) {
-			throw new OgreException("property " + property + " belongs to entity type "
-					+ property.getEntityType() + ", but this Entity belongs to entity type " + entityType);
+			throw new OgreException("property " + property + " belongs to entity type " + property.getEntityType()
+					+ ", but this Entity belongs to entity type " + entityType);
 		}
 		return values[property.getPropertyIndex()];
 	}
@@ -106,11 +111,11 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 		}
 		return value;
 	}
-	
+
 	public String toString() {
 		return entityType + "#" + id;
 	}
-	
+
 	//
 	// OGRE INTERNAL API
 	//
@@ -124,7 +129,7 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 	 */
 	void update(RawPropertyValueSet update, EntityStore store, Entity[] array) {
 		boolean isPartial = update instanceof PartialRawPropertyValueSet;
-		for (int i=0; i<entityType.getPropertyCount(); i++) {
+		for (int i = 0; i < entityType.getPropertyCount(); i++) {
 			Property property = entityType.getProperty(i);
 			boolean hasUpdatedValue = true;
 			if (isPartial) {
@@ -138,7 +143,8 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 					long refId = ValueUtils.objectToId(value);
 					value = getEntity(refType, refId, store, array);
 					if (value == null) {
-						throw new InvalidGraphUpdateException("Property '" + property + "' of entity type " + property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
+						throw new InvalidGraphUpdateException("Property '" + property + "' of entity type "
+								+ property.getEntityType() + " references non-existant entity " + refType + "#" + refId);
 					}
 				}
 				ValueUtils.validatePropertyValue(property, value);
@@ -166,7 +172,9 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 	 */
 	void updateFromArray(Object[] update) {
 		if (update.length != entityType.getPropertyCount()) {
-			throw new OgreException("The supplied array must have exactly one entry per property in the corresponding EntityType (expected " + entityType.getPropertyCount() + ", got " + update.length + ")");
+			throw new OgreException(
+					"The supplied array must have exactly one entry per property in the corresponding EntityType (expected "
+							+ entityType.getPropertyCount() + ", got " + update.length + ")");
 		}
 		for (int i = 0; i < update.length; i++) {
 			ValueUtils.validatePropertyValue(entityType.getProperty(i), update[i]);
@@ -178,7 +186,8 @@ public class Entity implements EntityReference, RawPropertyValueSet {
 	 * Set references to a specified Entity to null. This is used to maintain referential integrity
 	 * when an entity is removed from an object graph
 	 * 
-	 * <p>The entity is located by identity, not by entityType and id
+	 * <p>
+	 * The entity is located by identity, not by entityType and id
 	 */
 	void nullReferencesTo(EntityReference entity) {
 		ReferenceProperty[] properties = entityType.getReferenceProperties();

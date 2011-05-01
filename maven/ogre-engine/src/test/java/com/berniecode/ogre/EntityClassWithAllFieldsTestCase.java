@@ -45,17 +45,19 @@ public abstract class EntityClassWithAllFieldsTestCase extends OgreTestCase {
 	protected void doAdditionalSetup() throws Exception {
 		OgreLog.info("EndToEndTest.setUp() Creating new OGRE server");
 		dataSource = new PojoDataSource();
-		dataSource.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class, EntityElement.class));
+		dataSource.setEDRMapper(new DefaultEDRMapper(TYPE_DOMAIN_ID, EntityClassWithAllFields.class,
+				EntityElement.class));
 		dataSource.setObjectGraphId(OBJECT_GRAPH_ID);
 		dataSource.initialise();
-	
+
 		transport = new InProcessTransport(dataSource);
 
 		dataSource.setGraphUpdateListener(transport);
-		
+
 		typeDomain = dataSource.getTypeDomain();
-		
-		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFieldsImpl(5, 6, 7L, 8L, "Shizzle", 9.0F, 10.0F, 11.0, 12.0, byteArray(1, 2, 3), new EntityElementImpl("Hi!")));
+
+		dataSource.setEntityObjects(initialEntityObject = new EntityClassWithAllFieldsImpl(5, 6, 7L, 8L, "Shizzle",
+				9.0F, 10.0F, 11.0, 12.0, byteArray(1, 2, 3), new EntityElementImpl("Hi!")));
 	}
 
 	protected ClientEngine createClientEngine() throws Exception {
@@ -71,9 +73,9 @@ public abstract class EntityClassWithAllFieldsTestCase extends OgreTestCase {
 		return ce;
 	}
 
-	protected byte[] byteArray(int ... ints) {
+	protected byte[] byteArray(int... ints) {
 		byte[] bytes = new byte[ints.length];
-		for (int i=0; i<ints.length; i++) {
+		for (int i = 0; i < ints.length; i++) {
 			bytes[i] = (byte) ints[i];
 		}
 		return bytes;

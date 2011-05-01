@@ -20,7 +20,6 @@
 
 package com.berniecode.ogre.enginelib;
 
-
 /**
  * A ServerDataAdapter is a view onto a single object graph that converts the object graph into EDR
  * (Entity Data Representation). The object graph can be any structured data. By writing new

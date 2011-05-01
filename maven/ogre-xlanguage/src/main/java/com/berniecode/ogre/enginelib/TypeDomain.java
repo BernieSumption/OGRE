@@ -22,7 +22,6 @@ package com.berniecode.ogre.enginelib;
 
 import com.berniecode.ogre.enginelib.platformhooks.StringMap;
 
-
 /**
  * A collection of {@link EntityType}s.
  * 
@@ -78,8 +77,7 @@ public class TypeDomain {
 	public EntityType getEntityTypeByName(String entityName) {
 		return (EntityType) entityTypesByName.get(entityName);
 	}
-	
-	
+
 	/**
 	 * @private
 	 */

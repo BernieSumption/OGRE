@@ -46,8 +46,8 @@ import com.berniecode.ogre.server.EDRMapper;
 import com.berniecode.ogre.server.IdMapper;
 
 /**
- * A {@link DataSource} that extracts a {@link TypeDomain} from a set of java classes and an
- * object graph from from a set of java objects.
+ * A {@link DataSource} that extracts a {@link TypeDomain} from a set of java classes and an object
+ * graph from from a set of java objects.
  * 
  * <p>
  * Each time your data has changed (or on a regular schedule if you don't know when your data has
@@ -237,11 +237,10 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 				entityDeletes.add(oldEntity);
 			}
 		}
-		
-		
+
 		// send updates if required
 		if (completeEntities.size() > 0 || entityDiffs.size() > 0 || entityDeletes.size() > 0) {
-			
+
 			dataVersion++;
 
 			if (graphUpdateListener != null) {
