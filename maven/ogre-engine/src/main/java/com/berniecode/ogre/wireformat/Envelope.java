@@ -17,6 +17,10 @@ public class Envelope {
 
 	private static final byte[] ENVELOPE_HEADER = new byte[] { 'O', 'G', 'R', 'E', 'v', '1' };
 
+	public static final byte ERROR_MESSAGE_PAYLOAD = 0x01;
+	public static final byte TYPE_DOMAIN_MESSAGE_PAYLOAD = 0x02;
+	public static final byte OBJECT_GRAPH_MESSAGE_PAYLOAD = 0x03;
+
 	/**
 	 * Read a binary message wrapped in an OGRE envelope
 	 * 
@@ -36,7 +40,9 @@ public class Envelope {
 			throw new IOException("Invalid OGRE envelope header. Expected " + Arrays.toString(ENVELOPE_HEADER)
 					+ " (OGREv1), got " + Arrays.toString(cbuf) + " (" + new String(cbuf) + ")");
 		}
-		int length = new DataInputStream(inputStream).readInt();
+		DataInputStream dis = new DataInputStream(inputStream);
+		dis.read(); // skip payload type byte
+		int length = dis.readInt();
 		byte[] message = new byte[length];
 		int bytesRead = inputStream.read(message);
 		if (bytesRead != length) {
@@ -46,11 +52,12 @@ public class Envelope {
 		return message;
 	}
 
-	public static byte[] wrapInEnvelope(byte[] payload) {
+	public static byte[] wrapInEnvelope(byte[] payload, byte payloadType) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream(payload.length + ENVELOPE_HEADER.length + 4);
 		DataOutputStream dos = new DataOutputStream(bos);
 		try {
 			dos.write(ENVELOPE_HEADER);
+			dos.write(payloadType);
 			dos.writeInt(payload.length);
 			dos.write(payload);
 		} catch (IOException e) {

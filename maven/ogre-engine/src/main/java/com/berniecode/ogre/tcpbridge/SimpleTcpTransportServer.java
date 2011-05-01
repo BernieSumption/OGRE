@@ -264,11 +264,11 @@ public class SimpleTcpTransportServer extends InitialisingBean implements Serial
 		switch (requestByte) {
 		case RequestType.CODE_TYPE_DOMAIN:
 			response = new Response(RequestType.TYPE_DOMAIN);
-			response.addDataToSend(Envelope.wrapInEnvelope(dataSource.getTypeDomain()));
+			response.addDataToSend(Envelope.wrapInEnvelope(dataSource.getTypeDomain(), Envelope.TYPE_DOMAIN_MESSAGE_PAYLOAD));
 			break;
 		case RequestType.CODE_OBJECT_GRAPH:
 			response = new Response(RequestType.OBJECT_GRAPH);
-			response.addDataToSend(Envelope.wrapInEnvelope(dataSource.getCurrentSnapshot()));
+			response.addDataToSend(Envelope.wrapInEnvelope(dataSource.getCurrentSnapshot(), Envelope.OBJECT_GRAPH_MESSAGE_PAYLOAD));
 			break;
 		case RequestType.CODE_SUBSCRIBE:
 			response = new Response(RequestType.SUBSCRIBE);
@@ -322,7 +322,7 @@ public class SimpleTcpTransportServer extends InitialisingBean implements Serial
 
 	@Override
 	public void acceptSerialisedGraphUpdate(byte[] update) {
-		update = Envelope.wrapInEnvelope(update);
+		update = Envelope.wrapInEnvelope(update, Envelope.OBJECT_GRAPH_MESSAGE_PAYLOAD);
 		synchronized (conversations) {
 			for (Response response : conversations.values()) {
 				if (response.getType() == RequestType.SUBSCRIBE) {

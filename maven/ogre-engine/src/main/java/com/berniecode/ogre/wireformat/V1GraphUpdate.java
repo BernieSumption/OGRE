@@ -714,6 +714,569 @@ final class V1GraphUpdate {
       return com.berniecode.ogre.wireformat.V1GraphUpdate.internal_static_ogre_EntityValueMessage_fieldAccessorTable;
     }
     
+    public static final class PropertyValueMessage extends
+        com.google.protobuf.GeneratedMessage {
+      // Use PropertyValueMessage.newBuilder() to construct.
+      private PropertyValueMessage() {
+        initFields();
+      }
+      private PropertyValueMessage(boolean noInit) {}
+      
+      private static final PropertyValueMessage defaultInstance;
+      public static PropertyValueMessage getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public PropertyValueMessage getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.berniecode.ogre.wireformat.V1GraphUpdate.internal_static_ogre_EntityValueMessage_PropertyValueMessage_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.berniecode.ogre.wireformat.V1GraphUpdate.internal_static_ogre_EntityValueMessage_PropertyValueMessage_fieldAccessorTable;
+      }
+      
+      // optional int32 propertyIndex = 1;
+      public static final int PROPERTYINDEX_FIELD_NUMBER = 1;
+      private boolean hasPropertyIndex;
+      private int propertyIndex_ = 0;
+      public boolean hasPropertyIndex() { return hasPropertyIndex; }
+      public int getPropertyIndex() { return propertyIndex_; }
+      
+      // optional bool nullValue = 2;
+      public static final int NULLVALUE_FIELD_NUMBER = 2;
+      private boolean hasNullValue;
+      private boolean nullValue_ = false;
+      public boolean hasNullValue() { return hasNullValue; }
+      public boolean getNullValue() { return nullValue_; }
+      
+      // optional int64 intValue = 3;
+      public static final int INTVALUE_FIELD_NUMBER = 3;
+      private boolean hasIntValue;
+      private long intValue_ = 0L;
+      public boolean hasIntValue() { return hasIntValue; }
+      public long getIntValue() { return intValue_; }
+      
+      // optional float floatValue = 4;
+      public static final int FLOATVALUE_FIELD_NUMBER = 4;
+      private boolean hasFloatValue;
+      private float floatValue_ = 0F;
+      public boolean hasFloatValue() { return hasFloatValue; }
+      public float getFloatValue() { return floatValue_; }
+      
+      // optional double doubleValue = 5;
+      public static final int DOUBLEVALUE_FIELD_NUMBER = 5;
+      private boolean hasDoubleValue;
+      private double doubleValue_ = 0D;
+      public boolean hasDoubleValue() { return hasDoubleValue; }
+      public double getDoubleValue() { return doubleValue_; }
+      
+      // optional string stringValue = 6;
+      public static final int STRINGVALUE_FIELD_NUMBER = 6;
+      private boolean hasStringValue;
+      private java.lang.String stringValue_ = "";
+      public boolean hasStringValue() { return hasStringValue; }
+      public java.lang.String getStringValue() { return stringValue_; }
+      
+      // optional bytes bytesValue = 7;
+      public static final int BYTESVALUE_FIELD_NUMBER = 7;
+      private boolean hasBytesValue;
+      private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
+      public boolean hasBytesValue() { return hasBytesValue; }
+      public com.google.protobuf.ByteString getBytesValue() { return bytesValue_; }
+      
+      // optional int64 idValue = 8;
+      public static final int IDVALUE_FIELD_NUMBER = 8;
+      private boolean hasIdValue;
+      private long idValue_ = 0L;
+      public boolean hasIdValue() { return hasIdValue; }
+      public long getIdValue() { return idValue_; }
+      
+      private void initFields() {
+      }
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (hasPropertyIndex()) {
+          output.writeInt32(1, getPropertyIndex());
+        }
+        if (hasNullValue()) {
+          output.writeBool(2, getNullValue());
+        }
+        if (hasIntValue()) {
+          output.writeInt64(3, getIntValue());
+        }
+        if (hasFloatValue()) {
+          output.writeFloat(4, getFloatValue());
+        }
+        if (hasDoubleValue()) {
+          output.writeDouble(5, getDoubleValue());
+        }
+        if (hasStringValue()) {
+          output.writeString(6, getStringValue());
+        }
+        if (hasBytesValue()) {
+          output.writeBytes(7, getBytesValue());
+        }
+        if (hasIdValue()) {
+          output.writeInt64(8, getIdValue());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasPropertyIndex()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(1, getPropertyIndex());
+        }
+        if (hasNullValue()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(2, getNullValue());
+        }
+        if (hasIntValue()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(3, getIntValue());
+        }
+        if (hasFloatValue()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeFloatSize(4, getFloatValue());
+        }
+        if (hasDoubleValue()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeDoubleSize(5, getDoubleValue());
+        }
+        if (hasStringValue()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeStringSize(6, getStringValue());
+        }
+        if (hasBytesValue()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(7, getBytesValue());
+        }
+        if (hasIdValue()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(8, getIdValue());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage result;
+        
+        // Construct using com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage();
+          return builder;
+        }
+        
+        protected com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.getDescriptor();
+        }
+        
+        public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage getDefaultInstanceForType() {
+          return com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage) {
+            return mergeFrom((com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage other) {
+          if (other == com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.getDefaultInstance()) return this;
+          if (other.hasPropertyIndex()) {
+            setPropertyIndex(other.getPropertyIndex());
+          }
+          if (other.hasNullValue()) {
+            setNullValue(other.getNullValue());
+          }
+          if (other.hasIntValue()) {
+            setIntValue(other.getIntValue());
+          }
+          if (other.hasFloatValue()) {
+            setFloatValue(other.getFloatValue());
+          }
+          if (other.hasDoubleValue()) {
+            setDoubleValue(other.getDoubleValue());
+          }
+          if (other.hasStringValue()) {
+            setStringValue(other.getStringValue());
+          }
+          if (other.hasBytesValue()) {
+            setBytesValue(other.getBytesValue());
+          }
+          if (other.hasIdValue()) {
+            setIdValue(other.getIdValue());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 8: {
+                setPropertyIndex(input.readInt32());
+                break;
+              }
+              case 16: {
+                setNullValue(input.readBool());
+                break;
+              }
+              case 24: {
+                setIntValue(input.readInt64());
+                break;
+              }
+              case 37: {
+                setFloatValue(input.readFloat());
+                break;
+              }
+              case 41: {
+                setDoubleValue(input.readDouble());
+                break;
+              }
+              case 50: {
+                setStringValue(input.readString());
+                break;
+              }
+              case 58: {
+                setBytesValue(input.readBytes());
+                break;
+              }
+              case 64: {
+                setIdValue(input.readInt64());
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // optional int32 propertyIndex = 1;
+        public boolean hasPropertyIndex() {
+          return result.hasPropertyIndex();
+        }
+        public int getPropertyIndex() {
+          return result.getPropertyIndex();
+        }
+        public Builder setPropertyIndex(int value) {
+          result.hasPropertyIndex = true;
+          result.propertyIndex_ = value;
+          return this;
+        }
+        public Builder clearPropertyIndex() {
+          result.hasPropertyIndex = false;
+          result.propertyIndex_ = 0;
+          return this;
+        }
+        
+        // optional bool nullValue = 2;
+        public boolean hasNullValue() {
+          return result.hasNullValue();
+        }
+        public boolean getNullValue() {
+          return result.getNullValue();
+        }
+        public Builder setNullValue(boolean value) {
+          result.hasNullValue = true;
+          result.nullValue_ = value;
+          return this;
+        }
+        public Builder clearNullValue() {
+          result.hasNullValue = false;
+          result.nullValue_ = false;
+          return this;
+        }
+        
+        // optional int64 intValue = 3;
+        public boolean hasIntValue() {
+          return result.hasIntValue();
+        }
+        public long getIntValue() {
+          return result.getIntValue();
+        }
+        public Builder setIntValue(long value) {
+          result.hasIntValue = true;
+          result.intValue_ = value;
+          return this;
+        }
+        public Builder clearIntValue() {
+          result.hasIntValue = false;
+          result.intValue_ = 0L;
+          return this;
+        }
+        
+        // optional float floatValue = 4;
+        public boolean hasFloatValue() {
+          return result.hasFloatValue();
+        }
+        public float getFloatValue() {
+          return result.getFloatValue();
+        }
+        public Builder setFloatValue(float value) {
+          result.hasFloatValue = true;
+          result.floatValue_ = value;
+          return this;
+        }
+        public Builder clearFloatValue() {
+          result.hasFloatValue = false;
+          result.floatValue_ = 0F;
+          return this;
+        }
+        
+        // optional double doubleValue = 5;
+        public boolean hasDoubleValue() {
+          return result.hasDoubleValue();
+        }
+        public double getDoubleValue() {
+          return result.getDoubleValue();
+        }
+        public Builder setDoubleValue(double value) {
+          result.hasDoubleValue = true;
+          result.doubleValue_ = value;
+          return this;
+        }
+        public Builder clearDoubleValue() {
+          result.hasDoubleValue = false;
+          result.doubleValue_ = 0D;
+          return this;
+        }
+        
+        // optional string stringValue = 6;
+        public boolean hasStringValue() {
+          return result.hasStringValue();
+        }
+        public java.lang.String getStringValue() {
+          return result.getStringValue();
+        }
+        public Builder setStringValue(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasStringValue = true;
+          result.stringValue_ = value;
+          return this;
+        }
+        public Builder clearStringValue() {
+          result.hasStringValue = false;
+          result.stringValue_ = getDefaultInstance().getStringValue();
+          return this;
+        }
+        
+        // optional bytes bytesValue = 7;
+        public boolean hasBytesValue() {
+          return result.hasBytesValue();
+        }
+        public com.google.protobuf.ByteString getBytesValue() {
+          return result.getBytesValue();
+        }
+        public Builder setBytesValue(com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasBytesValue = true;
+          result.bytesValue_ = value;
+          return this;
+        }
+        public Builder clearBytesValue() {
+          result.hasBytesValue = false;
+          result.bytesValue_ = getDefaultInstance().getBytesValue();
+          return this;
+        }
+        
+        // optional int64 idValue = 8;
+        public boolean hasIdValue() {
+          return result.hasIdValue();
+        }
+        public long getIdValue() {
+          return result.getIdValue();
+        }
+        public Builder setIdValue(long value) {
+          result.hasIdValue = true;
+          result.idValue_ = value;
+          return this;
+        }
+        public Builder clearIdValue() {
+          result.hasIdValue = false;
+          result.idValue_ = 0L;
+          return this;
+        }
+        
+        // @@protoc_insertion_point(builder_scope:ogre.EntityValueMessage.PropertyValueMessage)
+      }
+      
+      static {
+        defaultInstance = new PropertyValueMessage(true);
+        com.berniecode.ogre.wireformat.V1GraphUpdate.internalForceInit();
+        defaultInstance.initFields();
+      }
+      
+      // @@protoc_insertion_point(class_scope:ogre.EntityValueMessage.PropertyValueMessage)
+    }
+    
     // required int32 entityTypeIndex = 1;
     public static final int ENTITYTYPEINDEX_FIELD_NUMBER = 1;
     private boolean hasEntityTypeIndex;
@@ -728,15 +1291,15 @@ final class V1GraphUpdate {
     public boolean hasEntityId() { return hasEntityId; }
     public long getEntityId() { return entityId_; }
     
-    // repeated .ogre.PropertyValueMessage propertyValues = 4;
+    // repeated .ogre.EntityValueMessage.PropertyValueMessage propertyValues = 4;
     public static final int PROPERTYVALUES_FIELD_NUMBER = 4;
-    private java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage> propertyValues_ =
+    private java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage> propertyValues_ =
       java.util.Collections.emptyList();
-    public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage> getPropertyValuesList() {
+    public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage> getPropertyValuesList() {
       return propertyValues_;
     }
     public int getPropertyValuesCount() { return propertyValues_.size(); }
-    public com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage getPropertyValues(int index) {
+    public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage getPropertyValues(int index) {
       return propertyValues_.get(index);
     }
     
@@ -757,7 +1320,7 @@ final class V1GraphUpdate {
       if (hasEntityId()) {
         output.writeInt64(2, getEntityId());
       }
-      for (com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage element : getPropertyValuesList()) {
+      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage element : getPropertyValuesList()) {
         output.writeMessage(4, element);
       }
       getUnknownFields().writeTo(output);
@@ -777,7 +1340,7 @@ final class V1GraphUpdate {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, getEntityId());
       }
-      for (com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage element : getPropertyValuesList()) {
+      for (com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage element : getPropertyValuesList()) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, element);
       }
@@ -951,7 +1514,7 @@ final class V1GraphUpdate {
         }
         if (!other.propertyValues_.isEmpty()) {
           if (result.propertyValues_.isEmpty()) {
-            result.propertyValues_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage>();
+            result.propertyValues_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage>();
           }
           result.propertyValues_.addAll(other.propertyValues_);
         }
@@ -989,7 +1552,7 @@ final class V1GraphUpdate {
               break;
             }
             case 34: {
-              com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.newBuilder();
+              com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.Builder subBuilder = com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addPropertyValues(subBuilder.buildPartial());
               break;
@@ -1035,48 +1598,48 @@ final class V1GraphUpdate {
         return this;
       }
       
-      // repeated .ogre.PropertyValueMessage propertyValues = 4;
-      public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage> getPropertyValuesList() {
+      // repeated .ogre.EntityValueMessage.PropertyValueMessage propertyValues = 4;
+      public java.util.List<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage> getPropertyValuesList() {
         return java.util.Collections.unmodifiableList(result.propertyValues_);
       }
       public int getPropertyValuesCount() {
         return result.getPropertyValuesCount();
       }
-      public com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage getPropertyValues(int index) {
+      public com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage getPropertyValues(int index) {
         return result.getPropertyValues(index);
       }
-      public Builder setPropertyValues(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage value) {
+      public Builder setPropertyValues(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage value) {
         if (value == null) {
           throw new NullPointerException();
         }
         result.propertyValues_.set(index, value);
         return this;
       }
-      public Builder setPropertyValues(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.Builder builderForValue) {
+      public Builder setPropertyValues(int index, com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.Builder builderForValue) {
         result.propertyValues_.set(index, builderForValue.build());
         return this;
       }
-      public Builder addPropertyValues(com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage value) {
+      public Builder addPropertyValues(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage value) {
         if (value == null) {
           throw new NullPointerException();
         }
         if (result.propertyValues_.isEmpty()) {
-          result.propertyValues_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage>();
+          result.propertyValues_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage>();
         }
         result.propertyValues_.add(value);
         return this;
       }
-      public Builder addPropertyValues(com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.Builder builderForValue) {
+      public Builder addPropertyValues(com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.Builder builderForValue) {
         if (result.propertyValues_.isEmpty()) {
-          result.propertyValues_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage>();
+          result.propertyValues_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage>();
         }
         result.propertyValues_.add(builderForValue.build());
         return this;
       }
       public Builder addAllPropertyValues(
-          java.lang.Iterable<? extends com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage> values) {
+          java.lang.Iterable<? extends com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage> values) {
         if (result.propertyValues_.isEmpty()) {
-          result.propertyValues_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage>();
+          result.propertyValues_ = new java.util.ArrayList<com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage>();
         }
         super.addAll(values, result.propertyValues_);
         return this;
@@ -1096,569 +1659,6 @@ final class V1GraphUpdate {
     }
     
     // @@protoc_insertion_point(class_scope:ogre.EntityValueMessage)
-  }
-  
-  public static final class PropertyValueMessage extends
-      com.google.protobuf.GeneratedMessage {
-    // Use PropertyValueMessage.newBuilder() to construct.
-    private PropertyValueMessage() {
-      initFields();
-    }
-    private PropertyValueMessage(boolean noInit) {}
-    
-    private static final PropertyValueMessage defaultInstance;
-    public static PropertyValueMessage getDefaultInstance() {
-      return defaultInstance;
-    }
-    
-    public PropertyValueMessage getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-    
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.berniecode.ogre.wireformat.V1GraphUpdate.internal_static_ogre_PropertyValueMessage_descriptor;
-    }
-    
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.berniecode.ogre.wireformat.V1GraphUpdate.internal_static_ogre_PropertyValueMessage_fieldAccessorTable;
-    }
-    
-    // optional int32 propertyIndex = 1;
-    public static final int PROPERTYINDEX_FIELD_NUMBER = 1;
-    private boolean hasPropertyIndex;
-    private int propertyIndex_ = 0;
-    public boolean hasPropertyIndex() { return hasPropertyIndex; }
-    public int getPropertyIndex() { return propertyIndex_; }
-    
-    // optional bool nullValue = 2;
-    public static final int NULLVALUE_FIELD_NUMBER = 2;
-    private boolean hasNullValue;
-    private boolean nullValue_ = false;
-    public boolean hasNullValue() { return hasNullValue; }
-    public boolean getNullValue() { return nullValue_; }
-    
-    // optional int64 intValue = 3;
-    public static final int INTVALUE_FIELD_NUMBER = 3;
-    private boolean hasIntValue;
-    private long intValue_ = 0L;
-    public boolean hasIntValue() { return hasIntValue; }
-    public long getIntValue() { return intValue_; }
-    
-    // optional float floatValue = 4;
-    public static final int FLOATVALUE_FIELD_NUMBER = 4;
-    private boolean hasFloatValue;
-    private float floatValue_ = 0F;
-    public boolean hasFloatValue() { return hasFloatValue; }
-    public float getFloatValue() { return floatValue_; }
-    
-    // optional double doubleValue = 5;
-    public static final int DOUBLEVALUE_FIELD_NUMBER = 5;
-    private boolean hasDoubleValue;
-    private double doubleValue_ = 0D;
-    public boolean hasDoubleValue() { return hasDoubleValue; }
-    public double getDoubleValue() { return doubleValue_; }
-    
-    // optional string stringValue = 6;
-    public static final int STRINGVALUE_FIELD_NUMBER = 6;
-    private boolean hasStringValue;
-    private java.lang.String stringValue_ = "";
-    public boolean hasStringValue() { return hasStringValue; }
-    public java.lang.String getStringValue() { return stringValue_; }
-    
-    // optional bytes bytesValue = 7;
-    public static final int BYTESVALUE_FIELD_NUMBER = 7;
-    private boolean hasBytesValue;
-    private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasBytesValue() { return hasBytesValue; }
-    public com.google.protobuf.ByteString getBytesValue() { return bytesValue_; }
-    
-    // optional int64 idValue = 8;
-    public static final int IDVALUE_FIELD_NUMBER = 8;
-    private boolean hasIdValue;
-    private long idValue_ = 0L;
-    public boolean hasIdValue() { return hasIdValue; }
-    public long getIdValue() { return idValue_; }
-    
-    private void initFields() {
-    }
-    public final boolean isInitialized() {
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (hasPropertyIndex()) {
-        output.writeInt32(1, getPropertyIndex());
-      }
-      if (hasNullValue()) {
-        output.writeBool(2, getNullValue());
-      }
-      if (hasIntValue()) {
-        output.writeInt64(3, getIntValue());
-      }
-      if (hasFloatValue()) {
-        output.writeFloat(4, getFloatValue());
-      }
-      if (hasDoubleValue()) {
-        output.writeDouble(5, getDoubleValue());
-      }
-      if (hasStringValue()) {
-        output.writeString(6, getStringValue());
-      }
-      if (hasBytesValue()) {
-        output.writeBytes(7, getBytesValue());
-      }
-      if (hasIdValue()) {
-        output.writeInt64(8, getIdValue());
-      }
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (hasPropertyIndex()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, getPropertyIndex());
-      }
-      if (hasNullValue()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, getNullValue());
-      }
-      if (hasIntValue()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, getIntValue());
-      }
-      if (hasFloatValue()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(4, getFloatValue());
-      }
-      if (hasDoubleValue()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(5, getDoubleValue());
-      }
-      if (hasStringValue()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(6, getStringValue());
-      }
-      if (hasBytesValue()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(7, getBytesValue());
-      }
-      if (hasIdValue()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(8, getIdValue());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage result;
-      
-      // Construct using com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage();
-        return builder;
-      }
-      
-      protected com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage internalGetResult() {
-        return result;
-      }
-      
-      public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage();
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(result);
-      }
-      
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.getDescriptor();
-      }
-      
-      public com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage getDefaultInstanceForType() {
-        return com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.getDefaultInstance();
-      }
-      
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
-      public com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage build() {
-        if (result != null && !isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return buildPartial();
-      }
-      
-      private com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return buildPartial();
-      }
-      
-      public com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
-        }
-        com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage returnMe = result;
-        result = null;
-        return returnMe;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage) {
-          return mergeFrom((com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage other) {
-        if (other == com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.getDefaultInstance()) return this;
-        if (other.hasPropertyIndex()) {
-          setPropertyIndex(other.getPropertyIndex());
-        }
-        if (other.hasNullValue()) {
-          setNullValue(other.getNullValue());
-        }
-        if (other.hasIntValue()) {
-          setIntValue(other.getIntValue());
-        }
-        if (other.hasFloatValue()) {
-          setFloatValue(other.getFloatValue());
-        }
-        if (other.hasDoubleValue()) {
-          setDoubleValue(other.getDoubleValue());
-        }
-        if (other.hasStringValue()) {
-          setStringValue(other.getStringValue());
-        }
-        if (other.hasBytesValue()) {
-          setBytesValue(other.getBytesValue());
-        }
-        if (other.hasIdValue()) {
-          setIdValue(other.getIdValue());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              setPropertyIndex(input.readInt32());
-              break;
-            }
-            case 16: {
-              setNullValue(input.readBool());
-              break;
-            }
-            case 24: {
-              setIntValue(input.readInt64());
-              break;
-            }
-            case 37: {
-              setFloatValue(input.readFloat());
-              break;
-            }
-            case 41: {
-              setDoubleValue(input.readDouble());
-              break;
-            }
-            case 50: {
-              setStringValue(input.readString());
-              break;
-            }
-            case 58: {
-              setBytesValue(input.readBytes());
-              break;
-            }
-            case 64: {
-              setIdValue(input.readInt64());
-              break;
-            }
-          }
-        }
-      }
-      
-      
-      // optional int32 propertyIndex = 1;
-      public boolean hasPropertyIndex() {
-        return result.hasPropertyIndex();
-      }
-      public int getPropertyIndex() {
-        return result.getPropertyIndex();
-      }
-      public Builder setPropertyIndex(int value) {
-        result.hasPropertyIndex = true;
-        result.propertyIndex_ = value;
-        return this;
-      }
-      public Builder clearPropertyIndex() {
-        result.hasPropertyIndex = false;
-        result.propertyIndex_ = 0;
-        return this;
-      }
-      
-      // optional bool nullValue = 2;
-      public boolean hasNullValue() {
-        return result.hasNullValue();
-      }
-      public boolean getNullValue() {
-        return result.getNullValue();
-      }
-      public Builder setNullValue(boolean value) {
-        result.hasNullValue = true;
-        result.nullValue_ = value;
-        return this;
-      }
-      public Builder clearNullValue() {
-        result.hasNullValue = false;
-        result.nullValue_ = false;
-        return this;
-      }
-      
-      // optional int64 intValue = 3;
-      public boolean hasIntValue() {
-        return result.hasIntValue();
-      }
-      public long getIntValue() {
-        return result.getIntValue();
-      }
-      public Builder setIntValue(long value) {
-        result.hasIntValue = true;
-        result.intValue_ = value;
-        return this;
-      }
-      public Builder clearIntValue() {
-        result.hasIntValue = false;
-        result.intValue_ = 0L;
-        return this;
-      }
-      
-      // optional float floatValue = 4;
-      public boolean hasFloatValue() {
-        return result.hasFloatValue();
-      }
-      public float getFloatValue() {
-        return result.getFloatValue();
-      }
-      public Builder setFloatValue(float value) {
-        result.hasFloatValue = true;
-        result.floatValue_ = value;
-        return this;
-      }
-      public Builder clearFloatValue() {
-        result.hasFloatValue = false;
-        result.floatValue_ = 0F;
-        return this;
-      }
-      
-      // optional double doubleValue = 5;
-      public boolean hasDoubleValue() {
-        return result.hasDoubleValue();
-      }
-      public double getDoubleValue() {
-        return result.getDoubleValue();
-      }
-      public Builder setDoubleValue(double value) {
-        result.hasDoubleValue = true;
-        result.doubleValue_ = value;
-        return this;
-      }
-      public Builder clearDoubleValue() {
-        result.hasDoubleValue = false;
-        result.doubleValue_ = 0D;
-        return this;
-      }
-      
-      // optional string stringValue = 6;
-      public boolean hasStringValue() {
-        return result.hasStringValue();
-      }
-      public java.lang.String getStringValue() {
-        return result.getStringValue();
-      }
-      public Builder setStringValue(java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasStringValue = true;
-        result.stringValue_ = value;
-        return this;
-      }
-      public Builder clearStringValue() {
-        result.hasStringValue = false;
-        result.stringValue_ = getDefaultInstance().getStringValue();
-        return this;
-      }
-      
-      // optional bytes bytesValue = 7;
-      public boolean hasBytesValue() {
-        return result.hasBytesValue();
-      }
-      public com.google.protobuf.ByteString getBytesValue() {
-        return result.getBytesValue();
-      }
-      public Builder setBytesValue(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasBytesValue = true;
-        result.bytesValue_ = value;
-        return this;
-      }
-      public Builder clearBytesValue() {
-        result.hasBytesValue = false;
-        result.bytesValue_ = getDefaultInstance().getBytesValue();
-        return this;
-      }
-      
-      // optional int64 idValue = 8;
-      public boolean hasIdValue() {
-        return result.hasIdValue();
-      }
-      public long getIdValue() {
-        return result.getIdValue();
-      }
-      public Builder setIdValue(long value) {
-        result.hasIdValue = true;
-        result.idValue_ = value;
-        return this;
-      }
-      public Builder clearIdValue() {
-        result.hasIdValue = false;
-        result.idValue_ = 0L;
-        return this;
-      }
-      
-      // @@protoc_insertion_point(builder_scope:ogre.PropertyValueMessage)
-    }
-    
-    static {
-      defaultInstance = new PropertyValueMessage(true);
-      com.berniecode.ogre.wireformat.V1GraphUpdate.internalForceInit();
-      defaultInstance.initFields();
-    }
-    
-    // @@protoc_insertion_point(class_scope:ogre.PropertyValueMessage)
   }
   
   public static final class EntityDeleteMessage extends
@@ -1997,10 +1997,10 @@ final class V1GraphUpdate {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ogre_EntityValueMessage_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_ogre_PropertyValueMessage_descriptor;
+    internal_static_ogre_EntityValueMessage_PropertyValueMessage_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_ogre_PropertyValueMessage_fieldAccessorTable;
+      internal_static_ogre_EntityValueMessage_PropertyValueMessage_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ogre_EntityDeleteMessage_descriptor;
   private static
@@ -2022,17 +2022,17 @@ final class V1GraphUpdate {
       "eates\030\005 \003(\0132\030.ogre.EntityValueMessage\022/\n" +
       "\rentityUpdates\030\006 \003(\0132\030.ogre.EntityValueM" +
       "essage\0220\n\rentityDeletes\030\007 \003(\0132\031.ogre.Ent" +
-      "ityDeleteMessage\"s\n\022EntityValueMessage\022\027" +
-      "\n\017entityTypeIndex\030\001 \002(\005\022\020\n\010entityId\030\002 \002(" +
-      "\003\0222\n\016propertyValues\030\004 \003(\0132\032.ogre.Propert",
-      "yValueMessage\"\265\001\n\024PropertyValueMessage\022\025" +
-      "\n\rpropertyIndex\030\001 \001(\005\022\021\n\tnullValue\030\002 \001(\010" +
-      "\022\020\n\010intValue\030\003 \001(\003\022\022\n\nfloatValue\030\004 \001(\002\022\023" +
-      "\n\013doubleValue\030\005 \001(\001\022\023\n\013stringValue\030\006 \001(\t" +
-      "\022\022\n\nbytesValue\030\007 \001(\014\022\017\n\007idValue\030\010 \001(\003\"@\n" +
-      "\023EntityDeleteMessage\022\027\n\017entityTypeIndex\030" +
-      "\001 \002(\005\022\020\n\010entityId\030\002 \002(\003B \n\036com.berniecod" +
-      "e.ogre.wireformat"
+      "ityDeleteMessage\"\276\002\n\022EntityValueMessage\022" +
+      "\027\n\017entityTypeIndex\030\001 \002(\005\022\020\n\010entityId\030\002 \002" +
+      "(\003\022E\n\016propertyValues\030\004 \003(\0132-.ogre.Entity",
+      "ValueMessage.PropertyValueMessage\032\265\001\n\024Pr" +
+      "opertyValueMessage\022\025\n\rpropertyIndex\030\001 \001(" +
+      "\005\022\021\n\tnullValue\030\002 \001(\010\022\020\n\010intValue\030\003 \001(\003\022\022" +
+      "\n\nfloatValue\030\004 \001(\002\022\023\n\013doubleValue\030\005 \001(\001\022" +
+      "\023\n\013stringValue\030\006 \001(\t\022\022\n\nbytesValue\030\007 \001(\014" +
+      "\022\017\n\007idValue\030\010 \001(\003\"@\n\023EntityDeleteMessage" +
+      "\022\027\n\017entityTypeIndex\030\001 \002(\005\022\020\n\010entityId\030\002 " +
+      "\002(\003B \n\036com.berniecode.ogre.wireformat"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2055,16 +2055,16 @@ final class V1GraphUpdate {
               new java.lang.String[] { "EntityTypeIndex", "EntityId", "PropertyValues", },
               com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.class,
               com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.Builder.class);
-          internal_static_ogre_PropertyValueMessage_descriptor =
-            getDescriptor().getMessageTypes().get(2);
-          internal_static_ogre_PropertyValueMessage_fieldAccessorTable = new
+          internal_static_ogre_EntityValueMessage_PropertyValueMessage_descriptor =
+            internal_static_ogre_EntityValueMessage_descriptor.getNestedTypes().get(0);
+          internal_static_ogre_EntityValueMessage_PropertyValueMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_ogre_PropertyValueMessage_descriptor,
+              internal_static_ogre_EntityValueMessage_PropertyValueMessage_descriptor,
               new java.lang.String[] { "PropertyIndex", "NullValue", "IntValue", "FloatValue", "DoubleValue", "StringValue", "BytesValue", "IdValue", },
-              com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.class,
-              com.berniecode.ogre.wireformat.V1GraphUpdate.PropertyValueMessage.Builder.class);
+              com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.class,
+              com.berniecode.ogre.wireformat.V1GraphUpdate.EntityValueMessage.PropertyValueMessage.Builder.class);
           internal_static_ogre_EntityDeleteMessage_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+            getDescriptor().getMessageTypes().get(2);
           internal_static_ogre_EntityDeleteMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogre_EntityDeleteMessage_descriptor,

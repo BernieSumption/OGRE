@@ -2,54 +2,60 @@ package ogre;
 
 option java_package = "com.berniecode.ogre.wireformat";
 
-// these messages map directly onto the classes with the same name
-// in the com.berniecode.ogre.enginelib.shared package. This file
-// only contains comments to highlight unusual behaviour or requirements
-// that aren't obvious from the JavaDoc comments in those classes
+// these messages ma onto the classes with similar names in the
+// com.berniecode.ogre.enginelib.shared package. This file only contains
+// comments to highlight unusual behaviour or requirements that aren't
+// obvious from the JavaDoc comments in those classes
 
-// Maps onto com.berniecode.ogre.enginelib.shared.GraphUpdate
+// GraphUpdateMessage maps onto com.berniecode.ogre.enginelib.shared.GraphUpdate
 message GraphUpdateMessage {
   required string typeDomainId = 1;
   required string objectGraphId = 2;
   required int32 dataVersion = 3;
   required int32 dataVersionScheme = 4;
-  repeated EntityValueMessage entityCreates = 5; // complete-style EntityValues creating new entities
-  repeated EntityValueMessage entityUpdates = 6; // diff-style EntityValues updating existing entities
+  // complete-style EntityValues creating new entities
+  repeated EntityValueMessage entityCreates = 5;
+  // diff-style EntityValues updating existing entities
+  repeated EntityValueMessage entityUpdates = 6;
   repeated EntityDeleteMessage entityDeletes = 7;
 }
-  
-// There are two flavours of validation for this message. "complete-style", and "diff-style"
+
+// EntityValueMessage maps onto com.berniecode.ogre.enginelib.GraphUpdate
+
+// There are two flavours of validation for this message. "complete-style", and
+// "diff-style"
 // complete-style validation rules:
-//     1. There must be exactly one PropertyValue per Property in the associated EntityType. The
-//        position of the PropertyValue in the propertyValues array is interpreted as the
-//        propertyIndex
-//       2. Each PropertyValue must omit the optional propertyIndex field
+//   1. There must be exactly one PropertyValue per Property in the associated
+//      EntityType. The position of the PropertyValue in the propertyValues
+//      array is interpreted as the propertyIndex
+//   2. Each PropertyValue must omit the optional propertyIndex field
 // diff-style validation rules:
-//     1. Each entry in the propertyValues array must have a value for the optional propertyIndex field
+//     1. Each entry in the propertyValues array must have a value for the
+//        optional propertyIndex field
 message EntityValueMessage {
 
   required int32 entityTypeIndex = 1;
   required int64 entityId = 2;
   repeated PropertyValueMessage propertyValues = 4;
-  
-}
 
-message PropertyValueMessage {
+  message PropertyValueMessage {
   
-  // set only for diff-stype EntityValueMessages
-  optional int32 propertyIndex = 1;
+    // set only for diff-stype EntityValueMessages
+    optional int32 propertyIndex = 1;
+
+    // exactly one of the following fields must be provided:
+    optional bool nullValue = 2;
+    optional int64 intValue = 3;
+    optional float floatValue = 4;
+    optional double doubleValue = 5;
+    optional string stringValue = 6;
+    optional bytes bytesValue = 7;
+    optional int64 idValue = 8;
+  }
   
-  // exactly one of the following fields must be provided:
-  optional bool nullValue = 2;
-  optional int64 intValue = 3;
-  optional float floatValue = 4;
-  optional double doubleValue = 5;
-  optional string stringValue = 6;
-  optional bytes bytesValue = 7;
-  optional int64 idValue = 8;
 }
  
-// Maps onto com.berniecode.ogre.enginelib.shared.EntityDelete
+// EntityDeleteMessage maps onto com.berniecode.ogre.enginelib.EntityReference
 message EntityDeleteMessage {
   required int32 entityTypeIndex = 1;
   required int64 entityId = 2;

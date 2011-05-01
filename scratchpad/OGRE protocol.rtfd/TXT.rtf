@@ -99,7 +99,7 @@ The interpretation of the "entities" array should be clear now. The other fields
   * **typeDomainId:** an ID used to locate the type domain for this object graph. This is chosen by the programmer, and should be unique within the scope of an OGRE server to prevent clashes with other applications running on the same server. It is transmitted with each message, so should not be needlessly long.\
   * ** objectGraphId:** uniquely identifies the object graph. This is used to distinguish between object graphs when there are several of them with the same type domain. Again, it is transmitted with each message, so should not be needlessly long.\
   * **dataVersion:** this number increments each time the object graph changes. If a client has a graph with dataVersion 7, the next update it receives must be numbered 8. If not, then the client must download the whole object graph again. After reaching the highest value that can be stored in a 32 bit integer (2147483647), the counter rolls over to the smallest 32 bit integer value (-2147483648) and continues incrementing from there.\
-  * **dataVersionScheme:** a unique identifier that changes every time the dataVersion resets. If the server restarts and loses it's internal state, it may have to start the dataVersion counting from 1 again. By changing the dataVersionScheme, all clients will recognise that this reset has occurred, and can download the whole object graph and start again.\
+  * **dataVersionScheme:** a unique identifier that changes every time the dataVersion resets. If the server restarts and loses it's internal state, it may have to start the dataVersion counting from 1 again. When a client receives an update with a different dataVersionScheme to the previous update, it must download a new copy of the object graph.\
 \
 === Encoding updates to a graph ====\
 \
@@ -132,7 +132,7 @@ Let's introduce "Al" of Al's Toy Barn to the graph. He likes all the toys, but n
     ]\
   \}\
 \
-The first two fields - typeDomainId and objectGraphId - are used to uniquely identify the object graph that the update should be applied to. The next two fields - dataVersion and dataVersionScheme - allow the client to decide whether this message is a valid update to apply to its local object graph. See the <error recovery> section for details on what happens if the update message is out of sequence.\
+The first two fields - typeDomainId and objectGraphId - are used to uniquely identify the object graph that the update should be applied to. The next two fields - dataVersion and dataVersionScheme - allow the client to decide whether this message is a valid update to apply to its local object graph.\
 \
 Once the client has established that the update message is valid, it applies it to the local object graph. Any new entities are added to the graph, any property updates are applied, and any old entities are removed. While this process is happening, the graph is locked because it might be in an inconsistent state. For example, a new Relationship entity might have been added to the graph before the Person that it refers to. Each update message must contain a set of changes that leaves the graph in a consistent state after the message has finished being processed.\
 \
@@ -152,10 +152,7 @@ So anyway, Stinky Pete leaves the scene in a toddler's backpack, in Pixar's typi
 \
 Note that the update message doesn't have to explicitly remove any relationships involving Pete - the OGRE client will do that automatically.\
 \
-That's more or less how OGRE works, and is probably more information than you need to use OGRE in a project.\
-\
-=== Error recovery ===\
-\
+That's how the OGRE protocol works. In the next section, I describe the architecture of the existing Java OGRE client and server, which will be a prototype for the clients and servers in other languages.\
 \
 === Architectural overview ===\
 \
@@ -164,11 +161,7 @@ The OGRE protocol defines a core set of behaviours in a platform-neutral way. In
 It is quite easy to write new bridges. If your project already has a messaging system capable of relaying arbitrary messages to clients, OGRE can plug into your existing architecture.\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\fs24 \cf0 {{\NeXTGraphic ogre-architecture.png \width13080 \height3580
-}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\fs30 \cf0 \
+\cf0 \
 \
 Running right to left, the key components of the OGRE system are:\
 \
@@ -189,24 +182,8 @@ Ah yes, the automatic language conversion. Since OGRE is designed to be a cross-
 Therefore the core client and server engines are written in Java and automatically translated into other languages. This is actually a lot easier than it sounds - we don't need a general purpose converter, just a converter that works for OGRE. Pretty much all modern imperative languages have a core set of features like classes, objects, methods, variables, operators, conditionals and for/while loops that are semantically identical, but with a few minor syntactical differences. For example, Java methods are expressed "ReturnType methodName()" and ActionScript methods use "methodName():ReturnType". Converting from Java to ActionScript is therefore a simple matter of rewriting the source code to use the new syntax - it's not much harder than making a source code formatter.\
 \
 In order to permit this translation, the client and server engines are written in a simple subset of Java that avoids features that don't map well onto other languages, such as concrete inheritance, inner classes and reflection. This makes it ugly. The client data adapter and server data adapter take this ugly cross-language library and wrap it in a beautiful facade that uses all the recommended coding guidelines of the host language.\
-\
-=== Client engine behaviour ===\
-\
-[todo]\
-\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 The client then checks that the dataVersionScheme of the update message matches the dataVersionScheme of its local object graph - if not then it must reload the graph. The client then checks that the dataVersion property of the update message is one higher than the dataVersion of its local object graph - if not then it has missed a message, perhaps due to a network failure, and it must reload the graph.\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-\cf0 \
-=== Server engine behaviour ===\
-\
-[todo]\
-\
-\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 \cf0 \
-\
-\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 \cf0 \
