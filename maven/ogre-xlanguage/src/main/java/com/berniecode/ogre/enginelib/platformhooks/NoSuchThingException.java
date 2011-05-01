@@ -5,8 +5,6 @@ package com.berniecode.ogre.enginelib.platformhooks;
  * string ID or requesting a Property by integer index)
  * 
  * @author Bernie Sumption
- * 
- * @jtoxNative - not translated into other languages
  */
 public class NoSuchThingException extends Exception {
 

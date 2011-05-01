@@ -13,7 +13,7 @@ import com.berniecode.ogre.wireformat.OgreWireFormatDeserialiser;
 import com.berniecode.ogre.wireformat.OgreWireFormatSerialiser;
 
 /**
- * A {@link ClientTransportAdapter} that wraps a {@link ServerEngineTest}, directly transferring any
+ * A {@link ClientTransportAdapter} that wraps a {@link DataSource}, directly transferring any
  * requests to it (normally, a ClientTransportAdapter would send the requestBuilder over some kind of
  * network transport, e.g. a HTTP requestBuilder).
  * 

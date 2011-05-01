@@ -1,0 +1,60 @@
+package com.berniecode.ogre.demos.friendgraph;
+
+import java.net.InetAddress;
+
+import com.berniecode.ogre.demos.friendgraph.controller.ServerController;
+import com.berniecode.ogre.demos.friendgraph.model.Friendship;
+import com.berniecode.ogre.demos.friendgraph.model.MutableSocialNetwork;
+import com.berniecode.ogre.demos.friendgraph.model.Person;
+import com.berniecode.ogre.demos.friendgraph.model.PersonImpl;
+import com.berniecode.ogre.demos.friendgraph.model.SocialNetworkImpl;
+import com.berniecode.ogre.demos.friendgraph.view.FriendGraphView;
+import com.berniecode.ogre.server.SerialisedDataSource;
+import com.berniecode.ogre.server.pojods.DefaultEDRMapper;
+import com.berniecode.ogre.server.pojods.PojoDataSource;
+import com.berniecode.ogre.tcpbridge.SimpleTcpTransportServer;
+
+public class ServerMain {
+
+	private static SimpleTcpTransportServer server;
+
+	public static void main(String[] args) throws Exception {
+
+		if (args.length != 2) {
+			System.err.println("Requires 3 arguments: [host] and [port]");
+			System.exit(1);
+		}
+
+		InetAddress host = InetAddress.getByName(args[0]);
+		int port = Integer.parseInt(args[1]);
+
+		final FriendGraphView view = new FriendGraphView(true);
+
+		MutableSocialNetwork model = new SocialNetworkImpl();
+		populateSampleData((MutableSocialNetwork) model);
+
+		PojoDataSource ds = new PojoDataSource();
+		ds.setEDRMapper(new DefaultEDRMapper("friendgraph", Person.class, Friendship.class));
+		ds.setObjectGraphId("demo");
+		ds.initialise();
+
+		server = new SimpleTcpTransportServer();
+		server.setDataSource(new SerialisedDataSource(ds, null));
+		server.setHost(host);
+		server.setPort(port);
+		server.initialise();
+
+		new ServerController((MutableSocialNetwork) model, view, ds);
+		view.updateFromModel(model);
+
+		view.setVisible(true);
+	}
+
+	private static void populateSampleData(MutableSocialNetwork model) {
+		Person bernie;
+		model.addPerson(bernie = new PersonImpl(model, "Bernie", null, 50, 80));
+		Person jude;
+		model.addPerson(jude = new PersonImpl(model, "Jude", null, 250, 30));
+		model.setPersonLikesPerson(bernie, jude, true);
+	}
+}

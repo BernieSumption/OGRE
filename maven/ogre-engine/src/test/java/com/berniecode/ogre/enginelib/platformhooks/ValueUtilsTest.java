@@ -6,8 +6,6 @@ import junit.framework.TestCase;
  * Cross-language operations for working with values
  *
  * @author Bernie Sumption
- * 
- * @jtoxNative - not translated into other languages
  */
 public class ValueUtilsTest extends TestCase {
 

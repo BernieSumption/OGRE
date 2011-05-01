@@ -4,8 +4,6 @@ package com.berniecode.ogre.enginelib.platformhooks;
  * Builds up a long string in an efficient way, similar to Java's StringBuilder.
  * 
  * @author Bernie Sumption
- * 
- * @jtoxNative - not translated into other languages
  */
 public class StringConcatenator {
 

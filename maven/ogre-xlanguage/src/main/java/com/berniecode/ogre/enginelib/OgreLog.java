@@ -5,8 +5,6 @@ import com.berniecode.ogre.enginelib.platformhooks.StdErrLogWriter;
 /**
  * 
  * @author bernie
- * 
- * @jtoxNative - not translated into other languages
  */
 public class OgreLog {
 	

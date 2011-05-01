@@ -9,7 +9,6 @@ import com.berniecode.ogre.enginelib.Entity;
  * A collection of {@link Entity}s of a single entity type, indexed by ID for quick access
  *
  * @author Bernie Sumption
- * @jtoxNative
  */
 public class EntityMap {
 	

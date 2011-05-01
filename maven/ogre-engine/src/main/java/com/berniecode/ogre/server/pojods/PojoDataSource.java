@@ -27,7 +27,7 @@ import com.berniecode.ogre.server.IdMapper;
 
 /**
  * A {@link DataSource} that extracts a {@link TypeDomain} from a set of java classes and an
- * {@link ObjectGraph} from from a set of java objects.
+ * object graph from from a set of java objects.
  * 
  * <p>
  * Each time your data has changed (or on a regular schedule if you don't know when your data has
@@ -140,10 +140,6 @@ public class PojoDataSource extends InitialisingBean implements DataSource {
 	 * <li>Any objects in the graph that are not in the array passed to this method will be removed
 	 * from the graph
 	 * </ul>
-	 * 
-	 * <p>
-	 * Each object must be an instance of one of the classes passed to {@link #setClasses(Class...)}
-	 * or a subtype thereof
 	 * 
 	 * <p>
 	 * {@link #initialise()} must be called before this method can be used

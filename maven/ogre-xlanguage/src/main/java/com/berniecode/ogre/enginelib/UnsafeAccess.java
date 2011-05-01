@@ -8,8 +8,6 @@ package com.berniecode.ogre.enginelib;
  * Any algorithms using this class must take care not to modify the returned arrays, which will
  * cause undefined and likely undesirable behaviour.
  * 
- * @private
- * 
  * @author Bernie Sumption
  */
 public class UnsafeAccess {

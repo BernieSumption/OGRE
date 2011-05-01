@@ -38,7 +38,7 @@ public class EntityValue implements EntityReference, RawPropertyValueSet {
 	}
 
 	/**
-	 * @see PartialRawPropertyValueSet#getPropertyValue(Property)
+	 * @see RawPropertyValueSet#getRawPropertyValue(Property)
 	 */
 	public Object getRawPropertyValue(Property property) {
 		return values[property.getPropertyIndex()];

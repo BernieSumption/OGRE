@@ -10,8 +10,6 @@ import com.berniecode.ogre.enginelib.ReferenceProperty;
  * Cross-language operations for working with values
  *
  * @author Bernie Sumption
- * 
- * @jtoxNative - not translated into other languages
  */
 public class ValueUtils {
 	
@@ -107,7 +105,8 @@ public class ValueUtils {
 	}
 
 	/**
-	 * @return A string representation of a value. This should be able to handle any of the values acceptable to {@link #validatePropertyValue(Property, Object, boolean)}
+	 * @return A string representation of a value. This should be able to handle any of the values
+	 *         acceptable to {@link #validatePropertyValue(Property, Object)}
 	 */
 	public static Object valueToString(Object value) {
 		if (value == null) {

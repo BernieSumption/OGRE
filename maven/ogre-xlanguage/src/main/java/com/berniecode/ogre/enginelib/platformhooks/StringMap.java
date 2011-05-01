@@ -7,8 +7,6 @@ import java.util.Map;
  * A map with String keys and Object values
  * 
  * @author Bernie Sumption
- * 
- * @jtoxNative - not translated into other languages
  */
 public class StringMap {
 

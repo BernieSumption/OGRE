@@ -207,7 +207,7 @@ public class ClientEngine implements GraphUpdateListener, DataSource {
 	}
 
 	/**
-	 * @private
+	 * Apply a graph update to the object graph managed by this Client Engine
 	 */
 	public synchronized void acceptGraphUpdate(GraphUpdate update) throws InvalidGraphUpdateException {
 		requireInitialised(true, "acceptGraphUpdate()");

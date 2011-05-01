@@ -8,8 +8,6 @@ import com.berniecode.ogre.enginelib.OgreLog;
 /**
  * 
  * @author bernie
- * 
- * @jtoxNative - not translated into other languages
  */
 public class OgreLogTest extends TestCase {
 

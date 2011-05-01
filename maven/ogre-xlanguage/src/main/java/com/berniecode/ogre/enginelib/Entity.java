@@ -5,7 +5,7 @@ import com.berniecode.ogre.enginelib.platformhooks.OgreException;
 import com.berniecode.ogre.enginelib.platformhooks.ValueUtils;
 
 /**
- * A single object in an {@link ObjectGraph}, uniquely identified by a tuple of its entity type and ID.
+ * A single object in an object graph, uniquely identified by a tuple of its entity type and ID.
  * 
  * @author Bernie Sumption
  */

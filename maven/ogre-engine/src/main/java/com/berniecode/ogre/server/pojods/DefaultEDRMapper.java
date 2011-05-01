@@ -380,7 +380,7 @@ public class DefaultEDRMapper extends InitialisingBean implements EDRMapper {
 	 *
 	 * @author Bernie Sumption
 	 */
-	class DefaultIdMapper implements IdMapper {
+	public class DefaultIdMapper implements IdMapper {
 		
 		// stores a map of object to id, for each EntityType
 		Map<EntityType, Map<Object, Long>> idMap = new HashMap<EntityType, Map<Object,Long>>();

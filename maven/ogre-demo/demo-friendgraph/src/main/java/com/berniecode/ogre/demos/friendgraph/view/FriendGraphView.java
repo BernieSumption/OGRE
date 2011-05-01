@@ -17,9 +17,10 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
-import com.berniecode.ogre.demos.friendgraph.model.Person;
 import com.berniecode.ogre.demos.friendgraph.model.Friendship;
+import com.berniecode.ogre.demos.friendgraph.model.Person;
 import com.berniecode.ogre.demos.friendgraph.model.SocialNetwork;
 
 /**
@@ -50,11 +51,20 @@ public class FriendGraphView extends JFrame {
 	 *            of the model
 	 */
 	public FriendGraphView(boolean editable) {
+
+		try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (Exception e) {
+			System.err.println("Can't set look and feel: " + e.getMessage());
+		}
+		
 		this.editable = editable;
 		setTitle(INITIAL_TITLE);
 		setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
 		setLocation(INITIAL_LEFT, INITIAL_TOP);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+		
 
 		contents = new FriendshipContainer(editable);
 		add(contents);

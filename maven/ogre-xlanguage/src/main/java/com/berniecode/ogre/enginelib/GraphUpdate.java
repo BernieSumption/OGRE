@@ -39,7 +39,7 @@ public class GraphUpdate {
 	}
 
 	/**
-	 * Together with {@link #getTypeDomainId()}, identifies the object graph that this message
+	 * Together with the type domain, identifies the object graph that this message
 	 * should be applied to
 	 */
 	public String getObjectGraphId() {
@@ -76,7 +76,7 @@ public class GraphUpdate {
 	}
 
 	/**
-	 * @return {@link EntityDelete}s for entities that have been removed
+	 * @return {@link EntityReference}s for entities that have been removed
 	 */
 	public EntityReference[] getEntityDeletes() {
 		return entityDeletes;
