@@ -155,6 +155,22 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 		return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { klass, EntityProxy.class },
 				new EntityFacadeInvocationHandler(methodMap, entity));
 	}
+	
+	private static Method TO_STRING_METHOD;
+	private static Method EQUALS_METHOD;
+	private static Method HASH_CODE_METHOD;
+	private static Method GET_PROXIED_ENTITY_METHOD;
+	
+	static {
+		try {
+			TO_STRING_METHOD = Object.class.getMethod("toString");
+			EQUALS_METHOD = Object.class.getMethod("equals", new Class<?>[] { Object.class });
+			HASH_CODE_METHOD = Object.class.getMethod("hashCode");
+			GET_PROXIED_ENTITY_METHOD = EntityProxy.class.getMethod("getProxiedEntity");
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	/**
 	 * Forwards proxy invocations to an {@link Entity} according to the rules specified in
@@ -182,16 +198,16 @@ public class DefaultEDRFacadeFactory implements EDRFacadeFactory {
 				}
 				return propertyValue;
 			}
-			if (method.equals(Object.class.getMethod("toString"))) {
+			if (method.equals(TO_STRING_METHOD)) {
 				return entity.toString();
 			}
-			if (method.equals(Object.class.getMethod("equals", new Class<?>[] { Object.class }))) {
+			if (method.equals(EQUALS_METHOD)) {
 				return args[0] == proxy;
 			}
-			if (method.equals(Object.class.getMethod("hashCode"))) {
+			if (method.equals(HASH_CODE_METHOD)) {
 				return hashCode();
 			}
-			if (method.equals(EntityProxy.class.getMethod("getProxiedEntity"))) {
+			if (method.equals(GET_PROXIED_ENTITY_METHOD)) {
 				return entity;
 			}
 			throw new ClientFacadeException("Invocation of non getter method " + method);
