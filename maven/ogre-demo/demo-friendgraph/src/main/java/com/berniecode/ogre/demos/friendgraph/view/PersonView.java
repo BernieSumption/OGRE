@@ -21,6 +21,8 @@
 package com.berniecode.ogre.demos.friendgraph.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -54,10 +56,15 @@ public class PersonView extends JPanel implements MouseMotionListener, MouseList
 
 	public static final int INITIAL_WIDTH = 100;
 	public static final int INITIAL_HEIGHT = 120;
-	public static final int EDITING_HEIGHT = 170;
+	public static final int EDITING_HEIGHT = 140;
 	private static final Border INITIAL_BORDER = BorderFactory.createLineBorder(Color.BLACK);
-	private static final String INITIAL_SET_FRIENDS_BUTTON_TEXT = "set friends";
+
 	private static final ImageIcon NO_PHOTO_ICON = new ImageIcon(Utils.loadImageFromClasspath("default-photo.jpg"));
+	private static final ImageIcon DELETE_ICON = new ImageIcon(Utils.loadImageFromClasspath("delete.gif"));
+	private static final ImageIcon SET_FRIENDS_ICON = new ImageIcon(Utils.loadImageFromClasspath("set-friends.gif"));
+	private static final ImageIcon CANCEL_SET_FRIENDS_ICON = new ImageIcon(Utils.loadImageFromClasspath("cancel-set-friends.gif"));
+	private static final ImageIcon ADD_FRIEND_ICON = new ImageIcon(Utils.loadImageFromClasspath("add-friend.gif"));
+	private static final ImageIcon REMOVE_FRIEND_ICON = new ImageIcon(Utils.loadImageFromClasspath("remove-friend.gif"));
 
 	private final Person person;
 	private final FriendGraphView friendGraphView;
@@ -104,28 +111,39 @@ public class PersonView extends JPanel implements MouseMotionListener, MouseList
 				}
 			});
 
-			addButton("delete", new ActionListener() {
+			
+			JButton deleteButton = makeButton(DELETE_ICON, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					getEditEventListener().deletePerson(person);
 				}
 			});
+			deleteButton.setToolTipText("delete this person");
 
-			setFriendsButton = addButton(INITIAL_SET_FRIENDS_BUTTON_TEXT, new ActionListener() {
+			setFriendsButton = makeButton(null, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					handleSetFriendsClick();
 				}
 			});
+			
+			Box box = Box.createHorizontalBox();
+			box.add(deleteButton);
+			box.add(Box.createRigidArea(new Dimension(8, 1)));
+			box.add(setFriendsButton);
+			addNicely(box);
+
+			
+			setPersonForFriendshipEditing(null);
 		}
 
 		updateView();
 	}
 
-	private JButton addButton(String text, ActionListener listener) {
-		JButton delete = new JButton(text);
-		delete.setCursor(Cursors.CLICK_CURSOR);
-		delete.addActionListener(listener);
-		addNicely(delete);
-		return delete;
+	private JButton makeButton(ImageIcon icon, ActionListener listener) {
+		JButton button = new JButton(icon);
+		button.setMargin(new Insets(5, 5, 5, 5));
+		button.setCursor(Cursors.CLICK_CURSOR);
+		button.addActionListener(listener);
+		return button;
 	}
 
 	private void makeLabelClickable(JLabel nameLabel, MouseClickListener listener) {
@@ -259,20 +277,24 @@ public class PersonView extends JPanel implements MouseMotionListener, MouseList
 		this.currentSetFriendsPerson = editedPerson;
 		if (editedPerson == null) {
 			// the operation has completed or has been cancelled
-			setFriendsButton.setText(INITIAL_SET_FRIENDS_BUTTON_TEXT);
+			setFriendsButton.setIcon(SET_FRIENDS_ICON);
+			setFriendsButton.setToolTipText("change this person's friends");
 			currentSetFriendsOperation = null;
 		} else {
 			if (editedPerson == person) {
 				// the button was clicked on this PersonView
-				setFriendsButton.setText("cancel");
+				setFriendsButton.setIcon(CANCEL_SET_FRIENDS_ICON);
+				setFriendsButton.setToolTipText("cancel");
 				currentSetFriendsOperation = null;
 			} else if (model.getPersonLikesPerson(editedPerson, this.person)) {
 				// the button was clicked on another PersonView that already likes this person
-				setFriendsButton.setText("remove friend");
+				setFriendsButton.setIcon(REMOVE_FRIEND_ICON);
+				setFriendsButton.setToolTipText("stop being friends with " + editedPerson.getName());
 				currentSetFriendsOperation = EditingOperation.REMOVE;
 			} else {
 				// the button was clicked on another PersonView that does not yet like this person
-				setFriendsButton.setText("add friend");
+				setFriendsButton.setIcon(ADD_FRIEND_ICON);
+				setFriendsButton.setToolTipText("start being friends with " + editedPerson.getName());
 				currentSetFriendsOperation = EditingOperation.ADD;
 			}
 		}

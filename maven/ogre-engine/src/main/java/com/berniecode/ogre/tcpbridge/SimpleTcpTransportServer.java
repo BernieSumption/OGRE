@@ -88,11 +88,25 @@ public class SimpleTcpTransportServer extends InitialisingBean implements Serial
 	private InetAddress hostAddress;
 	private Integer port;
 
+	/**
+	 * Construct an uninitialised {@link SimpleTcpTransportServer}
+	 */
 	public SimpleTcpTransportServer() {
 		try {
 			hostAddress = InetAddress.getByName("localhost");
 		} catch (UnknownHostException e) {
 		}
+	}
+
+
+	/**
+	 * Construct and initialise a {@link SimpleTcpTransportServer}
+	 */
+	public SimpleTcpTransportServer(InetAddress hostAddress, Integer port, SerialisedDataSource dataSource) {
+		this.hostAddress = hostAddress;
+		this.port = port;
+		this.dataSource = dataSource;
+		initialise();
 	}
 
 	/**

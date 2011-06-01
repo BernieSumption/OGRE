@@ -64,10 +64,14 @@ public class Envelope {
 		dis.read(); // skip payload type byte
 		int length = dis.readInt();
 		byte[] message = new byte[length];
-		int bytesRead = inputStream.read(message);
-		if (bytesRead != length) {
-			throw new IOException("End of stream reached before the number of bytes promised in the envelope header ("
-					+ length + ") could be read.");
+		int totalRead = 0;
+		while (totalRead < length) {
+			int bytesRead = inputStream.read(message, totalRead, length - totalRead);
+			if (bytesRead == -1) {
+				throw new IOException("End of stream reached before the number of bytes promised in the envelope header ("
+						+ length + ") could be read. " + bytesRead + " bytes were available.");
+			}
+			totalRead += bytesRead;
 		}
 		return message;
 	}

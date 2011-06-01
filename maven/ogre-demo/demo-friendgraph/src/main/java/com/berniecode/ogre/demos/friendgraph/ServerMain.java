@@ -41,7 +41,7 @@ public class ServerMain {
 	public static void main(String[] args) throws Exception {
 
 		if (args.length != 2) {
-			System.err.println("Requires 3 arguments: [host] and [port]");
+			System.err.println("Requires 2 arguments: [host] and [port]");
 			System.exit(1);
 		}
 
@@ -57,12 +57,7 @@ public class ServerMain {
 		ds.setEDRMapper(new DefaultEDRMapper("friendgraph", Person.class, Friendship.class));
 		ds.setObjectGraphId("demo");
 		ds.initialise();
-
-		server = new SimpleTcpTransportServer();
-		server.setDataSource(new SerialisedDataSource(ds, null));
-		server.setHost(host);
-		server.setPort(port);
-		server.initialise();
+		server = new SimpleTcpTransportServer(host, port, new SerialisedDataSource(ds, null));
 
 		new ServerController((MutableSocialNetwork) model, view, ds);
 		view.updateFromModel(model);

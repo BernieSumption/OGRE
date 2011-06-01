@@ -37,6 +37,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
 import com.berniecode.ogre.demos.friendgraph.model.Friendship;
@@ -77,6 +78,8 @@ public class FriendGraphView extends JFrame {
 		} catch (Exception e) {
 			System.err.println("Can't set look and feel: " + e.getMessage());
 		}
+		
+		ToolTipManager.sharedInstance().setInitialDelay(100);
 
 		this.editable = editable;
 		setTitle(INITIAL_TITLE);
