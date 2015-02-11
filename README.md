@@ -1,7 +1,5 @@
 ![](https://github.com/BernieSumption/OGRE/blob/master/scratchpad/doc-images/ogre-splash.png)
 
-## The Object Graph Replication Engine
-
 An experiment in cross-platform structured data replication. Read more [on the wiki](https://github.com/BernieSumption/OGRE/wiki).
 
 ## Code license 
