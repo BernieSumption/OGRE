@@ -2,6 +2,10 @@
 
 An experiment in cross-platform structured data replication. Read more [on the wiki](https://github.com/BernieSumption/OGRE/wiki).
 
+## Note
+
+This project dates back to 2010. It was my attempt to solve a particular problem in realtime web applications that has now been addressed by the [meteor framework's DDP protocol](https://www.meteor.com/ddp). I'm keeping this page here for historical interest.
+
 ## Code license 
 
 The source code for OGRE is available under the FreeBsd lisence:
